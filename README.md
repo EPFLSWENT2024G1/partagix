@@ -1,4 +1,4 @@
-# Welcome to your organization's demo respository
-This code repository (or "repo") is designed to demonstrate the best GitHub has to offer with the least amount of noise.
-
-The repo includes an `index.html` file (so it can render a web page), two GitHub Actions workflows, and a CSS stylesheet dependency.
+# PartageIx
+## Links 
+- [Figma](https://www.figma.com/files/team/1350842308169914762/swentg1)
+- [Sonar](https://sonarcloud.io/summary/overall?id=EPFLSWENT2024G1_partageix)
