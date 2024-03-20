@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Partagix"
+rootProject.name = "partagix"
 include(":app")
  
