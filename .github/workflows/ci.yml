@@ -69,6 +69,12 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
+      # Load the google-services.json file from the secrets
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x ./gradlew
