@@ -15,5 +15,6 @@ jobs:
         uses: pozil/auto-assign-issue@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          assignees: Valentin889
+          assignees: author
           numOfAssignee: 1
+          
