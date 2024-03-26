@@ -105,7 +105,7 @@ fun InventoryViewItem() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                CategoryDropDown()
+                CategoryDropDown("Select a Category")
 
                 Spacer(modifier = Modifier.height(8.dp))
 
