@@ -19,8 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -92,24 +90,22 @@ fun InventoryViewItem() {
 
                 }
             }
-            Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                OutlinedTextField(value = "Description" /*TODO: get item description*/,
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)) {
+                OutlinedTextField(
+                    value = "Description" /*TODO: get item description*/,
                     onValueChange = {},
-                    label = {Text("Description")},
+                    label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 5,
-                    readOnly =  true)
+                    readOnly = true
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                /*TODO: make it a drop down with all categories*/
-                OutlinedTextField(
-                    value = "Category",
-                    onValueChange = {},
-                    label = { Text("Category") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true
-                )
+                CategoryDropDown()
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -143,29 +139,36 @@ fun InventoryViewItem() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(modifier = Modifier.fillMaxWidth()){
-                    Button(onClick = { /*TODO*/ },
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Button(
+                        onClick = { /*TODO*/ },
                         content = {
                             Text("Download QR code")
                         },
-                        modifier = Modifier.fillMaxWidth(0.5f))
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Button(onClick = { /*TODO*/ },
+                    Button(
+                        onClick = { /*TODO*/ },
                         content = {
                             Text("Loan requests")
                         },
-                        modifier = Modifier.fillMaxWidth())
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
 
-                Spacer(modifier= Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-                Button(onClick = { /*TODO*/ },
+                Button(
+                    onClick = { /*TODO*/ },
                     content = {
                         Text("Edit")
                     },
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
+
             }
             }
         }
