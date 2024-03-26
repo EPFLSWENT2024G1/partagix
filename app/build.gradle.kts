@@ -159,6 +159,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
 
     implementation("com.google.android.gms:play-services-auth:20.6.0")
+
+    implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 }
 
 tasks.withType<Test> {
