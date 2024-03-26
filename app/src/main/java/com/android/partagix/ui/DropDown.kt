@@ -3,7 +3,7 @@ package com.android.partagix.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,11 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * DropDown composable to show a dropdown menu
+ *
+ * @param label the label display when calling the dropdown
+ * @param list the list of items to show in the dropdown, ex : CategoryItems, VisibilityItems...
+ */
 @Composable
-fun CategoryDropDown(category: String) {
+fun DropDown(label: String, list: List<String>) {
   Box(modifier = Modifier.fillMaxWidth()) {
     val expend = remember { mutableStateOf(false) }
-    val selectedCategory = remember { mutableStateOf(category) }
+    val selectedCategory = remember { mutableStateOf(label) }
     Column(modifier = Modifier.fillMaxWidth()) {
       OutlinedButton(
           onClick = { expend.value = true },
@@ -35,10 +41,12 @@ fun CategoryDropDown(category: String) {
             expanded = expend.value,
             onDismissRequest = { expend.value = false },
             modifier =
-                Modifier.fillMaxWidth().height(250.dp).wrapContentSize(align = Alignment.Center),
+                Modifier.fillMaxWidth()
+                    .requiredSizeIn(maxHeight = 250.dp)
+                    .wrapContentSize(align = Alignment.Center),
             scrollState = rememberScrollState(),
         ) {
-          DropDownItems.forEach {
+          list.forEach {
             DropdownMenuItem(
                 onClick = {
                   selectedCategory.value = it
@@ -52,7 +60,7 @@ fun CategoryDropDown(category: String) {
   }
 }
 
-val DropDownItems =
+val CategoryItems =
     listOf(
         "Category 1",
         "Category 2",
@@ -65,3 +73,5 @@ val DropDownItems =
         "Category 9",
         "Category 10",
     )
+
+val VisibilityItems = listOf("Public", "Private", "Friends")
