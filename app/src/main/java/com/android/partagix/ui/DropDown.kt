@@ -69,4 +69,4 @@ val CategoryItems =
         "Category 10",
     )
 
-val VisibilityItems = listOf("Public", "Private", "Friends")
+val VisibilityItems = listOf("Public", "Friends", "Private")
