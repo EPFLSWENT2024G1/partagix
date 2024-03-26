@@ -16,7 +16,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
+@Preview
+@Composable
+fun test(){
+    Column {
+        DropDown("Category", CategoryItems)
+        DropDown("Visibility", VisibilityItems)
+    }
+}
+
 
 /**
  * DropDown composable to show a dropdown menu
@@ -42,8 +53,7 @@ fun DropDown(label: String, list: List<String>) {
             onDismissRequest = { expend.value = false },
             modifier =
                 Modifier.fillMaxWidth()
-                    .requiredSizeIn(maxHeight = 250.dp)
-                    .wrapContentSize(align = Alignment.Center),
+                    .requiredSizeIn(maxHeight = 250.dp),
             scrollState = rememberScrollState(),
         ) {
           list.forEach {
@@ -52,7 +62,7 @@ fun DropDown(label: String, list: List<String>) {
                   selectedCategory.value = it
                   expend.value = false
                 },
-                text = { Text(it) })
+                text = { Text(it)})
           }
         }
       }
