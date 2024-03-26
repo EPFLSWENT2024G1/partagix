@@ -19,10 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
@@ -35,7 +41,7 @@ fun InventoryViewItem() {
     Scaffold (
         topBar = {
                  TopAppBar(
-                     title = { Text("Item" /*TODO: get item name*/)},
+                     title = { Text("Back to selection" /*TODO: get item name*/)},
                      modifier = Modifier.fillMaxWidth(),
                      navigationIcon = {IconButton(onClick = {/*TODO: navigate back to inventory screen*/}){
                          Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)}
@@ -46,25 +52,121 @@ fun InventoryViewItem() {
     ){
         Column(modifier = Modifier
             .padding(it)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally)
         {
-            Row(modifier = Modifier.fillMaxWidth().padding(8.dp)){
-                /*TODO: get photo and display it*/
-                Box(){
-                    Image(painter = painterResource(id = R.drawable.ic_launcher_background)/*TODO: get item photo*/,
-                        contentDescription = null)
-                }
-                Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(140.dp)
+                .padding(8.dp)) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    /*TODO: get photo and display it*/
 
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()){
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_background)/*TODO: get item photo*/,
+                            contentDescription = null,
+                            alignment = Alignment.BottomCenter
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Column(){
+                        OutlinedTextField(
+                            value = "Object name" /*TODO: get item description*/,
+                            onValueChange = {},
+                            label = { Text("Object name") },
+                            modifier = Modifier.fillMaxWidth(),
+                            readOnly = true
+                        )
+
+                        OutlinedTextField(
+                            value = "Author" /*TODO: get item description*/,
+                            onValueChange = {},
+                            label = { Text("Author" /*TODO: get user name*/) },
+                            modifier = Modifier.fillMaxWidth(),
+                            readOnly = true
+                        )
+                    }
+
+                }
+            }
+            Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 OutlinedTextField(value = "Description" /*TODO: get item description*/,
                     onValueChange = {},
                     label = {Text("Description")},
                     modifier = Modifier.fillMaxWidth(),
-                    minLines = 4,
+                    minLines = 5,
                     readOnly =  true)
-            }
-            }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                /*TODO: make it a drop down with all categories*/
+                OutlinedTextField(
+                    value = "Category",
+                    onValueChange = {},
+                    label = { Text("Category") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                /*Check pour savoir s'il il existe qqch pr entrer que des nombres*/
+                OutlinedTextField(
+                    value = "Quantity" /*TODO: get item quantity*/,
+                    onValueChange = {},
+                    label = { Text("Quantity") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = "Where" /*TODO: get item localisation*/,
+                    onValueChange = {},
+                    label = { Text("Where") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+
+                /*TODO: make it a drop down with visibility*/
+                OutlinedTextField(
+                    value = "Visibility" /*TODO: get item visibility*/,
+                    onValueChange = {},
+                    label = { Text("Visibility") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(modifier = Modifier.fillMaxWidth()){
+                    Button(onClick = { /*TODO*/ },
+                        content = {
+                            Text("Download QR code")
+                        },
+                        modifier = Modifier.fillMaxWidth(0.5f))
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = { /*TODO*/ },
+                        content = {
+                            Text("Loan requests")
+                        },
+                        modifier = Modifier.fillMaxWidth())
+                }
+
+                Spacer(modifier= Modifier.width(8.dp))
+
+                Button(onClick = { /*TODO*/ },
+                    content = {
+                        Text("Edit")
+                    },
+                    modifier = Modifier.fillMaxWidth())
+            }
+            }
+        }
     }
-}
