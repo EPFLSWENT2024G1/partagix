@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredSizeIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
@@ -14,20 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-@Preview
-@Composable
-fun test(){
-    Column {
-        DropDown("Category", CategoryItems)
-        DropDown("Visibility", VisibilityItems)
-    }
-}
-
 
 /**
  * DropDown composable to show a dropdown menu
@@ -51,9 +38,7 @@ fun DropDown(label: String, list: List<String>) {
         DropdownMenu(
             expanded = expend.value,
             onDismissRequest = { expend.value = false },
-            modifier =
-                Modifier.fillMaxWidth()
-                    .requiredSizeIn(maxHeight = 250.dp),
+            modifier = Modifier.fillMaxWidth().requiredSizeIn(maxHeight = 250.dp),
             scrollState = rememberScrollState(),
         ) {
           list.forEach {
@@ -62,7 +47,7 @@ fun DropDown(label: String, list: List<String>) {
                   selectedCategory.value = it
                   expend.value = false
                 },
-                text = { Text(it)})
+                text = { Text(it) })
           }
         }
       }
