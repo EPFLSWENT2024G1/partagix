@@ -9,75 +9,79 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
 import java.util.Date
-import kotlin.math.max
 
 private var newId: Long = 0
 
 class Database {
 
-    private val db = Firebase.firestore
-    private val users = db.collection("users")
-    private val items = db.collection("items")
-    private val inventory = db.collection("inventories")
-    private val loan = db.collection("loan")
-    private val categories = db.collection("categories")
+  private val db = Firebase.firestore
+  private val users = db.collection("users")
+  private val items = db.collection("items")
+  private val inventory = db.collection("inventories")
+  private val loan = db.collection("loan")
+  private val categories = db.collection("categories")
 
-    init {
-        println("----- database init")
-    }
+  init {
+    println("----- database init")
+  }
 
-    fun getUsers(onSuccess : (List<User>) -> Unit){
-        users.get().addOnSuccessListener { result ->
-            val ret = mutableListOf<User>()
-            for (document in result) {
-                val user = User(
+  fun getUsers(onSuccess: (List<User>) -> Unit) {
+    users
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<User>()
+          for (document in result) {
+            val user =
+                User(
                     document.data["id"] as Long,
                     document.data["name"] as String,
                     document.data["addr"] as String,
                     document.data["rank"] as String,
                 )
-                ret.add(user)
-            }
-            onSuccess(ret)
-        }.addOnFailureListener() {
-            println("----- error $it")
+            ret.add(user)
+          }
+          onSuccess(ret)
         }
-    }
-    fun getItems(onSuccess : (List<Item>) -> Unit){
-        items.get().addOnSuccessListener { result ->
-            val ret = mutableListOf<Item>()
-            for (document in result) {
-                val item = Item(
-                    document.data["id"] as Long,
-                    document.data["id_category"] as Long
-                )
-                ret.add(item)
-            }
-            onSuccess(ret)
-        }.addOnFailureListener() {
-            println("----- error $it")
+        .addOnFailureListener() { println("----- error $it") }
+  }
+
+  fun getItems(onSuccess: (List<Item>) -> Unit) {
+    items
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<Item>()
+          for (document in result) {
+            val item = Item(document.data["id"] as Long, document.data["id_category"] as Long)
+            ret.add(item)
+          }
+          onSuccess(ret)
         }
-    }
-    fun getInventories(onSuccess : (List<Inventory>) -> Unit){
-        inventory.get().addOnSuccessListener { result ->
-            val ret = mutableListOf<Inventory>()
-            for (document in result) {
-                val inventory = Inventory(
-                    document.data["id_user"] as Long,
-                    document.data["id_item"] as Long
-                )
-                ret.add(inventory)
-            }
-            onSuccess(ret)
-        }.addOnFailureListener() {
-            println("----- error $it")
+        .addOnFailureListener() { println("----- error $it") }
+  }
+
+  fun getInventories(onSuccess: (List<Inventory>) -> Unit) {
+    inventory
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<Inventory>()
+          for (document in result) {
+            val inventory =
+                Inventory(document.data["id_user"] as Long, document.data["id_item"] as Long)
+            ret.add(inventory)
+          }
+          onSuccess(ret)
         }
-    }
-    fun getLoans(onSuccess : (List<Loan>) -> Unit){
-        loan.get().addOnSuccessListener { result ->
-            val ret = mutableListOf<Loan>()
-            for (document in result) {
-                val loan = Loan(
+        .addOnFailureListener() { println("----- error $it") }
+  }
+
+  fun getLoans(onSuccess: (List<Loan>) -> Unit) {
+    loan
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<Loan>()
+          for (document in result) {
+            val loan =
+                Loan(
                     document.data["id_owner"] as Long,
                     document.data["id_loaner"] as Long,
                     document.data["id_item"] as Long,
@@ -88,71 +92,68 @@ class Database {
                     document.data["comment_owner"] as String,
                     document.data["comment_loaner"] as String,
                 )
-                ret.add(loan)
-            }
-            onSuccess(ret)
-        }.addOnFailureListener() {
-            println("----- error $it")
+            ret.add(loan)
+          }
+          onSuccess(ret)
         }
-    }
-    fun getCategories(onSuccess : (List<Category>) -> Unit){
-        categories.get().addOnSuccessListener { result ->
-            val ret = mutableListOf<Category>()
-            for (document in result) {
-                val category = Category(
+        .addOnFailureListener() { println("----- error $it") }
+  }
+
+  fun getCategories(onSuccess: (List<Category>) -> Unit) {
+    categories
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<Category>()
+          for (document in result) {
+            val category =
+                Category(
                     document.data["id"] as Long,
                     document.data["name"] as String,
                 )
-                ret.add(category)
-            }
-            onSuccess(ret)
-        }.addOnFailureListener() {
-            println("----- error $it")
+            ret.add(category)
+          }
+          onSuccess(ret)
         }
-    }
+        .addOnFailureListener() { println("----- error $it") }
+  }
 
+  fun getNewUid(): Long {
+    newId += 1
+    return newId
+  }
 
-    fun getNewUid(): Long {
-        newId += 1
-        return newId
-    }
-
-
-    private fun createExampleForDb(
-        users: CollectionReference = this.users,
-        items: CollectionReference = this.items,
-        inventory: CollectionReference = this.inventory,
-        loan: CollectionReference = this.loan,
-        categories: CollectionReference = this.categories
-    ) {
-        val id = 1
-        val data1 = hashMapOf(
+  private fun createExampleForDb(
+      users: CollectionReference = this.users,
+      items: CollectionReference = this.items,
+      inventory: CollectionReference = this.inventory,
+      loan: CollectionReference = this.loan,
+      categories: CollectionReference = this.categories
+  ) {
+    val id = 1
+    val data1 =
+        hashMapOf(
             "id" to id,
             "name" to "name$id",
             "addr" to "addr$id",
             "rank" to "rank$id",
         )
-        users.document("user$id").set(data1)
+    users.document("user$id").set(data1)
 
-        val data2 = hashMapOf(
-            "id" to id,
-            "id_category" to id
-        )
-        items.document("item$id").set(data2)
+    val data2 = hashMapOf("id" to id, "id_category" to id)
+    items.document("item$id").set(data2)
 
-        val data3 = hashMapOf(
-            "id_user" to id,
-            "id_item" to id
-        )
-        inventory.document("inventory$id").set(data3)
+    val data3 = hashMapOf("id_user" to id, "id_item" to id)
+    inventory.document("inventory$id").set(data3)
 
-        val data4 = hashMapOf(
+    val data4 =
+        hashMapOf(
             "id" to id,
             "name" to "name$id",
         )
-        categories.document("category$id").set(data4)
+    categories.document("category$id").set(data4)
 
-        val data5 = hashMapOf(
+    val data5 =
+        hashMapOf(
             "id_owner" to id,
             "id_loaner" to id,
             "id_item" to id,
@@ -163,7 +164,6 @@ class Database {
             "comment_owner" to "Comment$id",
             "comment_loaner" to "Comment$id",
         )
-        loan.document("loan$id").set(data5)
-
-    }
+    loan.document("loan$id").set(data5)
+  }
 }

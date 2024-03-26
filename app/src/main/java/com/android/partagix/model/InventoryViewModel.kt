@@ -23,41 +23,34 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class InventoryViewModel(items: List<Item> = emptyList()) :
-    ViewModel(
+class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
-    ) {
+  private val database = Database()
 
-        private val database = Database()
+  // UI state exposed to the UI
+  private val _uiState =
+      MutableStateFlow(
+          InventoryUIState(
+              items,
+          ))
+  val uiState: StateFlow<InventoryUIState> = _uiState
 
-        // UI state exposed to the UI
-        private val _uiState = MutableStateFlow(
-            InventoryUIState(
-                items,
-            )
+  init {
+    getItems()
+  }
+
+  private fun getItems() {
+    viewModelScope.launch { database.getItems { update(it) } }
+  }
+
+  private fun update(new: List<Item>) {
+
+    println("----- new update $new")
+    _uiState.value =
+        _uiState.value.copy(
+            items = new,
         )
-        val uiState: StateFlow<InventoryUIState> = _uiState
-
-        init {
-            getItems()
-        }
-        private fun getItems() {
-            viewModelScope.launch {
-                database.getItems {update(it) }
-            }
-        }
-
-        private fun update(new : List<Item>){
-
-            println("----- new update $new")
-            _uiState.value = _uiState.value.copy(
-                items = new,
-            )
-        }
+  }
 }
 
-data class InventoryUIState(
-    val items: List<Item>
-)
-
-
+data class InventoryUIState(val items: List<Item>)

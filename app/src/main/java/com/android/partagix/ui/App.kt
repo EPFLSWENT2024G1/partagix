@@ -1,6 +1,5 @@
 package com.android.partagix.ui
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,49 +20,41 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.partagix.model.InventoryViewModel
-
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.InventoryScreen
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun App(
     inventoryViewModel: InventoryViewModel,
 ) {
 
-    NavigationWrapper(
-        inventoryViewModel = inventoryViewModel,
-    )
+  NavigationWrapper(
+      inventoryViewModel = inventoryViewModel,
+  )
 }
+
 @Composable
 private fun NavigationWrapper(
     inventoryViewModel: InventoryViewModel,
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+  val scope = rememberCoroutineScope()
 
-    val navController = rememberNavController()
-    val navigationActions = remember(navController) {
-        NavigationActions(navController)
-    }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination =
-        navBackStackEntry?.destination?.route ?: Route.OVERVIEW
+  val navController = rememberNavController()
+  val navigationActions = remember(navController) { NavigationActions(navController) }
+  val navBackStackEntry by navController.currentBackStackEntryAsState()
+  val selectedDestination = navBackStackEntry?.destination?.route ?: Route.OVERVIEW
 
-    AppContent(
-        navController = navController,
-        selectedDestination = selectedDestination,
-        navigationActions = navigationActions,
-        inventoryViewModel = inventoryViewModel,
-    ) {
-        scope.launch {
-            drawerState.open()
-        }
-    }
-
-
+  AppContent(
+      navController = navController,
+      selectedDestination = selectedDestination,
+      navigationActions = navigationActions,
+      inventoryViewModel = inventoryViewModel,
+  ) {
+    scope.launch { drawerState.open() }
+  }
 }
 
 @Composable
@@ -74,31 +65,18 @@ fun AppContent(
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
     onDrawerClicked: () -> Unit = {},
-
-    ) {
-    Row(
-        modifier = modifier
-            .semantics { testTag = "AppScreen"}
-            .fillMaxSize()
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.inverseOnSurface)
-        ) {
-            MyNavHost(
-                navController = navController,
-                modifier =
-                    Modifier
-                        .semantics { testTag = "NavHost"}
-                        .weight(1f),
-                navigationActions = navigationActions,
-                inventoryViewModel = inventoryViewModel,
-            )
-
+) {
+  Row(modifier = modifier.semantics { testTag = "AppScreen" }.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          MyNavHost(
+              navController = navController,
+              modifier = Modifier.semantics { testTag = "NavHost" }.weight(1f),
+              navigationActions = navigationActions,
+              inventoryViewModel = inventoryViewModel,
+          )
         }
-    }
+  }
 }
 
 @Composable
@@ -107,28 +85,22 @@ private fun MyNavHost(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
-
 ) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = Route.OVERVIEW,
-    ) {
-        composable(Route.OVERVIEW) {
-            InventoryScreen(
-                inventoryViewModel = inventoryViewModel,
-                navigateToTopLevelDestination = navigationActions::navigateTo
-            )
-        }
-        composable(Route.MAP) {
-            BottomNavigationBar(
-                selectedDestination = Route.MAP,
-                navigateToTopLevelDestination = navigationActions::navigateTo
-            )
-        }
-        composable(Route.CREATE) {
-
-        }
+  NavHost(
+      modifier = modifier,
+      navController = navController,
+      startDestination = Route.OVERVIEW,
+  ) {
+    composable(Route.OVERVIEW) {
+      InventoryScreen(
+          inventoryViewModel = inventoryViewModel,
+          navigateToTopLevelDestination = navigationActions::navigateTo)
     }
+    composable(Route.MAP) {
+      BottomNavigationBar(
+          selectedDestination = Route.MAP,
+          navigateToTopLevelDestination = navigationActions::navigateTo)
+    }
+    composable(Route.CREATE) {}
+  }
 }
-

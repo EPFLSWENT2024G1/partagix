@@ -1,6 +1,6 @@
 import java.util.Date
 
-data class Loan (
+data class Loan(
     val idOwner: Long,
     val idLoaner: Long,
     val idItem: Long,

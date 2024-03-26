@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity(), SignInResultListener {
         Surface(
             modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
             color = MaterialTheme.colorScheme.background) {
-              //Greeting("Android")
-                test()
+              // Greeting("Android")
+              test()
             }
       }
     }
@@ -74,16 +74,17 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       Text("Sign in")
     }
   }
-    @Composable
-    fun test() {
-        val inventoryViewModel: InventoryViewModel by viewModels()
 
-        val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  @Composable
+  fun test() {
+    val inventoryViewModel: InventoryViewModel by viewModels()
 
-        App(
-            inventoryViewModel = inventoryViewModel,
-        )
-    }
+    val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+
+    App(
+        inventoryViewModel = inventoryViewModel,
+    )
+  }
 
   companion object {
     private const val TAG = "Main"
