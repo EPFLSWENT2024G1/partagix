@@ -94,6 +94,5 @@ private fun MyNavHost(
           inventoryViewModel = inventoryViewModel,
           navigateToTopLevelDestination = navigationActions::navigateTo)
     }
-
   }
 }

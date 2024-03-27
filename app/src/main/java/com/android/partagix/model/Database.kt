@@ -24,29 +24,26 @@ class Database {
   private val item_loan = db.collection("item_loan")
 
   init {
-    //createExampleForDb()
+    // createExampleForDb()
   }
 
   fun getUser(idUser: String, onSuccess: (User) -> Unit) {
     users
         .get()
         .addOnSuccessListener { result ->
-
           for (document in result) {
             if (document.data["id"] as String == idUser) {
 
               getUserInventory(idUser) { inventory ->
                 val user =
-                  User(
-                    document.data["id"] as String,
-                    document.data["name"] as String,
-                    document.data["addr"] as String,
-                    document.data["rank"] as String,
-                    inventory
-                  )
+                    User(
+                        document.data["id"] as String,
+                        document.data["name"] as String,
+                        document.data["addr"] as String,
+                        document.data["rank"] as String,
+                        inventory)
                 onSuccess(user)
               }
-
             }
           }
         }
@@ -58,42 +55,40 @@ class Database {
         .get()
         .addOnSuccessListener { result ->
           categories
-            .get()
-            .addOnSuccessListener { result2 ->
-              val categories = mutableMapOf<String, Category>()
-              for (document in result2) {
-                categories[document.data["id"] as String] = Category(
-                  document.data["id"] as String,
-                  document.data["name"] as String
-                )
+              .get()
+              .addOnSuccessListener { result2 ->
+                val categories = mutableMapOf<String, Category>()
+                for (document in result2) {
+                  categories[document.data["id"] as String] =
+                      Category(document.data["id"] as String, document.data["name"] as String)
+                }
+                val ret = mutableListOf<Item>()
+                for (document in result) {
+                  val item =
+                      Item(
+                          document.data["id"] as String,
+                          categories[document.data["id_category"] as String]!!,
+                          document.data["name"] as String,
+                          document.data["description"] as String,
+                      )
+                  ret.add(item)
+                }
+                onSuccess(ret)
               }
-              val ret = mutableListOf<Item>()
-              for (document in result) {
-                val item =
-                  Item(
-                    document.data["id"] as String,
-                    categories[document.data["id_category"] as String]!!,
-                    document.data["name"] as String,
-                    document.data["description"] as String,
-                  )
-                ret.add(item)
-              }
-              onSuccess(ret)
-
-            }
-            .addOnFailureListener() { println("----- error $it") }
+              .addOnFailureListener() { println("----- error $it") }
         }
         .addOnFailureListener() { println("----- error $it") }
   }
 
-  fun getUserInventory(userId:String, onSuccess: (Inventory) -> Unit) {
+  fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
     inventory
         .get()
         .addOnSuccessListener { result ->
-          val inventoryMap = result.groupBy(
-            { it.data["id_user"] as String }, // Key selector function
-            { it.data["id_item"] as String }  // Value selector function
-          )
+          val inventoryMap =
+              result.groupBy(
+                  { it.data["id_user"] as String }, // Key selector function
+                  { it.data["id_item"] as String } // Value selector function
+                  )
           val listIdItem = inventoryMap[userId] ?: emptyList()
           val listItems = mutableListOf<Item>()
           getItems { items ->
@@ -207,8 +202,7 @@ class Database {
             "review_loaner" to "Review",
             "comment_owner" to "Comment",
             "comment_loaner" to "Comment",
-            "state" to LoanState.FINISHED.toString()
-        )
+            "state" to LoanState.FINISHED.toString())
     loan.document(idLoan).set(data5)
 
     val idItemLoad = getNewUid(item_loan)
