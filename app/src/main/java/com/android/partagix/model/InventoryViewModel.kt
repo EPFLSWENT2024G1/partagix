@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import Item
+import User
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,10 +38,19 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
   init {
     getItems()
+    getInventory()
   }
 
   private fun getItems() {
     viewModelScope.launch { database.getItems { update(it) } }
+  }
+
+  private fun getInventory() {
+    viewModelScope.launch {
+      database.getUserInventory(
+        "Yp5cetHh3nLGMsjYY4q9"
+      ) { println("----- ${it.items.size}") }
+    }
   }
 
   private fun update(new: List<Item>) {

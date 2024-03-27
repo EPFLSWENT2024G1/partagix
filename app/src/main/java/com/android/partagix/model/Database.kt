@@ -21,27 +21,34 @@ class Database {
   private val inventory = db.collection("inventories")
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
+  private val item_loan = db.collection("item_loan")
 
   init {
     //createExampleForDb()
   }
 
-  fun getUsers(onSuccess: (List<User>) -> Unit) {
+  fun getUser(idUser: String, onSuccess: (User) -> Unit) {
     users
         .get()
         .addOnSuccessListener { result ->
-          val ret = mutableListOf<User>()
+
           for (document in result) {
-            val user =
-                User(
+            if (document.data["id"] as String == idUser) {
+
+              getUserInventory(idUser) { inventory ->
+                val user =
+                  User(
                     document.data["id"] as String,
                     document.data["name"] as String,
                     document.data["addr"] as String,
                     document.data["rank"] as String,
-                )
-            ret.add(user)
+                    inventory
+                  )
+                onSuccess(user)
+              }
+
+            }
           }
-          onSuccess(ret)
         }
         .addOnFailureListener() { println("----- error $it") }
   }
@@ -79,17 +86,24 @@ class Database {
         .addOnFailureListener() { println("----- error $it") }
   }
 
-  fun getInventories(onSuccess: (List<Inventory>) -> Unit) {
+  fun getUserInventory(userId:String, onSuccess: (Inventory) -> Unit) {
     inventory
         .get()
         .addOnSuccessListener { result ->
-          val ret = mutableListOf<Inventory>()
-          for (document in result) {
-            val inventory =
-                Inventory(document.data["id_user"] as String, document.data["id_item"] as String)
-            ret.add(inventory)
+          val inventoryMap = result.groupBy(
+            { it.data["id_user"] as String }, // Key selector function
+            { it.data["id_item"] as String }  // Value selector function
+          )
+          val listIdItem = inventoryMap[userId] ?: emptyList()
+          val listItems = mutableListOf<Item>()
+          getItems { items ->
+            for (item in items) {
+              if (listIdItem.contains(item.id)) {
+                listItems.add(item)
+              }
+            }
+            onSuccess(Inventory(userId, listItems))
           }
-          onSuccess(ret)
         }
         .addOnFailureListener() { println("----- error $it") }
   }
@@ -187,14 +201,18 @@ class Database {
         hashMapOf(
             "id_owner" to idUser,
             "id_loaner" to idUser,
-            "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
             "review_owner" to "Review",
             "review_loaner" to "Review",
             "comment_owner" to "Comment",
             "comment_loaner" to "Comment",
+            "state" to LoanState.FINISHED.toString()
         )
     loan.document(idLoan).set(data5)
+
+    val idItemLoad = getNewUid(item_loan)
+    val data6 = hashMapOf("id_item" to idItem, "id_loan" to idLoan)
+    item_loan.document(idItemLoad).set(data6)
   }
 }

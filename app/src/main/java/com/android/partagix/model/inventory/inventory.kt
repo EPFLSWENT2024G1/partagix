@@ -1,4 +1,4 @@
 data class Inventory(
-    val idUser: String,
-    val idItem: String,
+    val idUser : String,
+    val items : List<Item>,
 )
