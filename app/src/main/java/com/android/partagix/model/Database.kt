@@ -22,7 +22,7 @@ class Database {
   private val categories = db.collection("categories")
 
   init {
-
+    //createExampleForDb()
   }
 
   fun getUsers(onSuccess: (List<User>) -> Unit) {
@@ -33,7 +33,7 @@ class Database {
           for (document in result) {
             val user =
                 User(
-                    document.data["id"] as Long,
+                    document.data["id"] as String,
                     document.data["name"] as String,
                     document.data["addr"] as String,
                     document.data["rank"] as String,
@@ -51,7 +51,7 @@ class Database {
         .addOnSuccessListener { result ->
           val ret = mutableListOf<Item>()
           for (document in result) {
-            val item = Item(document.data["id"] as Long, document.data["id_category"] as Long)
+            val item = Item(document.data["id"] as String, document.data["id_category"] as String)
             ret.add(item)
           }
           onSuccess(ret)
@@ -66,7 +66,7 @@ class Database {
           val ret = mutableListOf<Inventory>()
           for (document in result) {
             val inventory =
-                Inventory(document.data["id_user"] as Long, document.data["id_item"] as Long)
+                Inventory(document.data["id_user"] as String, document.data["id_item"] as String)
             ret.add(inventory)
           }
           onSuccess(ret)
@@ -82,9 +82,9 @@ class Database {
           for (document in result) {
             val loan =
                 Loan(
-                    document.data["id_owner"] as Long,
-                    document.data["id_loaner"] as Long,
-                    document.data["id_item"] as Long,
+                    document.data["id_owner"] as String,
+                    document.data["id_loaner"] as String,
+                    document.data["id_item"] as String,
                     document.data["start_date"] as Date,
                     document.data["end_date"] as Date,
                     document.data["review_owner"] as String,
@@ -107,7 +107,7 @@ class Database {
           for (document in result) {
             val category =
                 Category(
-                    document.data["id"] as Long,
+                    document.data["id"] as String,
                     document.data["name"] as String,
                 )
             ret.add(category)
@@ -117,9 +117,9 @@ class Database {
         .addOnFailureListener() { println("----- error $it") }
   }
 
-  fun getNewUid(): Long {
-    newId += 1
-    return newId
+  private fun getNewUid(collection: CollectionReference): String {
+    val uidDocument = collection.document()
+    return uidDocument.id
   }
 
   private fun createExampleForDb(
@@ -129,41 +129,46 @@ class Database {
       loan: CollectionReference = this.loan,
       categories: CollectionReference = this.categories
   ) {
-    val id = 1
+    val idUser = getNewUid(users)
     val data1 =
         hashMapOf(
-            "id" to id,
-            "name" to "name$id",
-            "addr" to "addr$id",
-            "rank" to "rank$id",
+            "id" to idUser,
+            "name" to "name",
+            "addr" to "addr",
+            "rank" to "rank",
         )
-    users.document("user$id").set(data1)
+    users.document("$idUser").set(data1)
 
-    val data2 = hashMapOf("id" to id, "id_category" to id)
-    items.document("item$id").set(data2)
-
-    val data3 = hashMapOf("id_user" to id, "id_item" to id)
-    inventory.document("inventory$id").set(data3)
-
-    val data4 =
+    val idCategory = getNewUid(categories)
+    val data2 =
         hashMapOf(
-            "id" to id,
-            "name" to "name$id",
+            "id" to idCategory,
+            "name" to "name",
         )
-    categories.document("category$id").set(data4)
+    categories.document(idCategory).set(data2)
 
+    val idItem = getNewUid(items)
+
+    val data3 = hashMapOf("id" to idItem, "id_category" to idCategory)
+    items.document("$idItem").set(data3)
+
+    val idInventory = getNewUid(inventory)
+    val data4 = hashMapOf("id_user" to idUser, "id_item" to idItem)
+    inventory.document(idInventory).set(data4)
+
+    val idLoan = getNewUid(loan)
     val data5 =
         hashMapOf(
-            "id_owner" to id,
-            "id_loaner" to id,
-            "id_item" to id,
+            "id_owner" to idUser,
+            "id_loaner" to idUser,
+            "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
-            "review_owner" to "Review$id",
-            "review_loaner" to "Review$id",
-            "comment_owner" to "Comment$id",
-            "comment_loaner" to "Comment$id",
+            "review_owner" to "Review",
+            "review_loaner" to "Review",
+            "comment_owner" to "Comment",
+            "comment_loaner" to "Comment",
         )
-    loan.document("loan$id").set(data5)
+    loan.document(idLoan).set(data5)
   }
 }

@@ -1,7 +1,6 @@
 package com.android.partagix.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,14 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
-import com.android.partagix.resources.C
 import com.android.partagix.ui.theme.PartagixAppTheme
 import com.google.firebase.auth.FirebaseUser
 
@@ -39,12 +35,10 @@ class MainActivity : ComponentActivity(), SignInResultListener {
     setContent {
       PartagixAppTheme {
         // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background) {
-              // Greeting("Android")
-              test()
-            }
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+          // Greeting("Android")
+          test()
+        }
       }
     }
   }
@@ -62,10 +56,7 @@ class MainActivity : ComponentActivity(), SignInResultListener {
     Text(text = "Hello $name!")
 
     OutlinedButton(
-        onClick = {
-
-          authentication.signIn()
-        },
+        onClick = { authentication.signIn() },
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, Color(0xFFDADCE0)),
         modifier = modifier.fillMaxWidth(),

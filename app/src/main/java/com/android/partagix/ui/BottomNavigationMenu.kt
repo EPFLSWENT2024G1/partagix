@@ -23,9 +23,7 @@ fun BottomNavigationBar(
     TOP_LEVEL_DESTINATIONS.forEach { destination ->
       NavigationBarItem(
           selected = selectedDestination == destination.route,
-          onClick = {
-            navigateToTopLevelDestination(destination)
-          },
+          onClick = { navigateToTopLevelDestination(destination) },
           icon = { Icon(imageVector = destination.icon, contentDescription = null) })
     }
   }

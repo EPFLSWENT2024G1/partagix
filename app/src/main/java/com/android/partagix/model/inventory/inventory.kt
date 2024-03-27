@@ -1,4 +1,4 @@
 data class Inventory(
-    val idUser: Long,
-    val idItem: Long,
+    val idUser: String,
+    val idItem: String,
 )

@@ -1,9 +1,9 @@
 import java.util.Date
 
 data class Loan(
-    val idOwner: Long,
-    val idLoaner: Long,
-    val idItem: Long,
+    val idOwner: String,
+    val idLoaner: String,
+    val idItem: String,
     val startDate: Date,
     val endDate: Date,
     val reviewOwner: String,
