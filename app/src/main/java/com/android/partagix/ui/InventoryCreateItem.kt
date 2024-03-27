@@ -1,6 +1,7 @@
 package com.android.partagix.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,8 +20,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -61,14 +64,25 @@ fun InventoryCreateItem() {
                 Row(modifier = Modifier.fillMaxWidth()) {
                   /*TODO: get photo and display it*/
 
-                  Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
-                    Image(
-                        painter =
-                            painterResource(
-                                id = R.drawable.ic_launcher_background) /*TODO: get item photo*/,
-                        contentDescription = null,
-                        alignment = Alignment.BottomCenter)
-                  }
+                    MainImagePicker()
+//                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight().clickable(onClick = MainImagePicker())) {
+//                    Image(
+//                        painter =
+//                            painterResource(
+//                                id = R.drawable.ic_launcher_background) TODO: get item photo,
+//                        contentDescription = null,
+//                        alignment = Alignment.BottomCenter)
+//                  }
+
+                    // test only
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        PhotoSelectorView(maxSelectionCount = 3)
+                    }
+                    // end test todo
+
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column() {

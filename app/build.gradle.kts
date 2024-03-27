@@ -159,6 +159,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
 
     implementation("com.google.android.gms:play-services-auth:20.6.0")
+
+    // ----------       Coil     ------------
+    implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 }
 
 tasks.withType<Test> {
