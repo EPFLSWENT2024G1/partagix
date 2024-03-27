@@ -10,10 +10,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
 object Route {
-  const val OVERVIEW = "Overview"
-  const val MAP = "Map"
-  const val CREATE = "Create"
-  const val EDIT = "Edit"
+  const val INVENTORY = "Inventory"
 }
 
 data class TopLevelDestination(
@@ -47,10 +44,5 @@ class NavigationActions(private val navController: NavHostController) {
 
 val TOP_LEVEL_DESTINATIONS =
     listOf(
-        TopLevelDestination(route = Route.OVERVIEW, icon = Icons.Filled.Menu, textId = 1),
-        TopLevelDestination(route = Route.MAP, icon = Icons.Filled.LocationOn, textId = 2))
-
-val TODO_SCREENS =
-    listOf(
-        TopLevelDestination(route = Route.CREATE, icon = Icons.Filled.AccountCircle, textId = 3),
-        TopLevelDestination(route = Route.EDIT, icon = Icons.Filled.List, textId = 4))
+        TopLevelDestination(route = Route.INVENTORY, icon = Icons.Filled.Menu, textId = 1),
+    )

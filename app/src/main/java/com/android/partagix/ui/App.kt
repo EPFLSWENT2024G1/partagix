@@ -43,7 +43,7 @@ private fun NavigationWrapper(
   val navController = rememberNavController()
   val navigationActions = remember(navController) { NavigationActions(navController) }
   val navBackStackEntry by navController.currentBackStackEntryAsState()
-  val selectedDestination = navBackStackEntry?.destination?.route ?: Route.OVERVIEW
+  val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
 
   AppContent(
       navController = navController,
@@ -87,18 +87,13 @@ private fun MyNavHost(
   NavHost(
       modifier = modifier,
       navController = navController,
-      startDestination = Route.OVERVIEW,
+      startDestination = Route.INVENTORY,
   ) {
-    composable(Route.OVERVIEW) {
+    composable(Route.INVENTORY) {
       InventoryScreen(
           inventoryViewModel = inventoryViewModel,
           navigateToTopLevelDestination = navigationActions::navigateTo)
     }
-    composable(Route.MAP) {
-      BottomNavigationBar(
-          selectedDestination = Route.MAP,
-          navigateToTopLevelDestination = navigationActions::navigateTo)
-    }
-    composable(Route.CREATE) {}
+
   }
 }

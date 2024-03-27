@@ -26,7 +26,7 @@ fun InventoryScreen(
       topBar = {},
       bottomBar = {
         BottomNavigationBar(
-            selectedDestination = Route.OVERVIEW,
+            selectedDestination = Route.INVENTORY,
             navigateToTopLevelDestination = navigateToTopLevelDestination)
       },
   ) { innerPadding ->
