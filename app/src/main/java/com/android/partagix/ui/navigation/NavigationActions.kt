@@ -25,7 +25,6 @@ data class TopLevelDestination(
 class NavigationActions(private val navController: NavHostController) {
 
   fun navigateTo(destination: TopLevelDestination) {
-    println("----- We are inside navigate to with : ${destination.route}")
     navController.navigate(destination.route) {
 
       // Pop up to the start destination of the graph to

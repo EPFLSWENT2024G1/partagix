@@ -22,7 +22,7 @@ class Database {
   private val categories = db.collection("categories")
 
   init {
-    println("----- database init")
+
   }
 
   fun getUsers(onSuccess: (List<User>) -> Unit) {
