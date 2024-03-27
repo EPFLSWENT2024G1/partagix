@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       PartagixAppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
+            modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background) {
               // Greeting("Android")
               test()
@@ -59,11 +59,10 @@ class MainActivity : ComponentActivity(), SignInResultListener {
 
   @Composable
   fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!", modifier = modifier.semantics { testTag = C.Tag.greeting })
+    Text(text = "Hello $name!")
 
     OutlinedButton(
         onClick = {
-          Log.w(TAG, "push button to sign in")
 
           authentication.signIn()
         },

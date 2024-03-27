@@ -66,12 +66,12 @@ fun AppContent(
     inventoryViewModel: InventoryViewModel,
     onDrawerClicked: () -> Unit = {},
 ) {
-  Row(modifier = modifier.semantics { testTag = "AppScreen" }.fillMaxSize()) {
+  Row(modifier = modifier.fillMaxSize()) {
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
           MyNavHost(
               navController = navController,
-              modifier = Modifier.semantics { testTag = "NavHost" }.weight(1f),
+              modifier = Modifier.weight(1f),
               navigationActions = navigationActions,
               inventoryViewModel = inventoryViewModel,
           )
