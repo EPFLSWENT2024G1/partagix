@@ -4,6 +4,7 @@ import Category
 import Inventory
 import Item
 import Loan
+import LoanState
 import User
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
@@ -49,12 +50,31 @@ class Database {
     items
         .get()
         .addOnSuccessListener { result ->
-          val ret = mutableListOf<Item>()
-          for (document in result) {
-            val item = Item(document.data["id"] as String, document.data["id_category"] as String)
-            ret.add(item)
-          }
-          onSuccess(ret)
+          categories
+            .get()
+            .addOnSuccessListener { result2 ->
+              val categories = mutableMapOf<String, Category>()
+              for (document in result2) {
+                categories[document.data["id"] as String] = Category(
+                  document.data["id"] as String,
+                  document.data["name"] as String
+                )
+              }
+              val ret = mutableListOf<Item>()
+              for (document in result) {
+                val item =
+                  Item(
+                    document.data["id"] as String,
+                    categories[document.data["id_category"] as String]!!,
+                    document.data["name"] as String,
+                    document.data["description"] as String,
+                  )
+                ret.add(item)
+              }
+              onSuccess(ret)
+
+            }
+            .addOnFailureListener() { println("----- error $it") }
         }
         .addOnFailureListener() { println("----- error $it") }
   }
@@ -91,7 +111,7 @@ class Database {
                     document.data["review_loaner"] as String,
                     document.data["comment_owner"] as String,
                     document.data["comment_loaner"] as String,
-                )
+                    LoanState.FINISHED)
             ret.add(loan)
           }
           onSuccess(ret)
@@ -149,7 +169,13 @@ class Database {
 
     val idItem = getNewUid(items)
 
-    val data3 = hashMapOf("id" to idItem, "id_category" to idCategory)
+    val data3 =
+        hashMapOf(
+            "id" to idItem,
+            "id_category" to idCategory,
+            "name" to "name",
+            "description" to "description",
+        )
     items.document("$idItem").set(data3)
 
     val idInventory = getNewUid(inventory)

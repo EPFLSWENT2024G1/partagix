@@ -1,7 +1,7 @@
-enum class LoanState{
-    PENDING,
-    ACCEPTED,
-    REFUSED,
-    CANCELLED,
-    FINISHED
+enum class LoanState {
+  PENDING,
+  ACCEPTED,
+  REFUSED,
+  CANCELLED,
+  FINISHED
 }
