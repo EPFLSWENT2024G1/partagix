@@ -10,4 +10,5 @@ data class Loan(
     val reviewLoaner: String,
     val commentOwner: String,
     val commentLoaner: String,
+    val state: LoanState
 )
