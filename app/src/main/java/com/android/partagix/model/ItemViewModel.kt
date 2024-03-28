@@ -16,6 +16,7 @@
 
 package com.android.partagix.model
 
+import Category
 import Item
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,31 +29,68 @@ class ItemViewModel(item: Item) : ViewModel() {
     private val database = Database()
 
     // UI state exposed to the UI
-    private val _uiState =
-        MutableStateFlow(
-            ItemUIState(
-                item
-            )
-        )
+    private val _uiState = MutableStateFlow(ItemUIState(item))
     val uiState: StateFlow<ItemUIState> = _uiState
 
     init {
+        createItem()
         getItem()
     }
 
     private fun getItem() {
-        viewModelScope.launch { database.getItems { update(it[0]) } }
-        /* weird notation "it[0]" since the getter returns a list of Items
-        and we want the unique Item that's contained in it
-        -> upgrade idea : create a getter also for Item */
+        viewModelScope.launch {
+            database.getItems {
+                for (i in it) {
+                    if (i.id == _uiState.value.item.id) {
+                        update(i)
+                    }
+                }
+            }
+        }
     }
 
     private fun update(new: Item) {
 
+        _uiState.value = _uiState.value.copy(item = new)
+    }
+
+    // individual update functions
+    private fun updateCategory(newId: String) {
+        var newItem = Item(
+            _uiState.value.item.id,
+            /*            database.getCategories {
+                            for (c in it) {
+                                if (c.id == newId) {
+                                    c *//*Category(c.id, c.name)*//* //how to return a Category ??
+                    }
+                }
+            })*/
+            Category(newId, "name"), // todo get the category name correctly like above
+            _uiState.value.item.name,
+            _uiState.value.item.description
+        )
+
         _uiState.value =
-            _uiState.value.copy(
-                item = new
-            )
+            _uiState.value.copy(item = newItem) // TODO get the correct function to update the item in the DB
+    }
+
+    private fun updateName(new: Item) { // TODO implement
+
+//        _uiState.value = _uiState.value.copy(item = new)
+    }
+
+    private fun updateDescription(new: Item) { // TODO implement
+
+        _uiState.value = _uiState.value.copy(item = new)
+    }
+
+    private fun createItem() {
+
+        // TODO: get an item id
+        // TODO: set a default Category
+        val new = Item("an_id", Category("", ""), "", "")
+        _uiState.value =
+            _uiState.value.copy(item = new) // TODO get the correct function to add a new item to the DB
     }
 }
 
