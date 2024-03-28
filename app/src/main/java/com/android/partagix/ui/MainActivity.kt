@@ -4,31 +4,33 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.resources.C
+import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
+import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.HomeScreen
+import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.theme.PartagixAppTheme
 import com.google.firebase.auth.FirebaseUser
 
 class MainActivity : ComponentActivity(), SignInResultListener {
   private lateinit var authentication: Authentication
+  private lateinit var navigationActions: NavigationActions
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,16 +41,18 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       PartagixAppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
+            modifier = Modifier
+              .fillMaxSize()
+              .semantics { testTag = C.Tag.main_screen_container },
             color = MaterialTheme.colorScheme.background) {
-              Greeting("Android")
+              Main("Android")
             }
       }
     }
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
-    // TODO
+    navigationActions.navigateTo(Route.HOME)
   }
 
   override fun onSignInFailure(errorCode: Int) {
@@ -56,17 +60,17 @@ class MainActivity : ComponentActivity(), SignInResultListener {
   }
 
   @Composable
-  fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!", modifier = modifier.semantics { testTag = C.Tag.greeting })
+  fun Main(name: String, modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+    navigationActions = NavigationActions(navController)
 
-    OutlinedButton(
-        onClick = { authentication.signIn() },
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color(0xFFDADCE0)),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-      Text("Sign in")
+    NavHost(navController = navController, startDestination = Route.LOGIN) {
+      composable(Route.BOOT) { BootScreen(navigationActions, modifier) }
+      composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
+      composable(Route.HOME) { HomeScreen() }
     }
+
+    navigationActions.navigateTo(Route.BOOT)
   }
 
   @Composable
