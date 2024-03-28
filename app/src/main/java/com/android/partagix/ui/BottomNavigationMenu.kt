@@ -10,7 +10,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
 import com.android.partagix.ui.navigation.TopLevelDestination
 
@@ -33,5 +32,5 @@ fun BottomNavigationBar(
 @Composable
 fun previewScaffold() {
   val navController = rememberNavController()
-  val navigate = NavigationActions::navigateTo
+  // val navigate = NavigationActions::navigateTo
 }
