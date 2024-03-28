@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -53,53 +49,49 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
   var showSignIn by remember { mutableStateOf(false) }
 
   Column(
-      modifier = modifier
-        .padding(15.dp)
-        .testTag("LoginScreen"),
+      modifier = modifier.padding(15.dp).testTag("LoginScreen"),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterVertically),
   ) {
     Text(
-      text = "Your neighbors are already here !",
-      style = TextStyle(
-        fontSize = 28.sp,
-        fontFamily = FontFamily(Font(R.font.roboto)),
-        fontWeight = FontWeight(500),
-        color = Color(0xFF000000),
-      )
-    )
-    
+        text = "Your neighbors are already here !",
+        style =
+            TextStyle(
+                fontSize = 28.sp,
+                fontFamily = FontFamily(Font(R.font.roboto)),
+                fontWeight = FontWeight(500),
+                color = Color(0xFF000000),
+            ))
+
     OutlinedButton(
-      modifier = modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-      onClick = { showSignIn = true },
-      shape = RoundedCornerShape(10.dp),
-      border = BorderStroke(1.dp, Color(0xffafafaf)),
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        onClick = { showSignIn = true },
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, Color(0xffafafaf)),
     ) {
       Text(
-        text = "Start borrowing now",
-        style = TextStyle(
-          fontSize = 28.sp,
-          fontFamily = FontFamily(Font(R.font.roboto)),
-          fontWeight = FontWeight(500),
-          color = Color(0xFF000000),
-          textAlign = TextAlign.Center,
-        ),
-        modifier = modifier.padding(12.dp)
-      )
+          text = "Start borrowing now",
+          style =
+              TextStyle(
+                  fontSize = 28.sp,
+                  fontFamily = FontFamily(Font(R.font.roboto)),
+                  fontWeight = FontWeight(500),
+                  color = Color(0xFF000000),
+                  textAlign = TextAlign.Center,
+              ),
+          modifier = modifier.padding(12.dp))
     }
   }
   if (showSignIn) {
     ModalBottomSheet(
-      onDismissRequest = { showSignIn = false },
-      sheetState = sheetState,
-      modifier = modifier.fillMaxHeight(.35f),
+        onDismissRequest = { showSignIn = false },
+        sheetState = sheetState,
+        modifier = modifier.fillMaxHeight(.35f),
     ) {
       Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize(),
+          verticalArrangement = Arrangement.Top,
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = modifier.fillMaxSize(),
       ) {
         OutlinedButton(
             onClick = {
@@ -111,10 +103,10 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             border = BorderStroke(1.dp, Color(0xFFDADCE0)),
             modifier =
-            modifier
-              .fillMaxWidth()
-              .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
-              .testTag("LoginButton"),
+                modifier
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
+                    .testTag("LoginButton"),
         ) {
           Row(
               verticalAlignment = Alignment.CenterVertically,
@@ -130,9 +122,9 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
                     textAlign = TextAlign.Center,
                     style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Medium),
                     modifier =
-                    modifier
-                      .wrapContentHeight(align = Alignment.CenterVertically)
-                      .padding(6.dp))
+                        modifier
+                            .wrapContentHeight(align = Alignment.CenterVertically)
+                            .padding(6.dp))
               }
         }
       }
