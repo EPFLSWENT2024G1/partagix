@@ -16,11 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
+import com.android.partagix.resources.C
 import com.android.partagix.ui.theme.PartagixAppTheme
 import com.google.firebase.auth.FirebaseUser
 
@@ -35,9 +38,10 @@ class MainActivity : ComponentActivity(), SignInResultListener {
     setContent {
       PartagixAppTheme {
         // A surface container using the 'background' color from the theme
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          // Greeting("Android")
-          test()
+        Surface(
+          modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
+          color = MaterialTheme.colorScheme.background) {
+          Greeting("Android")
         }
       }
     }
@@ -53,7 +57,7 @@ class MainActivity : ComponentActivity(), SignInResultListener {
 
   @Composable
   fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!")
+    Text(text = "Hello $name!", modifier = modifier.semantics { testTag = C.Tag.greeting })
 
     OutlinedButton(
         onClick = { authentication.signIn() },
