@@ -37,7 +37,7 @@ fun InventoryScreen(
     Box(modifier = Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {
       Text(
           text = "There is ${uiState.items.size} items in the inventory.",
-          modifier = Modifier.align(Alignment.Center))
+          modifier = Modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
     }
   }
 }
