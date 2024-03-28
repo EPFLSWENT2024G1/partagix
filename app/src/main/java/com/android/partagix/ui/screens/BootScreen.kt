@@ -17,13 +17,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
 private const val TAG = "BootActivity"
 
 @Composable
-fun BootScreen(navigationActions: NavigationActions, modifier: Modifier = Modifier) {
+fun BootScreen(
+    authentication: Authentication,
+    navigationActions: NavigationActions,
+    modifier: Modifier = Modifier
+) {
   Column(
       modifier = modifier.padding(15.dp).testTag("BootScreen"),
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,5 +46,14 @@ fun BootScreen(navigationActions: NavigationActions, modifier: Modifier = Modifi
   }
 
   // wait 2sec before navigating to login screen
-  Handler(Looper.getMainLooper()).postDelayed({ navigationActions.navigateTo(Route.LOGIN) }, 2000)
+  Handler(Looper.getMainLooper())
+      .postDelayed(
+          {
+            if (authentication.isAlreadySignedIn()) {
+              navigationActions.navigateTo(Route.HOME)
+            } else {
+              navigationActions.navigateTo(Route.LOGIN)
+            }
+          },
+          2000)
 }
