@@ -9,4 +9,5 @@ class InventoryScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
         semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("inventoryScreen") }) {
 
     //val screenTitle: KNode = onNode { hasTestTag("inventoryScreen") }
+    val mainContent: KNode = onNode { hasTestTag("inventoryScreenMainContent")}
 }

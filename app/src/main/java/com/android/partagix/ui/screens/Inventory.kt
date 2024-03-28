@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
@@ -28,11 +29,12 @@ fun InventoryScreen(
       topBar = {},
       bottomBar = {
         BottomNavigationBar(
+            //modifier = Modifier.testTag("bottomNavBar")
             selectedDestination = Route.INVENTORY,
             navigateToTopLevelDestination = navigateToTopLevelDestination)
       },
   ) { innerPadding ->
-    Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+    Box(modifier = Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {
       Text(
           text = "There is ${uiState.items.size} items in the inventory.",
           modifier = Modifier.align(Alignment.Center))
