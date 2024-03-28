@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ItemViewModel(item : Item) : ViewModel() {
+class ItemViewModel(item: Item) : ViewModel() {
 
     private val database = Database()
 
@@ -32,7 +32,8 @@ class ItemViewModel(item : Item) : ViewModel() {
         MutableStateFlow(
             ItemUIState(
                 item
-            ))
+            )
+        )
     val uiState: StateFlow<ItemUIState> = _uiState
 
     init {
@@ -40,10 +41,10 @@ class ItemViewModel(item : Item) : ViewModel() {
     }
 
     private fun getItem() {
-        viewModelScope.launch { database.getItems{ update(it[0]) } }
-    /* weird notation "it[0]" since the getter returns a list of Items
-    and we want the unique Item that's contained in it
-    -> upgrade idea : create a getter also for Item */
+        viewModelScope.launch { database.getItems { update(it[0]) } }
+        /* weird notation "it[0]" since the getter returns a list of Items
+        and we want the unique Item that's contained in it
+        -> upgrade idea : create a getter also for Item */
     }
 
     private fun update(new: Item) {
@@ -55,4 +56,4 @@ class ItemViewModel(item : Item) : ViewModel() {
     }
 }
 
-data class ItemUIState(val item : Item)
+data class ItemUIState(val item: Item)
