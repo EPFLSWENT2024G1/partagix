@@ -1,15 +1,17 @@
 package com.android.partagix.ui
 
 import android.net.Uri
-import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -24,10 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
-//import com.example.imagepickerexample.ui.theme.ImagePickerExampleTheme
 
+// Functions commented as "imported" are from this webpage : https://medium.com/@jpmtech/jetpack-compose-display-a-photo-picker-6bcb9b357a3a
+
+// imported
 @Composable
 fun PhotoSelectorView(maxSelectionCount: Int = 1) {
     var selectedImages by remember {
@@ -46,11 +49,13 @@ fun PhotoSelectorView(maxSelectionCount: Int = 1) {
     )
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = if (maxSelectionCount > 1) {
-            maxSelectionCount
-        } else {
-            2
-        }),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(
+            maxItems = if (maxSelectionCount > 1) {
+                maxSelectionCount
+            } else {
+                2
+            }
+        ),
         onResult = { uris -> selectedImages = uris }
     )
 
@@ -80,6 +85,7 @@ fun PhotoSelectorView(maxSelectionCount: Int = 1) {
     }
 }
 
+// imported
 @Composable
 fun ImageLayoutView(selectedImages: List<Uri?>) {
     LazyRow {
@@ -94,25 +100,67 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
     }
 }
 
+/**
+ * MainImagePicker composable to display the image picker
+ *
+ * @return a clickable box, with default background color, that opens an imagePicker on click,
+ *          the picked image is displayed in the box
+ */
 @Composable
-fun MainImagePicker() { // todo should only be executed onclick, bad integration in InventoryCreateItem.kt, in should be a lambda
+fun MainImagePicker() {
     var selectedImages by remember {
         mutableStateOf<List<Uri?>>(emptyList())
     }
+
+    val buttonText = "Select a photo"
+
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImages = listOf(uri) }
     )
 
-    singlePhotoPickerLauncher.launch(
-        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 2),
+        onResult = { uris -> selectedImages = uris }
     )
 
-/*    Column(
+    fun launchPhotoPicker() {
+
+        singlePhotoPickerLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+
+    }
+
+    Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {*/
-        ImageLayoutView(selectedImages = selectedImages)
-//    }
+    ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { launchPhotoPicker() }) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = androidx.compose.ui.graphics.Color.Blue)
+                ) {
+                    items(selectedImages) { uri ->
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxHeight(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                }
+
+            }
+        }
+    }
 }
