@@ -5,10 +5,10 @@ import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
 object Route {
+  const val BOOT = "Boot"
   const val LOGIN = "Login"
   const val HOME = "Home"
   const val INVENTORY = "Inventory"
