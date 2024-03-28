@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.BottomNavigationBar
@@ -23,6 +24,7 @@ fun InventoryScreen(
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
   Scaffold(
+      modifier = Modifier.testTag("inventoryScreen"),
       topBar = {},
       bottomBar = {
         BottomNavigationBar(
