@@ -210,7 +210,7 @@ class Database {
     item_loan.document(idItemLoan).set(data6)
   }
 
-  private fun createItem(user: User): Item {
+  fun createItem(userId: String): Item {
 
     val idItem = getNewUid(items)
     val data3 =
@@ -222,13 +222,13 @@ class Database {
         )
     items.document("$idItem").set(data3)
 
-    val data4 = hashMapOf("id_user" to user.id, "id_item" to idItem)
-    this.inventory.document(user.id).set(data4)
+    val data4 = hashMapOf("id_user" to userId, "id_item" to idItem)
+    this.inventory.document(userId).set(data4)
 
     return Item(idItem, Category("id_category", "name"), "name", "description")
   }
 
-  private fun updateItem(newItem: Item) {
+  fun updateItem(newItem: Item) {
 
     newItem.category
     val idItem = newItem.id

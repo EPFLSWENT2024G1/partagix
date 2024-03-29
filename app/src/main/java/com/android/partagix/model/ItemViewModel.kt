@@ -16,7 +16,6 @@
 
 package com.android.partagix.model
 
-import Category
 import Item
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,16 +57,24 @@ class ItemViewModel(item: Item) : ViewModel() {
 
   private fun createItem() {
 
-    val db_item =
-        viewModelScope.launch {
-          //      database.createItem(/* todo get user*/)
-        }
+    viewModelScope.launch {
+      val createdItem =
+          database.createItem("Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */)
 
-    // TODO: get an item id
-    // TODO: set a default Category
-    val new = Item("an_id", Category("", ""), "", "")
-    _uiState.value =
-        _uiState.value.copy(item = new) // TODO get the correct function to add a new item to the DB
+      val newItem =
+          Item(
+              createdItem.id,
+              _uiState.value.item.category,
+              _uiState.value.item.name,
+              _uiState.value.item.description)
+
+      database.updateItem(newItem)
+    }
+  }
+
+  private fun updateItem() {
+
+    viewModelScope.launch { database.updateItem(_uiState.value.item) }
   }
 }
 
