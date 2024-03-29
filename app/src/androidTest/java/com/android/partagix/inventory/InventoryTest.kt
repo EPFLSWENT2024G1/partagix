@@ -2,6 +2,7 @@ package com.android.partagix.inventory
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.screens.InventoryScreen
@@ -25,7 +26,7 @@ class InventoryTest: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSu
 
     @Before
     fun testSetup() {
-        val vm = InventoryViewModel() // not existing yet
+        val vm = InventoryViewModel()
         composeTestRule.setContent { InventoryScreen(vm, navActions::navigateTo) }
     }
 
