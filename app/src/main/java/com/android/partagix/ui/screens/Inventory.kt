@@ -29,9 +29,9 @@ fun InventoryScreen(
       topBar = {},
       bottomBar = {
         BottomNavigationBar(
-            //modifier = Modifier.testTag("bottomNavBar")
             selectedDestination = Route.INVENTORY,
-            navigateToTopLevelDestination = navigationActions::navigateTo)
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = Modifier.testTag("bottomNavBar"))
       },
   ) { innerPadding ->
     Box(modifier = Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {

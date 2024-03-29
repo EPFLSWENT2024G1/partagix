@@ -16,9 +16,10 @@ import com.android.partagix.ui.navigation.TopLevelDestination
 @Composable
 fun BottomNavigationBar(
     selectedDestination: String,
-    navigateToTopLevelDestination: (TopLevelDestination) -> Unit
+    navigateToTopLevelDestination: (TopLevelDestination) -> Unit,
+    modifier: Modifier
 ) {
-  NavigationBar(modifier = Modifier.fillMaxWidth()) {
+  NavigationBar(modifier = modifier.fillMaxWidth()) {
     TOP_LEVEL_DESTINATIONS.forEach { destination ->
       NavigationBarItem(
           selected = selectedDestination == destination.route,
