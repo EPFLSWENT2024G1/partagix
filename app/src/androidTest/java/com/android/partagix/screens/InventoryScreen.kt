@@ -11,4 +11,5 @@ class InventoryScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
     //val screenTitle: KNode = onNode { hasTestTag("inventoryScreen") }
     val mainContent: KNode = onNode { hasTestTag("inventoryScreenMainContent")}
     val mainContentText: KNode = onNode { hasTestTag("inventoryScreenMainContentText") }
+    val bottomNavBar: KNode = onNode { hasTestTag("inventoryScreenBottomNavBar") }
 }
