@@ -60,11 +60,9 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   }
 
   @Test
-    fun bottomNavBarItemInventoryIsDisplayed() = run {
-        onComposeScreen<InventoryScreen>(composeTestRule) {
-        bottomNavBarItemInventory {
-            assertIsDisplayed()
-        }
-        }
+  fun bottomNavBarItemInventoryIsDisplayed() = run {
+    onComposeScreen<InventoryScreen>(composeTestRule) {
+      bottomNavBarItemInventory { assertIsDisplayed() }
     }
+  }
 }
