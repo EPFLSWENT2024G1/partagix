@@ -55,6 +55,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
   ) {
     Text(
         text = "Your neighbors are already here !",
+        modifier = modifier.testTag("LoginTitle"),
         style =
             TextStyle(
                 fontSize = 28.sp,
@@ -79,14 +80,14 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
                   color = Color(0xFF000000),
                   textAlign = TextAlign.Center,
               ),
-          modifier = modifier.padding(12.dp))
+          modifier = modifier.padding(12.dp).testTag("LoginButtonOpenBottomSheet"))
     }
   }
   if (showSignIn) {
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
-        modifier = modifier.fillMaxHeight(.35f),
+        modifier = modifier.fillMaxHeight(.35f).testTag("LoginBottomSheet"),
     ) {
       Column(
           verticalArrangement = Arrangement.Top,

@@ -42,7 +42,7 @@ fun BootScreen(
             Modifier.aspectRatio(1f)
                 .requiredWidth(width = 189.dp)
                 .requiredHeight(height = 189.dp)
-                .testTag("LoginLogo"))
+                .testTag("BootLogo"))
   }
 
   // wait 2sec before navigating to login screen
