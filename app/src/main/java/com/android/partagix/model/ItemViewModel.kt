@@ -26,72 +26,49 @@ import kotlinx.coroutines.launch
 
 class ItemViewModel(item: Item) : ViewModel() {
 
-    private val database = Database()
+  private val database = Database()
 
-    // UI state exposed to the UI
-    private val _uiState = MutableStateFlow(ItemUIState(item))
-    val uiState: StateFlow<ItemUIState> = _uiState
+  // UI state exposed to the UI
+  private val _uiState = MutableStateFlow(ItemUIState(item))
+  val uiState: StateFlow<ItemUIState> = _uiState
 
-    init {
-        createItem()
-        getItem()
-    }
+  init {
+    createItem()
+    getItem()
+  }
 
-    private fun getItem() {
-        viewModelScope.launch {
-            database.getItems {
-                for (i in it) {
-                    if (i.id == _uiState.value.item.id) {
-                        update(i)
-                    }
-                }
-            }
+  private fun getItem() {
+    viewModelScope.launch {
+      database.getItems {
+        for (i in it) {
+          if (i.id == _uiState.value.item.id) {
+            update(i)
+          }
         }
+      }
     }
+  }
 
-    private fun update(new: Item) {
-
-        _uiState.value = _uiState.value.copy(item = new)
-    }
-
-    // individual update functions
-    private fun updateCategory(newId: String) {
-        var newItem = Item(
-            _uiState.value.item.id,
-            /*            database.getCategories {
-                            for (c in it) {
-                                if (c.id == newId) {
-                                    c *//*Category(c.id, c.name)*//* //how to return a Category ??
-                    }
-                }
-            })*/
-            Category(newId, "name"), // todo get the category name correctly like above
-            _uiState.value.item.name,
-            _uiState.value.item.description
+  private fun update(new: Item) {
+    _uiState.value =
+        _uiState.value.copy(
+            item = new,
         )
+  }
 
-        _uiState.value =
-            _uiState.value.copy(item = newItem) // TODO get the correct function to update the item in the DB
-    }
+  private fun createItem() {
 
-    private fun updateName(new: Item) { // TODO implement
+    val db_item =
+        viewModelScope.launch {
+          //      database.createItem(/* todo get user*/)
+        }
 
-//        _uiState.value = _uiState.value.copy(item = new)
-    }
-
-    private fun updateDescription(new: Item) { // TODO implement
-
-        _uiState.value = _uiState.value.copy(item = new)
-    }
-
-    private fun createItem() {
-
-        // TODO: get an item id
-        // TODO: set a default Category
-        val new = Item("an_id", Category("", ""), "", "")
-        _uiState.value =
-            _uiState.value.copy(item = new) // TODO get the correct function to add a new item to the DB
-    }
+    // TODO: get an item id
+    // TODO: set a default Category
+    val new = Item("an_id", Category("", ""), "", "")
+    _uiState.value =
+        _uiState.value.copy(item = new) // TODO get the correct function to add a new item to the DB
+  }
 }
 
 data class ItemUIState(val item: Item)
