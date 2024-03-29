@@ -14,13 +14,15 @@ import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.BottomNavigationBar
+import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TopLevelDestination
 
 @Composable
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
-    navigateToTopLevelDestination: (TopLevelDestination) -> Unit
+    navigationActions: NavigationActions,
+
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -31,7 +33,7 @@ fun InventoryScreen(
         BottomNavigationBar(
             //modifier = Modifier.testTag("bottomNavBar")
             selectedDestination = Route.INVENTORY,
-            navigateToTopLevelDestination = navigateToTopLevelDestination)
+            navigateToTopLevelDestination = navigationActions::navigateTo)
       },
   ) { innerPadding ->
     Box(modifier = Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {

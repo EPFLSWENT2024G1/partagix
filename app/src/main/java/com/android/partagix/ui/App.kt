@@ -92,7 +92,7 @@ private fun MyNavHost(
     composable(Route.INVENTORY) {
       InventoryScreen(
           inventoryViewModel = inventoryViewModel,
-          navigateToTopLevelDestination = navigationActions::navigateTo)
+          navigationActions = navigationActions)
     }
   }
 }
