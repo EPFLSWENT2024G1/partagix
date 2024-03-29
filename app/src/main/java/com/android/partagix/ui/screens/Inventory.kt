@@ -9,14 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.navigation.TopLevelDestination
 
 @Composable
 fun InventoryScreen(
