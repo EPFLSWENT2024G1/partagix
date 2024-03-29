@@ -1,8 +1,6 @@
 package com.android.partagix.inventory
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
