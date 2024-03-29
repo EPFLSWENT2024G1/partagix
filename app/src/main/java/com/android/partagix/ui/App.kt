@@ -91,8 +91,7 @@ private fun MyNavHost(
   ) {
     composable(Route.INVENTORY) {
       InventoryScreen(
-          inventoryViewModel = inventoryViewModel,
-          navigationActions = navigationActions)
+          inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
     }
   }
 }

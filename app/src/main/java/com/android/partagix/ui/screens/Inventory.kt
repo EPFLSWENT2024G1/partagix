@@ -20,7 +20,6 @@ import com.android.partagix.ui.navigation.Route
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigationActions: NavigationActions,
-
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -34,10 +33,12 @@ fun InventoryScreen(
             modifier = Modifier.testTag("inventoryScreenBottomNavBar"))
       },
   ) { innerPadding ->
-    Box(modifier = Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {
-      Text(
-          text = "There is ${uiState.items.size} items in the inventory.",
-          modifier = Modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
-    }
+    Box(
+        modifier =
+            Modifier.padding(innerPadding).fillMaxSize().testTag("inventoryScreenMainContent")) {
+          Text(
+              text = "There is ${uiState.items.size} items in the inventory.",
+              modifier = Modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
+        }
   }
 }

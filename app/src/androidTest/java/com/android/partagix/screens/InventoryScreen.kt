@@ -6,10 +6,11 @@ import io.github.kakaocup.compose.node.element.KNode
 
 class InventoryScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<InventoryScreen>(
-        semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("inventoryScreen") }) {
+        semanticsProvider = semanticsProvider,
+        viewBuilderAction = { hasTestTag("inventoryScreen") }) {
 
-    //val screenTitle: KNode = onNode { hasTestTag("inventoryScreen") }
-    val mainContent: KNode = onNode { hasTestTag("inventoryScreenMainContent")}
-    val mainContentText: KNode = onNode { hasTestTag("inventoryScreenMainContentText") }
-    val bottomNavBar: KNode = onNode { hasTestTag("inventoryScreenBottomNavBar") }
+  // val screenTitle: KNode = onNode { hasTestTag("inventoryScreen") }
+  val mainContent: KNode = onNode { hasTestTag("inventoryScreenMainContent") }
+  val mainContentText: KNode = onNode { hasTestTag("inventoryScreenMainContentText") }
+  val bottomNavBar: KNode = onNode { hasTestTag("inventoryScreenBottomNavBar") }
 }

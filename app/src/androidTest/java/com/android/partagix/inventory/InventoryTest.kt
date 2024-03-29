@@ -24,42 +24,38 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InventoryTest: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
+class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
 
-    @get:Rule val composeTestRule = createComposeRule()
-    @RelaxedMockK lateinit var mockNavActions: NavigationActions
-    @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
+  @get:Rule val composeTestRule = createComposeRule()
+  @RelaxedMockK lateinit var mockNavActions: NavigationActions
+  @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
 
-    private val mockUiState = MutableStateFlow(InventoryUIState(emptyList()))
+  private val mockUiState = MutableStateFlow(InventoryUIState(emptyList()))
 
-    @Before
-    fun testSetup() {
-        mockInventoryViewModel = mockk()
-        every { mockInventoryViewModel.uiState } returns mockUiState
+  @Before
+  fun testSetup() {
+    mockInventoryViewModel = mockk()
+    every { mockInventoryViewModel.uiState } returns mockUiState
 
-        mockNavActions = mockk<NavigationActions>()
-        every { mockNavActions.navigateTo(Route.HOME) } just Runs
-        every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    mockNavActions = mockk<NavigationActions>()
+    every { mockNavActions.navigateTo(Route.HOME) } just Runs
+    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-        composeTestRule.setContent { InventoryScreen(mockInventoryViewModel, mockNavActions) }
+    composeTestRule.setContent { InventoryScreen(mockInventoryViewModel, mockNavActions) }
+  }
+
+  @Test
+  fun centerTextIsDisplayed() = run {
+    onComposeScreen<InventoryScreen>(composeTestRule) {
+      mainContentText {
+        assertIsDisplayed()
+        assertTextContains(value = "There is", substring = true, ignoreCase = true)
+      }
     }
+  }
 
-    @Test
-    fun centerTextIsDisplayed() = run {
-        onComposeScreen<InventoryScreen>(composeTestRule) {
-            mainContentText {
-                assertIsDisplayed()
-                assertTextContains(value="There is", substring=true, ignoreCase=true)
-            }
-        }
-    }
-
-    @Test
-    fun bottomNavBarIsDisplayed() = run {
-        onComposeScreen<InventoryScreen>(composeTestRule) {
-            bottomNavBar {
-                assertIsDisplayed()
-            }
-        }
-    }
+  @Test
+  fun bottomNavBarIsDisplayed() = run {
+    onComposeScreen<InventoryScreen>(composeTestRule) { bottomNavBar { assertIsDisplayed() } }
+  }
 }
