@@ -32,15 +32,13 @@ class ItemViewModel(item: Item) : ViewModel() {
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
-    createItem()
-    getItem()
   }
 
-  private fun getItem() {
+  fun getItem(itemId : String) {
     viewModelScope.launch {
       database.getItems {
         for (i in it) {
-          if (i.id == _uiState.value.item.id) {
+          if (i.id == itemId) {
             update(i)
           }
         }
@@ -48,33 +46,31 @@ class ItemViewModel(item: Item) : ViewModel() {
     }
   }
 
-  private fun update(new: Item) {
+  fun update(new: Item) {
     _uiState.value =
         _uiState.value.copy(
             item = new,
         )
   }
 
-  private fun createItem() {
+  fun createItem() {
 
     viewModelScope.launch {
-      val createdItem =
-          database.createItem("Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */)
 
       val newItem =
           Item(
-              createdItem.id,
+              "", // no itemId exists at this moment, it will be generated and overwritten by the database
               _uiState.value.item.category,
               _uiState.value.item.name,
               _uiState.value.item.description)
 
-      database.updateItem(newItem)
+      database.createItem("Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */, newItem)
     }
   }
 
-  private fun updateItem() {
+  fun saveItem() {
 
-    viewModelScope.launch { database.updateItem(_uiState.value.item) }
+    viewModelScope.launch { database.setItem(_uiState.value.item) }
   }
 }
 

@@ -210,25 +210,23 @@ class Database {
     item_loan.document(idItemLoan).set(data6)
   }
 
-  fun createItem(userId: String): Item {
+  fun createItem(userId: String, newItem : Item) {
 
     val idItem = getNewUid(items)
     val data3 =
         hashMapOf(
             "id" to idItem,
-            "id_category" to "id_category",
-            "name" to "name",
-            "description" to "description",
+            "id_category" to newItem.category.id,
+            "name" to newItem.name,
+            "description" to newItem.description,
         )
     items.document("$idItem").set(data3)
 
     val data4 = hashMapOf("id_user" to userId, "id_item" to idItem)
     this.inventory.document(userId).set(data4)
-
-    return Item(idItem, Category("id_category", "name"), "name", "description")
   }
 
-  fun updateItem(newItem: Item) {
+  fun setItem(newItem: Item) {
 
     newItem.category
     val idItem = newItem.id
