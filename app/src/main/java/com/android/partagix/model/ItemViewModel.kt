@@ -57,8 +57,8 @@ class ItemViewModel(item: Item) : ViewModel() {
     viewModelScope.launch {
       val newItem =
           Item(
-              "", // no itemId exists at this moment, it will be generated and overwritten by the
-                  // database
+              "", // no itemId exists at this moment, it will be generated
+              // and overwritten by the database
               _uiState.value.item.category,
               _uiState.value.item.name,
               _uiState.value.item.description)
@@ -68,7 +68,6 @@ class ItemViewModel(item: Item) : ViewModel() {
   }
 
   fun saveItem() {
-
     viewModelScope.launch { database.setItem(_uiState.value.item) }
   }
 }
