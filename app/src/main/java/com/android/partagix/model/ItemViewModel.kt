@@ -31,10 +31,9 @@ class ItemViewModel(item: Item) : ViewModel() {
   private val _uiState = MutableStateFlow(ItemUIState(item))
   val uiState: StateFlow<ItemUIState> = _uiState
 
-  init {
-  }
+  init {}
 
-  fun getItem(itemId : String) {
+  fun getItem(itemId: String) {
     viewModelScope.launch {
       database.getItems {
         for (i in it) {
@@ -56,10 +55,10 @@ class ItemViewModel(item: Item) : ViewModel() {
   fun createItem() {
 
     viewModelScope.launch {
-
       val newItem =
           Item(
-              "", // no itemId exists at this moment, it will be generated and overwritten by the database
+              "", // no itemId exists at this moment, it will be generated and overwritten by the
+                  // database
               _uiState.value.item.category,
               _uiState.value.item.name,
               _uiState.value.item.description)

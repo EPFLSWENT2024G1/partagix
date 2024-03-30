@@ -210,7 +210,7 @@ class Database {
     item_loan.document(idItemLoan).set(data6)
   }
 
-  fun createItem(userId: String, newItem : Item) {
+  fun createItem(userId: String, newItem: Item) {
 
     val idItem = getNewUid(items)
     val data3 =
