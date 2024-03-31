@@ -34,5 +34,7 @@ fun BottomNavigationBar(
 fun previewScaffold() {
   val navController = rememberNavController()
   val navigate = NavigationActions(navController)
-  BottomNavigationBar(selectedDestination = "Home", navigateToTopLevelDestination = {dest -> navigate.navigateTo(dest)})
+  BottomNavigationBar(
+      selectedDestination = "Home",
+      navigateToTopLevelDestination = { dest -> navigate.navigateTo(dest) })
 }

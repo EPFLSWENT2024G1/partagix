@@ -66,9 +66,9 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen() }
-      composable(Route.ACCOUNT) {/*AccountScreen()*/}
-      composable(Route.INVENTORY){/*InventoryScreen()*/}
-      composable(Route.BORROW){/*BorrowScreen()*/}
+      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(Route.INVENTORY) { /*InventoryScreen()*/}
+      composable(Route.BORROW) { /*BorrowScreen()*/}
     }
 
     navigationActions.navigateTo(Route.BOOT)
