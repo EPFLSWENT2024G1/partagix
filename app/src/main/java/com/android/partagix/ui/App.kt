@@ -94,5 +94,8 @@ private fun MyNavHost(
           inventoryViewModel = inventoryViewModel,
           navigateToTopLevelDestination = navigationActions::navigateTo)
     }
+    composable(Route.ACCOUNT) { /*AccountScreen()*/}
+    composable(Route.INVENTORY) { /*InventoryScreen()*/}
+    composable(Route.BORROW) { /*BorrowScreen()*/}
   }
 }
