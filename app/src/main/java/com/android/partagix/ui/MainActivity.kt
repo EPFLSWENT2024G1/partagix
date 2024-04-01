@@ -66,7 +66,6 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen() }
-
     }
 
     navigationActions.navigateTo(Route.BOOT)
