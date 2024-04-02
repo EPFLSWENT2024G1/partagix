@@ -6,14 +6,28 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.BottomNavigationBar
@@ -26,10 +40,44 @@ fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigateToTopLevelDestination: (TopLevelDestination) -> Unit
 ) {
-  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+    //val keyboardController = LocalSoftwareKeyboardController.current
+    //var active by remember { mutableStateOf(false) }
 
+  inventoryViewModel.getInventory()
   Scaffold(
-      topBar = {// TO_DO
+      topBar = {
+          /*SearchBar(
+          query = uiState.value.query,
+          onQueryChange = { inventoryViewModel.filterToDoList(it) },
+          onSearch = { inventoryViewModel.filterToDoList(it) },
+          active = false,
+          onActiveChange = { active = it },
+          modifier = Modifier.fillMaxWidth().padding(20.dp),
+          placeholder = { Text("Search a Task") },
+          leadingIcon = {
+              if (!active) {
+                  Icon(Icons.Default.Menu, contentDescription = "Search")
+              } else {
+                  Icon(
+                      Icons.Default.ArrowBack,
+                      contentDescription = "Search",
+                      modifier =
+                      Modifier.clickable {
+                          inventoryViewModel.filterToDoList("")
+
+                          keyboardController?.hide()
+                      })
+              }
+          },
+          trailingIcon = {
+              Icon(
+                  Icons.Default.Search,
+                  contentDescription = "Search",
+                  modifier = Modifier.clickable { keyboardController?.hide() })
+          }) {
+          Text("Search a Task")
+      }*/
           },
       bottomBar = {
         BottomNavigationBar(
@@ -37,14 +85,12 @@ fun InventoryScreen(
             navigateToTopLevelDestination = navigateToTopLevelDestination)
       },
       floatingActionButton = {
-          /*FloatingActionButton(
+          FloatingActionButton(
               onClick = {
-                  /*navigationActions.logNavigationStack()
-                  navigationActions.navigateTo(Route.CREATE_TODO)
-                  navigationActions.logNavigationStack()*/
+                  /*navigationActions.navigateTo(Route.CREATE_TODO)*/
               }) {
-              Icon(Icons.Default.Create, contentDescription = "Create")
-          }    TO_DO*/
+              Icon(Icons.Default.Add, contentDescription = "Create")
+          }
       }) { innerPadding ->
       Log.w(TAG, "Inventory: called")
       if (uiState.items.isEmpty()){
@@ -66,9 +112,7 @@ fun InventoryScreen(
                           navigationActions.navigateTo(Route.EDIT_TODO + "/${toDo.uid}")
                           navigationActions.logNavigationStack()*/
                       }) {
-                      ItemUi(
-                          // remplacer par des items avec les bonnes valeurs
-                          uiState.items.get(index))
+                      ItemUi(items)
                   }
               }
           }
