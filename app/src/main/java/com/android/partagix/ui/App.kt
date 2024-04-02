@@ -1,5 +1,8 @@
 package com.android.partagix.ui
 
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,84 +21,107 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.auth.Authentication
+import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryScreen
+import com.android.partagix.ui.screens.LoginScreen
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-@Composable
-fun App(
-    inventoryViewModel: InventoryViewModel,
-) {
+class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
+  private var authentication: Authentication = Authentication(activity, this)
 
-  NavigationWrapper(
-      inventoryViewModel = inventoryViewModel,
-  )
-}
+  private lateinit var navigationActions: NavigationActions
+  private val inventoryViewModel: InventoryViewModel by viewModels()
 
-@Composable
-private fun NavigationWrapper(
-    inventoryViewModel: InventoryViewModel,
-) {
-  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-  val scope = rememberCoroutineScope()
+  @Composable
+  fun Create() {
+    // authentication = Authentication(this, this)
 
-  val navController = rememberNavController()
-  val navigationActions = remember(navController) { NavigationActions(navController) }
-  val navBackStackEntry by navController.currentBackStackEntryAsState()
-  val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+    ComposeNavigationSetup()
 
-  AppContent(
-      navController = navController,
-      selectedDestination = selectedDestination,
-      navigationActions = navigationActions,
-      inventoryViewModel = inventoryViewModel,
-  ) {
-    scope.launch { drawerState.open() }
+    // Initially, navigate to the boot screen
+    navigationActions.navigateTo(Route.BOOT)
   }
-}
 
-@Composable
-fun AppContent(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    selectedDestination: String,
-    navigationActions: NavigationActions,
-    inventoryViewModel: InventoryViewModel,
-    onDrawerClicked: () -> Unit = {},
-) {
-  Row(modifier = modifier.fillMaxSize()) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
-          MyNavHost(
-              navController = navController,
-              modifier = Modifier.weight(1f),
-              navigationActions = navigationActions,
-              inventoryViewModel = inventoryViewModel,
-          )
-        }
+  override fun onSignInSuccess(user: FirebaseUser?) {
+    navigationActions.navigateTo(Route.HOME)
+    Log.d(TAG, "onSignInSuccess: user=$user")
   }
-}
 
-@Composable
-private fun MyNavHost(
-    navController: NavHostController,
-    modifier: Modifier = Modifier,
-    navigationActions: NavigationActions,
-    inventoryViewModel: InventoryViewModel,
-) {
-  NavHost(
-      modifier = modifier,
-      navController = navController,
-      startDestination = Route.INVENTORY,
-  ) {
-    composable(Route.INVENTORY) {
-      InventoryScreen(
-          inventoryViewModel = inventoryViewModel,
-          navigateToTopLevelDestination = navigationActions::navigateTo)
+  override fun onSignInFailure(errorCode: Int) {
+    // Go back to safe state and report error
+    navigationActions.navigateTo(Route.BOOT)
+    Log.e(TAG, "onSignInFailure: errorCode=$errorCode")
+  }
+
+  @Composable
+  private fun ComposeNavigationSetup() {
+    Log.d(TAG, "onComposeNavigationSetup: called")
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    val navController = rememberNavController()
+    navigationActions = remember(navController) { NavigationActions(navController) }
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+
+    ComposeMainContent(
+        navController = navController,
+        selectedDestination = selectedDestination,
+    ) {
+      scope.launch { drawerState.open() }
     }
-    composable(Route.ACCOUNT) { /*AccountScreen()*/}
-    composable(Route.INVENTORY) { /*InventoryScreen()*/}
-    composable(Route.BORROW) { /*BorrowScreen()*/}
+  }
+
+  @Composable
+  fun ComposeMainContent(
+      modifier: Modifier = Modifier,
+      navController: NavHostController,
+      selectedDestination: String,
+      onDrawerClicked: () -> Unit = {},
+  ) {
+    Row(modifier = modifier.fillMaxSize()) {
+      Column(
+          modifier =
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+            ComposeNavigationHost(
+                navController = navController,
+                modifier = Modifier.weight(1f),
+            )
+          }
+    }
+  }
+
+  @Composable
+  private fun ComposeNavigationHost(
+      navController: NavHostController,
+      modifier: Modifier = Modifier
+  ) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Route.INVENTORY,
+    ) {
+      composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
+      composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
+      composable(Route.HOME) { HomeScreen() }
+      composable(Route.BORROW) { /*BorrowScreen()*/}
+      composable(Route.INVENTORY) {
+        InventoryScreen(
+            inventoryViewModel = inventoryViewModel,
+            navigateToTopLevelDestination = navigationActions::navigateTo)
+      }
+      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+    }
+  }
+
+  companion object {
+    private const val TAG = "App"
   }
 }
