@@ -16,6 +16,7 @@
 
 package com.android.partagix.model
 
+import Category
 import Item
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,45 +32,92 @@ class ItemViewModel(item: Item) : ViewModel() {
   private val _uiState = MutableStateFlow(ItemUIState(item))
   val uiState: StateFlow<ItemUIState> = _uiState
 
-  init {}
+  init {
+    update()
+  }
 
-  fun getItem(itemId: String) {
+  /*  fun getItem(itemId: String) {
     viewModelScope.launch {
       database.getItems {
         for (i in it) {
           if (i.id == itemId) {
-            update(i)
+            //update(i)
           }
         }
       }
     }
-  }
+  }*/
 
-  fun update(new: Item) {
+  fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
             item = new,
         )
   }
 
-  fun createItem() {
-
+  private fun update() {
     viewModelScope.launch {
-      val newItem =
-          Item(
-              "", // no itemId exists at this moment, it will be generated
-              // and overwritten by the database
-              _uiState.value.item.category,
-              _uiState.value.item.name,
-              _uiState.value.item.description)
+      database.getItems {
+        for (i in it) {
+          if (i.id == _uiState.value.item.id) {
+            updateUiState(i)
+          }
+        }
+      }
+    }
+  }
 
-      database.createItem("Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */, newItem)
+  fun saveWithUiState() {
+    if (_uiState.value.item.id == "") {
+      database.createItem(
+          "Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */, _uiState.value.item)
+    } else {
+      database.setItem(_uiState.value.item)
+    }
+  }
+
+  /* fun createItem() {
+
+  viewModelScope.launch {
+    val newItem =
+        Item(
+            "", // no itemId exists at this moment, it will be generated
+            // and overwritten by the database
+            _uiState.value.item.category,
+            _uiState.value.item.name,
+            _uiState.value.item.description)
+
+    database.createItem("Yp5cetHh3nLGMsjYY4q9" */
+  /* todo get the correct userId */
+  /*, newItem)
     }
   }
 
   fun saveItem() {
-    viewModelScope.launch { database.setItem(_uiState.value.item) }
-  }
+    viewModelScope.launch {
+        database.setItem(_uiState.value.item) }
+  }*/
+}
+
+fun testAll() {
+  val itemName = "testCreateItem"
+  val itemDescription = "testing create"
+  val iCategory = Category("0", "idCategory")
+  val i = Item("", iCategory, itemName, itemDescription)
+  val view = ItemViewModel(i)
+  view.saveWithUiState()
+
+  val itName = "testEditItem"
+  val itDescription = "testing edit"
+  val itCategory = Category("0", "idCategory")
+  val it = Item("", iCategory, itemName, itemDescription)
+  val vit = ItemViewModel(it)
+  vit.saveWithUiState()
+  val newName = "Edited"
+  val newDescription = "successfully edited"
+  val newit = Item("", iCategory, itemName, itemDescription)
+  vit.updateUiState(newit)
+  vit.saveWithUiState()
 }
 
 data class ItemUIState(val item: Item)
