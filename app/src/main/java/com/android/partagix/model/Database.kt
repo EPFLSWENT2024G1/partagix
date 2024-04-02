@@ -11,8 +11,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
 import java.util.Date
 
-private var newId: Long = 0
-
 class Database {
 
   private val db = Firebase.firestore
@@ -47,7 +45,7 @@ class Database {
             }
           }
         }
-        .addOnFailureListener() { println("----- error $it") }
+        .addOnFailureListener { println("----- error $it") }
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
@@ -75,9 +73,9 @@ class Database {
                 }
                 onSuccess(ret)
               }
-              .addOnFailureListener() { println("----- error $it") }
+              .addOnFailureListener { println("----- error $it") }
         }
-        .addOnFailureListener() { println("----- error $it") }
+        .addOnFailureListener { println("----- error $it") }
   }
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
@@ -100,7 +98,7 @@ class Database {
             onSuccess(Inventory(userId, listItems))
           }
         }
-        .addOnFailureListener() { println("----- error $it") }
+        .addOnFailureListener { println("----- error $it") }
   }
 
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
@@ -125,7 +123,7 @@ class Database {
           }
           onSuccess(ret)
         }
-        .addOnFailureListener() { println("----- error $it") }
+        .addOnFailureListener { println("----- error $it") }
   }
 
   fun getCategories(onSuccess: (List<Category>) -> Unit) {
@@ -143,7 +141,7 @@ class Database {
           }
           onSuccess(ret)
         }
-        .addOnFailureListener() { println("----- error $it") }
+        .addOnFailureListener { println("----- error $it") }
   }
 
   private fun getNewUid(collection: CollectionReference): String {
@@ -205,8 +203,35 @@ class Database {
             "state" to LoanState.FINISHED.toString())
     loan.document(idLoan).set(data5)
 
-    val idItemLoad = getNewUid(item_loan)
+    val idItemLoan = getNewUid(item_loan)
     val data6 = hashMapOf("id_item" to idItem, "id_loan" to idLoan)
-    item_loan.document(idItemLoad).set(data6)
+    item_loan.document(idItemLoan).set(data6)
+  }
+
+  fun createItem(userId: String, newItem: Item) {
+
+    val idItem = getNewUid(items)
+    val data3 =
+        hashMapOf(
+            "id" to idItem,
+            "id_category" to newItem.category.id,
+            "name" to newItem.name,
+            "description" to newItem.description,
+        )
+    items.document(idItem).set(data3)
+
+    val data4 = hashMapOf("id_user" to userId, "id_item" to idItem)
+    this.inventory.document(userId).set(data4)
+  }
+
+  fun setItem(newItem: Item) {
+    val data3 =
+        hashMapOf(
+            "id" to newItem.id,
+            "id_category" to newItem.category.id,
+            "name" to newItem.name,
+            "description" to newItem.description,
+        )
+    items.document(newItem.id).set(data3)
   }
 }
