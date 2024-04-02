@@ -52,6 +52,7 @@ class Authentication(
       // Successfully signed in
       val user = FirebaseAuth.getInstance().currentUser
       signInResultListener.onSignInSuccess(user)
+
     } else {
       // Sign in failed. If response is null the user canceled the
       // sign-in flow using the back button. Otherwise check
