@@ -11,8 +11,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
 import java.util.Date
 
-private var newId: Long = 0
-
 class Database {
 
   private val db = Firebase.firestore
@@ -220,23 +218,20 @@ class Database {
             "name" to newItem.name,
             "description" to newItem.description,
         )
-    items.document("$idItem").set(data3)
+    items.document(idItem).set(data3)
 
     val data4 = hashMapOf("id_user" to userId, "id_item" to idItem)
     this.inventory.document(userId).set(data4)
   }
 
   fun setItem(newItem: Item) {
-
-    newItem.category
-    val idItem = newItem.id
     val data3 =
         hashMapOf(
-            "id" to idItem,
+            "id" to newItem.id,
             "id_category" to newItem.category.id,
             "name" to newItem.name,
             "description" to newItem.description,
         )
-    items.document("$idItem").set(data3)
+    items.document(newItem.id).set(data3)
   }
 }

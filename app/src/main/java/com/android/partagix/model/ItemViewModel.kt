@@ -19,12 +19,10 @@ package com.android.partagix.model
 import Category
 import Item
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
-class ItemViewModel(item: Item) : ViewModel() {
+class ItemViewModel(item: Item = Item("", Category("", ""), "", "")) : ViewModel() {
 
   private val database = Database()
 
@@ -33,38 +31,14 @@ class ItemViewModel(item: Item) : ViewModel() {
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
-    update()
+    updateUiState(item)
   }
-
-  /*  fun getItem(itemId: String) {
-    viewModelScope.launch {
-      database.getItems {
-        for (i in it) {
-          if (i.id == itemId) {
-            //update(i)
-          }
-        }
-      }
-    }
-  }*/
 
   fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
             item = new,
         )
-  }
-
-  private fun update() {
-    viewModelScope.launch {
-      database.getItems {
-        for (i in it) {
-          if (i.id == _uiState.value.item.id) {
-            updateUiState(i)
-          }
-        }
-      }
-    }
   }
 
   fun saveWithUiState() {
@@ -75,49 +49,6 @@ class ItemViewModel(item: Item) : ViewModel() {
       database.setItem(_uiState.value.item)
     }
   }
-
-  /* fun createItem() {
-
-  viewModelScope.launch {
-    val newItem =
-        Item(
-            "", // no itemId exists at this moment, it will be generated
-            // and overwritten by the database
-            _uiState.value.item.category,
-            _uiState.value.item.name,
-            _uiState.value.item.description)
-
-    database.createItem("Yp5cetHh3nLGMsjYY4q9" */
-  /* todo get the correct userId */
-  /*, newItem)
-    }
-  }
-
-  fun saveItem() {
-    viewModelScope.launch {
-        database.setItem(_uiState.value.item) }
-  }*/
-}
-
-fun testAll() {
-  val itemName = "testCreateItem"
-  val itemDescription = "testing create"
-  val iCategory = Category("0", "idCategory")
-  val i = Item("", iCategory, itemName, itemDescription)
-  val view = ItemViewModel(i)
-  view.saveWithUiState()
-
-  val itName = "testEditItem"
-  val itDescription = "testing edit"
-  val itCategory = Category("0", "idCategory")
-  val it = Item("", iCategory, itemName, itemDescription)
-  val vit = ItemViewModel(it)
-  vit.saveWithUiState()
-  val newName = "Edited"
-  val newDescription = "successfully edited"
-  val newit = Item("", iCategory, itemName, itemDescription)
-  vit.updateUiState(newit)
-  vit.saveWithUiState()
 }
 
 data class ItemUIState(val item: Item)
