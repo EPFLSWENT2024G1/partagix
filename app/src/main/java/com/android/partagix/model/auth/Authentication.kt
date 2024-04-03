@@ -32,6 +32,10 @@ class Authentication(
         }
   }
 
+  fun isAlreadySignedIn(): Boolean {
+    return FirebaseAuth.getInstance().currentUser != null
+  }
+
   fun signIn() {
     Log.w(TAG, "signIn: called")
     // Choose authentication providers

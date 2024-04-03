@@ -33,5 +33,8 @@ fun BottomNavigationBar(
 @Composable
 fun previewScaffold() {
   val navController = rememberNavController()
-  val navigate = NavigationActions::navigateTo
+  val navigate = NavigationActions(navController)
+  BottomNavigationBar(
+      selectedDestination = "Home",
+      navigateToTopLevelDestination = { dest -> navigate.navigateTo(dest) })
 }
