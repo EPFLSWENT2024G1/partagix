@@ -1,5 +1,6 @@
 package com.android.partagix.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,11 +32,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
+import com.android.partagix.model.ItemViewModel
+import com.android.partagix.ui.navigation.NavigationActions
 
-@Preview(showBackground = true)
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem() {
+fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewModel) {
   Scaffold(
       topBar = {
         TopAppBar(
@@ -47,8 +50,11 @@ fun InventoryViewItem() {
               }
             })
       },
+      bottomBar = {BottomNavigationBar(selectedDestination = "Inventory",
+          navigateToTopLevelDestination = {dest -> navigationActions.navigateTo(dest)})},
       modifier = Modifier.fillMaxWidth()) {
-        Column(
+      val item = viewModel.uiState.value.item
+      Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
@@ -67,16 +73,16 @@ fun InventoryViewItem() {
 
                   Column() {
                     OutlinedTextField(
-                        value = "Object name" /*TODO: get item description*/,
+                        value = item.name,
                         onValueChange = {},
                         label = { Text("Object name") },
                         modifier = Modifier.fillMaxWidth(),
                         readOnly = true)
 
                     OutlinedTextField(
-                        value = "Author" /*TODO: get item description*/,
+                        value = "Author" /*TODO: get user name*/,
                         onValueChange = {},
-                        label = { Text("Author" /*TODO: get user name*/) },
+                        label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),
                         readOnly = true)
                   }
@@ -84,7 +90,7 @@ fun InventoryViewItem() {
               }
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 OutlinedTextField(
-                    value = "Description" /*TODO: get item description*/,
+                    value = item.description,
                     onValueChange = {},
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth(),
@@ -94,7 +100,7 @@ fun InventoryViewItem() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = "Category" /*TODO: get item category*/,
+                    value = item.category.name,
                     onValueChange = {},
                     label = { Text("Category") },
                     modifier = Modifier.fillMaxWidth(),
@@ -111,7 +117,6 @@ fun InventoryViewItem() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                /*Check pour savoir s'il il existe qqch pr entrer que des nombres*/
                 OutlinedTextField(
                     value = "Quantity" /*TODO: get item quantity*/,
                     onValueChange = {},
@@ -137,7 +142,7 @@ fun InventoryViewItem() {
                     modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
                     trailingIcon = {
                       IconButton(
-                          onClick = { /*TODO*/},
+                          onClick = { /*TODO: see calendar with disponibilities*/},
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
 
@@ -145,14 +150,14 @@ fun InventoryViewItem() {
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
-                      onClick = { /*TODO*/},
+                      onClick = { /*TODO: go to qrcode dl page*/},
                       content = { Text("Download QR code") },
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Button(
-                      onClick = { /*TODO*/},
+                      onClick = { /*TODO: go to loan requests page*/},
                       content = { Text("Loan requests") },
                       modifier = Modifier.fillMaxWidth())
                 }
@@ -160,7 +165,7 @@ fun InventoryViewItem() {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { /*TODO*/},
+                    onClick = { /*TODO: go to edit item page*/},
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth())
               }
