@@ -6,6 +6,7 @@ import Item
 import Loan
 import LoanState
 import User
+import android.location.Location
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
@@ -68,6 +69,10 @@ class Database {
                           categories[document.data["id_category"] as String]!!,
                           document.data["name"] as String,
                           document.data["description"] as String,
+                          document.data["author"] as String,
+                          document.data["visibility"] as Int,
+                          document.data["quantity"] as Int,
+                          document.data["location"] as Location,
                       )
                   ret.add(item)
                 }
@@ -182,6 +187,10 @@ class Database {
             "id_category" to idCategory,
             "name" to "name",
             "description" to "description",
+            "author" to "author",
+            "visibility" to 0,
+            "quantity" to 1,
+            "location" to Location(""),
         )
     items.document("$idItem").set(data3)
 
@@ -217,6 +226,10 @@ class Database {
             "id_category" to newItem.category.id,
             "name" to newItem.name,
             "description" to newItem.description,
+            "author" to newItem.author,
+            "visibility" to newItem.visibility,
+            "quantity" to newItem.quantity,
+            "location" to newItem.location,
         )
     items.document(idItem).set(data3)
 
@@ -231,6 +244,10 @@ class Database {
             "id_category" to newItem.category.id,
             "name" to newItem.name,
             "description" to newItem.description,
+            "author" to newItem.author,
+            "visibility" to newItem.visibility,
+            "quantity" to newItem.quantity,
+            "location" to newItem.location,
         )
     items.document(newItem.id).set(data3)
   }

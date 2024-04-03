@@ -18,11 +18,13 @@ package com.android.partagix.model
 
 import Category
 import Item
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ItemViewModel(item: Item = Item("", Category("", ""), "", "")) : ViewModel() {
+class ItemViewModel(item: Item = Item("", Category("", ""), "", "", "", 0, 1, Location(""))) :
+    ViewModel() {
 
   private val database = Database()
 
