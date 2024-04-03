@@ -1,5 +1,7 @@
 package com.android.partagix.ui
 
+import Category
+import android.location.Location
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +25,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.partagix.model.ItemViewModel
 
 
 @Preview(showBackground = true)
@@ -49,6 +58,15 @@ fun InventoryCreateItem() {
         },
         modifier = Modifier.fillMaxWidth()
     ) {
+        val vm = ItemViewModel()
+        var uiCategory by remember { mutableStateOf(Category("", "") )}
+        var uiName by remember { mutableStateOf("") }
+        var uiDescription by remember { mutableStateOf("") }
+        var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
+        var uiVisibility by remember { mutableStateOf(0) }
+        var uiQuantity by remember { mutableStateOf(1) }
+        var uiLocation by remember { mutableStateOf(Location("")) }
+
         Column(
             modifier = Modifier
                 .padding(it)
@@ -77,16 +95,20 @@ fun InventoryCreateItem() {
 
                     Column {
                         OutlinedTextField(
-                            value = "",/*TODO: get item description*/
-                            onValueChange = {}, // TODO: update value
+                            value = uiName,
+                            onValueChange = {
+                                            uiName = it
+                            },
                             label = { Text("Object name") },
                             modifier = Modifier.fillMaxWidth(),
                             readOnly = false
                         )
 
                         OutlinedTextField(
-                            value = "Author", // TODO: get item author
-                            onValueChange = {}, // TODO: update value
+                            value = uiAuthor,
+                            onValueChange = {
+                                            uiAuthor = it
+                            },
                             label = { Text("Author") },
                             modifier = Modifier.fillMaxWidth(),
                             readOnly = true // TODO: let this field be editable or not ??
@@ -100,8 +122,10 @@ fun InventoryCreateItem() {
                     .padding(horizontal = 8.dp)
             ) {
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {}, // TODO: update value
+                    value = uiDescription,
+                    onValueChange = {
+                                    uiDescription = it
+                    },
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 5,
@@ -110,25 +134,26 @@ fun InventoryCreateItem() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(modifier = Modifier.fillMaxWidth()) {// todo padding between button
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
                             .padding(end = 8.dp)
                     ) {
-                        DropDown("Category", CategoryItems)
+                        DropDown("Category", CategoryItems) // todo get the selected category
                     }
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        DropDown("Visibility", VisibilityItems)
+                        DropDown("Visibility", VisibilityItems) // todo get the selected visibility
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                /*Check pour savoir s'il il existe qqch pr entrer que des nombres*/
                 OutlinedTextField(
-                    value = "" /*TODO: get item quantity*/,
-                    onValueChange = {}, // TODO: update value
+                    value = uiQuantity.toString(),
+                    onValueChange = {
+                                    uiQuantity = it.toString().toInt()
+                    }, // TODO: sanitize input to uint only
                     label = { Text("Quantity") },
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = false
@@ -137,8 +162,10 @@ fun InventoryCreateItem() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = "", // TODO: get default or user's location
-                    onValueChange = {}, // TODO: update value
+                    value = uiLocation.toString(), // TODO: get default or user's location
+                    onValueChange = {
+                        // TODO: update location
+                    },
                     label = { Text("Where") },
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = false
@@ -157,7 +184,10 @@ fun InventoryCreateItem() {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        vm.saveWithUiState()
+                        // TODO: navigate back to inventory screen
+                    },
                     content = { Text("Create") },
                     modifier = Modifier.fillMaxWidth()
                 )
