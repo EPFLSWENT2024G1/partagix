@@ -2,7 +2,6 @@
 
 package com.android.partagix.ui.screens
 
-import Item
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -10,11 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.BottomNavigationBar
-import com.android.partagix.ui.ItemUi
+import com.android.partagix.ui.components.ItemList
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TopLevelDestination
 
@@ -44,87 +41,72 @@ fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigateToTopLevelDestination: (TopLevelDestination) -> Unit
 ) {
-    val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var active by remember { mutableStateOf(false) }
+  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  val keyboardController = LocalSoftwareKeyboardController.current
+  var active by remember { mutableStateOf(false) }
 
   inventoryViewModel.getInventory()
   Scaffold(
       topBar = {
-          SearchBar(
-          query = uiState.query,
-          onQueryChange = { inventoryViewModel.filterItems(it) },
-          onSearch = { inventoryViewModel.filterItems(it) },
-          active = false,
-          onActiveChange = { active = it },
-          modifier = Modifier.fillMaxWidth().padding(20.dp),
-          placeholder = { Text("Search a Task") },
-          leadingIcon = {
+        SearchBar(
+            query = uiState.query,
+            onQueryChange = { inventoryViewModel.filterItems(it) },
+            onSearch = { inventoryViewModel.filterItems(it) },
+            active = false,
+            onActiveChange = { active = it },
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            placeholder = { Text("Search a Task") },
+            leadingIcon = {
               if (!active) {
-                  Icon(Icons.Default.Menu, contentDescription = "Search")
+                Icon(Icons.Default.Menu, contentDescription = "Search")
               } else {
-                  Icon(
-                      Icons.Default.ArrowBack,
-                      contentDescription = "Search",
-                      modifier =
-                      Modifier.clickable {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Search",
+                    modifier =
+                        Modifier.clickable {
                           inventoryViewModel.filterItems("")
 
                           keyboardController?.hide()
-                      })
+                        })
               }
-          },
-          trailingIcon = {
+            },
+            trailingIcon = {
               Icon(
                   Icons.Default.Search,
                   contentDescription = "Search",
                   modifier = Modifier.clickable { keyboardController?.hide() })
-          }) {
-          Text("Search a Task")
-      }
-          },
+            }) {
+              Text("Search a Task")
+            }
+      },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.INVENTORY,
             navigateToTopLevelDestination = navigateToTopLevelDestination)
       },
       floatingActionButton = {
-          FloatingActionButton(
-              onClick = {
-                  /*navigationActions.navigateTo(Route.CREATE_TODO)*/
-              }) {
+        FloatingActionButton(
+            onClick = {
+              /*navigationActions.navigateTo(Route.CREATE_TODO)*/
+            }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
-          }
+            }
       }) { innerPadding ->
-      Log.w(TAG, "Inventory: called")
-      if (uiState.items.isEmpty()){
+        Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
+        if (uiState.items.isEmpty()) {
           Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-              Text(
-                  text = "There is no items in the inventory.",
-                  modifier = Modifier.align(Alignment.Center))
+            Text(
+                text = "There is no items in the inventory.",
+                modifier = Modifier.align(Alignment.Center))
           }
-
-      } else {
-          LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = innerPadding) {
-              items(uiState.items.size) { index ->
-                  val items = uiState.items.get(index)
-                  Box(
-                      modifier =
-                      Modifier.fillMaxSize().clickable {
-                          Log.w(TAG, "veut changer sa tache")
-                          /*navigationActions.logNavigationStack()
-                          navigationActions.navigateTo(Route.EDIT_TODO + "/${toDo.uid}")
-                          navigationActions.logNavigationStack()*/
-                      }) {
-                      ItemUi(items)
-                  }
-              }
-          }
+        } else {
+          ItemList(itemList = uiState.items, onClick = { Log.d(TAG, "Item clicked") })
+        }
+        /*Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+          Text(
+              text = "There is ${uiState.items.size} items in the inventory.",
+              modifier = Modifier.align(Alignment.Center))
+        }*/
       }
-      /*Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-      Text(
-          text = "There is ${uiState.items.size} items in the inventory.",
-          modifier = Modifier.align(Alignment.Center))
-    }*/
-  }
 }
