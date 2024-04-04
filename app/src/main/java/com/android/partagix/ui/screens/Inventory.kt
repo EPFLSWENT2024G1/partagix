@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.android.partagix.ui.screens
 
 import Item
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -24,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -41,16 +45,16 @@ fun InventoryScreen(
     navigateToTopLevelDestination: (TopLevelDestination) -> Unit
 ) {
     val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-    //val keyboardController = LocalSoftwareKeyboardController.current
-    //var active by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var active by remember { mutableStateOf(false) }
 
   inventoryViewModel.getInventory()
   Scaffold(
       topBar = {
-          /*SearchBar(
-          query = uiState.value.query,
-          onQueryChange = { inventoryViewModel.filterToDoList(it) },
-          onSearch = { inventoryViewModel.filterToDoList(it) },
+          SearchBar(
+          query = uiState.query,
+          onQueryChange = { inventoryViewModel.filterItems(it) },
+          onSearch = { inventoryViewModel.filterItems(it) },
           active = false,
           onActiveChange = { active = it },
           modifier = Modifier.fillMaxWidth().padding(20.dp),
@@ -64,7 +68,7 @@ fun InventoryScreen(
                       contentDescription = "Search",
                       modifier =
                       Modifier.clickable {
-                          inventoryViewModel.filterToDoList("")
+                          inventoryViewModel.filterItems("")
 
                           keyboardController?.hide()
                       })
@@ -77,7 +81,7 @@ fun InventoryScreen(
                   modifier = Modifier.clickable { keyboardController?.hide() })
           }) {
           Text("Search a Task")
-      }*/
+      }
           },
       bottomBar = {
         BottomNavigationBar(

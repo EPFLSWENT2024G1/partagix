@@ -27,12 +27,13 @@ import kotlinx.coroutines.launch
 class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
   private val database = Database()
+  private var fetchedList: List<Item> = emptyList()
 
   // UI state exposed to the UI
   private val _uiState =
       MutableStateFlow(
           InventoryUIState(
-              items,
+              items, ""
           ))
   val uiState: StateFlow<InventoryUIState> = _uiState
 
@@ -63,7 +64,24 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
         _uiState.value.copy(
             items = new,
         )
+    fetchedList = new
+  }
+
+  fun filterItems (query: String){
+      val currentState = _uiState.value
+      val list =
+          fetchedList.filter {
+              it.id.contains(query, ignoreCase = true) ||
+                      it.name.contains(query, ignoreCase = true) ||
+                      it.description.contains(query, ignoreCase = true) ||
+                      it.category.toString().contains(query, ignoreCase = true)
+                      //formatDate(it.dueDate).contains(query, ignoreCase = true) ||
+                      //it.loaned?.contains(query, ignoreCase = true) ||
+                      //it.quantity?.contains(query, ignoreCase = true)
+          }
+
+      _uiState.value = currentState.copy(query = query, items = list)
   }
 }
 
-data class InventoryUIState(val items: List<Item>)
+data class InventoryUIState(val items: List<Item>, val query: String)
