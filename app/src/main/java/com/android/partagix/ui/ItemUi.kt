@@ -29,6 +29,7 @@ import com.android.partagix.R
 
 @Composable
 fun ItemUi(item : Item){
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
