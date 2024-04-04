@@ -19,7 +19,7 @@ import com.android.partagix.ui.navigation.TopLevelDestination
 fun BottomNavigationBar(
     selectedDestination: String,
     navigateToTopLevelDestination: (TopLevelDestination) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
 ) {
   NavigationBar(modifier = modifier.fillMaxWidth()) {
     TOP_LEVEL_DESTINATIONS.forEach { destination ->

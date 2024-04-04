@@ -114,8 +114,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BORROW) { /*BorrowScreen()*/}
       composable(Route.INVENTORY) {
         InventoryScreen(
-            inventoryViewModel = inventoryViewModel,
-            navigateToTopLevelDestination = navigationActions::navigateTo)
+            inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
       }
       composable(Route.ACCOUNT) { /*AccountScreen()*/}
     }
