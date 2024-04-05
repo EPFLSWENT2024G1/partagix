@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.components
 
 import Item
 import androidx.compose.foundation.Image
@@ -29,7 +29,7 @@ import com.android.partagix.R
 
 @Composable
 fun ItemUi(item : Item){
-    
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
