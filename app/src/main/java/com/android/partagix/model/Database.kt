@@ -1,6 +1,5 @@
 package com.android.partagix.model
 
-import com.android.partagix.R
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item

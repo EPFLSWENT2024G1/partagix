@@ -102,7 +102,10 @@ fun InventoryScreen(
                 modifier = Modifier.align(Alignment.Center))
           }
         } else {
-          ItemList(itemList = uiState.items, onClick = { Log.d(TAG, "Item clicked") }, modifier = modifier.padding(innerPadding))
+          ItemList(
+              itemList = uiState.items,
+              onClick = { Log.d(TAG, "Item clicked") },
+              modifier = modifier.padding(innerPadding))
         }
         /*Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
           Text(
