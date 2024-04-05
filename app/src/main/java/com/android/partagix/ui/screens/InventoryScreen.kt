@@ -28,10 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
-import com.android.partagix.ui.BottomNavigationBar
+import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemList
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TopLevelDestination
@@ -48,6 +49,7 @@ fun InventoryScreen(
 
   inventoryViewModel.getInventory()
   Scaffold(
+      modifier = modifier.testTag("inventoryScreen"),
       topBar = {
         SearchBar(
             query = uiState.query,
@@ -55,7 +57,7 @@ fun InventoryScreen(
             onSearch = { inventoryViewModel.filterItems(it) },
             active = false,
             onActiveChange = { active = it },
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = modifier.fillMaxWidth().padding(20.dp),
             placeholder = { Text("Search a Task") },
             leadingIcon = {
               if (!active) {
@@ -65,7 +67,7 @@ fun InventoryScreen(
                     Icons.Default.ArrowBack,
                     contentDescription = "Search",
                     modifier =
-                        Modifier.clickable {
+                        modifier.clickable {
                           inventoryViewModel.filterItems("")
 
                           keyboardController?.hide()
@@ -76,7 +78,7 @@ fun InventoryScreen(
               Icon(
                   Icons.Default.Search,
                   contentDescription = "Search",
-                  modifier = Modifier.clickable { keyboardController?.hide() })
+                  modifier = modifier.clickable { keyboardController?.hide() })
             }) {
               Text("Search a Task")
             }
@@ -84,7 +86,8 @@ fun InventoryScreen(
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.INVENTORY,
-            navigateToTopLevelDestination = navigateToTopLevelDestination)
+            navigateToTopLevelDestination = navigateToTopLevelDestination,
+            modifier = modifier.testTag("inventoryScreenBottomNavBar"))
       },
       floatingActionButton = {
         FloatingActionButton(
@@ -96,10 +99,11 @@ fun InventoryScreen(
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
         if (uiState.items.isEmpty()) {
-          Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+          Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Text(
                 text = "There is no items in the inventory.",
-                modifier = Modifier.align(Alignment.Center))
+                modifier =
+                    modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
           }
         } else {
           ItemList(
@@ -107,10 +111,5 @@ fun InventoryScreen(
               onClick = { Log.d(TAG, "Item clicked") },
               modifier = modifier.padding(innerPadding))
         }
-        /*Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-          Text(
-              text = "There is ${uiState.items.size} items in the inventory.",
-              modifier = Modifier.align(Alignment.Center))
-        }*/
       }
 }
