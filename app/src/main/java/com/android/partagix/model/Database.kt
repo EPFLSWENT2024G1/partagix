@@ -1,11 +1,11 @@
 package com.android.partagix.model
 
-import Category
-import Inventory
-import Item
-import Loan
-import LoanState
-import User
+import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.user.User
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore

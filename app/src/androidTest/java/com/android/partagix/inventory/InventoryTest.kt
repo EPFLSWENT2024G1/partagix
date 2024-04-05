@@ -30,18 +30,21 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
 
-  private val mockUiState = MutableStateFlow(InventoryUIState(emptyList()))
+  private val mockUiState = MutableStateFlow(InventoryUIState(emptyList(), ""))
 
   @Before
   fun testSetup() {
     mockInventoryViewModel = mockk()
     every { mockInventoryViewModel.uiState } returns mockUiState
+    every { mockInventoryViewModel.getInventory() } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    composeTestRule.setContent { InventoryScreen(mockInventoryViewModel, mockNavActions) }
+    composeTestRule.setContent {
+      InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
+    }
   }
 
   @Test
@@ -49,7 +52,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     onComposeScreen<InventoryScreen>(composeTestRule) {
       mainContentText {
         assertIsDisplayed()
-        assertTextContains(value = "There is", substring = true, ignoreCase = true)
+        assertTextContains(
+            value = "There is no items in the inventory.", substring = true, ignoreCase = true)
       }
     }
   }

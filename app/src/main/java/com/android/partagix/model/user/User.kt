@@ -1,3 +1,7 @@
+package com.android.partagix.model.user
+
+import com.android.partagix.model.inventory.Inventory
+
 data class User(
     val id: String,
     val name: String,
