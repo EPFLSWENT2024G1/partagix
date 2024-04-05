@@ -39,7 +39,8 @@ import com.android.partagix.ui.navigation.TopLevelDestination
 @Composable
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
-    navigateToTopLevelDestination: (TopLevelDestination) -> Unit
+    navigateToTopLevelDestination: (TopLevelDestination) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
   val keyboardController = LocalSoftwareKeyboardController.current
@@ -101,7 +102,7 @@ fun InventoryScreen(
                 modifier = Modifier.align(Alignment.Center))
           }
         } else {
-          ItemList(itemList = uiState.items, onClick = { Log.d(TAG, "Item clicked") })
+          ItemList(itemList = uiState.items, onClick = { Log.d(TAG, "Item clicked") }, modifier = modifier.padding(innerPadding))
         }
         /*Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
           Text(
