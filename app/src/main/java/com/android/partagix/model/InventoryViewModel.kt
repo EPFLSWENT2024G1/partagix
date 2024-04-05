@@ -16,9 +16,9 @@
 
 package com.android.partagix.model
 
-import Item
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.partagix.model.item.Item
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,11 +30,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   private var fetchedList: List<Item> = emptyList()
 
   // UI state exposed to the UI
-  private val _uiState =
-      MutableStateFlow(
-          InventoryUIState(
-              items, ""
-          ))
+  private val _uiState = MutableStateFlow(InventoryUIState(items, ""))
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
@@ -46,17 +42,17 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     viewModelScope.launch { database.getItems { update(it) } }
   }
 
-   fun getInventory() {
-         val user = FirebaseAuth.getInstance().currentUser?.uid
+  fun getInventory() {
+    val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
-        if (user == null) {
-            println("yooooooooooooo")
-            database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items) }
-        } else {
-            println("----- error user unknown dslabfuiladsbvuil")
-        }
+      if (user == null) {
+        println("yooooooooooooo")
+        database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items) }
+      } else {
+        println("----- error user unknown dslabfuiladsbvuil")
+      }
     }
-   }
+  }
 
   private fun update(new: List<Item>) {
 
@@ -67,20 +63,20 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     fetchedList = new
   }
 
-  fun filterItems (query: String){
-      val currentState = _uiState.value
-      val list =
-          fetchedList.filter {
-              it.id.contains(query, ignoreCase = true) ||
-                      it.name.contains(query, ignoreCase = true) ||
-                      it.description.contains(query, ignoreCase = true) ||
-                      it.category.toString().contains(query, ignoreCase = true)
-                      //formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-                      //it.loaned?.contains(query, ignoreCase = true) ||
-                      //it.quantity?.contains(query, ignoreCase = true)
-          }
+  fun filterItems(query: String) {
+    val currentState = _uiState.value
+    val list =
+        fetchedList.filter {
+          it.id.contains(query, ignoreCase = true) ||
+              it.name.contains(query, ignoreCase = true) ||
+              it.description.contains(query, ignoreCase = true) ||
+              it.category.toString().contains(query, ignoreCase = true)
+          // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
+          // it.loaned?.contains(query, ignoreCase = true) ||
+          // it.quantity?.contains(query, ignoreCase = true)
+        }
 
-      _uiState.value = currentState.copy(query = query, items = list)
+    _uiState.value = currentState.copy(query = query, items = list)
   }
 }
 
