@@ -20,6 +20,8 @@ fun HomeScreen(navigationActions: NavigationActions, modifier: Modifier = Modifi
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("homeScreenBottomNavBar"))
       }) { innerPadding ->
-        Text(text = "Home", modifier = Modifier.padding(innerPadding).testTag("homeScreenMainContent"))
+        Text(
+            text = "Home",
+            modifier = Modifier.padding(innerPadding).testTag("homeScreenMainContent"))
       }
 }
