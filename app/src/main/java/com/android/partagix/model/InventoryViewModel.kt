@@ -16,6 +16,9 @@
 
 package com.android.partagix.model
 
+import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -47,17 +50,26 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
       if (user == null) {
+        val list : List<Item> = emptyList()
         database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items, false) }
-        database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items, true) }
-        // ____ TO-DO database.getLoans { it.filter { it.idLoaner.equals(user) || it.idOwner.equals(user) } }
+        database.getLoans { it.filter { it.idLoaner.equals(user) || it.idOwner.equals(user) }
+          .forEach { loan -> database.getItems {
+            items: List<Item> -> update(
+            items.filter { it.id.equals(loan.idItem) },true) } }
+        }
       } else {
         println("----- error user unknown")
+        database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items, true) }
       }
     }
   }
 
+  fun usersItem (){
+
+  }
+
   private fun update(new: List<Item>, borrowed : Boolean) {
-    if (borrowed == true){
+    if (borrowed){
       _uiState.value =
         _uiState.value.copy(
           borrowedItems = new,
@@ -99,5 +111,3 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 }
 
 data class InventoryUIState(val items: List<Item>, val query: String, val borrowedItems : List<Item> )
-
-data class categoryOwned(var name: String, var items : List<Item>)

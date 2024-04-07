@@ -44,13 +44,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.InventoryViewModel
-import com.android.partagix.model.categoryOwned
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Horizontalfullwidth
-import com.android.partagix.ui.components.InventoryItemList
 import com.android.partagix.ui.components.ItemList
 import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.Route
+import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
 import com.android.partagix.ui.navigation.TopLevelDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +75,7 @@ fun InventoryScreen(
       floatingActionButton = {
         FloatingActionButton(
             onClick = {
-              /*navigationActions.navigateTo(Route.CREATE_TODO)*/
+              // TO-DO go to create -----------------------------------------------
             }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
@@ -94,25 +93,35 @@ fun InventoryScreen(
                     .testTag("inventoryScreenMainContentText"))
           }
         } else {
-            /*val categories :List<categoryOwned> = emptyList()
-            categories.plus(categoryOwned("my inventory", uiState.items))
-            categories.plus(categoryOwned("borrowed items", uiState.borrowedItems))
-            InventoryItemList(categories = categories,
-                onClick = {Log.d(TAG, "Item clicked")},
-               modifier = modifier )*/
-
-
-
-
             Column {
-                Text(text = "casav", modifier = modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth())
+                Text(text = "Borrowed items",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        //fontFamily = FontFamily(Font(R.font.inter)),
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF000000),
+
+                        ),
+                    modifier = modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
+                )
+                ItemList(itemList = uiState.borrowedItems,
+                    onClick = {Log.w(TAG, "veut changer")},// TO-DO go to edit-------------------------
+                    modifier = modifier.fillMaxWidth().height(210.dp)
+                )
+                Text(text = "My inventory",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        //fontFamily = FontFamily(Font(R.font.inter)),
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF000000),
+
+                        )
+                )
+                
                 ItemList(itemList = uiState.items,
-                    onClick = {Log.w(TAG, "veut changer")},
-                    modifier = modifier.fillMaxWidth().height(210.dp))
-                Text(text = "vndsapvds")
-                ItemList(itemList = uiState.items,
-                    onClick = {Log.w(TAG, "push button to sign in")},
-                    modifier = modifier.fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding()))
+                    onClick = {Log.w(TAG, "veut changer" )},// TO-DO go to edit-------------------------
+                    modifier = modifier.fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())
+                )
             }
         }
       }
