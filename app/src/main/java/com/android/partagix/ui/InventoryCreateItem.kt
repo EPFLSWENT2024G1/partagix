@@ -1,6 +1,5 @@
 package com.android.partagix.ui
 
-import Category
 import android.location.Location
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,173 +24,139 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.category.Category
+import com.android.partagix.ui.navigation.NavigationActions
 
-
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryCreateItem() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Create a new item") },
-                modifier = Modifier.fillMaxWidth(),
-                navigationIcon = {
-                    IconButton(onClick = { /*TODO: navigate back to inventory screen*/ }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null
-                        )
-                    }
-                })
-        },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        val vm = ItemViewModel()
-        var uiCategory by remember { mutableStateOf(Category("", "") )}
-        var uiName by remember { mutableStateOf("") }
-        var uiDescription by remember { mutableStateOf("") }
-        var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
-        var uiVisibility by remember { mutableStateOf(0) }
-        var uiQuantity by remember { mutableStateOf(1) }
-        var uiLocation by remember { mutableStateOf(Location("")) }
+fun InventoryCreateItem(
+    itemViewModel: ItemViewModel,
+    navigationActions: NavigationActions,
+    modifier: Modifier = Modifier,
+) {
+  val uiState by
+      itemViewModel.uiState.collectAsStateWithLifecycle() // should be used to get user's name
 
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .padding(8.dp)
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
+  // TODO: get user's name
+  Scaffold(
+      modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
+      topBar = {
+        TopAppBar(
+            title = { Text("Create a new item") },
+            modifier = modifier.fillMaxWidth(),
+            navigationIcon = {
+              IconButton(onClick = { navigationActions.goBack() }) {
+                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+              }
+            })
+      },
+  ) {
+    var uiCategory by remember { mutableStateOf(Category("", "")) }
+    var uiName by remember { mutableStateOf("") }
+    var uiDescription by remember { mutableStateOf("") }
+    var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
+    var uiVisibility by remember { mutableStateOf(0) }
+    var uiQuantity by remember { mutableStateOf(1) }
+    var uiLocation by remember { mutableStateOf(Location("")) }
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(.4f)
-                    ) {
-                        MainImagePicker()
-                    }
+    Column(
+        modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+          Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
+            Row(modifier = modifier.fillMaxWidth()) {
+              Box(
+                  contentAlignment = Alignment.Center,
+                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)) {
+                    MainImagePicker()
+                  }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+              Spacer(modifier = modifier.width(8.dp))
 
-                    Column {
-                        OutlinedTextField(
-                            value = uiName,
-                            onValueChange = {
-                                            uiName = it
-                            },
-                            label = { Text("Object name") },
-                            modifier = Modifier.fillMaxWidth(),
-                            readOnly = false
-                        )
+              Column {
+                OutlinedTextField(
+                    value = uiName,
+                    onValueChange = { uiName = it },
+                    label = { Text("Object name") },
+                    modifier = modifier.fillMaxWidth(),
+                    readOnly = false)
 
-                        OutlinedTextField(
-                            value = uiAuthor,
-                            onValueChange = {
-                                            uiAuthor = it
-                            },
-                            label = { Text("Author") },
-                            modifier = Modifier.fillMaxWidth(),
-                            readOnly = true // TODO: let this field be editable or not ??
-                        )
-                    }
-                }
+                OutlinedTextField( // yet the author is fixed to the user's name
+                    value = uiAuthor,
+                    onValueChange = { uiAuthor = it },
+                    label = { Text("Author") },
+                    modifier = modifier.fillMaxWidth(),
+                    readOnly = true)
+              }
             }
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                OutlinedTextField(
-                    value = uiDescription,
-                    onValueChange = {
-                                    uiDescription = it
-                    },
-                    label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 5,
-                    readOnly = false
-                )
+          }
+          Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+            OutlinedTextField(
+                value = uiDescription,
+                onValueChange = { uiDescription = it },
+                label = { Text("Description") },
+                modifier = modifier.fillMaxWidth(),
+                minLines = 5,
+                readOnly = false)
 
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = modifier.height(8.dp))
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(.5f)
-                            .padding(end = 8.dp)
-                    ) {
-                        DropDown("Category", CategoryItems) // todo get the selected category
-                    }
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        DropDown("Visibility", VisibilityItems) // todo get the selected visibility
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = uiQuantity.toString(),
-                    onValueChange = {
-                                    uiQuantity = it.toString().toInt()
-                    }, // TODO: sanitize input to uint only
-                    label = { Text("Quantity") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = false
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = uiLocation.toString(), // TODO: get default or user's location
-                    onValueChange = {
-                        // TODO: update location
-                    },
-                    label = { Text("Where") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = false
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        content = { Text("Download QR code") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Button(
-                    onClick = {
-                        vm.saveWithUiState()
-                        // TODO: navigate back to inventory screen
-                    },
-                    content = { Text("Create") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Row(modifier = modifier.fillMaxWidth()) {
+              Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
+                DropDown("Category", CategoryItems) // todo get the selected category
+              }
+              Box(modifier = modifier.fillMaxWidth()) {
+                DropDown("Visibility", VisibilityItems) // todo get the selected visibility
+              }
             }
+
+            Spacer(modifier = modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiQuantity.toString(),
+                onValueChange = { uiQuantity = it.toInt() }, // TODO: sanitize input to uint only
+                label = { Text("Quantity") },
+                modifier = modifier.fillMaxWidth(),
+                readOnly = false)
+
+            Spacer(modifier = modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiLocation.toString(), // TODO: get default or user's location
+                onValueChange = { uiLocation = Location(it) },
+                label = { Text("Where") },
+                modifier = modifier.fillMaxWidth(),
+                readOnly = false)
+
+            Spacer(modifier = modifier.height(8.dp))
+
+            Row(modifier = modifier.fillMaxWidth()) {
+              Button(
+                  onClick = { /*TODO*/},
+                  content = { Text("Download QR code") },
+                  modifier = modifier.fillMaxWidth())
+            }
+
+            Spacer(modifier = modifier.width(8.dp))
+
+            Button(
+                onClick = {
+                  itemViewModel
+                      .saveWithUiState() // todo how is the VM's ui linked to local variables ?
+                  navigationActions.goBack()
+                },
+                content = { Text("Create") },
+                modifier = modifier.fillMaxWidth())
+          }
         }
-    }
+  }
 }
