@@ -63,6 +63,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
         }
     }
 
@@ -70,6 +72,11 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
+        }
+        packaging {
+            jniLibs {
+                useLegacyPackaging = true
+            }
         }
     }
 
@@ -112,6 +119,8 @@ fun DependencyHandlerScope.globalTestImplementation(dep: Any) {
     androidTestImplementation(dep)
     testImplementation(dep)
 }
+
+val mockkVersion = "1.13.10"
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -157,9 +166,19 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
+        {
+            exclude(group = "com.google.protobuf", module="protobuf-java")
+        }
 
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
+    implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+    // ----------       Mockk     ------------
+    testImplementation("io.mockk:mockk:${mockkVersion}")
+    androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
+    androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 }
