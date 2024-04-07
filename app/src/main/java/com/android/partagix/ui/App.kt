@@ -42,9 +42,10 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   @Composable
   fun Create() {
     ComposeNavigationSetup()
-
+      InventoryScreen(inventoryViewModel = inventoryViewModel, navigateToTopLevelDestination = navigationActions::navigateTo)
+    //-----------------------a changer
     // Initially, navigate to the boot screen
-    navigationActions.navigateTo(Route.BOOT)
+    //navigationActions.navigateTo(Route.BOOT)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -88,7 +89,9 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+              .fillMaxSize()
+              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
