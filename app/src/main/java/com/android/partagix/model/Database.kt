@@ -68,6 +68,10 @@ class Database {
 
                 val ret = mutableListOf<Item>()
                 for (document in result) {
+                    // TODO: link between id_visibility and Visibility
+//                    val id_visibility = document.data["id_visibility"] as Int
+//                    val visibility = Visibility id_visibility
+
                   val locationMap = document.data["location"] as HashMap<*, *>
                   val latitude = locationMap["latitude"] as Double
                   val longitude = locationMap["longitude"] as Double
@@ -83,7 +87,7 @@ class Database {
                           document.data["name"] as String,
                           document.data["description"] as String,
                           document.data["author"] as String,
-                          document.data["visibility"] as Visibility, // TODO: return the ordinal of the enum only 
+                          document.data["visibility"] as Visibility, // TODO: return the ordinal of the enum only
                           document.data["quantity"] as Long,
                           location,
                       )
@@ -201,7 +205,7 @@ class Database {
             "name" to "name",
             "description" to "description",
             "author" to "author",
-            "visibility" to 0,
+            "visibility" to 0, // todo update based on Visibility
             "quantity" to 1,
             "location" to Location(""),
         )
@@ -271,7 +275,7 @@ class Database {
             "name" to newItem.name,
             "description" to newItem.description,
             "author" to newItem.author,
-            "visibility" to newItem.visibility,
+            "visibility" to newItem.visibility, // TODO: return the ordinal of the enum only
             "quantity" to newItem.quantity,
             "location" to newItem.location,
         )
@@ -289,7 +293,7 @@ class Database {
             "name" to newItem.name,
             "description" to newItem.description,
             "author" to newItem.author,
-            "visibility" to newItem.visibility,
+            "visibility" to newItem.visibility, // todo update based on Visibility
             "quantity" to newItem.quantity,
             "location" to newItem.location,
         )
