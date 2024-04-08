@@ -1,6 +1,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -11,6 +12,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
 import java.util.Date
+import java.util.concurrent.CountDownLatch
 
 class Database {
 
@@ -23,6 +25,7 @@ class Database {
   private val item_loan = db.collection("item_loan")
 
   init {
+    // resetDB()
     // createExampleForDb()
   }
 
@@ -46,7 +49,7 @@ class Database {
             }
           }
         }
-        .addOnFailureListener { println("----- error $it") }
+        .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
@@ -61,8 +64,17 @@ class Database {
                   categories[document.data["id"] as String] =
                       Category(document.data["id"] as String, document.data["name"] as String)
                 }
+
                 val ret = mutableListOf<Item>()
                 for (document in result) {
+                  val locationMap = document.data["location"] as HashMap<*, *>
+                  val latitude = locationMap["latitude"] as Double
+                  val longitude = locationMap["longitude"] as Double
+
+                  val location = Location("")
+                  location.latitude = latitude
+                  location.longitude = longitude
+
                   val item =
                       Item(
                           document.data["id"] as String,
@@ -70,17 +82,17 @@ class Database {
                           document.data["name"] as String,
                           document.data["description"] as String,
                           document.data["author"] as String,
-                          document.data["visibility"] as Int,
-                          document.data["quantity"] as Int,
-                          document.data["location"] as Location,
+                          (document.data["visibility"] as Long).toInt(),
+                          (document.data["quantity"] as Long).toInt(),
+                          location,
                       )
                   ret.add(item)
                 }
                 onSuccess(ret)
               }
-              .addOnFailureListener { println("----- error $it") }
+              .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
         }
-        .addOnFailureListener { println("----- error $it") }
+        .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
   }
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
@@ -103,7 +115,7 @@ class Database {
             onSuccess(Inventory(userId, listItems))
           }
         }
-        .addOnFailureListener { println("----- error $it") }
+        .addOnFailureListener { Log.e(TAG, "Error getting user inventory", it) }
   }
 
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
@@ -128,7 +140,7 @@ class Database {
           }
           onSuccess(ret)
         }
-        .addOnFailureListener { println("----- error $it") }
+        .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
 
   fun getCategories(onSuccess: (List<Category>) -> Unit) {
@@ -146,7 +158,7 @@ class Database {
           }
           onSuccess(ret)
         }
-        .addOnFailureListener { println("----- error $it") }
+        .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
   }
 
   private fun getNewUid(collection: CollectionReference): String {
@@ -169,7 +181,7 @@ class Database {
             "addr" to "addr",
             "rank" to "rank",
         )
-    users.document("$idUser").set(data1)
+    users.document(idUser).set(data1)
 
     val idCategory = getNewUid(categories)
     val data2 =
@@ -192,7 +204,7 @@ class Database {
             "quantity" to 1,
             "location" to Location(""),
         )
-    items.document("$idItem").set(data3)
+    items.document(idItem).set(data3)
 
     val idInventory = getNewUid(inventory)
     val data4 = hashMapOf("id_user" to idUser, "id_item" to idItem)
@@ -215,6 +227,37 @@ class Database {
     val idItemLoan = getNewUid(item_loan)
     val data6 = hashMapOf("id_item" to idItem, "id_loan" to idLoan)
     item_loan.document(idItemLoan).set(data6)
+  }
+
+  private fun resetDB() {
+    val latch = CountDownLatch(6)
+
+    users.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+    items.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+    inventory.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+    loan.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+    categories.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+    item_loan.get().addOnSuccessListener { result ->
+      result.forEach { it.reference.delete() }
+      latch.countDown()
+    }
+
+    latch.await()
   }
 
   fun createItem(userId: String, newItem: Item) {
@@ -250,5 +293,9 @@ class Database {
             "location" to newItem.location,
         )
     items.document(newItem.id).set(data3)
+  }
+
+  companion object {
+    private const val TAG = "Database"
   }
 }
