@@ -24,13 +24,13 @@ import com.android.partagix.model.InventoryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopSearchBar (inventoryViewModel: InventoryViewModel, uiState: InventoryUIState, modifier: Modifier){
+fun TopSearchBar (filter : (String) -> Unit, query : String, modifier: Modifier){
     val keyboardController = LocalSoftwareKeyboardController.current
     var active by remember { mutableStateOf(false) }
     SearchBar(
-        query = uiState.query,
-        onQueryChange = { inventoryViewModel.filterItems(it) },
-        onSearch = { inventoryViewModel.filterItems(it) },
+        query = query,
+        onQueryChange = { filter (it) },
+        onSearch = { filter (it) },
         active = false,
         onActiveChange = { active = it },
         modifier = modifier.fillMaxWidth().padding(20.dp),
@@ -44,7 +44,7 @@ fun TopSearchBar (inventoryViewModel: InventoryViewModel, uiState: InventoryUISt
                     contentDescription = "Search",
                     modifier =
                     modifier.clickable {
-                        inventoryViewModel.filterItems("")
+                        filter("")
 
                         keyboardController?.hide()
                     })

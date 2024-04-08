@@ -64,7 +64,7 @@ fun InventoryScreen(
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
       topBar = {
-        TopSearchBar(inventoryViewModel = inventoryViewModel, uiState = uiState , modifier = modifier)
+        TopSearchBar(filter = {inventoryViewModel.filterItems(it)}, query = uiState.query , modifier = modifier)
       },
       bottomBar = {
         BottomNavigationBar(
