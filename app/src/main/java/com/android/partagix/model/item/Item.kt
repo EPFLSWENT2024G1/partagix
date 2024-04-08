@@ -2,6 +2,7 @@ package com.android.partagix.model.item
 
 import android.location.Location
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.visibility.Visibility
 
 data class Item(
     val id: String,
@@ -9,7 +10,7 @@ data class Item(
     val name: String,
     val description: String,
     val author: String,
-    val visibility: Int,
-    val quantity: Int,
+    val visibility: Visibility,
+    val quantity: Long,
     val location: Location,
 )

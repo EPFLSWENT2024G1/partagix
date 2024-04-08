@@ -8,6 +8,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
@@ -82,8 +83,8 @@ class Database {
                           document.data["name"] as String,
                           document.data["description"] as String,
                           document.data["author"] as String,
-                          (document.data["visibility"] as Long).toInt(),
-                          (document.data["quantity"] as Long).toInt(),
+                          document.data["visibility"] as Visibility, // TODO: return the ordinal of the enum only 
+                          document.data["quantity"] as Long,
                           location,
                       )
                   ret.add(item)
