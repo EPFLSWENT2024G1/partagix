@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import java.util.ArrayList
 
 @Composable
@@ -36,7 +37,7 @@ fun ItemListPreview() {
             "name $i",
             "description",
             "author",
-            0,
+            Visibility.PUBLIC,
             1,
             android.location.Location("location")))
   }

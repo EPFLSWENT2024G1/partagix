@@ -68,10 +68,6 @@ class Database {
 
                 val ret = mutableListOf<Item>()
                 for (document in result) {
-                    // TODO: link between id_visibility and Visibility
-//                    val id_visibility = document.data["id_visibility"] as Int
-//                    val visibility = Visibility id_visibility
-
                   val locationMap = document.data["location"] as HashMap<*, *>
                   val latitude = locationMap["latitude"] as Double
                   val longitude = locationMap["longitude"] as Double
@@ -80,6 +76,8 @@ class Database {
                   location.latitude = latitude
                   location.longitude = longitude
 
+                  val visibility = (document.data["visibility"] as Long).toInt()
+
                   val item =
                       Item(
                           document.data["id"] as String,
@@ -87,7 +85,7 @@ class Database {
                           document.data["name"] as String,
                           document.data["description"] as String,
                           document.data["author"] as String,
-                          document.data["visibility"] as Visibility, // TODO: return the ordinal of the enum only
+                          Visibility.values()[visibility],
                           document.data["quantity"] as Long,
                           location,
                       )
@@ -205,7 +203,7 @@ class Database {
             "name" to "name",
             "description" to "description",
             "author" to "author",
-            "visibility" to 0, // todo update based on Visibility
+            "visibility" to 0,
             "quantity" to 1,
             "location" to Location(""),
         )
@@ -275,7 +273,7 @@ class Database {
             "name" to newItem.name,
             "description" to newItem.description,
             "author" to newItem.author,
-            "visibility" to newItem.visibility, // TODO: return the ordinal of the enum only
+            "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to newItem.location,
         )
@@ -293,7 +291,7 @@ class Database {
             "name" to newItem.name,
             "description" to newItem.description,
             "author" to newItem.author,
-            "visibility" to newItem.visibility, // todo update based on Visibility
+            "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to newItem.location,
         )

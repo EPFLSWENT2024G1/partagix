@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 
 @Composable
 fun ItemUi(item: Item) {
@@ -105,7 +106,7 @@ fun ItemUiPreview() {
           "name",
           "description",
           "author",
-          0,
+          Visibility.PUBLIC,
           1,
           android.location.Location("")))
 }
