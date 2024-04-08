@@ -1,6 +1,5 @@
 package com.android.partagix.model.item
 
-import android.location.Location
 import com.android.partagix.model.category.Category
 
 data class Item(
@@ -8,8 +7,7 @@ data class Item(
     val category: Category,
     val name: String,
     val description: String,
-    val author: String,
-    val visibility: Int,
-    val quantity: Int,
-    val location: Location,
+    // TODO: Image ?
+    // TODO: Location ?
+    // TODO: Quantity ?
 )
