@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 
 @Composable
 fun ItemUi(item: Item) {
@@ -143,5 +144,14 @@ fun BuildingBlocksstatelayer1Enabled(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ItemUiPreview() {
-  ItemUi(Item("1", Category("1", "name"), "name", "description"))
+  ItemUi(
+      Item(
+          "1",
+          Category("1", "name"),
+          "name",
+          "description",
+          "author",
+          Visibility.PUBLIC,
+          1,
+          android.location.Location("")))
 }
