@@ -62,10 +62,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
-  fun usersItem (){
-
-  }
-
   private fun update(new: List<Item>, borrowed : Boolean) {
     if (borrowed){
       _uiState.value =
@@ -85,7 +81,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list = fetchedList.filter{
-      it.id.contains(query, ignoreCase = true) ||
                 it.name.contains(query, ignoreCase = true) ||
                 it.description.contains(query, ignoreCase = true) ||
                 it.category.toString().contains(query, ignoreCase = true)
@@ -95,10 +90,10 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
     }
     val listBorrowed = fetchedBorrowed.filter {
-      it.id.contains(query, ignoreCase = true) ||
-              it.name.contains(query, ignoreCase = true) ||
+      it.name.contains(query, ignoreCase = true) ||
               it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true)
+              it.category.toString().contains(query, ignoreCase = true) ||
+              it.author.contains(query, ignoreCase = true)
       // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
       // it.loaned?.contains(query, ignoreCase = true) ||
       // it.quantity?.contains(query, ignoreCase = true)
