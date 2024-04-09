@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
  *
  * @param label the label display when calling the dropdown
  * @param list the list of items to show in the dropdown, ex : CategoryItems, VisibilityItems...
+ * @return the selected value by the user
  */
 @Composable
 fun DropDown(label: String, list: List<String>): String {
