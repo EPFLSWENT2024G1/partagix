@@ -47,7 +47,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     ComposeNavigationSetup()
 
     // Initially, navigate to the boot screen
-    //navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
