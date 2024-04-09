@@ -127,7 +127,7 @@ fun InventoryCreateItem(
 
             OutlinedTextField(
                 value = uiQuantity.toString(),
-                onValueChange = { uiQuantity = it.toLong() }, // TODO: sanitize input to uint only
+                onValueChange = { uiQuantity = it.toLong() },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
                 modifier = modifier.fillMaxWidth(),
