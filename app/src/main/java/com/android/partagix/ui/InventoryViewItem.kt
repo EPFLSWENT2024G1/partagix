@@ -142,6 +142,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                     value = "Disponibility", /*TODO: get item disponibility*/
                     onValueChange = {},
                     label = { Text("Disponibility") },
+                    readOnly = true,
                     modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
                     trailingIcon = {
                       IconButton(
