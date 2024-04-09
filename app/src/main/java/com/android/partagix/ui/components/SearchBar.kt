@@ -34,7 +34,7 @@ fun TopSearchBar (filter : (String) -> Unit, query : String, modifier: Modifier)
         active = false,
         onActiveChange = { active = it },
         modifier = modifier.fillMaxWidth().padding(20.dp),
-        placeholder = { Text("Search a Task") },
+        placeholder = { Text("Search an Item") },
         leadingIcon = {
             if (!active) {
                 Icon(Icons.Default.Menu, contentDescription = "Search")
@@ -56,7 +56,7 @@ fun TopSearchBar (filter : (String) -> Unit, query : String, modifier: Modifier)
                 contentDescription = "Search",
                 modifier = modifier.clickable { keyboardController?.hide() })
         }) {
-        Text("Search a Task")
+        Text("Search an Item")
     }
 
 }
