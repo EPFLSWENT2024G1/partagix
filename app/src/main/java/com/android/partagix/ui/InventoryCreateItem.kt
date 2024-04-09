@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.navigation.NavigationActions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +67,7 @@ fun InventoryCreateItem(
     var uiName by remember { mutableStateOf("") }
     var uiDescription by remember { mutableStateOf("") }
     var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
-    var uiVisibility by remember { mutableStateOf(0) }
+    var uiVisibility by remember { mutableStateOf(Visibility.PUBLIC) }
     var uiQuantity by remember { mutableStateOf(1) }
     var uiLocation by remember { mutableStateOf(Location("")) }
 
@@ -150,8 +152,17 @@ fun InventoryCreateItem(
 
             Button(
                 onClick = {
-                  itemViewModel
-                      .saveWithUiState() // todo how is the VM's ui linked to local variables ?
+                  itemViewModel.updateUiState(
+                      Item(
+                          "",
+                          uiCategory,
+                          uiName,
+                          uiDescription,
+                          uiAuthor,
+                          uiVisibility,
+                          uiQuantity.toLong(),
+                          uiLocation))
+                  itemViewModel.saveWithUiState()
                   navigationActions.goBack()
                 },
                 content = { Text("Create") },
