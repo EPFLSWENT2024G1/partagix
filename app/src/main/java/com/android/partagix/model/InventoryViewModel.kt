@@ -51,7 +51,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   }
 
   private fun update(new: List<Item>) {
-
     _uiState.value =
         _uiState.value.copy(
             items = new,

@@ -1,5 +1,7 @@
 package com.android.partagix.ui
 
+import android.content.ContentResolver
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.android.partagix.R
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -27,6 +30,8 @@ import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.theme.PartagixAppTheme
 import com.google.firebase.auth.FirebaseUser
+import uploadImageToFirebaseStorage
+import java.io.File
 
 class MainActivity : ComponentActivity(), SignInResultListener {
   private lateinit var authentication: Authentication
@@ -59,6 +64,17 @@ class MainActivity : ComponentActivity(), SignInResultListener {
 
   @Composable
   fun Main(name: String, modifier: Modifier = Modifier) {
+    val resourceId: Int = R.drawable.logo // Replace "your_image" with the name of your image resource
+    val imageUri: Uri = Uri.Builder()
+      .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+      .authority(resources.getResourcePackageName(resourceId))
+      .appendPath(resources.getResourceTypeName(resourceId))
+      .appendPath(resources.getResourceEntryName(resourceId))
+      .build()
+    println("----- $imageUri")
+
+    uploadImageToFirebaseStorage(imageUri)
+
     val navController = rememberNavController()
     navigationActions = NavigationActions(navController)
 
