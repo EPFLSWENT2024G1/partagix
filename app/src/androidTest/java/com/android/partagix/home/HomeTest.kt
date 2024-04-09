@@ -23,36 +23,36 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
-    @RelaxedMockK
-    lateinit var mockNavActions: NavigationActions
+  @get:Rule val composeTestRule = createComposeRule()
+  @RelaxedMockK lateinit var mockNavActions: NavigationActions
 
-    @Before
-    fun testSetup() {
-        mockNavActions = mockk<NavigationActions>()
-        every { mockNavActions.navigateTo(Route.HOME) } just Runs
-        every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+  @Before
+  fun testSetup() {
+    mockNavActions = mockk<NavigationActions>()
+    every { mockNavActions.navigateTo(Route.HOME) } just Runs
+    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-        composeTestRule.setContent {
-            HomeScreen(mockNavActions)
-        }
+    composeTestRule.setContent { HomeScreen(mockNavActions) }
+  }
+
+  @Test
+  fun mainContentIsDisplayed() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      mainContent { assertIsDisplayed() }
     }
+  }
 
-    @Test
-    fun mainContentIsDisplayed() = run {
-        ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { mainContent { assertIsDisplayed() } }
+  @Test
+  fun bottomNavBarIsDisplayed() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      bottomNavBar { assertIsDisplayed() }
     }
+  }
 
-    @Test
-    fun bottomNavBarIsDisplayed() = run {
-        ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { bottomNavBar { assertIsDisplayed() } }
+  @Test
+  fun bottomNavBarItemInventoryIsDisplayed() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      bottomNavBarItemInventory { assertIsDisplayed() }
     }
-
-    @Test
-    fun bottomNavBarItemInventoryIsDisplayed() = run {
-        ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
-            bottomNavBarItemInventory { assertIsDisplayed() }
-        }
-    }
+  }
 }
