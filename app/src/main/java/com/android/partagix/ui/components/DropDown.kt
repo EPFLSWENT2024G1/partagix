@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.screens
 
 import android.location.Location
 import androidx.compose.foundation.layout.Box
@@ -39,6 +39,10 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.ui.components.CategoryItems
+import com.android.partagix.ui.components.DropDown
+import com.android.partagix.ui.components.MainImagePicker
+import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
 
 @OptIn(ExperimentalMaterial3Api::class)

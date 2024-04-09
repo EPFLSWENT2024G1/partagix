@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.components
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
