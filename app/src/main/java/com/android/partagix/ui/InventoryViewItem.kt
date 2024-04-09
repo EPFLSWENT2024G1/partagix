@@ -29,11 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.components.BottomNavigationBar
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +45,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
             title = { Text("Back to selection" /*TODO: get item name*/) },
             modifier = Modifier.fillMaxWidth(),
             navigationIcon = {
-              IconButton(onClick = { /*TODO: navigate back to inventory screen*/}) {
+              IconButton(onClick = { navigationActions.goBack() }) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
               }
             })
@@ -80,7 +80,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                         readOnly = true)
 
                     OutlinedTextField(
-                        value = "Author" /*TODO: get user name*/,
+                        value = item.author,
                         onValueChange = {},
                         label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),
@@ -109,7 +109,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   Spacer(modifier = Modifier.height(8.dp))
 
                   OutlinedTextField(
-                      value = "Visibility" /*TODO: get item visibility*/,
+                      value = item.visibility.name,
                       onValueChange = {},
                       label = { Text("Visibility") },
                       modifier = Modifier.fillMaxWidth(),
@@ -118,7 +118,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = "Quantity" /*TODO: get item quantity*/,
+                    value = item.quantity.toString(),
                     onValueChange = {},
                     label = { Text("Quantity") },
                     modifier = Modifier.fillMaxWidth(),
@@ -127,7 +127,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = "Where" /*TODO: get item localisation*/,
+                    value = item.location.toString(),
                     onValueChange = {},
                     label = { Text("Where") },
                     modifier = Modifier.fillMaxWidth(),
