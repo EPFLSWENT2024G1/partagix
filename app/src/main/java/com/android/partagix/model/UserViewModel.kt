@@ -17,12 +17,14 @@
 package com.android.partagix.model
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.user.User
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class UserViewModel(user: User) : ViewModel() {
-
   private val database = Database()
 
   // UI state exposed to the UI
@@ -40,7 +42,23 @@ class UserViewModel(user: User) : ViewModel() {
         )
   }
 
-  fun saveWithUiState() {}
+  fun getCurrentUser() {
+    val user = FirebaseAuth.getInstance().currentUser?.uid
+    viewModelScope.launch {
+      if (user == null) {
+        println("No user logged-in tried to watch current user profile")
+      } else {
+        database.getUser(user) { update(it) }
+      }
+    }
+  }
+
+  private fun update(new: User) {
+    _uiState.value =
+        _uiState.value.copy(
+            user = new,
+        )
+  }
 }
 
 data class UserUIState(val user: User)
