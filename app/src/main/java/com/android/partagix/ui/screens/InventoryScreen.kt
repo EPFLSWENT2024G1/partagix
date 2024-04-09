@@ -94,7 +94,8 @@ fun InventoryScreen(
           }
         } else {
             Column {
-                Text(text = "Borrowed items",
+                if (uiState.borrowedItems.isNotEmpty()){
+                    Text(text = "Borrowed items",
                     style = TextStyle(
                         fontSize = 18.sp,
                         //fontFamily = FontFamily(Font(R.font.inter)),
@@ -103,11 +104,12 @@ fun InventoryScreen(
 
                         ),
                     modifier = modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
-                )
-                ItemList(itemList = uiState.borrowedItems,
+                    )
+                    ItemList(itemList = uiState.borrowedItems,
                     onClick = {Log.w(TAG, "veut changer")},// TO-DO go to edit-------------------------
                     modifier = modifier.fillMaxWidth().height(210.dp)
-                )
+                    )
+                }
                 Text(text = "My inventory",
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -115,14 +117,18 @@ fun InventoryScreen(
                         fontWeight = FontWeight(500),
                         color = Color(0xFF000000),
 
-                        )
+                        ),
+                    modifier = if (uiState.borrowedItems.isEmpty())
+                        Modifier.padding(top = innerPadding.calculateTopPadding()) else Modifier
                 )
                 
                 ItemList(itemList = uiState.items,
                     onClick = {Log.w(TAG, "veut changer" )},// TO-DO go to edit-------------------------
                     modifier = modifier.fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())
                 )
+
             }
+
         }
       }
 }
