@@ -15,6 +15,7 @@ object Route {
   const val LOGIN = "Login"
   const val HOME = "Home"
   const val INVENTORY = "Inventory"
+  const val VIEW_ITEM = "ViewItem"
   const val BORROW = "Borrow"
   const val ACCOUNT = "Account"
 }

@@ -25,7 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
-    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location(""))
+    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
+    id: String? = null
 ) : ViewModel() {
 
   private val database = Database()
@@ -35,7 +36,11 @@ class ItemViewModel(
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
-    updateUiState(item)
+    if (id != null) {
+      database.getItem(id) { newItem -> updateUiState(newItem) }
+    } else {
+      updateUiState(item)
+    }
     // TODO: set the author field as the User's name
   }
 
@@ -74,6 +79,10 @@ class ItemViewModel(
     } else {
       database.setItem(_uiState.value.item)
     }
+  }
+
+  companion object {
+    private const val TAG = "ItemViewModel"
   }
 }
 
