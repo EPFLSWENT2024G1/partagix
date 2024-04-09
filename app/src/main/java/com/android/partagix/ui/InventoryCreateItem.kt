@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
@@ -68,7 +70,7 @@ fun InventoryCreateItem(
     var uiDescription by remember { mutableStateOf("") }
     var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
     var uiVisibility by remember { mutableStateOf(Visibility.PUBLIC) }
-    var uiQuantity by remember { mutableStateOf(1) }
+    var uiQuantity by remember { mutableStateOf(1L) }
     var uiLocation by remember { mutableStateOf(Location("")) }
 
     Column(
@@ -125,7 +127,8 @@ fun InventoryCreateItem(
 
             OutlinedTextField(
                 value = uiQuantity.toString(),
-                onValueChange = { uiQuantity = it.toInt() }, // TODO: sanitize input to uint only
+                onValueChange = { uiQuantity = it.toLong() }, // TODO: sanitize input to uint only
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
@@ -160,7 +163,7 @@ fun InventoryCreateItem(
                           uiDescription,
                           uiAuthor,
                           uiVisibility,
-                          uiQuantity.toLong(),
+                          uiQuantity,
                           uiLocation))
                   itemViewModel.saveWithUiState()
                   navigationActions.goBack()
