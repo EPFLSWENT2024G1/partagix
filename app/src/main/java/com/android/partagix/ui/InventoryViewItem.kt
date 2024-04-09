@@ -32,8 +32,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.navigation.NavigationActions
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,11 +50,14 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
               }
             })
       },
-      bottomBar = {BottomNavigationBar(selectedDestination = "Inventory",
-          navigateToTopLevelDestination = {dest -> navigationActions.navigateTo(dest)})},
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = "Inventory",
+            navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
+      },
       modifier = Modifier.fillMaxWidth()) {
-      val item = viewModel.uiState.value.item
-      Column(
+        val item = viewModel.uiState.value.item
+        Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
@@ -106,14 +109,14 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = true)
 
-                  Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                  OutlinedTextField(
-                      value = item.visibility.name,
-                      onValueChange = {},
-                      label = { Text("Visibility") },
-                      modifier = Modifier.fillMaxWidth(),
-                      readOnly = true)
+                OutlinedTextField(
+                    value = item.visibility.name,
+                    onValueChange = {},
+                    label = { Text("Visibility") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
