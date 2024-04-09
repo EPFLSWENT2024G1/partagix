@@ -30,6 +30,7 @@ import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryScreen
+import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
 
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.BOOT)
+    navigationActions.navigateTo(Route.LOAN)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -114,7 +115,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.BORROW) { /*BorrowScreen()*/}
+      composable(Route.LOAN) { LoanScreen(navigationActions) }
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,

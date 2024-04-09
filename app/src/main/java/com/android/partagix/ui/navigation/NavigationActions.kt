@@ -16,7 +16,7 @@ object Route {
   const val HOME = "Home"
   const val INVENTORY = "Inventory"
   const val VIEW_ITEM = "ViewItem"
-  const val BORROW = "Borrow"
+  const val LOAN = "Loan"
   const val ACCOUNT = "Account"
 }
 
@@ -61,7 +61,7 @@ class NavigationActions(private val navController: NavHostController) {
 val TOP_LEVEL_DESTINATIONS =
     listOf(
         TopLevelDestination(route = Route.HOME, icon = Icons.Filled.Home, textId = 1),
-        TopLevelDestination(route = Route.BORROW, icon = Icons.Filled.ShoppingCart, textId = 2),
+        TopLevelDestination(route = Route.LOAN, icon = Icons.Filled.ShoppingCart, textId = 2),
         TopLevelDestination(route = Route.INVENTORY, icon = Icons.Filled.Menu, textId = 3),
         TopLevelDestination(route = Route.ACCOUNT, icon = Icons.Filled.AccountCircle, textId = 4),
     )
