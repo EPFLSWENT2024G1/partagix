@@ -1,3 +1,5 @@
+package com.android.partagix.model.loan
+
 import java.util.Date
 
 data class Loan(

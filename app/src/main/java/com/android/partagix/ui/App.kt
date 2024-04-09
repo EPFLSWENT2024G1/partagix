@@ -2,7 +2,6 @@ package com.android.partagix.ui
 
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,16 +38,16 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   private var authentication: Authentication = Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
-  private val inventoryViewModel: InventoryViewModel by viewModels()
+
+  // private val inventoryViewModel: InventoryViewModel by viewModels()
+  private val inventoryViewModel = InventoryViewModel()
 
   @Composable
   fun Create() {
-    // authentication = Authentication(this, this)
-
     ComposeNavigationSetup()
 
     // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+    //navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -114,7 +113,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen() }
+      composable(Route.HOME) { HomeScreen(navigationActions) }
       composable(Route.BORROW) { /*BorrowScreen()*/}
       composable(Route.INVENTORY) {
         InventoryScreen(

@@ -16,14 +16,18 @@
 
 package com.android.partagix.model
 
-import Category
-import Item
+import android.location.Location
 import androidx.lifecycle.ViewModel
+import com.android.partagix.model.category.Category
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ItemViewModel(item: Item = Item("", Category("", ""), "", ""), id: String? = null) :
-    ViewModel() {
+class ItemViewModel(
+    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
+    id: String? = null
+) : ViewModel() {
 
   private val database = Database()
 
