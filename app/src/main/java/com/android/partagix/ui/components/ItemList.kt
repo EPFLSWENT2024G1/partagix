@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import java.util.ArrayList
 
 @Composable
@@ -29,7 +30,16 @@ fun ItemListPreview() {
   val itemList = ArrayList<Item>()
 
   for (i in 0..3) {
-    itemList.add(Item(i.toString(), Category("1", "name"), "name $i", "description"))
+    itemList.add(
+        Item(
+            i.toString(),
+            Category("1", "name"),
+            "name $i",
+            "description",
+            "author",
+            Visibility.PUBLIC,
+            1,
+            android.location.Location("location")))
   }
 
   ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
