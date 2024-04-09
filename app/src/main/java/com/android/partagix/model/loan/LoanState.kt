@@ -1,3 +1,5 @@
+package com.android.partagix.model.loan
+
 enum class LoanState {
   PENDING,
   ACCEPTED,
