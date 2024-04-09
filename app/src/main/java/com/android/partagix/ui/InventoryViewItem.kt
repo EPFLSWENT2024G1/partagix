@@ -26,10 +26,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
@@ -39,6 +40,12 @@ import com.android.partagix.ui.navigation.NavigationActions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewModel) {
+  val uiState = viewModel.uiState.collectAsState()
+
+  var item = uiState.value.item
+
+  LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
+
   Scaffold(
       topBar = {
         TopAppBar(
@@ -50,11 +57,13 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
               }
             })
       },
-      bottomBar = {BottomNavigationBar(selectedDestination = "Inventory",
-          navigateToTopLevelDestination = {dest -> navigationActions.navigateTo(dest)})},
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = "Inventory",
+            navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
+      },
       modifier = Modifier.fillMaxWidth()) {
-      val item = viewModel.uiState.value.item
-      Column(
+        Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
@@ -106,14 +115,14 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = true)
 
-                  Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                  OutlinedTextField(
-                      value = "Visibility" /*TODO: get item visibility*/,
-                      onValueChange = {},
-                      label = { Text("Visibility") },
-                      modifier = Modifier.fillMaxWidth(),
-                      readOnly = true)
+                OutlinedTextField(
+                    value = "Visibility" /*TODO: get item visibility*/,
+                    onValueChange = {},
+                    label = { Text("Visibility") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true)
 
                 Spacer(modifier = Modifier.height(8.dp))
 

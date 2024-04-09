@@ -6,6 +6,7 @@ import Item
 import Loan
 import LoanState
 import User
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
@@ -233,5 +234,40 @@ class Database {
             "description" to newItem.description,
         )
     items.document(newItem.id).set(data3)
+  }
+
+  fun getItem(id: String, onSuccess: (Item) -> Unit) {
+    items
+        .get()
+        .addOnSuccessListener { result ->
+          for (document in result) {
+            if (document.data["id"] as String == id) {
+              categories
+                  .get()
+                  .addOnSuccessListener { result2 ->
+                    val categories = mutableMapOf<String, Category>()
+                    for (document in result2) {
+                      categories[document.data["id"] as String] =
+                          Category(document.data["id"] as String, document.data["name"] as String)
+                    }
+                    val item =
+                        Item(
+                            document.data["id"] as String,
+                            categories[document.data["id_category"] as String]!!,
+                            document.data["name"] as String,
+                            document.data["description"] as String,
+                        )
+
+                    onSuccess(item)
+                  }
+                  .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
+            }
+          }
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
+  }
+
+  companion object {
+    private const val TAG = "Database"
   }
 }

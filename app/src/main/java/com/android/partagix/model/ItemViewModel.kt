@@ -22,7 +22,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ItemViewModel(item: Item = Item("", Category("", ""), "", "")) : ViewModel() {
+class ItemViewModel(item: Item = Item("", Category("", ""), "", ""), id: String? = null) :
+    ViewModel() {
 
   private val database = Database()
 
@@ -31,7 +32,11 @@ class ItemViewModel(item: Item = Item("", Category("", ""), "", "")) : ViewModel
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
-    updateUiState(item)
+    if (id != null) {
+      database.getItem(id) { newItem -> updateUiState(newItem) }
+    } else {
+      updateUiState(item)
+    }
   }
 
   fun updateUiState(new: Item) {
@@ -48,6 +53,10 @@ class ItemViewModel(item: Item = Item("", Category("", ""), "", "")) : ViewModel
     } else {
       database.setItem(_uiState.value.item)
     }
+  }
+
+  companion object {
+    private const val TAG = "ItemViewModel"
   }
 }
 
