@@ -107,7 +107,7 @@ fun InventoryCreateItem(
                     value =
                         uiState.item
                             .author, // TODO: check with future implementation of Item if author is
-                                     // correctly linked to user.name by default
+                    // correctly linked to user.name by default
                     onValueChange = {},
                     label = { Text("Author") },
                     modifier = modifier.fillMaxWidth(),
