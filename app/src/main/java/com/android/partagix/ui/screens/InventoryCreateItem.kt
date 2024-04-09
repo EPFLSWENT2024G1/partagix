@@ -45,6 +45,13 @@ import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
 
+/**
+ * Screen to create a new item in user's inventory.
+ *
+ * @param itemViewModel an ItemViewModel which handles functionality.
+ * @param navigationActions a NavigationActions instance to navigate between screens.
+ * @param modifier Modifier to apply to this layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryCreateItem(
@@ -52,10 +59,9 @@ fun InventoryCreateItem(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
 ) {
-  val uiState by
-      itemViewModel.uiState.collectAsStateWithLifecycle() // should be used to get user's name
 
-  // TODO: get user's name
+  val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
+
   Scaffold(
       modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
       topBar = {
@@ -72,7 +78,6 @@ fun InventoryCreateItem(
     var uiCategory by remember { mutableStateOf(Category("", "")) }
     var uiName by remember { mutableStateOf("") }
     var uiDescription by remember { mutableStateOf("") }
-    var uiAuthor by remember { mutableStateOf("") } // TODO: get user's name
     var uiVisibility by remember { mutableStateOf(Visibility.PUBLIC) }
     var uiQuantity by remember { mutableStateOf(1L) }
     var uiLocation by remember { mutableStateOf(Location("")) }
@@ -98,9 +103,12 @@ fun InventoryCreateItem(
                     modifier = modifier.fillMaxWidth(),
                     readOnly = false)
 
-                OutlinedTextField( // yet the author is fixed to the user's name
-                    value = uiAuthor,
-                    onValueChange = { uiAuthor = it },
+                OutlinedTextField(
+                    value =
+                        uiState.item
+                            .author, // TODO: check with future implementation of Item if author is
+                                     // correctly linked to user.name by default
+                    onValueChange = {},
                     label = { Text("Author") },
                     modifier = modifier.fillMaxWidth(),
                     readOnly = true)
@@ -120,10 +128,11 @@ fun InventoryCreateItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
-                DropDown("Category", CategoryItems) // todo get the selected category
+                uiCategory = Category("", DropDown("Category", CategoryItems))
               }
               Box(modifier = modifier.fillMaxWidth()) {
-                DropDown("Visibility", VisibilityItems) // todo get the selected visibility
+                uiVisibility =
+                    Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())
               }
             }
 
@@ -165,7 +174,7 @@ fun InventoryCreateItem(
                           uiCategory,
                           uiName,
                           uiDescription,
-                          uiAuthor,
+                          uiState.item.author,
                           uiVisibility,
                           uiQuantity,
                           uiLocation))
