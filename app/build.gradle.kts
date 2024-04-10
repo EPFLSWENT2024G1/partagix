@@ -179,6 +179,8 @@ dependencies {
     testImplementation("io.mockk:mockk:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+    // ----------       Coil     ------------
+    implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 }
 
 tasks.withType<Test> {
