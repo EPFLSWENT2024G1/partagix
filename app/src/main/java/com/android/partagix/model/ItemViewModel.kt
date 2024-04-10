@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -41,6 +42,27 @@ class ItemViewModel(
     } else {
       updateUiState(item)
     }
+    // TODO: set the author field as the User's name
+  }
+
+  /**
+   * Get the category id (full category object) from the item's category name
+   *
+   * @param item an item with missing Category.id
+   * @return the item with complete Category attribute, and an Error if categoryName is not found
+   */
+  private fun fillIdCategory(item: Item): Item {
+    var idCategory = ""
+    database.getIdCategory(item.category.name, { idCategory = it })
+    return Item(
+        _uiState.value.item.id,
+        Category(idCategory, _uiState.value.item.category.name),
+        _uiState.value.item.name,
+        _uiState.value.item.description,
+        _uiState.value.item.author,
+        _uiState.value.item.visibility,
+        _uiState.value.item.quantity,
+        _uiState.value.item.location)
   }
 
   fun updateUiState(new: Item) {
@@ -53,7 +75,7 @@ class ItemViewModel(
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(
-          "Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */, _uiState.value.item)
+          FirebaseAuth.getInstance().currentUser!!.uid, fillIdCategory(_uiState.value.item))
     } else {
       database.setItem(_uiState.value.item)
     }
