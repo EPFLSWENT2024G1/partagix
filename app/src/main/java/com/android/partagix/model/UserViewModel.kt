@@ -18,13 +18,17 @@ package com.android.partagix.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class UserViewModel(user: User) : ViewModel() {
+class UserViewModel() : ViewModel() {
+
+  private val user = User("","","","", Inventory("", java.util.ArrayList<Item>()))
   private val database = Database()
 
   // UI state exposed to the UI
@@ -32,14 +36,8 @@ class UserViewModel(user: User) : ViewModel() {
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
-    updateUiState(user)
-  }
-
-  fun updateUiState(new: User) {
-    _uiState.value =
-        _uiState.value.copy(
-            user = new,
-        )
+    getCurrentUser()
+    update(user)
   }
 
   fun getCurrentUser() {

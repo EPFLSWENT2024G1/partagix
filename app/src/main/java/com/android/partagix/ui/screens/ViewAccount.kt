@@ -28,23 +28,29 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
+import com.android.partagix.model.UserViewModel
 import kotlin.math.round
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ViewAccount() {
+fun ViewAccount(
+    modifier: Modifier = Modifier,
+    userViewModel : UserViewModel = UserViewModel(),
+) {
   Scaffold(
       topBar = {
         TopAppBar(
-            title = { Text("My profile" /*TODO: get username to display custom message*/) },
+            title = { Text("My Account") },
             modifier = Modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { /*TODO: navigate to previous screen*/}) {
@@ -68,13 +74,13 @@ fun ViewAccount() {
               Row(
                   modifier = Modifier.fillMaxWidth(),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
-                    val username = "antoine" // TODO: get username
+                    val username = userViewModel.uiState.collectAsState().value.user.name
                     Text("$username's profile")
                   }
               Spacer(modifier = Modifier.height(16.dp))
 
               TextField(
-                  value = "Chavannes", /*TODO: get location*/
+                  value = userViewModel.uiState.collectAsState().value.user.address,
                   onValueChange = {},
                   label = { Text("Location") },
                   colors =
@@ -88,7 +94,8 @@ fun ViewAccount() {
                   modifier = Modifier.fillMaxWidth().padding(8.dp),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
-              var rating = round(4.42345678 * 100) / 100 /*TODO: get user rating*/
+              val rank = userViewModel.uiState.collectAsState().value.user.rank
+              val rating = round(rank.toFloat() * 100) / 100
               val roundedRating = round(rating).toInt()
               val stars =
                   when (roundedRating) {
