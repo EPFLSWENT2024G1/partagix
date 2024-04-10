@@ -341,6 +341,25 @@ class Database {
         .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
   }
 
+  /**
+   * Get the category id from a category name
+   *
+   * @param nameCategory the name of the category
+   * @param onSuccess the function to call when the id is found
+   */
+  fun getIdCategory(nameCategory: String, onSuccess: (String) -> Unit) {
+    categories
+        .get()
+        .addOnSuccessListener { result ->
+          for (document in result) {
+            if ((document.data["name"] as String).equals(nameCategory, ignoreCase = true)) {
+              onSuccess(document.data["id"] as String)
+            }
+          }
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
+  }
+
   companion object {
     private const val TAG = "Database"
   }
