@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -74,8 +75,7 @@ class ItemViewModel(
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(
-          "Yp5cetHh3nLGMsjYY4q9" /* todo get the correct userId */,
-          fillIdCategory(_uiState.value.item))
+          FirebaseAuth.getInstance().currentUser!!.uid, fillIdCategory(_uiState.value.item))
     } else {
       database.setItem(_uiState.value.item)
     }
