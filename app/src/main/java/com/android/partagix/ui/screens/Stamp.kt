@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
@@ -74,9 +75,7 @@ fun Stamp(
             Box(modifier = modifier.fillMaxWidth()) {
               uiDimension =
                   StampDimension.valueOf(
-                      DropDown("XXcm x XXcm (XX per A4 page)", StampDimensions).uppercase()) // todo
-              /*Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())*/
-
+                      DropDown("Dimensions", StampDimensions)) // todo return the right field
             }
 
             Spacer(modifier = modifier.height(8.dp))
@@ -84,9 +83,8 @@ fun Stamp(
             Text(text = "Label on stamp", modifier = modifier.fillMaxWidth(0.3f))
             OutlinedTextField(
                 value = uiLabel, // todo
-                onValueChange = { uiLabel = it }, // todo
+                onValueChange = { uiLabel = it }, // todo limit to 40 characters
                 label = { Text("(optional) max. 40 characters") },
-                // TODO:  limit to 40 characters
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
 
@@ -94,7 +92,8 @@ fun Stamp(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
-                  onClick = { /*TODO*/
+                  onClick = {
+                    //                      TODO connect to viewModel
                     navigationActions.goBack()
                   },
                   content = { Text("Download stamps") },

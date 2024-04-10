@@ -74,4 +74,4 @@ val CategoryItems =
 
 val VisibilityItems = listOf("Public", "Friends", "Private")
 
-val StampDimensions = StampDimension.values().map { it.displayName }
+val StampDimensions = StampDimension.values().map { it.detailedDimension }
