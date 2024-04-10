@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.stampDimension.StampDimension
 
 /**
  * DropDown composable to show a dropdown menu
@@ -72,3 +73,5 @@ val CategoryItems =
     )
 
 val VisibilityItems = listOf("Public", "Friends", "Private")
+
+val StampDimensions = StampDimension.values().map { it.displayName }
