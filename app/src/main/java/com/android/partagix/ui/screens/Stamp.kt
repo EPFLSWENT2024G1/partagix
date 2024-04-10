@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
@@ -34,8 +35,8 @@ import com.android.partagix.ui.navigation.NavigationActions
 /**  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExportQR(
-    qrViewModel: QRViewModel,
+fun Stamp(
+    stampViewModel: StampViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
 ) {
@@ -60,35 +61,36 @@ fun ExportQR(
     Generate and Download stamps
     */
 
-    var uiDimension by remember { mutableStateOf(Dimension.MEDIUM) }
+    var uiDimension by remember { mutableStateOf(StampDimension.MEDIUM) }
     var uiLabel by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
           Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-            Row(modifier = modifier.fillMaxWidth()) {
-              Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth(0.3f))
-              Box(modifier = modifier.fillMaxWidth()) {
-                uiDimension = DropDown("StampDimension", StampDimensions) // todo
-                /*Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())*/
-              }
+            Spacer(modifier = modifier.height(16.dp))
+
+            Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth())
+            Box(modifier = modifier.fillMaxWidth()) {
+              uiDimension =
+                  StampDimension.valueOf(
+                      DropDown("XXcm x XXcm (XX per A4 page)", StampDimensions).uppercase()) // todo
+              /*Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())*/
+
             }
 
             Spacer(modifier = modifier.height(8.dp))
 
-            Row(modifier = modifier.fillMaxWidth()) {
-              Text(text = "Stamp label", modifier = modifier.fillMaxWidth(0.3f))
-              OutlinedTextField(
-                  value = uiLabel, // todo
-                  onValueChange = { uiLabel = it }, // todo
-                  label = { Text("max. 40 characters") },
-                  // TODO:  limit to 40 characters
-                  modifier = modifier.fillMaxWidth(),
-                  readOnly = false)
-            }
+            Text(text = "Label on stamp", modifier = modifier.fillMaxWidth(0.3f))
+            OutlinedTextField(
+                value = uiLabel, // todo
+                onValueChange = { uiLabel = it }, // todo
+                label = { Text("(optional) max. 40 characters") },
+                // TODO:  limit to 40 characters
+                modifier = modifier.fillMaxWidth(),
+                readOnly = false)
 
-            Spacer(modifier = modifier.height(8.dp))
+            Spacer(modifier = modifier.height(32.dp))
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
