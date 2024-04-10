@@ -57,7 +57,7 @@ fun InventoryScreen(
             onSearch = { inventoryViewModel.filterItems(it) },
             active = false,
             onActiveChange = { active = it },
-            modifier = modifier.fillMaxWidth().padding(20.dp),
+            modifier = modifier.fillMaxWidth().padding(20.dp).testTag("inventoryScreenSearchBar"),
             placeholder = { Text("Search a Task") },
             leadingIcon = {
               if (!active) {
@@ -71,14 +71,14 @@ fun InventoryScreen(
                           inventoryViewModel.filterItems("")
 
                           keyboardController?.hide()
-                        })
+                        }.testTag("inventoryScreenSearchBarBack"))
               }
             },
             trailingIcon = {
               Icon(
                   Icons.Default.Search,
                   contentDescription = "Search",
-                  modifier = modifier.clickable { keyboardController?.hide() })
+                  modifier = modifier.clickable { keyboardController?.hide() }.testTag("inventoryScreenSearchBarSearch"))
             }) {
               Text("Search a Task")
             }
@@ -91,6 +91,7 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
+            modifier = modifier.testTag("inventoryScreenFab"),
             onClick = {
               /*navigationActions.navigateTo(Route.CREATE_TODO)*/
             }) {
@@ -99,17 +100,22 @@ fun InventoryScreen(
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
         if (uiState.items.isEmpty()) {
-          Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            Text(
-                text = "There is no items in the inventory.",
-                modifier =
-                    modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
-          }
+          Box(
+              modifier =
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .testTag("inventoryScreenNoItemBox")) {
+                Text(
+                    text = "There is no items in the inventory.",
+                    modifier =
+                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
+              }
         } else {
           ItemList(
               itemList = uiState.items,
               onClick = { Log.d(TAG, "Item clicked") },
-              modifier = modifier.padding(innerPadding))
+              modifier = modifier.padding(innerPadding).testTag("inventoryScreenItemList"))
         }
       }
 }
