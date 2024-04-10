@@ -43,13 +43,11 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
-    val items = listOf(
-      Item("1", cat1, "Name 1", "Description 1", "Author 1", vis1, 1, loc1)
-    )
+    val items = listOf(Item("1", cat1, "Name 1", "Description 1", "Author 1", vis1, 1, loc1))
     nonEmptyMockUiState = MutableStateFlow(InventoryUIState(items, ""))
 
     mockInventoryViewModel = mockk()
-    //every { mockInventoryViewModel.uiState } returns emptyMockUiState
+    // every { mockInventoryViewModel.uiState } returns emptyMockUiState
     every { mockInventoryViewModel.getInventory() } just Runs
     every { mockInventoryViewModel.filterItems(any()) } just Runs
 
@@ -57,7 +55,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-/*    composeTestRule.setContent {
+    /*    composeTestRule.setContent {
       InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
     }*/
   }
@@ -98,11 +96,11 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       searchBarBackIcon { performClick() }
       searchBar {
         performClick()
-        //performTextInput("test")
+        // performTextInput("test")
       }
       searchBarSearchIcon { assertIsDisplayed() }
       searchBarSearchIcon { performClick() }
-/*      val textField: KNode = searchBarSearchIcon.child<KNode> { hasSetTextAction() }
+      /*      val textField: KNode = searchBarSearchIcon.child<KNode> { hasSetTextAction() }
       textField {
         performTextClearance()
         performTextInput("test")
@@ -177,7 +175,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
       itemList { assertIsDisplayed() }
-      //noItemBox { assertIsDisplayed()}
+      // noItemBox { assertIsDisplayed()}
     }
   }
 }

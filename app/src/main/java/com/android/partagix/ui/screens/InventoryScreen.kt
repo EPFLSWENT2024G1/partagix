@@ -67,18 +67,23 @@ fun InventoryScreen(
                     Icons.Default.ArrowBack,
                     contentDescription = "Search",
                     modifier =
-                        modifier.clickable {
-                          inventoryViewModel.filterItems("")
+                        modifier
+                            .clickable {
+                              inventoryViewModel.filterItems("")
 
-                          keyboardController?.hide()
-                        }.testTag("inventoryScreenSearchBarBack"))
+                              keyboardController?.hide()
+                            }
+                            .testTag("inventoryScreenSearchBarBack"))
               }
             },
             trailingIcon = {
               Icon(
                   Icons.Default.Search,
                   contentDescription = "Search",
-                  modifier = modifier.clickable { keyboardController?.hide() }.testTag("inventoryScreenSearchBarSearch"))
+                  modifier =
+                      modifier
+                          .clickable { keyboardController?.hide() }
+                          .testTag("inventoryScreenSearchBarSearch"))
             }) {
               Text("Search a Task")
             }

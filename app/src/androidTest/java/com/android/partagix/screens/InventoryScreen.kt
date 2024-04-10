@@ -11,8 +11,8 @@ class InventoryScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
 
   // val screenTitle: KNode = onNode { hasTestTag("inventoryScreen") }
   val searchBar: KNode = onNode { hasTestTag("inventoryScreenSearchBar") }
-    val searchBarBackIcon: KNode = searchBar.child { hasTestTag("inventoryScreenSearchBarBack") }
-    val searchBarSearchIcon: KNode = searchBar.child { hasTestTag("inventoryScreenSearchBarSearch") }
+  val searchBarBackIcon: KNode = searchBar.child { hasTestTag("inventoryScreenSearchBarBack") }
+  val searchBarSearchIcon: KNode = searchBar.child { hasTestTag("inventoryScreenSearchBarSearch") }
   // val mainContentText: KNode = onNode { hasTestTag("inventoryScreenMainContentText") }
 
   val fab: KNode = onNode { hasTestTag("inventoryScreenFab") }
