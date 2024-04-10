@@ -21,16 +21,17 @@ import androidx.compose.ui.unit.dp
  *
  * @param label the label display when calling the dropdown
  * @param list the list of items to show in the dropdown, ex : CategoryItems, VisibilityItems...
+ * @return the selected value by the user
  */
 @Composable
-fun DropDown(label: String, list: List<String>) {
+fun DropDown(label: String, list: List<String>): String {
+  val expend = remember { mutableStateOf(false) }
+  val selectedValue = remember { mutableStateOf(label) }
   Box(modifier = Modifier.fillMaxWidth()) {
-    val expend = remember { mutableStateOf(false) }
-    val selectedCategory = remember { mutableStateOf(label) }
     Column(modifier = Modifier.fillMaxWidth()) {
       OutlinedButton(
           onClick = { expend.value = true },
-          content = { Text(selectedCategory.value) },
+          content = { Text(selectedValue.value) },
           modifier = Modifier.fillMaxWidth(),
           shape = RoundedCornerShape(10))
 
@@ -44,7 +45,7 @@ fun DropDown(label: String, list: List<String>) {
           list.forEach {
             DropdownMenuItem(
                 onClick = {
-                  selectedCategory.value = it
+                  selectedValue.value = it
                   expend.value = false
                 },
                 text = { Text(it) })
@@ -53,6 +54,7 @@ fun DropDown(label: String, list: List<String>) {
       }
     }
   }
+  return selectedValue.value
 }
 
 val CategoryItems =
