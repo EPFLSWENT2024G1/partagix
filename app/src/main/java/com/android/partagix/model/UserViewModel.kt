@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class UserViewModel() : ViewModel() {
 
-  private val user = User("","","","", Inventory("", java.util.ArrayList<Item>()))
+  private val user = User("", "", "", "", Inventory("", java.util.ArrayList<Item>()))
   private val database = Database()
 
   // UI state exposed to the UI

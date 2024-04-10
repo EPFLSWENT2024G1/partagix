@@ -32,9 +32,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
@@ -45,13 +45,14 @@ import kotlin.math.round
 @Composable
 fun ViewAccount(
     modifier: Modifier = Modifier,
-    userViewModel : UserViewModel = UserViewModel(),
+    userViewModel: UserViewModel = UserViewModel(),
 ) {
   Scaffold(
+      modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
         TopAppBar(
             title = { Text("My Account") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("title"),
             navigationIcon = {
               IconButton(onClick = { /*TODO: navigate to previous screen*/}) {
                 Icon(
@@ -60,19 +61,22 @@ fun ViewAccount(
                     modifier = Modifier.width(48.dp))
               }
             })
-      },
-      modifier = Modifier.fillMaxSize()) {
+      }) {
         Column(
-            modifier = Modifier.fillMaxHeight().padding(it).verticalScroll(rememberScrollState())) {
+            modifier =
+                Modifier.fillMaxHeight()
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+                    .testTag("mainContent")) {
               Image(
                   painter =
                       painterResource(
                           id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
                   contentDescription = null,
-                  modifier = Modifier.fillMaxWidth(),
+                  modifier = Modifier.fillMaxWidth().testTag("userImage"),
                   alignment = Alignment.Center)
               Row(
-                  modifier = Modifier.fillMaxWidth(),
+                  modifier = Modifier.fillMaxWidth().testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = userViewModel.uiState.collectAsState().value.user.name
                     Text("$username's profile")
@@ -91,7 +95,7 @@ fun ViewAccount(
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
-                  modifier = Modifier.fillMaxWidth().padding(8.dp),
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("location"),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
               val rank = userViewModel.uiState.collectAsState().value.user.rank
@@ -133,20 +137,22 @@ fun ViewAccount(
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
-                  modifier = Modifier.fillMaxWidth().padding(8.dp),
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
               Spacer(modifier = Modifier.height(16.dp))
-              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp)) {
+              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons")) {
                 Button(
                     onClick = { /*TODO: navigate to inventory */},
-                    modifier = Modifier.fillMaxWidth(0.5f)) {
+                    modifier = Modifier.fillMaxWidth(0.5f).testTag("inventoryButton")) {
                       Text("See inventory")
                     }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { /*TODO: friends */}, modifier = Modifier.fillMaxWidth()) {
-                  Text("Add as friend")
-                }
+                Button(
+                    onClick = { /*TODO: friends */},
+                    modifier = Modifier.fillMaxWidth().testTag("friendButton")) {
+                      Text("Add as friend")
+                    }
               }
             }
       }
