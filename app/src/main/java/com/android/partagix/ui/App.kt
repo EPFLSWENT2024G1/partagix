@@ -46,8 +46,8 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   @Composable
   fun Create() {
     ComposeNavigationSetup()
-      InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
-    //-----------------------a changer
+    InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
+    // -----------------------a changer
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
@@ -119,8 +119,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BORROW) { /*BorrowScreen()*/}
       composable(Route.INVENTORY) {
         InventoryScreen(
-            inventoryViewModel = inventoryViewModel,
-            navigationActions= navigationActions)
+            inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
       }
       composable(Route.ACCOUNT) { /*AccountScreen()*/}
       composable(
@@ -128,8 +127,13 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             val itemId = it.arguments?.getString("itemId")
             InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
+          }
+      composable(Route.INVENTORY_CREATE_ITEM) {
+        InventoryCreateItem(
+            itemViewModel = ItemViewModel(),
+            navigationActions,
+        )
       }
-        composable(Route.INVENTORY_CREATE_ITEM) { InventoryCreateItem(itemViewModel = ItemViewModel(), navigationActions,)}
     }
   }
 

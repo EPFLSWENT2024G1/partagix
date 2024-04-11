@@ -29,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.type.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.Duration
 
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
@@ -86,47 +85,53 @@ class ItemViewModel(
       database.setItem(_uiState.value.item)
     }
   }
-    fun findUser(uid :String): User {
-        var user :User = User("", "", "", "", inventory = Inventory("", emptyList()))
-        database.getUser(uid) {user = it }
-        return user
 
-    }
+  fun findUser(uid: String): User {
+    var user: User = User("", "", "", "", inventory = Inventory("", emptyList()))
+    database.getUser(uid) { user = it }
+    return user
+  }
 
-    fun findStatus (item : Item): LoanState {
-        var state : LoanState = LoanState.PENDING
-        database.getLoans { it.filter { it.idItem.equals(item.id)}
-            .forEach { if(it.state == LoanState.ACCEPTED){
-                state = LoanState.ACCEPTED
+  fun findStatus(item: Item): LoanState {
+    var state: LoanState = LoanState.PENDING
+    database.getLoans {
+      it.filter { it.idItem.equals(item.id) }
+          .forEach {
+            if (it.state == LoanState.ACCEPTED) {
+              state = LoanState.ACCEPTED
             } else {
-                if(it.state == LoanState.PENDING){
-                    state = LoanState.PENDING
-                } else {
-                    state = LoanState.FINISHED
-                }
+              if (it.state == LoanState.PENDING) {
+                state = LoanState.PENDING
+              } else {
+                state = LoanState.FINISHED
+              }
             }
-            }
-        }
-        return state
+          }
     }
-    fun findLoan(item : Item): Loan {
-        var loan :List<Loan> = emptyList()
-        var currentDate = java.util.Date()
-        var nextLoan : Loan= Loan ("","","",currentDate,currentDate,"","","","",LoanState.CANCELLED)
-        database.getLoans { it.filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED)}
-            .forEach { if (it.startDate.before(currentDate) && it.endDate.after(currentDate)){
-                nextLoan = it
+    return state
+  }
+
+  fun findLoan(item: Item): Loan {
+    var loan: List<Loan> = emptyList()
+    var currentDate = java.util.Date()
+    var nextLoan: Loan =
+        Loan("", "", "", currentDate, currentDate, "", "", "", "", LoanState.CANCELLED)
+    database.getLoans {
+      it.filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+          .forEach {
+            if (it.startDate.before(currentDate) && it.endDate.after(currentDate)) {
+              nextLoan = it
             } else {
-                if (it.startDate.after(currentDate)){
-                    if (nextLoan.startDate.after(it.startDate)){
-                        nextLoan = it
-                    }
+              if (it.startDate.after(currentDate)) {
+                if (nextLoan.startDate.after(it.startDate)) {
+                  nextLoan = it
                 }
+              }
             }
-            }
-        }
-        return nextLoan
+          }
     }
+    return nextLoan
+  }
 }
 
 data class ItemUIState(val item: Item)

@@ -20,7 +20,9 @@ fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier =
   LazyColumn(modifier = modifier.fillMaxSize()) {
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) { ItemUi(ItemViewModel(item)) }
+      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {
+        ItemUi(ItemViewModel(item))
+      }
     }
   }
 }
