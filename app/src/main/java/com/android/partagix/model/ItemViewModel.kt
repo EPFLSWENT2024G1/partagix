@@ -65,6 +65,11 @@ class ItemViewModel(
         _uiState.value.item.location)
   }
 
+  /**
+   * Update the UI state with a new item
+   *
+   * @param new the new item to update the UI state with
+   */
   fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
@@ -72,6 +77,9 @@ class ItemViewModel(
         )
   }
 
+    /**
+     * Save the item with the current UI state in the database
+     */
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(

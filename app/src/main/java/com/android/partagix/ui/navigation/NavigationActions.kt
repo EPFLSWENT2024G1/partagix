@@ -30,10 +30,20 @@ data class TopLevelDestination(
 
 class NavigationActions(private val navController: NavHostController) {
 
+    /**
+     * Navigate to a top level destination.
+     *
+     * @param destination the destination to navigate to.
+     */
   fun navigateTo(destination: TopLevelDestination) {
     navigateTo(destination.route)
   }
 
+    /**
+     * Navigate to a route.
+     *
+     * @param route the route to navigate to.
+     */
   fun navigateTo(route: String) {
     navController.navigate(route) {
       launchSingleTop = true
@@ -41,6 +51,9 @@ class NavigationActions(private val navController: NavHostController) {
     }
   }
 
+    /**
+     * Navigate back to the previous screen.
+     */
   fun goBack() {
     navController.popBackStack()
   }

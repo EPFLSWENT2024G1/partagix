@@ -14,6 +14,13 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 import java.util.ArrayList
 
+/**
+ * Composable function to display a list of items, in a column.
+ *
+ * @param itemList a list of items to display.
+ * @param onClick a function to handle the click event on an item.
+ * @param modifier Modifier to apply to this layout.
+ */
 @Composable
 fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier = Modifier) {
   LazyColumn(modifier = modifier.fillMaxSize()) {

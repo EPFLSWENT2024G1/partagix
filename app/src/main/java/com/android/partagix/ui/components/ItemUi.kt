@@ -30,6 +30,11 @@ import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 
+/**
+ * Composable function to display an item, in a rectangle form.
+ *
+ * @param item an Item instance to display.
+ */
 @Composable
 fun ItemUi(item: Item) {
 
