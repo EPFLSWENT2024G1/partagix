@@ -32,11 +32,11 @@ class BootTest {
     authentication = mockk<Authentication>()
     mockNavActions = mockk<NavigationActions>()
 
-    composeTestRule.setContent { BootScreen(authentication, mockNavActions) }
-
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { authentication.isAlreadySignedIn() } returns true
+
+    composeTestRule.setContent { BootScreen(authentication, mockNavActions) }
   }
 
   @Test

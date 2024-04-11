@@ -9,8 +9,8 @@ data class Item(
     val category: Category,
     val name: String,
     val description: String,
-    val author: String,
     val visibility: Visibility,
     val quantity: Long,
     val location: Location,
+    val idUser: String = "",
 )

@@ -186,6 +186,9 @@ dependencies {
     implementation("com.google.maps.android:maps-compose-utils:4.3.0")
     implementation("com.google.maps.android:maps-compose-widgets:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // ----------       Coil     ------------
+    implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 }
 
 secrets {
