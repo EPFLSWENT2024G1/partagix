@@ -16,9 +16,6 @@
 
 package com.android.partagix.model
 
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -31,10 +28,9 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
   private val database = Database()
   private var fetchedList: List<Item> = emptyList()
-  private var fetchedBorrowed: List<Item> = emptyList()
 
   // UI state exposed to the UI
-  private val _uiState = MutableStateFlow(InventoryUIState(items, "", items))
+  private val _uiState = MutableStateFlow(InventoryUIState(items, ""))
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
@@ -43,68 +39,45 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   }
 
   private fun getItems() {
-    viewModelScope.launch { database.getItems { update(it, false) } }
+    viewModelScope.launch { database.getItems { update(it) } }
   }
 
   fun getInventory() {
-    val user = FirebaseAuth.getInstance().currentUser
+    val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
       if (user == null) {
-        database.getUserInventory(/*user.uid*/ "fdsfsfwef") { update(it.items, false) }
-        database.getLoans { it.filter { it.idLoaner.equals(user) || it.idOwner.equals(user) }
-          .forEach { loan -> database.getItems {
-            items: List<Item> -> update(
-            items.filter { it.id.equals(loan.idItem) },true) } }
-        }
+        println("yooooooooooooo")
+        database.getUserInventory("gWaakUl8tejpBcqPqn1n") { update(it.items) }
       } else {
-        database.getItems { update(it, true) }
-        println("----- error user unknown")
+        println("----- error user unknown dslabfuiladsbvuil")
       }
     }
   }
-  private fun update(new: List<Item>, borrowed : Boolean) {
-    if (borrowed){
-      _uiState.value =
-        _uiState.value.copy(
-          borrowedItems = new,
-        )
 
-    } else {
-      _uiState.value =
-        _uiState.value.copy(
-          items = new,
-        )
-      fetchedList = new
-    }
-  }
+  private fun update(new: List<Item>) {
 
-  fun findUser(uid :String){
-    database.getUser(uid) { user -> return@getUser  }
+    _uiState.value =
+        _uiState.value.copy(
+            items = new,
+        )
+    fetchedList = new
   }
 
   fun filterItems(query: String) {
     val currentState = _uiState.value
-    val list = fetchedList.filter{
-                it.name.contains(query, ignoreCase = true) ||
-                it.description.contains(query, ignoreCase = true) ||
-                it.category.toString().contains(query, ignoreCase = true)
-        // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-        // it.loaned?.contains(query, ignoreCase = true) ||
-        // it.quantity?.contains(query, ignoreCase = true)
-
-    }
-    val listBorrowed = fetchedBorrowed.filter {
-      it.name.contains(query, ignoreCase = true) ||
+    val list =
+        fetchedList.filter {
+          it.id.contains(query, ignoreCase = true) ||
+              it.name.contains(query, ignoreCase = true) ||
               it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true) ||
-              it.author.contains(query, ignoreCase = true)
-      // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-      // it.loaned?.contains(query, ignoreCase = true) ||
-      // it.quantity?.contains(query, ignoreCase = true)
-    }
+              it.category.toString().contains(query, ignoreCase = true)
+          // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
+          // it.loaned?.contains(query, ignoreCase = true) ||
+          // it.quantity?.contains(query, ignoreCase = true)
+        }
 
-    _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
+    _uiState.value = currentState.copy(query = query, items = list)
   }
 }
 
-data class InventoryUIState(val items: List<Item>, val query: String, val borrowedItems : List<Item> )
+data class InventoryUIState(val items: List<Item>, val query: String)
