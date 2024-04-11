@@ -29,12 +29,17 @@ import androidx.compose.ui.unit.dp
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {
+fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier) {
   val keyboardController = LocalSoftwareKeyboardController.current
   var active by remember { mutableStateOf(false) }
+  var query by remember { mutableStateOf("") }
+
   SearchBar(
       query = query,
-      onQueryChange = { filter(it) },
+      onQueryChange = {
+        filter(it)
+        query = it
+      },
       onSearch = { filter(it) },
       active = false,
       onActiveChange = { active = it },

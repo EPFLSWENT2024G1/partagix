@@ -76,10 +76,14 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
           it.id.contains(query, ignoreCase = true) ||
               it.name.contains(query, ignoreCase = true) ||
               it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true)
-          // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-          // it.loaned?.contains(query, ignoreCase = true) ||
-          // it.quantity?.contains(query, ignoreCase = true)
+              it.category.toString().contains(query, ignoreCase = true) ||
+              // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
+              // it.loaned?.contains(query, ignoreCase = true) ||
+              try {
+                it.quantity == query.toLong()
+              } catch (e: NumberFormatException) {
+                false
+              }
         }
 
     _uiState.value = currentState.copy(query = query, items = list)

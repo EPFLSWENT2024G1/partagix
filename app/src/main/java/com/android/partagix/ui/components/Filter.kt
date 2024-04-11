@@ -42,7 +42,17 @@ import androidx.compose.ui.window.Dialog
 import com.android.partagix.R
 
 @Composable
-fun Filter(selectedValue: (Float) -> Unit, modifier: Modifier = Modifier) {
+fun Filter(
+    title: String,
+    selectedValue: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    minUnit: String = "",
+    maxUnit: String = "",
+    minValue: Float = 0f,
+    maxValue: Float = 50f,
+    sliderTextValue: ((Float) -> String)? = null
+) {
   var sliderPosition by remember { mutableFloatStateOf(0f) }
   var showDialog by remember { mutableStateOf(false) }
 
@@ -66,10 +76,10 @@ fun Filter(selectedValue: (Float) -> Unit, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
           Text(
-              text = "Distance",
+              text = title,
               style =
                   TextStyle(
-                      fontSize = 22.sp,
+                      fontSize = 20.sp,
                       fontFamily = FontFamily(Font(R.font.roboto)),
                       fontWeight = FontWeight(500),
                       color = Color(0xFF464646),
@@ -83,23 +93,23 @@ fun Filter(selectedValue: (Float) -> Unit, modifier: Modifier = Modifier) {
         }
       }
 
-  if (showDialog) {
+  if (showDialog && !disabled) {
     Dialog(onDismissRequest = { showDialog = false }) {
       Card(
           modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
           shape = RoundedCornerShape(24.dp),
       ) {
         SliderFilter(
-            minUnit = "0 km",
-            maxUnit = "50 km",
-            minValue = 0f,
-            maxValue = 50f,
+            minUnit = minUnit,
+            maxUnit = maxUnit,
+            minValue = minValue,
+            maxValue = maxValue,
             sliderPosition = sliderPosition,
             onSliderChange = {
               sliderPosition = it
               selectedValue(it)
             },
-            sliderTextValue = { "Up to ${String.format("%02d", it.toInt())} km" })
+            sliderTextValue = sliderTextValue ?: { it.toString() })
       }
     }
   }
@@ -171,5 +181,5 @@ fun SliderFilter(
 @Preview
 @Composable
 fun FilterPreview() {
-  Filter(selectedValue = {})
+  // Filter(selectedValue = {})
 }
