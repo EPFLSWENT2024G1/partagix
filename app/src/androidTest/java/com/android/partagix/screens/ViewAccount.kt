@@ -12,12 +12,13 @@ class ViewAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
         }) {
 
   val title: KNode = child { hasTestTag("title") } // topappbar
+  val accountScreenBottomNavBar: KNode = child { hasTestTag("accountScreenBottomNavBar") } // BottomNavigationBar
   val mainContent: KNode = child { hasTestTag("mainContent") } // column
   val userImage: KNode = child { hasTestTag("userImage") } // image
   val username: KNode = child { hasTestTag("username") } // row
   val location: KNode = child { hasTestTag("location") } // textfield
   val rating: KNode = child { hasTestTag("rating") } // textfield
-  val buttons: KNode = child { hasTestTag("actionButtons") } // row
+  val actionButtons: KNode = child { hasTestTag("actionButtons") } // row
   val inventoryButton: KNode = child { hasTestTag("inventoryButton") } // button
   val friendButton: KNode = child { hasTestTag("friendButton") } // button
 }
