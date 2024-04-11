@@ -93,7 +93,7 @@ fun ItemUi(item: ItemViewModel) {
                 }
                 Text(
                     text =
-                        if (item.findStatus(item.uiState.value.item) == LoanState.ACCEPTED) {
+                        if (item.findStatus(item.uiState.value.item)) {
                           if (after) {
                             "available in : /${time}"
                           } else {
