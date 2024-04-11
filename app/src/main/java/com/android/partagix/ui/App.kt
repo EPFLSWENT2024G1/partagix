@@ -31,7 +31,6 @@ import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateItem
 import com.android.partagix.ui.screens.InventoryScreen
-import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoginScreen
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
