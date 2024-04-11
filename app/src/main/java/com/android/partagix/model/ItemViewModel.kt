@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
-    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
+    item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null
 ) : ViewModel() {
 
@@ -64,7 +64,6 @@ class ItemViewModel(
         Category(idCategory, _uiState.value.item.category.name),
         _uiState.value.item.name,
         _uiState.value.item.description,
-        _uiState.value.item.author,
         _uiState.value.item.visibility,
         _uiState.value.item.quantity,
         _uiState.value.item.location)

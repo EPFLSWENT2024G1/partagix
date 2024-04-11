@@ -48,7 +48,6 @@ fun ItemListPreview() {
             Category("1", "name"),
             "name $i",
             "description",
-            "author",
             Visibility.PUBLIC,
             1,
             android.location.Location("location")))
