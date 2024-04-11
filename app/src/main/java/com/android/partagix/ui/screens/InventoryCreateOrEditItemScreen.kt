@@ -140,7 +140,9 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
-                uiCategory = Category("", DropDown(uiCategory.name, CategoryItems)) //TODO: get category id(?)
+                uiCategory =
+                    Category(
+                        "", DropDown(uiCategory.name, CategoryItems)) // TODO: get category id(?)
               }
               Box(modifier = modifier.fillMaxWidth()) {
                 val v =
