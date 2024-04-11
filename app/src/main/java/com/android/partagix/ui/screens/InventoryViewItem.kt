@@ -37,6 +37,12 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
 
+/**
+ * Screen to view an item.
+ *
+ * @param navigationActions a NavigationActions instance to navigate between screens.
+ * @param viewModel an ItemViewModel which handles functionality.
+ */
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
