@@ -99,7 +99,9 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
             ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
         }
 
-        onComposeScreen<ViewAccount>(composeTestRule) { title { assertIsDisplayed() } }
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            title { assertIsDisplayed() }
+        }
     }
 
 //    accountScreenBottomNavBar
