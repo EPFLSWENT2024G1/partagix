@@ -31,6 +31,7 @@ import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.ViewAccount
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -92,7 +93,9 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+              .fillMaxSize()
+              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -120,7 +123,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
             inventoryViewModel = inventoryViewModel,
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
-      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(Route.ACCOUNT) { ViewAccount(navigationActions =navigationActions)}
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
