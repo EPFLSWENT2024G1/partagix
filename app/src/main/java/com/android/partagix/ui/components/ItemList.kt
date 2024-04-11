@@ -15,6 +15,15 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 import java.util.ArrayList
 
+
+/**
+ * ItemList composable to display a scrollable list of items,
+ * which can execute the onClick when clicked.
+ *
+ * @param itemList a list of items to display.
+ * @param onClick a lambda to handle item click events.
+ * @param modifier Modifier to apply to this layout.
+ */
 @Composable
 fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier = Modifier) {
   LazyColumn(modifier = modifier.fillMaxSize()) {

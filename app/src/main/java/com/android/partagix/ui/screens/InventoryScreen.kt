@@ -29,7 +29,13 @@ import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * InventoryScreen is a composable that displays the inventory screen of the user.
+ *
+ * @param inventoryViewModel a view model to get the inventory.
+ * @param navigationActions a class to navigate to different screens.
+ * @param modifier a Modifier to apply to this layout.
+ */
 @Composable
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
@@ -54,7 +60,7 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            onClick = { navigationActions.navigateTo(Route.INVENTORY_CREATE_ITEM) }) {
+            onClick = { navigationActions.navigateTo(Route.CREATE_ITEM) }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
       }) { innerPadding ->

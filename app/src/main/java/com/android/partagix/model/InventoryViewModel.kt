@@ -42,13 +42,18 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     viewModelScope.launch { database.getItems { update(it, false) } }
   }
 
-  fun getInventory() {
+    /**
+     *  getInventory is a function that will update the uistate to have the items from your
+     *  inventory and to have the possible items you borrowed by checking your loans
+     *
+     */
+    fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user != null) {
         database.getUserInventory(user.uid) { update(it.items, false) }
         database.getLoans {
-          it.filter { it.idLoaner.equals(user) || it.idOwner.equals(user) }
+          it.filter { it.idLoaner.equals(user)}
               .forEach { loan ->
                 database.getItems { items: List<Item> ->
                   update(items.filter { it.id.equals(loan.idItem) }, true)
@@ -61,7 +66,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
       }
     }
   }
-
   private fun update(new: List<Item>, borrowed: Boolean) {
     if (borrowed) {
       _uiState.value =
@@ -77,6 +81,10 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
+    /**
+     * filterItems is a functions that we use in the search bar of our inventory to filter your
+     * items
+     */
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list =

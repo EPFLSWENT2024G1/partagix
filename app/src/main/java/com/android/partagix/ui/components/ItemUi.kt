@@ -36,6 +36,14 @@ import com.android.partagix.model.loan.LoanState
 import java.time.Duration
 import java.util.Date
 
+
+/**
+ * ItemUi is a composable function that displays an item in the inventory,
+ * and that will take us to the item's page when clicked.
+ *
+ * @param item an ItemViewModel instance.
+ *
+ */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: ItemViewModel) {

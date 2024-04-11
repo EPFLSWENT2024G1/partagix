@@ -17,6 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.model.item.Item
 
+
+/**
+ * ItemListColumn is a composable function that displays a list of items in a column.
+ * which is the function that will be called when we want to see a list of items.
+ *
+ * @param List a list of items.
+ * @param Title a string that represents the title of the column.
+ * @param corner a string that represents the corner of the column.
+ * @param onClick a function that takes an item and returns a Unit.
+ * @param onClickCorner a function that returns a Unit.
+ * @param modifier a Modifier.
+ */
 @Composable
 fun ItemListColumn(
     List: List<Item>,

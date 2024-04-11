@@ -20,6 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 
+/**
+ * TopSearchBar is a composable that displays a search bar at the top of the screen.
+ *
+ * @param filter a lambda function to filter the items.
+ * @param query a string to filter the items.
+ * @param modifier a Modifier to apply to this layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {

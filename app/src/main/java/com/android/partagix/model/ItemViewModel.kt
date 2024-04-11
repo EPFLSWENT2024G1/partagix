@@ -93,26 +93,38 @@ class ItemViewModel(
     return user
   }
 
-  fun findStatus(item: Item): LoanState {
-    var state: LoanState = LoanState.PENDING
+    /**
+     * findStatus is a function that tells us if an item will be loaned or not
+     *
+     * @param item is the item we want to check
+     *
+     * @return a boolean to tells us wether or not there is some accepted loan on that item
+     */
+  fun findStatus(item: Item): Boolean {
+    var state: Boolean = false
     database.getLoans {
       it.filter { it.idItem.equals(item.id) }
           .forEach {
             if (it.state == LoanState.ACCEPTED) {
-              state = LoanState.ACCEPTED
+              state = true
             } else {
-              if (it.state == LoanState.PENDING) {
-                state = LoanState.PENDING
-              } else {
-                state = LoanState.FINISHED
-              }
+                state = false
+
             }
           }
     }
     return state
   }
 
-  fun findLoan(item: Item): Loan {
+    /**
+     * findLoan is a function that searches for the possible loan an item could have
+     * and return the loan that is the nearest in term of time
+     *
+     * @param item is the item for which we want to check
+     *
+     * @return the next loan in term of time
+     */
+    fun findLoan(item: Item): Loan {
     var loan: List<Loan> = emptyList()
     var currentDate = java.util.Date()
     var nextLoan: Loan =
@@ -134,9 +146,5 @@ class ItemViewModel(
     return nextLoan
   }
 }
-  companion object {
-    private const val TAG = "ItemViewModel"
-
-  }
 
 data class ItemUIState(val item: Item)
