@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +38,7 @@ fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {
           Icon(Icons.Default.Menu, contentDescription = "Search")
         } else {
           Icon(
-              Icons.Default.ArrowBack,
+              Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Search",
               modifier =
                   modifier.clickable {
