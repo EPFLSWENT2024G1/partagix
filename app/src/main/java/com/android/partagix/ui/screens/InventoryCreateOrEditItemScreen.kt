@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,13 +52,15 @@ import com.android.partagix.ui.navigation.NavigationActions
  * @param itemViewModel an ItemViewModel which handles functionality.
  * @param navigationActions a NavigationActions instance to navigate between screens.
  * @param modifier Modifier to apply to this layout.
+ * @param mode is in create by default, to go on edit use the string "edit".
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryCreateItem(
+fun InventoryCreateOrEditItem(
     itemViewModel: ItemViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
+    mode: String
 ) {
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
@@ -66,7 +69,13 @@ fun InventoryCreateItem(
       modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
       topBar = {
         TopAppBar(
-            title = { Text("Create a new item") },
+            title = {
+              if (mode == "edit") {
+                Text("Edit item")
+              } else {
+                Text("Create a new item")
+              }
+            },
             modifier = modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
@@ -75,12 +84,15 @@ fun InventoryCreateItem(
             })
       },
   ) {
-    var uiCategory by remember { mutableStateOf(Category("", "")) }
-    var uiName by remember { mutableStateOf("") }
-    var uiDescription by remember { mutableStateOf("") }
-    var uiVisibility by remember { mutableStateOf(Visibility.PUBLIC) }
-    var uiQuantity by remember { mutableStateOf(1L) }
-    var uiLocation by remember { mutableStateOf(Location("")) }
+    val uis = itemViewModel.uiState.collectAsState()
+    val i = uis.value.item
+
+    var uiCategory by remember { mutableStateOf(i.category) }
+    var uiName by remember { mutableStateOf(i.name) }
+    var uiDescription by remember { mutableStateOf(i.description) }
+    var uiVisibility by remember { mutableStateOf(i.visibility) }
+    var uiQuantity by remember { mutableStateOf(i.quantity) }
+    var uiLocation by remember { mutableStateOf(Location(i.location)) }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
@@ -98,7 +110,7 @@ fun InventoryCreateItem(
               Column {
                 OutlinedTextField(
                     value = uiName,
-                    onValueChange = { uiName = it },
+                    onValueChange = { it -> uiName = it },
                     label = { Text("Object name") },
                     modifier = modifier.fillMaxWidth(),
                     readOnly = false)
@@ -118,7 +130,7 @@ fun InventoryCreateItem(
           Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
             OutlinedTextField(
                 value = uiDescription,
-                onValueChange = { uiDescription = it },
+                onValueChange = { it -> uiDescription = it },
                 label = { Text("Description") },
                 modifier = modifier.fillMaxWidth(),
                 minLines = 5,
@@ -128,11 +140,20 @@ fun InventoryCreateItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
-                uiCategory = Category("", DropDown("Category", CategoryItems))
+                uiCategory = Category("", DropDown(uiCategory.name, CategoryItems))
               }
               Box(modifier = modifier.fillMaxWidth()) {
+                val v =
+                    DropDown(
+                        (uiVisibility.toString().substring(0, 1).uppercase() +
+                            uiVisibility.toString().substring(1).lowercase()),
+                        VisibilityItems)
                 uiVisibility =
-                    Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())
+                    when (v) {
+                      "Friends" -> Visibility.FRIENDS
+                      "Private" -> Visibility.PRIVATE
+                      else -> Visibility.PUBLIC
+                    }
               }
             }
 
@@ -140,7 +161,7 @@ fun InventoryCreateItem(
 
             OutlinedTextField(
                 value = uiQuantity.toString(),
-                onValueChange = { uiQuantity = it.toLong() },
+                onValueChange = { it -> uiQuantity = it.toLong() },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
                 modifier = modifier.fillMaxWidth(),
@@ -150,7 +171,7 @@ fun InventoryCreateItem(
 
             OutlinedTextField(
                 value = uiLocation.toString(), // TODO: get default or user's location
-                onValueChange = { uiLocation = Location(it) },
+                onValueChange = { it -> uiLocation = Location(it) },
                 label = { Text("Where") },
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
@@ -168,9 +189,13 @@ fun InventoryCreateItem(
 
             Button(
                 onClick = {
+                  var id = ""
+                  if (mode == "edit") {
+                    id = i.id
+                  }
                   itemViewModel.updateUiState(
                       Item(
-                          "",
+                          id,
                           uiCategory,
                           uiName,
                           uiDescription,
@@ -180,7 +205,13 @@ fun InventoryCreateItem(
                   itemViewModel.saveWithUiState()
                   navigationActions.goBack()
                 },
-                content = { Text("Create") },
+                content = {
+                  if (mode == "edit") {
+                    Text("Save")
+                  } else {
+                    Text("Create")
+                  }
+                },
                 modifier = modifier.fillMaxWidth())
           }
         }
