@@ -70,11 +70,12 @@ fun InventoryCreateOrEditItem(
       topBar = {
         TopAppBar(
             title = {
-                if(mode == "edit") {
-                    Text("Edit item")
-                } else {
-                    Text("Create a new item")
-                } },
+              if (mode == "edit") {
+                Text("Edit item")
+              } else {
+                Text("Create a new item")
+              }
+            },
             modifier = modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
@@ -139,11 +140,20 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
-                uiCategory = Category("", DropDown("Category", CategoryItems))
+                uiCategory = Category("", DropDown(uiCategory.name, CategoryItems)) //TODO: get category id(?)
               }
               Box(modifier = modifier.fillMaxWidth()) {
+                val v =
+                    DropDown(
+                        (uiVisibility.toString().substring(0, 1).uppercase() +
+                            uiVisibility.toString().substring(1).lowercase()),
+                        VisibilityItems)
                 uiVisibility =
-                    Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())
+                    when (v) {
+                      "Friends" -> Visibility.FRIENDS
+                      "Private" -> Visibility.PRIVATE
+                      else -> Visibility.PUBLIC
+                    }
               }
             }
 
@@ -179,7 +189,7 @@ fun InventoryCreateOrEditItem(
 
             Button(
                 onClick = {
-                    var id = ""
+                  var id = ""
                   if (mode == "edit") {
                     id = i.id
                   }
