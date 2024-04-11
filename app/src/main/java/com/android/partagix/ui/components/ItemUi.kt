@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
+import com.android.partagix.model.Database
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 
 @Composable
 fun ItemUi(item: Item) {
-
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
@@ -66,7 +66,7 @@ fun ItemUi(item: Item) {
                           modifier = Modifier.width(50.dp))
 
                       Text(
-                          text = "auteur",
+                          text = item.author,
                           // color = Color(0xff49454f),
                           lineHeight = 1.33.em,
                           style = TextStyle(

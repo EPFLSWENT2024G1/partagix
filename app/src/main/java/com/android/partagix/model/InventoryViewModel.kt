@@ -57,12 +57,11 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
             items.filter { it.id.equals(loan.idItem) },true) } }
         }
       } else {
-        database.getItems { update(it, false) }
+        database.getItems { update(it, true) }
         println("----- error user unknown")
       }
     }
   }
-
   private fun update(new: List<Item>, borrowed : Boolean) {
     if (borrowed){
       _uiState.value =

@@ -8,12 +8,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.magnifier
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -47,7 +49,9 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Horizontalfullwidth
 import com.android.partagix.ui.components.ItemList
+import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
+
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
 import com.android.partagix.ui.navigation.TopLevelDestination
@@ -93,42 +97,27 @@ fun InventoryScreen(
                     .testTag("inventoryScreenMainContentText"))
           }
         } else {
-            Column {
-                if (uiState.borrowedItems.isNotEmpty()){
-                    Text(text = "Borrowed items",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        //fontFamily = FontFamily(Font(R.font.inter)),
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF000000),
+            Column (modifier = modifier
+                .padding(innerPadding).fillMaxSize()
+                ){
+                    ItemListColumn(
+                        List = uiState.borrowedItems,
+                        Title = "borrowed items",
+                        corner = uiState.borrowedItems.size.toString(),
+                        onClick = {},
+                        onClickCorner = { /*TODO*/ },
+                        modifier = Modifier.height(220.dp)
+                    )
+                ItemListColumn(
+                        List = uiState.items,
+                        Title = "inventory item",
+                        corner = uiState.items.size.toString() ,
+                        onClick = {},
+                        onClickCorner = { /*TODO*/ },
+                        //modifier = Modifier
+                    )
 
-                        ),
-                    modifier = modifier.padding(top = innerPadding.calculateTopPadding()).fillMaxWidth()
-                    )
-                    ItemList(itemList = uiState.borrowedItems,
-                    onClick = {Log.w(TAG, "veut changer")},// TO-DO go to edit-------------------------
-                    modifier = modifier.fillMaxWidth().height(210.dp)
-                    )
                 }
-                Text(text = "My inventory",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        //fontFamily = FontFamily(Font(R.font.inter)),
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF000000),
-
-                        ),
-                    modifier = if (uiState.borrowedItems.isEmpty())
-                        Modifier.padding(top = innerPadding.calculateTopPadding()) else Modifier
-                )
-                
-                ItemList(itemList = uiState.items,
-                    onClick = {Log.w(TAG, "veut changer" )},// TO-DO go to edit-------------------------
-                    modifier = modifier.fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())
-                )
-
-            }
-
         }
       }
 }
