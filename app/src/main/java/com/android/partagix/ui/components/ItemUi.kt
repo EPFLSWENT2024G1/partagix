@@ -105,7 +105,6 @@ fun ItemUiPreview() {
           Category("1", "name"),
           "name",
           "description",
-          "author",
           Visibility.PUBLIC,
           1,
           android.location.Location("")))
