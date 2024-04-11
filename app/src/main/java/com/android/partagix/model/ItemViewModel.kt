@@ -77,9 +77,7 @@ class ItemViewModel(
         )
   }
 
-    /**
-     * Save the item with the current UI state in the database
-     */
+  /** Save the item with the current UI state in the database */
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(

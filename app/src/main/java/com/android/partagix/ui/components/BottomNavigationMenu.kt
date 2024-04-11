@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
 import com.android.partagix.ui.navigation.TopLevelDestination
+
 /**
  * Bottom navigation bar for the app.
  *

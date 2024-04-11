@@ -36,6 +36,7 @@ import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
+
 /**
  * Screen to view an item.
  *

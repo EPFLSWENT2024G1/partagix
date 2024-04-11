@@ -42,9 +42,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     viewModelScope.launch { database.getItems { update(it) } }
   }
 
-  /**
-   * Get the inventory of the current user
-   */
+  /** Get the inventory of the current user */
   fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
