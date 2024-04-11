@@ -71,16 +71,19 @@ fun InventoryCreateOrEditItem(
         TopAppBar(
             title = {
               if (mode == "edit") {
-                Text("Edit item")
+                Text("Edit item", modifier = modifier.testTag("EditScreen"))
               } else {
-                Text("Create a new item")
+                Text("Create a new item", modifier = modifier.testTag("CreateScreen"))
               }
             },
             modifier = modifier.fillMaxWidth(),
             navigationIcon = {
-              IconButton(onClick = { navigationActions.goBack() }) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-              }
+              IconButton(
+                  modifier = modifier.testTag("goBack"), onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
             })
       },
   ) {

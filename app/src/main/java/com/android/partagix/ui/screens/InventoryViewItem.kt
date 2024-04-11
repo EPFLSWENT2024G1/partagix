@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
@@ -63,7 +64,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier.fillMaxWidth()) {
+      modifier = Modifier.fillMaxWidth().testTag("ViewItemScreen")) {
         Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -178,7 +179,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Button(
                     onClick = { /*TODO: go to edit item page*/},
                     content = { Text("Edit") },
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
               }
             }
       }
