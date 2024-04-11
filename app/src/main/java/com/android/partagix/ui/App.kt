@@ -115,7 +115,10 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.LOAN) { LoanScreen(navigationActions) }
+      composable(Route.LOAN) {
+        val inventoryViewModel = InventoryViewModel() // TODO: change for loansViewModel
+        LoanScreen(navigationActions, inventoryViewModel, modifier)
+      }
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
