@@ -121,7 +121,7 @@ fun InventoryCreateOrEditItem(
                 OutlinedTextField(
                     value =
                         uiState.item
-                            .author, // TODO: check with future implementation of Item if author is
+                            .idUser, // TODO: check with future implementation of Item if author is
                     // correctly linked to user.name by default
                     onValueChange = {},
                     label = { Text("Author") },
@@ -202,7 +202,6 @@ fun InventoryCreateOrEditItem(
                           uiCategory,
                           uiName,
                           uiDescription,
-                          uiState.item.author,
                           uiVisibility,
                           uiQuantity,
                           uiLocation))

@@ -82,7 +82,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   }
                   Spacer(modifier = Modifier.width(8.dp))
 
-                  Column() {
+                  Column {
                     OutlinedTextField(
                         value = item.name,
                         onValueChange = {},
@@ -91,7 +91,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                         readOnly = true)
 
                     OutlinedTextField(
-                        value = item.author,
+                        value = item.idUser,
                         onValueChange = {},
                         label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),
