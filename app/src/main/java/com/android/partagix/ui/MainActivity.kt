@@ -30,6 +30,7 @@ import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.theme.PartagixAppTheme
 import com.google.firebase.auth.FirebaseUser
+import getImageFromFirebaseStorage
 import uploadImageToFirebaseStorage
 import java.io.File
 
@@ -72,9 +73,7 @@ class MainActivity : ComponentActivity(), SignInResultListener {
       .appendPath(resources.getResourceEntryName(resourceId))
       .build()
     println("----- $imageUri")
-
-    uploadImageToFirebaseStorage(imageUri)
-
+    
     val navController = rememberNavController()
     navigationActions = NavigationActions(navController)
 
