@@ -87,7 +87,6 @@ fun InventoryScreen(
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
       }) { innerPadding ->
-        Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
         if (uiState.items.isEmpty()) {
           Box(modifier = modifier
               .padding(innerPadding)

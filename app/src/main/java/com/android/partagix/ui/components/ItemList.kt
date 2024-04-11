@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -19,7 +20,7 @@ fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier =
   LazyColumn(modifier = modifier.fillMaxSize()) {
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) { ItemUi(item) }
+      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) { ItemUi(ItemViewModel(item)) }
     }
   }
 }

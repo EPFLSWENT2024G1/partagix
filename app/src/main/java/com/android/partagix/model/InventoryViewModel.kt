@@ -16,9 +16,6 @@
 
 package com.android.partagix.model
 
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -38,7 +35,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    getItems()
     getInventory()
   }
 
@@ -49,15 +45,15 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
-      if (user == null) {
-        database.getUserInventory(/*user.uid*/ "fdsfsfwef") { update(it.items, false) }
+      if (user != null) {
+        database.getUserInventory(user.uid ) { update(it.items, false) }
         database.getLoans { it.filter { it.idLoaner.equals(user) || it.idOwner.equals(user) }
           .forEach { loan -> database.getItems {
             items: List<Item> -> update(
             items.filter { it.id.equals(loan.idItem) },true) } }
         }
       } else {
-        database.getItems { update(it, true) }
+        // database.getItems { update(it, true) } _____ used to test
         println("----- error user unknown")
       }
     }
@@ -78,29 +74,22 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
-  fun findUser(uid :String){
-    database.getUser(uid) { user -> return@getUser  }
-  }
-
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list = fetchedList.filter{
-                it.name.contains(query, ignoreCase = true) ||
-                it.description.contains(query, ignoreCase = true) ||
-                it.category.toString().contains(query, ignoreCase = true)
-        // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-        // it.loaned?.contains(query, ignoreCase = true) ||
-        // it.quantity?.contains(query, ignoreCase = true)
+      it.name.contains(query, ignoreCase = true) ||
+              it.description.contains(query, ignoreCase = true) ||
+              it.category.toString().contains(query, ignoreCase = true) ||
+              it.visibility.toString().contains(query, ignoreCase = true) ||
+              it.quantity.toString().contains(query, ignoreCase = true)
 
     }
     val listBorrowed = fetchedBorrowed.filter {
       it.name.contains(query, ignoreCase = true) ||
               it.description.contains(query, ignoreCase = true) ||
               it.category.toString().contains(query, ignoreCase = true) ||
-              it.author.contains(query, ignoreCase = true)
-      // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-      // it.loaned?.contains(query, ignoreCase = true) ||
-      // it.quantity?.contains(query, ignoreCase = true)
+              it.visibility.toString().contains(query, ignoreCase = true) ||
+              it.quantity.toString().contains(query, ignoreCase = true)
     }
 
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)

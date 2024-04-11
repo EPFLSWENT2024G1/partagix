@@ -1,5 +1,6 @@
 package com.android.partagix.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,12 +36,28 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.Database
+import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import java.time.Duration
+import java.util.Date
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ItemUi(item: Item) {
+fun ItemUi(item: ItemViewModel) {
+ //val user : User = item.findUser(item.uiState.value.item.author)
+    val currentDate = java.util.Date()
+    val after :Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
+    val Date  : Date= if (after){
+        item.findLoan(item.uiState.value.item).endDate
+    } else{
+        item.findLoan(item.uiState.value.item).startDate
+    }
+    val time = Duration.between(currentDate.toInstant(), Date.toInstant())
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
@@ -62,11 +79,11 @@ fun ItemUi(item: Item) {
         ) {
               Column(modifier = Modifier.weight(weight = 1f)) {
                   Row (modifier = Modifier.height(25.dp)){
-                      Text(text = "lvl 4",
+                      Text(text = "lvl4",  //user.rank,
                           modifier = Modifier.width(50.dp))
 
                       Text(
-                          text = item.author,
+                          text = "name" ,//user.name ,
                           // color = Color(0xff49454f),
                           lineHeight = 1.33.em,
                           style = TextStyle(
@@ -79,7 +96,17 @@ fun ItemUi(item: Item) {
                           modifier = Modifier.fillMaxWidth())
                   }
                 Text(
-                    text = "available until :date si loaned",
+
+                    text = if (item.findStatus(item.uiState.value.item) == LoanState.ACCEPTED){
+                        if (after){
+                            "available in : /${time}"
+
+                        } else {
+                            "borrowed in : /${time}"
+                        }
+                    } else {
+                            "not borrowed"
+                           },
                     // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
@@ -89,7 +116,7 @@ fun ItemUi(item: Item) {
                   modifier = Modifier.requiredHeight(height = 64.dp)) {
 
                     Text(
-                        text = item.name,
+                        text = item.uiState.value.item.name,
                         textAlign = TextAlign.End,
                         lineHeight = 1.45.em,
                         style = TextStyle(
@@ -103,7 +130,7 @@ fun ItemUi(item: Item) {
                             .height(40.dp).padding(top = 10.dp)
                     )
                     Text(
-                        text = "Quantity: " + item.quantity.toString(),
+                        text = "Quantity: " + item.uiState.value.item.quantity.toString(),
                         style = TextStyle(
                             fontSize = 9.sp,
                             textAlign = TextAlign.Right,
@@ -115,7 +142,7 @@ fun ItemUi(item: Item) {
                     )
                   }
             Image(painter = painterResource(id = R.drawable.mutliprise),
-            contentDescription = item.name,
+            contentDescription = "fds",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.width(70.dp))
 
@@ -140,11 +167,11 @@ fun BuildingBlocksstatelayer1Enabled(modifier: Modifier = Modifier) {
       .padding(bottom = 0.0000152587890625.dp))
 }
 
-@Preview
+/*@Preview
 @Composable
 fun ItemUiPreview() {
   ItemUi(
-      Item(
+      ItemViewModel(Item)(
           "1",
           Category("1", "name"),
           "name",
@@ -153,4 +180,4 @@ fun ItemUiPreview() {
           Visibility.PUBLIC,
           1,
           android.location.Location("")))
-}
+}*/
