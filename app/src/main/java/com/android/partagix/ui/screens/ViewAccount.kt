@@ -41,11 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewAccount(
@@ -71,7 +72,13 @@ fun ViewAccount(
                     modifier = Modifier.width(48.dp))
               }
             })
-      }) {
+      },
+      bottomBar = {
+          BottomNavigationBar(
+              selectedDestination = Route.ACCOUNT,
+              navigateToTopLevelDestination = navigationActions::navigateTo,
+              modifier = modifier.testTag("accountScreenBottomNavBar"))}
+      ) {
         Column(
             modifier =
                 Modifier.fillMaxHeight()
@@ -113,7 +120,7 @@ fun ViewAccount(
                   modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("location"),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
-              var rank = user.rank
+              val rank = user.rank
               val stars: String
               if (rank == "") {
                 stars = "No trust yet"

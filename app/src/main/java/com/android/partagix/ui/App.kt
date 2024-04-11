@@ -46,7 +46,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   @Composable
   fun Create() {
     ComposeNavigationSetup()
-      InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
+      //InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
     //-----------------------a changer
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
