@@ -106,7 +106,7 @@ class Database {
     getItems { items ->
       val listItems = mutableListOf<Item>()
       for (item in items) {
-        if(item.idUser == userId){
+        if (item.idUser == userId) {
           listItems.add(item)
         }
       }
@@ -194,10 +194,10 @@ class Database {
             "id_category" to idCategory,
             "name" to "name",
             "description" to "description",
-            "author" to "author",
             "visibility" to 0,
             "quantity" to 1,
             "location" to Location(""),
+            "id_user" to idUser,
         )
     items.document(idItem).set(data3)
 
