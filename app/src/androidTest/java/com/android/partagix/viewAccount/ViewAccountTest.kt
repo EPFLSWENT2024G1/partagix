@@ -57,7 +57,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
     @Before
     fun testSetup() {
-        emptyMockUiState = MutableStateFlow(UserUIState(emptyUser)
+        emptyMockUiState = MutableStateFlow(UserUIState(emptyUser))
 
         nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne))
 
