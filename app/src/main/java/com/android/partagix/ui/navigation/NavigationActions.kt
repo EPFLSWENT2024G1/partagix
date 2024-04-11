@@ -18,7 +18,6 @@ object Route {
   const val VIEW_ITEM = "ViewItem"
   const val BORROW = "Borrow"
   const val ACCOUNT = "Account"
-    const val INVENTORY_CREATE_ITEM = "InventoryCreateItem"
 }
 
 data class TopLevelDestination(

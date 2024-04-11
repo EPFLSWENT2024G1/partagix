@@ -53,7 +53,6 @@ import com.android.partagix.ui.components.Horizontalfullwidth
 import com.android.partagix.ui.components.ItemList
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
-import com.android.partagix.ui.navigation.NavigationActions
 
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
@@ -63,7 +62,7 @@ import com.android.partagix.ui.navigation.TopLevelDestination
 @Composable
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
-    navigationActions : NavigationActions,
+    navigateToTopLevelDestination: (TopLevelDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
@@ -76,13 +75,13 @@ fun InventoryScreen(
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.INVENTORY,
-            navigateToTopLevelDestination = navigationActions::navigateTo,
+            navigateToTopLevelDestination = navigateToTopLevelDestination,
             modifier = modifier.testTag("inventoryScreenBottomNavBar"))
       },
       floatingActionButton = {
         FloatingActionButton(
             onClick = {
-                navigationActions.navigateTo(Route.INVENTORY_CREATE_ITEM)
+                //InventoryCreateItem(itemViewModel = ItemViewModel(), navigationActions = )
             }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
@@ -108,7 +107,7 @@ fun InventoryScreen(
                         List = uiState.borrowedItems,
                         Title = "borrowed items",
                         corner = uiState.borrowedItems.size.toString(),
-                        onClick = { navigationActions.navigateTo(Route.VIEW_ITEM+ "/${it.id}")},
+                        onClick = { /*InventoryViewItem(navigationActions = , viewModel = ItemViewModel(it))*/},
                         onClickCorner = { /*TODO*/ },
                         modifier = Modifier.height(220.dp)
                     )
@@ -116,7 +115,7 @@ fun InventoryScreen(
                         List = uiState.items,
                         Title = "inventory item",
                         corner = uiState.items.size.toString() ,
-                        onClick = { navigationActions.navigateTo(Route.VIEW_ITEM+ "/${it.id}")},
+                        onClick = { /*InventoryViewItem(navigationActions = , viewModel = ItemViewModel(it))*/},
                         onClickCorner = { /*TODO*/ },
                         //modifier = Modifier
                     )
