@@ -28,7 +28,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,17 +38,23 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewAccount(
     modifier: Modifier = Modifier,
+    navigationActions: NavigationActions,
     userViewModel: UserViewModel = UserViewModel(),
 ) {
+  val uiState by userViewModel.uiState.collectAsStateWithLifecycle()
+  var user = uiState.user
   Scaffold(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
@@ -54,7 +62,9 @@ fun ViewAccount(
             title = { Text("My Account") },
             modifier = Modifier.fillMaxWidth().testTag("title"),
             navigationIcon = {
-              IconButton(onClick = { /*TODO: navigate to previous screen*/}) {
+              IconButton(onClick = {
+                  navigationActions.goBack()
+              }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
@@ -68,6 +78,10 @@ fun ViewAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
+              LaunchedEffect(key1 = uiState) {
+                  user = userViewModel.uiState.value.user
+
+              }
               Image(
                   painter =
                       painterResource(
@@ -75,16 +89,17 @@ fun ViewAccount(
                   contentDescription = null,
                   modifier = Modifier.fillMaxWidth().testTag("userImage"),
                   alignment = Alignment.Center)
+              Spacer(modifier = Modifier.height(8.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
-                    val username = userViewModel.uiState.collectAsState().value.user.name
+                    val username = user.name
                     Text("$username's profile")
                   }
               Spacer(modifier = Modifier.height(16.dp))
 
               TextField(
-                  value = userViewModel.uiState.collectAsState().value.user.address,
+                  value = user.address,
                   onValueChange = {},
                   label = { Text("Location") },
                   colors =
@@ -98,33 +113,39 @@ fun ViewAccount(
                   modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("location"),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
-              val rank = userViewModel.uiState.collectAsState().value.user.rank
-              val rating = round(rank.toFloat() * 100) / 100
-              val roundedRating = round(rating).toInt()
-              val stars =
-                  when (roundedRating) {
-                    0 -> {
-                      "☆☆☆☆☆ ($rating/5)"
+              var rank = user.rank
+              val stars: String
+              if (rank == "") {
+                stars = "No trust yet"
+              } else {
+                val rating = round(rank.toFloat() * 100) / 100
+                // val rating = 4.5
+                val roundedRating = round(rating).toInt()
+                stars =
+                    when (roundedRating) {
+                      0 -> {
+                        "☆☆☆☆☆ ($rating/5)"
+                      }
+                      1 -> {
+                        "★☆☆☆☆ ($rating/5)"
+                      }
+                      2 -> {
+                        "★★☆☆☆ ($rating/5)"
+                      }
+                      3 -> {
+                        "★★★☆☆ ($rating/5)"
+                      }
+                      4 -> {
+                        "★★★★☆ ($rating/5)"
+                      }
+                      5 -> {
+                        "★★★★★ ($rating/5)"
+                      }
+                      else -> {
+                        "..."
+                      }
                     }
-                    1 -> {
-                      "★☆☆☆☆ ($rating/5)"
-                    }
-                    2 -> {
-                      "★★☆☆☆ ($rating/5)"
-                    }
-                    3 -> {
-                      "★★★☆☆ ($rating/5)"
-                    }
-                    4 -> {
-                      "★★★★☆ ($rating/5)"
-                    }
-                    5 -> {
-                      "★★★★★ ($rating/5)"
-                    }
-                    else -> {
-                      "c'est tout cassé mon reuf"
-                    }
-                  }
+              }
               TextField(
                   value = stars,
                   onValueChange = {},
@@ -143,7 +164,7 @@ fun ViewAccount(
               Spacer(modifier = Modifier.height(16.dp))
               Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons")) {
                 Button(
-                    onClick = { /*TODO: navigate to inventory */},
+                    onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                     modifier = Modifier.fillMaxWidth(0.5f).testTag("inventoryButton")) {
                       Text("See inventory")
                     }
@@ -151,7 +172,7 @@ fun ViewAccount(
                 Button(
                     onClick = { /*TODO: friends */},
                     modifier = Modifier.fillMaxWidth().testTag("friendButton")) {
-                      Text("Add as friend")
+                      Text("Edit Profile [not yet implemented]")
                     }
               }
             }

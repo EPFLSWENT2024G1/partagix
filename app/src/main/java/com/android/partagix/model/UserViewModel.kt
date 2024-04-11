@@ -19,16 +19,17 @@ package com.android.partagix.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.inventory.Inventory
-import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class UserViewModel() : ViewModel() {
+class UserViewModel(
+    user: User = User("", "", "", "", Inventory("", emptyList())),
+) : ViewModel() {
 
-  private val user = User("", "", "", "", Inventory("", java.util.ArrayList<Item>()))
+  // private val user = user
   private val database = Database()
 
   // UI state exposed to the UI
@@ -36,26 +37,34 @@ class UserViewModel() : ViewModel() {
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
-    getCurrentUser()
-    update(user)
+    if (user.id == "") {
+      // setUserToCurrent()
+      database.getUser("lzMnQv5a4kpGBsPhRcDS") { updateUIState(it) }
+    } else {
+      updateUIState(user)
+    }
   }
 
-  fun getCurrentUser() {
+  private fun setUserToCurrent() {
     val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
       if (user == null) {
         println("No user logged-in tried to watch current user profile")
       } else {
-        database.getUser(user) { update(it) }
+        database.getUser(user) { updateUIState(it) }
       }
     }
   }
 
-  private fun update(new: User) {
+  private fun updateUIState(new: User) {
     _uiState.value =
         _uiState.value.copy(
             user = new,
         )
+  }
+
+  companion object {
+    private const val TAG = "UserViewModel"
   }
 }
 
