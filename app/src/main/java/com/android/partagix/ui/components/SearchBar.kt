@@ -57,3 +57,4 @@ fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {
         Text("Search an Item")
       }
 }
+
