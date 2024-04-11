@@ -15,11 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -45,7 +48,8 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       InventoryScreen(inventoryViewModel = inventoryViewModel, navigateToTopLevelDestination = navigationActions::navigateTo)
     //-----------------------a changer
     // Initially, navigate to the boot screen
-    //navigationActions.navigateTo(Route.BOOT)
+    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+    navigationActions.navigateTo(Route.BOOT)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -89,9 +93,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-              .fillMaxSize()
-              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -120,6 +122,12 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
       composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(
+          Route.VIEW_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            val itemId = it.arguments?.getString("itemId")
+            InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
+          }
     }
   }
 

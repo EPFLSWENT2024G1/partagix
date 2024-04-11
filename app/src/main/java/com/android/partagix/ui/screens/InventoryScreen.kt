@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemViewModel
+import com.android.partagix.ui.InventoryViewItem
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Horizontalfullwidth
 import com.android.partagix.ui.components.ItemList
@@ -79,7 +81,7 @@ fun InventoryScreen(
       floatingActionButton = {
         FloatingActionButton(
             onClick = {
-              // TO-DO go to create -----------------------------------------------
+                //InventoryCreateItem(itemViewModel = ItemViewModel(), navigationActions = )
             }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
@@ -98,13 +100,14 @@ fun InventoryScreen(
           }
         } else {
             Column (modifier = modifier
-                .padding(innerPadding).fillMaxSize()
+                .padding(innerPadding)
+                .fillMaxSize()
                 ){
                     ItemListColumn(
                         List = uiState.borrowedItems,
                         Title = "borrowed items",
                         corner = uiState.borrowedItems.size.toString(),
-                        onClick = {},
+                        onClick = { /*InventoryViewItem(navigationActions = , viewModel = ItemViewModel(it))*/},
                         onClickCorner = { /*TODO*/ },
                         modifier = Modifier.height(220.dp)
                     )
@@ -112,7 +115,7 @@ fun InventoryScreen(
                         List = uiState.items,
                         Title = "inventory item",
                         corner = uiState.items.size.toString() ,
-                        onClick = {},
+                        onClick = { /*InventoryViewItem(navigationActions = , viewModel = ItemViewModel(it))*/},
                         onClickCorner = { /*TODO*/ },
                         //modifier = Modifier
                     )

@@ -89,7 +89,7 @@ fun ItemUi(item: Item) {
                   modifier = Modifier.requiredHeight(height = 64.dp)) {
 
                     Text(
-                        text = item.name, // item.number
+                        text = item.name,
                         textAlign = TextAlign.End,
                         lineHeight = 1.45.em,
                         style = TextStyle(
@@ -103,8 +103,7 @@ fun ItemUi(item: Item) {
                             .height(40.dp).padding(top = 10.dp)
                     )
                     Text(
-                        text = " X3 (quantity)", // item.leased
-                        // text = "quantity:" + item.quantity
+                        text = "Quantity: " + item.quantity.toString(),
                         style = TextStyle(
                             fontSize = 9.sp,
                             textAlign = TextAlign.Right,
