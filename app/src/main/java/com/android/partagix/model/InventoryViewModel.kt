@@ -78,6 +78,10 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
+  fun findUser(uid :String){
+    database.getUser(uid) { user -> return@getUser  }
+  }
+
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list = fetchedList.filter{
