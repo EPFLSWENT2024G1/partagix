@@ -7,6 +7,7 @@ import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -43,7 +44,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
-    val items = listOf(Item("1", cat1, "Name 1", "Description 1", "Author 1", vis1, 1, loc1))
+    val items =
+        listOf(Item("1", cat1, "Name 1", "Description 1", Visibility.PUBLIC, 3, Location(""), ""))
     nonEmptyMockUiState = MutableStateFlow(InventoryUIState(items, ""))
 
     mockInventoryViewModel = mockk()
