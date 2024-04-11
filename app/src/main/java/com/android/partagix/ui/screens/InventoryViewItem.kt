@@ -36,6 +36,7 @@ import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +51,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
   Scaffold(
       topBar = {
         TopAppBar(
-            title = { Text("Back to selection" /*TODO: get item name*/) },
+            title = { Text("Back to selection") },
             modifier = Modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
@@ -176,7 +177,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { /*TODO: go to edit item page*/},
+                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM)},
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth())
               }
