@@ -208,7 +208,7 @@ fun InventoryCreateOrEditItem(
                 },
                 content = {
                   if (mode == "edit") {
-                    Text("Edit")
+                    Text("Save")
                   } else {
                     Text("Create")
                   }
