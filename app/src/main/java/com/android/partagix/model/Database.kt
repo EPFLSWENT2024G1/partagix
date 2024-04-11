@@ -25,7 +25,7 @@ class Database {
   private val itemLoan = db.collection("item_loan")
 
   init {
-    //createExampleForDb()
+    // createExampleForDb()
   }
 
   fun getUser(idUser: String, onSuccess: (User) -> Unit) {
@@ -109,6 +109,7 @@ class Database {
 
     return locationMap
   }
+
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
     getItems { items ->
       val listItems = mutableListOf<Item>()
@@ -267,8 +268,7 @@ class Database {
             "id_user" to userId,
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
-            "location" to locationToMap(newItem.location)
-        )
+            "location" to locationToMap(newItem.location))
     items.document(idItem).set(data3)
   }
 
