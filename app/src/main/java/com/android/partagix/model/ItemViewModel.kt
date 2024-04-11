@@ -86,6 +86,7 @@ class ItemViewModel(
     }
   }
 
+
   fun findUser(uid: String): User {
     var user: User = User("", "", "", "", inventory = Inventory("", emptyList()))
     database.getUser(uid) { user = it }
@@ -133,5 +134,9 @@ class ItemViewModel(
     return nextLoan
   }
 }
+  companion object {
+    private const val TAG = "ItemViewModel"
+
+  }
 
 data class ItemUIState(val item: Item)
