@@ -29,6 +29,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
+import com.android.partagix.ui.screens.InventoryCreateItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.google.firebase.auth.FirebaseUser
@@ -45,6 +46,10 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   @Composable
   fun Create() {
     ComposeNavigationSetup()
+      //InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
+    //-----------------------a changer
+    // Initially, navigate to the boot screen
+    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -115,7 +120,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
-            navigateToTopLevelDestination = navigationActions::navigateTo)
+            navigationActions= navigationActions)
       }
       composable(Route.ACCOUNT) { /*AccountScreen()*/}
       composable(
@@ -123,7 +128,8 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             val itemId = it.arguments?.getString("itemId")
             InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
-          }
+      }
+        composable(Route.INVENTORY_CREATE_ITEM) { InventoryCreateItem(itemViewModel = ItemViewModel(), navigationActions,)}
     }
   }
 
