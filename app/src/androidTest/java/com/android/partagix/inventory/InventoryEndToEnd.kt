@@ -1,4 +1,4 @@
-package com.android.partagix.ui.screens
+package com.android.partagix.inventory
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.screens.InventoryScreen
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
