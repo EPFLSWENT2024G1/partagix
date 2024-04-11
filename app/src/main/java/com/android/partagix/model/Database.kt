@@ -69,12 +69,7 @@ class Database {
                 val ret = mutableListOf<Item>()
                 for (document in result) {
                   val locationMap = document.data["location"] as HashMap<*, *>
-                  val latitude = locationMap["latitude"] as Double
-                  val longitude = locationMap["longitude"] as Double
-
-                  val location = Location("")
-                  location.latitude = latitude
-                  location.longitude = longitude
+                  val location = toLocation(locationMap)
 
                   val visibility = (document.data["visibility"] as Long).toInt()
 
@@ -96,6 +91,16 @@ class Database {
               .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
+  }
+
+  private fun toLocation(locationMap: HashMap<*, *>): Location {
+    val latitude = locationMap["latitude"] as Double
+    val longitude = locationMap["longitude"] as Double
+
+    val location = Location("")
+    location.latitude = latitude
+    location.longitude = longitude
+    return location
   }
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
@@ -296,6 +301,63 @@ class Database {
             "location" to newItem.location,
         )
     items.document(newItem.id).set(data3)
+  }
+
+  fun getItem(id: String, onSuccess: (Item) -> Unit) {
+    items
+        .get()
+        .addOnSuccessListener { result ->
+          for (document in result) {
+            if (document.data["id"] as String == id) {
+              categories
+                  .get()
+                  .addOnSuccessListener { result2 ->
+                    val categories = mutableMapOf<String, Category>()
+                    for (document in result2) {
+                      categories[document.data["id"] as String] =
+                          Category(document.data["id"] as String, document.data["name"] as String)
+                    }
+                    val locationMap = document.data["location"] as HashMap<*, *>
+                    val location = toLocation(locationMap)
+
+                    val item =
+                        Item(
+                            document.data["id"] as String,
+                            categories[document.data["id_category"] as String]!!,
+                            document.data["name"] as String,
+                            document.data["description"] as String,
+                            document.data["author"] as String,
+                            Visibility.values()[(document.data["visibility"] as Long).toInt()],
+                            document.data["quantity"] as Long,
+                            location,
+                        )
+
+                    onSuccess(item)
+                  }
+                  .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
+            }
+          }
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
+  }
+
+  /**
+   * Get the category id from a category name
+   *
+   * @param nameCategory the name of the category
+   * @param onSuccess the function to call when the id is found
+   */
+  fun getIdCategory(nameCategory: String, onSuccess: (String) -> Unit) {
+    categories
+        .get()
+        .addOnSuccessListener { result ->
+          for (document in result) {
+            if ((document.data["name"] as String).equals(nameCategory, ignoreCase = true)) {
+              onSuccess(document.data["id"] as String)
+            }
+          }
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
 
   companion object {
