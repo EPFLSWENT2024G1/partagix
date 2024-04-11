@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
