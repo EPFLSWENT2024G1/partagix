@@ -130,10 +130,12 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
   private fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
+    fetchedList = new
   }
 
   private fun updateBor(new: List<Item>) {
     _uiState.value = _uiState.value.copy(borrowedItems = new)
+    fetchedBorrowed = new
   }
 
   private fun updateUsers(new: User) {
