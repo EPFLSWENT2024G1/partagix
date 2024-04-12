@@ -7,7 +7,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
-import com.android.partagix.screens.InventoryViewItemScreen
+import com.android.partagix.screens.InventoryViewItem
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.InventoryViewItem
@@ -66,12 +66,12 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
 
   @Test
   fun topBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItem>(composeTestRule) { topBar { assertIsDisplayed() } }
   }
 
   @Test
   fun bottomBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { bottomBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItem>(composeTestRule) { bottomBar { assertIsDisplayed() } }
   }
 
   @Test
@@ -87,6 +87,6 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
             quantity = 1,
             location = mockk(),
             idUser = "id_user")
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { assertIsDisplayed() }
+    onComposeScreen<InventoryViewItem>(composeTestRule) { assertIsDisplayed() }
   }
 }

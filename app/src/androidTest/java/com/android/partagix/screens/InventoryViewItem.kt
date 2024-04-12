@@ -4,8 +4,8 @@ import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.github.kakaocup.compose.node.element.KNode
 
-class InventoryViewItemScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
-    ComposeScreen<InventoryViewItemScreen>(
+class InventoryViewItem(semanticsProvider: SemanticsNodeInteractionsProvider) :
+    ComposeScreen<InventoryViewItem>(
         semanticsProvider = semanticsProvider,
         viewBuilderAction = { hasTestTag("inventoryViewItem") }) {
 
