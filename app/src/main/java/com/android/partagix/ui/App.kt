@@ -1,5 +1,9 @@
 package com.android.partagix.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.Location
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
@@ -8,12 +12,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -34,24 +40,29 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.WaitingScreen
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
+class App(private val activity: MainActivity) : ComponentActivity(), SignInResultListener {
   private var authentication: Authentication = Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
+  private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel()
 
   @Composable
   fun Create() {
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.LOAN)
+    navigationActions.navigateTo(Route.BOOT)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -95,7 +106,9 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -104,6 +117,30 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     }
   }
 
+  private fun checkLocationPermissions(retries: Int = 3): Boolean {
+    if (retries == 0) {
+      return false
+    }
+
+    if (ActivityCompat.checkSelfPermission(
+        activity,
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      Log.d(TAG, "checkLocationPermissions: requesting permissions")
+      ActivityCompat.requestPermissions(
+        activity,
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1)
+
+      return checkLocationPermissions(retries - 1)
+    } else {
+      Log.d(TAG, "checkLocationPermissions: permissions granted")
+      return true
+    }
+  }
+
+  @SuppressLint("MissingPermission")
   @Composable
   private fun ComposeNavigationHost(
       navController: NavHostController,
@@ -117,10 +154,35 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.LOAN) {
-        val inventoryViewModel = InventoryViewModel() // TODO: change for loansViewModel
-        LoanScreen(navigationActions, inventoryViewModel, modifier)
+      composable(Route.LOAN_PREP) {
+        if (checkLocationPermissions()) {
+          fusedLocationClient.lastLocation
+            .addOnSuccessListener { location : Location? ->
+              if (location != null) {
+                Log.d(TAG, "onCreate: location=$location")
+                navigationActions.navigateTo(Route.LOAN + "/${location.latitude}/${location.longitude}")
+              }
+            }
+          WaitingScreen(navigationActions = navigationActions) // TODO: replace with a real screen
+        } else {
+          HomeScreen(navigationActions)
+        }
       }
+      composable(Route.LOAN + "/{latitude}/{longitude}", arguments = listOf(
+          navArgument("latitude") { type = NavType.StringType },
+          navArgument("longitude") { type = NavType.StringType } )) {
+        val latitude = it.arguments?.getString("latitude")
+        val longitude = it.arguments?.getString("longitude")
+        LoanScreen(
+            navigationActions,
+            inventoryViewModel, // TODO: pass the loanViewModel
+            currentLocation = Location("").apply {
+              this.latitude = latitude?.toDouble() ?: 0.0
+              this.longitude = longitude?.toDouble() ?: 0.0
+            },
+          modifier = modifier
+        ) }
+
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,

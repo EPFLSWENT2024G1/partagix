@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,7 +49,8 @@ private const val TAG = "LoanScreen"
 fun LoanScreen(
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    currentLocation: Location? = null,
 ) {
 
   val uiState = inventoryViewModel.uiState.collectAsState()
@@ -61,9 +63,9 @@ fun LoanScreen(
 
   var cameraPositionState by remember { mutableStateOf<CameraPositionState>(CameraPositionState()) }
 
-  if (items.isNotEmpty()) {
-    val firstItemLocation = items.first().location
-    val point = LatLng(firstItemLocation.latitude, firstItemLocation.longitude)
+  if (currentLocation != null) {
+    Log.d(TAG, "currentLocation: $currentLocation")
+    val point = LatLng(currentLocation.latitude, currentLocation.longitude)
     cameraPositionState = rememberCameraPositionState {
       position = CameraPosition.fromLatLngZoom(point, 14f)
     }
@@ -132,7 +134,9 @@ fun LoanScreen(
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
-                                      inventoryViewModel.filterItems(it.toLong().toString())
+                                      if (currentLocation != null) {
+                                        inventoryViewModel.filterItems(currentPosition = currentLocation, radius = it.toDouble())
+                                      }
                                     },
                                   unit = "km",
                                     minUnit = "0",
@@ -144,16 +148,9 @@ fun LoanScreen(
                                     },
                                     modifier = modifier.fillMaxWidth(.3f))
                                 Filter(
-                                    title = "Availability",
-                                    selectedValue = { value ->
-                                      Log.d(TAG, "  Selected  value: $value")
-                                    },
-                                    disabled = true, // todo: complete (not done yet)
-                                    modifier = modifier.fillMaxWidth(.3f))
-                                Filter(
                                     title = "Quantity",
                                     selectedValue = {
-                                      inventoryViewModel.filterItems(it.toLong().toString())
+                                      inventoryViewModel.filterItems(atLeastQuantity = it.toInt())
                                     },
                                     unit = "items",
                                     minUnit = "0",
