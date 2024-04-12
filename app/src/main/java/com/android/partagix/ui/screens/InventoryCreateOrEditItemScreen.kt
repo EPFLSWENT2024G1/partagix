@@ -147,7 +147,10 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Box(modifier = modifier.testTag("category").fillMaxWidth(.5f).padding(end = 8.dp)) {
-                uiCategory = Category("", DropDown(uiCategory.name, CategoryItems))
+                val c = DropDown(uiCategory.name, CategoryItems)
+                  println("Category: $c")
+                  uiCategory = Category(uiCategory.id, c)
+
               }
               Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
                 val v =
@@ -200,16 +203,8 @@ fun InventoryCreateOrEditItem(
                   if (mode == "edit") {
                     id = i.id
                   }
-                  itemViewModel.updateUiState(
-                      Item(
-                          id,
-                          uiCategory,
-                          uiName,
-                          uiDescription,
-                          uiVisibility,
-                          uiQuantity,
-                          uiLocation))
-                  itemViewModel.saveWithUiState()
+                    println("id: $id")
+                  itemViewModel.save(Item(id, uiCategory, uiName, uiDescription, uiVisibility, uiQuantity, uiLocation))
                   navigationActions.goBack()
                 },
                 content = {

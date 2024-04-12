@@ -39,120 +39,120 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
-  private var authentication: Authentication = Authentication(activity, this)
+    private var authentication: Authentication = Authentication(activity, this)
 
-  private lateinit var navigationActions: NavigationActions
+    private lateinit var navigationActions: NavigationActions
 
-  // private val inventoryViewModel: InventoryViewModel by viewModels()
-  private val inventoryViewModel = InventoryViewModel()
+    // private val inventoryViewModel: InventoryViewModel by viewModels()
+    private val inventoryViewModel = InventoryViewModel()
+    private val itemViewModel = ItemViewModel()
 
-  @Composable
-  fun Create() {
-    ComposeNavigationSetup()
+    @Composable
+    fun Create() {
+        ComposeNavigationSetup()
+        // -----------------------a changer
+        // Initially, navigate to the boot screen
+        // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+        navigationActions.navigateTo(Route.BOOT)
+    }
 
-    // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.BOOT)
-  }
+    override fun onSignInSuccess(user: FirebaseUser?) {
+        navigationActions.navigateTo(Route.HOME)
+        Log.d(TAG, "onSignInSuccess: user=$user")
+    }
 
-  override fun onSignInSuccess(user: FirebaseUser?) {
-    navigationActions.navigateTo(Route.HOME)
-    Log.d(TAG, "onSignInSuccess: user=$user")
-  }
+    override fun onSignInFailure(errorCode: Int) {
+        // Go back to safe state and report error
+        navigationActions.navigateTo(Route.BOOT)
+        Log.e(TAG, "onSignInFailure: errorCode=$errorCode")
+    }
 
-  override fun onSignInFailure(errorCode: Int) {
-    // Go back to safe state and report error
-    navigationActions.navigateTo(Route.BOOT)
-    Log.e(TAG, "onSignInFailure: errorCode=$errorCode")
-  }
+    @Composable
+    private fun ComposeNavigationSetup() {
+        Log.d(TAG, "onComposeNavigationSetup: called")
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
 
-  @Composable
-  private fun ComposeNavigationSetup() {
-    Log.d(TAG, "onComposeNavigationSetup: called")
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+        val navController = rememberNavController()
+        navigationActions = remember(navController) { NavigationActions(navController) }
 
-    val navController = rememberNavController()
-    navigationActions = remember(navController) { NavigationActions(navController) }
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+        ComposeMainContent(
+            navController = navController,
+            selectedDestination = selectedDestination,
+        ) {
+            scope.launch { drawerState.open() }
+        }
+    }
 
-    ComposeMainContent(
-        navController = navController,
-        selectedDestination = selectedDestination,
+    @Composable
+    fun ComposeMainContent(
+        modifier: Modifier = Modifier,
+        navController: NavHostController,
+        selectedDestination: String,
+        onDrawerClicked: () -> Unit = {},
     ) {
-      scope.launch { drawerState.open() }
+        Row(modifier = modifier.fillMaxSize()) {
+            Column(
+                modifier =
+                Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+                ComposeNavigationHost(
+                    navController = navController,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
     }
-  }
 
-  @Composable
-  fun ComposeMainContent(
-      modifier: Modifier = Modifier,
-      navController: NavHostController,
-      selectedDestination: String,
-      onDrawerClicked: () -> Unit = {},
-  ) {
-    Row(modifier = modifier.fillMaxSize()) {
-      Column(
-          modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
-            ComposeNavigationHost(
-                navController = navController,
-                modifier = Modifier.weight(1f),
-            )
-          }
-    }
-  }
-
-  @Composable
-  private fun ComposeNavigationHost(
-      navController: NavHostController,
-      modifier: Modifier = Modifier
-  ) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = Route.INVENTORY,
+    @Composable
+    private fun ComposeNavigationHost(
+        navController: NavHostController,
+        modifier: Modifier = Modifier
     ) {
-      composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
-      composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.BORROW) {
-        HomeScreen(navigationActions) /*TODO:Change to the borrow screen*/
-      }
-      composable(Route.INVENTORY) {
-        InventoryScreen(
-            inventoryViewModel = inventoryViewModel,
-            navigateToTopLevelDestination = navigationActions::navigateTo)
-      }
-      composable(
-          Route.ACCOUNT,
-      ) {
-        println("navigated to account screen")
-        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
-      }
-      composable(
-          Route.VIEW_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
-          }
-      composable(
-          Route.CREATE_ITEM,
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            InventoryCreateOrEditItem(ItemViewModel(), navigationActions, mode = "create")
-          }
-      composable(
-          Route.EDIT_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            val itemId = it.arguments?.getString("itemId")
-            InventoryCreateOrEditItem(ItemViewModel(id = itemId), navigationActions, mode = "edit")
-          }
+        NavHost(
+            modifier = modifier,
+            navController = navController,
+            startDestination = Route.INVENTORY,
+        ) {
+            composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
+            composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
+            composable(Route.HOME) { HomeScreen(navigationActions) }
+            composable(Route.BORROW) {
+                HomeScreen(navigationActions) /*TODO:Change to the borrow screen*/
+            }
+            composable(Route.INVENTORY) {
+                InventoryScreen(
+                    inventoryViewModel = inventoryViewModel, navigationActions = navigationActions, itemViewModel = itemViewModel)
+            }
+            composable(
+                Route.ACCOUNT,
+            ) {
+                println("navigated to account screen")
+                ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+            }
+            composable(
+                Route.VIEW_ITEM + "/{itemId}",
+                arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+                val itemId = it.arguments?.getString("itemId")
+                InventoryViewItem(navigationActions, itemViewModel)
+            }
+            composable(
+                Route.CREATE_ITEM,
+                /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/) {
+                InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
+            }
+            composable(
+                Route.EDIT_ITEM + "/{itemId}",
+                arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+                val itemId = it.arguments?.getString("itemId")
+                InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+            }
+        }
     }
-  }
 
-  companion object {
-    private const val TAG = "App"
-  }
+    companion object {
+        private const val TAG = "App"
+    }
 }
