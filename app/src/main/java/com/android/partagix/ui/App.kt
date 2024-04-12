@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -33,6 +34,7 @@ import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.ViewAccount
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -123,8 +125,11 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
       }
-      composable(Route.ACCOUNT) {
-        HomeScreen(navigationActions) /*TODO:Change to the account screen*/
+      composable(
+          Route.ACCOUNT,
+      ) {
+        println("navigated to account screen")
+        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
