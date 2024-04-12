@@ -75,6 +75,14 @@ jobs:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA | base64 -di > app/google-services.json
 
+      # Load the MAPS API key from the secrets
+      - name: Load MAPS API key
+        env:
+          DATA: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          echo $DATA > secrets.properties
+          echo $DATA > local.defaults.properties
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x ./gradlew
@@ -107,10 +115,6 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedCheck --parallel --build-cache
-
-      - name: Clean
-        run: |
-          ./gradlew clean
 
       # This step generates the coverage report which will be uploaded to sonar
       - name: Generate Coverage Report

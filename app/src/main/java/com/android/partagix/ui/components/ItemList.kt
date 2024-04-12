@@ -28,15 +28,21 @@ import java.util.Date
  * @param onClick a lambda to handle item click events.
  * @param modifier Modifier to apply to this layout.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
     onClick: (Item) -> Unit,
+    stickyHeader: @Composable() (() -> Unit)? = null,
+
     modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
+    if (stickyHeader != null) {
+      stickyHeader { stickyHeader() }
+    }
     items(itemList.size) { index ->
       val item = itemList[index]
       Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {

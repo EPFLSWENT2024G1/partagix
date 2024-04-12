@@ -71,7 +71,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
             ))
 
     OutlinedButton(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier.testTag("PopUpLoginButton").fillMaxWidth().padding(16.dp),
         onClick = { showSignIn = true },
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, Color(0xffafafaf)),
