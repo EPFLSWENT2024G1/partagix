@@ -1,11 +1,15 @@
 package com.android.partagix.inventory
 
+import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.category.Category
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.screens.InventoryScreen
 import io.mockk.Runs
@@ -26,7 +30,8 @@ class InventoryEndToEnd {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
 
-  private val mockUiState = MutableStateFlow(InventoryUIState(emptyList(), ""))
+  private val i = Item("1", Category("1","cat"), "name", "description", Visibility.PUBLIC, 1, Location(""), "")
+  private val mockUiState = MutableStateFlow(InventoryUIState(List(1) { i }, ""))
 
   @Before
   fun testSetup() {
