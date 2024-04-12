@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,11 +21,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 
 /**
- * A top search bar.
+ * TopSearchBar is a composable that displays a search bar at the top of the screen.
  *
- * @param filter a function to filter the items.
- * @param query the query to filter the items.
- * @param modifier Modifier to apply to this layout.
+ * @param filter a lambda function to filter the items.
+ * @param query a string to filter the items.
+ * @param modifier a Modifier to apply to this layout.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +50,7 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
           Icon(Icons.Default.Menu, contentDescription = "Search")
         } else {
           Icon(
-              Icons.Default.ArrowBack,
+              Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Search",
               modifier =
                   modifier.clickable {

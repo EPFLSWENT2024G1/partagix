@@ -170,7 +170,7 @@ fun LoanScreen(
                                     modifier = modifier.fillMaxWidth(.3f))
                               }
                         },
-                        users = emptyList<User>(),
+                        users = emptyList(),
                         loan = emptyList(),
                         modifier = modifier)
                   }

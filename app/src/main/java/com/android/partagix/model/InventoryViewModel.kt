@@ -131,6 +131,75 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
 
   private fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
+  }
+
+  private fun updateBor(new: List<Item>) {
+    _uiState.value = _uiState.value.copy(borrowedItems = new)
+  }
+
+  private fun updateUsers(new: User) {
+    _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
+  }
+
+  private fun updateUsersBor(new: User) {
+    _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
+  }
+
+  private fun updateLoanBor(new: Loan) {
+    _uiState.value = _uiState.value.copy(loanBor = uiState.value.loanBor.plus(new))
+  }
+
+  private fun updateLoan(new: Loan) {
+    _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
+  }
+
+  /**
+   * getusers is a function that will update the user list with the users that are in the list
+   *
+   * @param list the list of items to find the users
+   * @param update a function to update the user list
+   */
+  fun getusers(list: List<Item>, update: (User) -> Unit) {
+    val users = mutableListOf<User>()
+    list.forEach { database.getUser(it.idUser) { user -> update(user) } }
+  }
+
+  /**
+   * findtime is a function that will update the loan list with the loans that are in the list
+   *
+   * @param items the list of items to find the loans
+   * @param update a function to update the loan list
+   */
+  fun findtime(items: List<Item>, update: (Loan) -> Unit) {
+    database.getLoans { loan ->
+      items.forEach { item ->
+        val list =
+            loan
+                .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                .sortedBy { it.startDate }
+        update(
+            if (list.isEmpty()) {
+              Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+            } else {
+              loan
+                  .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                  .sortedBy { it.startDate }
+                  .first()
+            })
+      }
+    }
+            borrowedItems = newInv,
+            items = newBor,
+            users = user,
+            usersBor = userBor,
+            loanBor = newLoanBor,
+            loan = newloan)
+    fetchedBorrowed = newBor
+    fetchedList = newInv
+  }
+
+  private fun updateInv(new: List<Item>) {
+    _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
   }
 

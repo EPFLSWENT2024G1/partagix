@@ -29,7 +29,7 @@ import java.util.Date
  * @param onClick a lambda to handle item click events.
  * @param modifier Modifier to apply to this layout.
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemList(
     itemList: List<Item>,
