@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: partagix
-          path: app/build/outputs/apk/debug/partagix-v1.x.x.apk
+          path: app/build/outputs/apk/debug/partagix-v1.0.0.apk
           if-no-files-found: error
           retention-days: 90
           
