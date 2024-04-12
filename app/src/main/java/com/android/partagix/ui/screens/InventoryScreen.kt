@@ -98,8 +98,7 @@ fun InventoryScreen(
                 corner = uiState.items.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},
-                modifier = Modifier.testTag("inventoryScreenItemList")
-            )
+                modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }
       }

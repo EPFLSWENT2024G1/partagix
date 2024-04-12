@@ -19,7 +19,7 @@ class InventoryScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val noItemBox: KNode = onNode { hasTestTag("inventoryScreenNoItemBox") }
   val noItemText: KNode = onNode { hasTestTag("inventoryScreenNoItemText") }
   val itemList: KNode = onNode { hasTestTag("inventoryScreenItemList") }
-    val borrowedItemList: KNode = onNode { hasTestTag("inventoryScreenBorrowedItemList") }
+  val borrowedItemList: KNode = onNode { hasTestTag("inventoryScreenBorrowedItemList") }
 
   val bottomNavBar: KNode = onNode { hasTestTag("inventoryScreenBottomNavBar") }
   val bottomNavBarItemInventory: KNode =

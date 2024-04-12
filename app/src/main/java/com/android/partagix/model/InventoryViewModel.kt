@@ -211,7 +211,6 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
               it.category.toString().contains(query, ignoreCase = true) ||
               it.visibility.toString().contains(query, ignoreCase = true) ||
               it.quantity.toString().contains(query, ignoreCase = true)
-
         }
 
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)

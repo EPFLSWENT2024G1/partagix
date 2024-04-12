@@ -36,7 +36,6 @@ fun ItemList(
     loan: List<Loan>,
     onClick: (Item) -> Unit,
     stickyHeader: @Composable() (() -> Unit)? = null,
-
     modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
