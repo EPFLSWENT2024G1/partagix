@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
@@ -51,7 +52,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
       topBar = {
         TopAppBar(
             title = { Text("Back to selection" /*TODO: get item name*/) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
@@ -60,10 +61,11 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
       },
       bottomBar = {
         BottomNavigationBar(
+            modifier = Modifier.testTag("inventoryViewItemBottomBar"),
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier.fillMaxWidth()) {
+      modifier = Modifier.fillMaxWidth().testTag("inventoryViewItem")) {
         Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
