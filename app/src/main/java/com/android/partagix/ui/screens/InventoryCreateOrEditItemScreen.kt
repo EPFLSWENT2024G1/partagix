@@ -70,16 +70,20 @@ fun InventoryCreateOrEditItem(
       topBar = {
         TopAppBar(
             title = {
-              if (mode == "edit") {
-                Text("Edit item", modifier = modifier.testTag("EditScreen"))
-              } else {
-                Text("Create a new item", modifier = modifier.testTag("CreateScreen"))
-              }
+              Text(
+                  modifier = modifier.testTag("title"),
+                  text =
+                      if (mode == "edit") {
+                        "Edit item"
+                      } else {
+                        "Create a new item"
+                      })
             },
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.testTag("topBar").fillMaxWidth(),
             navigationIcon = {
               IconButton(
-                  modifier = modifier.testTag("goBack"), onClick = { navigationActions.goBack() }) {
+                  modifier = modifier.testTag("navigationIcon"),
+                  onClick = { navigationActions.goBack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = null)
@@ -104,7 +108,7 @@ fun InventoryCreateOrEditItem(
             Row(modifier = modifier.fillMaxWidth()) {
               Box(
                   contentAlignment = Alignment.Center,
-                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)) {
+                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
                     MainImagePicker()
                   }
 
@@ -115,7 +119,7 @@ fun InventoryCreateOrEditItem(
                     value = uiName,
                     onValueChange = { it -> uiName = it },
                     label = { Text("Object name") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.testTag("name").fillMaxWidth(),
                     readOnly = false)
 
                 OutlinedTextField(
@@ -125,7 +129,7 @@ fun InventoryCreateOrEditItem(
                     // correctly linked to user.name by default
                     onValueChange = {},
                     label = { Text("Author") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.testTag("idUser").fillMaxWidth(),
                     readOnly = true)
               }
             }
@@ -135,17 +139,17 @@ fun InventoryCreateOrEditItem(
                 value = uiDescription,
                 onValueChange = { it -> uiDescription = it },
                 label = { Text("Description") },
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier.testTag("description").fillMaxWidth(),
                 minLines = 5,
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))
 
             Row(modifier = modifier.fillMaxWidth()) {
-              Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
+              Box(modifier = modifier.testTag("category").fillMaxWidth(.5f).padding(end = 8.dp)) {
                 uiCategory = Category("", DropDown(uiCategory.name, CategoryItems))
               }
-              Box(modifier = modifier.fillMaxWidth()) {
+              Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
                 val v =
                     DropDown(
                         (uiVisibility.toString().substring(0, 1).uppercase() +
@@ -167,7 +171,7 @@ fun InventoryCreateOrEditItem(
                 onValueChange = { it -> uiQuantity = it.toLong() },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier.testTag("quantity").fillMaxWidth(),
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))

@@ -1,4 +1,4 @@
-package com.android.partagix.ui.screens
+package com.android.partagix.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -30,21 +30,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 
-/**
- * Screen to view an item.
- *
- * @param navigationActions a NavigationActions instance to navigate between screens.
- * @param viewModel an ItemViewModel which handles functionality.
- */
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,8 +50,8 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
   Scaffold(
       topBar = {
         TopAppBar(
-            title = { Text("Back to selection") },
-            modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
+            title = { Text("Back to selection" /*TODO: get item name*/) },
+            modifier = Modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
@@ -68,11 +60,10 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
       },
       bottomBar = {
         BottomNavigationBar(
-            modifier = Modifier.testTag("inventoryViewItemBottomBar"),
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier.fillMaxWidth().testTag("inventoryViewItem")) {
+      modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -185,7 +176,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
+                    onClick = { /*TODO: go to edit item page*/},
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth())
               }
