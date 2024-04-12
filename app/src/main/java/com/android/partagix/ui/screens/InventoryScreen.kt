@@ -50,7 +50,7 @@ fun InventoryScreen(
         TopSearchBar(
             filter = { inventoryViewModel.filterItems(it) },
             query = uiState.query,
-            modifier = modifier.testTag("inventoryScreenSearchBarBack"))
+            modifier = modifier.testTag("inventoryScreenSearchBar"))
       },
       bottomBar = {
         BottomNavigationBar(
@@ -88,7 +88,7 @@ fun InventoryScreen(
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},
-                modifier = Modifier.height(220.dp))
+                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             ItemListColumn(
                 List = uiState.items,
@@ -98,7 +98,7 @@ fun InventoryScreen(
                 corner = uiState.items.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},
-                // modifier = Modifier
+                modifier = Modifier.testTag("inventoryScreenItemList")
             )
           }
         }
