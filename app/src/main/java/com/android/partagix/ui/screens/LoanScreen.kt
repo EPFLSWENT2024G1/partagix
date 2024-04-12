@@ -84,7 +84,7 @@ fun LoanScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
-                  contentPadding = PaddingValues(bottom = 65.dp),
+                  contentPadding = PaddingValues(bottom = 80.dp),
                   cameraPositionState = cameraPositionState) {
                     items.forEach { item ->
                       Marker(
