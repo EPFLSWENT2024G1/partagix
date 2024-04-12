@@ -7,6 +7,14 @@ plugins {
     id("jacoco")
 }
 
+sonar {
+    properties {
+        property("sonar.projectKey", "EPFLSWENT2024G1_partageix")
+        property("sonar.organization", "epflswent2024g1")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+
 android {
     namespace = "com.android.partagix"
     compileSdk = 34
