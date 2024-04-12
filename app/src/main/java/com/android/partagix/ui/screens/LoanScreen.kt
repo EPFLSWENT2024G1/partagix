@@ -3,10 +3,11 @@ package com.android.partagix.ui.screens
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +43,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 private const val TAG = "LoanScreen"
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoanScreen(
     navigationActions: NavigationActions,
@@ -84,7 +86,7 @@ fun LoanScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
-                  contentPadding = PaddingValues(bottom = 60.dp),
+                  contentPadding = PaddingValues(bottom = 65.dp),
                   cameraPositionState = cameraPositionState) {
                     items.forEach { item ->
                       Marker(
@@ -109,7 +111,7 @@ fun LoanScreen(
                   modifier =
                       modifier
                           .fillMaxWidth()
-                          .fillMaxHeight(.6f)
+                          .fillMaxHeight(.65f)
                           // .offset(y = (-30).dp)
                           .background(
                               Color.White, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
@@ -124,11 +126,11 @@ fun LoanScreen(
                         itemList = items,
                         onClick = { navigationActions.navigateTo("${Route.VIEW_ITEM}/${it.id}") },
                         stickyHeader = {
-                          Row(
-                              modifier =
-                                  modifier
-                                      .padding(PaddingValues(bottom = 25.dp))
-                                      .background(Color.White)) {
+                          FlowRow(
+                              horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
+                              verticalArrangement =
+                                  Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                              modifier = modifier.background(Color.White)) {
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
@@ -141,16 +143,14 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
                                     },
-                                )
-                                Spacer(modifier = modifier.padding(10.dp))
+                                    modifier = modifier.fillMaxWidth(.3f))
                                 Filter(
                                     title = "Availability",
                                     selectedValue = { value ->
                                       Log.d(TAG, "  Selected  value: $value")
                                     },
-                                    disabled = true // todo: complete (not done yet)
-                                    )
-                                Spacer(modifier = modifier.padding(10.dp))
+                                    disabled = true, // todo: complete (not done yet)
+                                    modifier = modifier.fillMaxWidth(.3f))
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
@@ -163,7 +163,7 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
                                     },
-                                )
+                                    modifier = modifier.fillMaxWidth(.3f))
                               }
                         },
                         modifier = modifier)

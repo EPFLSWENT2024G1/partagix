@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -62,6 +63,7 @@ fun Filter(
   val bottomPadding = defaultPaddingValues.calculateBottomPadding()
 
   OutlinedButton(
+      modifier = modifier.fillMaxSize(),
       onClick = { showDialog = true },
       shape = RoundedCornerShape(12.dp),
       contentPadding =
