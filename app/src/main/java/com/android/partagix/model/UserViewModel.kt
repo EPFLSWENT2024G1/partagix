@@ -48,13 +48,14 @@ class UserViewModel(
 
     if (userID == null) {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else if (userID != "" && false) { // TODO: remove false when logged in users are in the database
+    } else if (userID != "" &&
+        false) { // TODO: remove false when logged in users are in the database
       database.getUser(userID) { updateUIState(it) }
       println("User logged-in tried to watch current user profile : $userID")
     } else {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-      println("User logged-in tried to watch current user profile but no user ID found. Defaulted to grinch user.")
-
+      println(
+          "User logged-in tried to watch current user profile but no user ID found. Defaulted to grinch user.")
     }
   }
 
