@@ -3,21 +3,16 @@ package com.android.partagix.authentication
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.auth.Authentication
-import com.android.partagix.screens.BootScreen
 import com.android.partagix.screens.LoginScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.LoginScreen
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.mockk.Runs
-import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
-import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,7 +47,6 @@ class LoginTest {
       }
     }
   }
-
 
   companion object {
     const val SLEEP_TIME = 2000L
