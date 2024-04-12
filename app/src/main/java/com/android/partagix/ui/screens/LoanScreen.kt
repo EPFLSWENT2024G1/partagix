@@ -71,7 +71,9 @@ fun LoanScreen(
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
-      topBar = { TopSearchBar(filter = { inventoryViewModel.filterItems(it) }) },
+      topBar = {
+        TopSearchBar(filter = { inventoryViewModel.filterItems(it) }, query = uiState.value.query)
+      },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.LOAN,
