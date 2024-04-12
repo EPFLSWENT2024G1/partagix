@@ -64,7 +64,7 @@ fun LoanScreen(
     items = items.plus(items)
   }
 
-  var cameraPositionState by remember { mutableStateOf<CameraPositionState>(CameraPositionState()) }
+  var cameraPositionState by remember { mutableStateOf(CameraPositionState()) }
 
   if (currentLocation != null) {
     Log.d(TAG, "currentLocation: $currentLocation")
@@ -79,19 +79,24 @@ fun LoanScreen(
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
-      topBar = { TopSearchBar(filter = { inventoryViewModel.filterItems(it) }) },
+      topBar = {
+        TopSearchBar(
+            filter = { inventoryViewModel.filterItems(it) },
+            modifier = modifier.testTag("LoanScreenSearchBar"))
+      },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.LOAN,
             navigateToTopLevelDestination = navigationActions::navigateTo,
-            modifier = modifier)
+            modifier = modifier.testTag("LoanScreenBottomNavBar"))
       }) { innerPadding ->
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
                   contentPadding = PaddingValues(bottom = 90.dp),
-                  cameraPositionState = cameraPositionState) {
+                  cameraPositionState = cameraPositionState,
+                  modifier = modifier.testTag("LoanScreenMaps")) {
                     items.forEach { item ->
                       Marker(
                           state =
@@ -101,7 +106,7 @@ fun LoanScreen(
                           title = item.name,
                           snippet = item.description,
                           onClick = {
-                            // TODO
+                            // do nothing for now on click
                             true
                           })
                     }
@@ -152,7 +157,10 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
                                     },
-                                    modifier = modifier.fillMaxWidth(.3f))
+                                    modifier =
+                                        modifier
+                                            .fillMaxWidth(.3f)
+                                            .testTag("LoanScreenDistanceFilter"))
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
@@ -166,10 +174,11 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
                                     },
-                                    modifier = modifier.fillMaxWidth(.3f))
+                                    modifier =
+                                        modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }
                         },
-                        modifier = modifier)
+                        modifier = modifier.testTag("LoanScreenItemListView"))
                   }
             }
       }

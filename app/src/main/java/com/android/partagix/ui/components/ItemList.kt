@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
@@ -27,8 +28,8 @@ import java.util.ArrayList
 fun ItemList(
     itemList: List<Item>,
     onClick: (Item) -> Unit,
+    modifier: Modifier = Modifier,
     stickyHeader: @Composable() (() -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
@@ -36,7 +37,9 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) { ItemUi(item) }
+      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }.testTag("ItemListItem")) {
+        ItemUi(item)
+      }
     }
   }
 }
