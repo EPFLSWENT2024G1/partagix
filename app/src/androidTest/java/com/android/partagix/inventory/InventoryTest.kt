@@ -43,7 +43,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
-    val items = listOf(Item("1", cat1, "Name 1", "Description 1", "Author 1", vis1, 1, loc1))
+    val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
     nonEmptyMockUiState = MutableStateFlow(InventoryUIState(items, ""))
 
     mockInventoryViewModel = mockk()
