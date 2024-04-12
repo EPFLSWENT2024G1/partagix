@@ -90,7 +90,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                         readOnly = true)
 
                     OutlinedTextField(
-                        value = item.author,
+                        value = item.idUser,
                         onValueChange = {},
                         label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),

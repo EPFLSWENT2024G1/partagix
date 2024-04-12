@@ -1,6 +1,7 @@
 package com.android.partagix.ui.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,8 +34,10 @@ import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.user.User
 import java.time.Duration
 import java.util.Date
+import kotlin.math.log
 
 
 /**
@@ -47,16 +50,16 @@ import java.util.Date
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: ItemViewModel) {
-  // val user : User = item.findUser(item.uiState.value.item.author)
-  val currentDate = Date()
-  val after: Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
-  val Date: Date =
-      if (after) {
-        item.findLoan(item.uiState.value.item).endDate
-      } else {
-        item.findLoan(item.uiState.value.item).startDate
-      }
-  val time = Duration.between(currentDate.toInstant(), Date.toInstant())
+  val user : User = item.findUser(item.uiState.value.item.idUser)
+        val currentDate = Date ()
+    /* val after: Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
+     val Date: Date =
+         if (after) {
+           item.findLoan(item.uiState.value.item).endDate
+         } else {
+           item.findLoan(item.uiState.value.item).startDate
+         }
+     val time = Duration.between(currentDate.toInstant(), Date.toInstant())*/
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.fillMaxWidth().padding(PaddingValues(start = 10.dp, end = 10.dp))) {
@@ -74,12 +77,12 @@ fun ItemUi(item: ItemViewModel) {
               Column(modifier = Modifier.weight(weight = 1f)) {
                 Row(modifier = Modifier.height(25.dp)) {
                   Text(
-                      text = "lvl4", // user.rank,
+                      text = user.rank,
                       modifier = Modifier.width(50.dp))
 
                   Text(
-                      text = "name", // user.name ,
-                      // color = Color(0xff49454f),
+                      text = user.name,
+                       color = Color(0xff49454f),
                       lineHeight = 1.33.em,
                       style =
                           TextStyle(
@@ -92,8 +95,8 @@ fun ItemUi(item: ItemViewModel) {
                       modifier = Modifier.fillMaxWidth())
                 }
                 Text(
-                    text =
-                        if (item.findStatus(item.uiState.value.item)) {
+                    text = "date"
+                        /*if (item.findStatus(item.uiState.value.item)) {
                           if (after) {
                             "available in : /${time}"
                           } else {
@@ -101,7 +104,7 @@ fun ItemUi(item: ItemViewModel) {
                           }
                         } else {
                           "not borrowed"
-                        },
+                        }*/,
                     // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),

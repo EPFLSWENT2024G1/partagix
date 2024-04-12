@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
@@ -87,8 +88,8 @@ class ItemViewModel(
 
 
   fun findUser(uid: String): User {
-    var user: User = User("", "", "", "", inventory = Inventory("", emptyList()))
-    database.getUser(uid) { user = it }
+    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", inventory = Inventory("", emptyList()))
+    database.getUser(uid) { Log.w(it.id, it.name) }
     return user
   }
 

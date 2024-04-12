@@ -50,8 +50,8 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
-      if (user != null) {
-        database.getUserInventory(user.uid) { update(it.items, false) }
+      if (user == null) {
+        database.getUserInventory(/*user.uid*/ " sdfasdf") { update(it.items, false) }
         database.getLoans {
           it.filter { it.idLoaner.equals(user)}
               .forEach { loan ->
@@ -61,7 +61,8 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
               }
         }
       } else {
-        // database.getItems { update(it, true) } _____ used to test
+          database.getItems { update(it, false) }
+        database.getItems { update(it, true) }
         println("----- error user unknown")
       }
     }

@@ -25,7 +25,7 @@ class Database {
   private val itemLoan = db.collection("item_loan")
 
   init {
-    // createExampleForDb()
+   //createExampleForDb()
   }
 
   fun getUser(idUser: String, onSuccess: (User) -> Unit) {
@@ -214,6 +214,7 @@ class Database {
         hashMapOf(
             "id_owner" to idUser,
             "id_loaner" to idUser,
+            "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
             "review_owner" to "Review",
