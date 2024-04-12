@@ -47,11 +47,10 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   @Composable
   fun Create() {
     ComposeNavigationSetup()
-    InventoryScreen(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
     // -----------------------a changer
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    // navigationActions.navigateTo(Route.BOOT)
+    navigationActions.navigateTo(Route.BOOT)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -117,12 +116,16 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.BORROW) { /*BorrowScreen()*/}
+      composable(Route.BORROW) {
+        HomeScreen(navigationActions) /*TODO:Change to the borrow screen*/
+      }
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
       }
-      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(Route.ACCOUNT) {
+        HomeScreen(navigationActions) /*TODO:Change to the account screen*/
+      }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {

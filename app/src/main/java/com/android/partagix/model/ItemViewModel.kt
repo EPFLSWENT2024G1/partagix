@@ -85,6 +85,10 @@ class ItemViewModel(
       database.setItem(_uiState.value.item)
     }
   }
+
+  companion object {
+    private const val TAG = "ItemViewModel"
+  }
 }
 
 data class ItemUIState(val item: Item)

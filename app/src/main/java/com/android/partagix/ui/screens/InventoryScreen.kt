@@ -50,7 +50,7 @@ fun InventoryScreen(
         TopSearchBar(
             filter = { inventoryViewModel.filterItems(it) },
             query = uiState.query,
-            modifier = modifier)
+            modifier = modifier.testTag("inventoryScreenSearchBarBack"))
       },
       bottomBar = {
         BottomNavigationBar(

@@ -16,7 +16,6 @@
 
 package com.android.partagix.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -98,17 +97,17 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
-    /**
-     * update is a function that will update the uistate with the new items, borrowed items, users,
-     *
-     * @param newInv the new items to update the inventory
-     * @param newBor the new borrowed items to update the inventory
-     * @param user the new users to update the inventory
-     * @param userBor the new users borrowed to update the inventory
-     * @param newLoanBor the new loans borrowed to update the inventory
-     * @param newloan the new loans to update the inventory
-     */
-    private fun update(
+  /**
+   * update is a function that will update the uistate with the new items, borrowed items, users,
+   *
+   * @param newInv the new items to update the inventory
+   * @param newBor the new borrowed items to update the inventory
+   * @param user the new users to update the inventory
+   * @param userBor the new users borrowed to update the inventory
+   * @param newLoanBor the new loans borrowed to update the inventory
+   * @param newloan the new loans to update the inventory
+   */
+  private fun update(
       newInv: List<Item>,
       newBor: List<Item>,
       user: List<User>,
@@ -152,28 +151,23 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
 
-    /**
-     * getusers is a function that will update the user list with the users that are in the list
-     *
-     * @param list the list of items to find the users
-     * @param update a function to update the user list
-     */
+  /**
+   * getusers is a function that will update the user list with the users that are in the list
+   *
+   * @param list the list of items to find the users
+   * @param update a function to update the user list
+   */
   fun getusers(list: List<Item>, update: (User) -> Unit) {
     val users = mutableListOf<User>()
-    list.forEach {
-      database.getUser(it.idUser) { user ->
-        update(user)
-        Log.w("user", user.name)
-      }
-    }
+    list.forEach { database.getUser(it.idUser) { user -> update(user) } }
   }
 
-    /**
-     * findtime is a function that will update the loan list with the loans that are in the list
-     *
-     * @param items the list of items to find the loans
-     * @param update a function to update the loan list
-     */
+  /**
+   * findtime is a function that will update the loan list with the loans that are in the list
+   *
+   * @param items the list of items to find the loans
+   * @param update a function to update the loan list
+   */
   fun findtime(items: List<Item>, update: (Loan) -> Unit) {
     database.getLoans { loan ->
       items.forEach { item ->
