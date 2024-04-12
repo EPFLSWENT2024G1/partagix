@@ -27,15 +27,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -49,10 +47,10 @@ import kotlin.math.round
 fun ViewAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
-    userViewModel: UserViewModel = UserViewModel(),
+    userViewModel: UserViewModel,
 ) {
-  val uiState by userViewModel.uiState.collectAsStateWithLifecycle()
-  var user = uiState.user
+  val uiState = userViewModel.uiState.collectAsState()
+  val user = uiState.value.user
   Scaffold(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
@@ -82,8 +80,6 @@ fun ViewAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
-              LaunchedEffect(key1 = uiState) { user = userViewModel.uiState.value.user }
-
               Image(
                   painter =
                       painterResource(
@@ -99,16 +95,15 @@ fun ViewAccount(
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
-
               TextField(
                   value = user.address,
                   onValueChange = {},
                   label = { Text("Location", modifier = Modifier.testTag("addressText")) },
                   colors =
                       TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Gray,
-                          disabledIndicatorColor = Color.Gray,
-                          unfocusedIndicatorColor = Color.Gray,
+                          focusedIndicatorColor = Color.Transparent,
+                          disabledIndicatorColor = Color.Transparent,
+                          unfocusedIndicatorColor = Color.Transparent,
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
@@ -159,9 +154,9 @@ fun ViewAccount(
                   label = { Text("Trust", modifier = Modifier.testTag("ratingText")) },
                   colors =
                       TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Gray,
-                          disabledIndicatorColor = Color.Gray,
-                          unfocusedIndicatorColor = Color.Gray,
+                          focusedIndicatorColor = Color.Transparent,
+                          disabledIndicatorColor = Color.Transparent,
+                          unfocusedIndicatorColor = Color.Transparent,
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
@@ -174,21 +169,21 @@ fun ViewAccount(
                         modifier = Modifier.testTag("ratingIcon"))
                   })
               Spacer(modifier = Modifier.height(16.dp))
-              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons")) {
-                Button(
-                    onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                    modifier = Modifier.fillMaxWidth(0.5f).testTag("inventoryButton")) {
-                      Text("See inventory", modifier = Modifier.testTag("inventoryButtonText"))
-                    }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { /*TODO: friends */},
-                    modifier = Modifier.fillMaxWidth().testTag("friendButton")) {
-                      Text(
-                          "Edit Profile [not yet implemented]",
-                          modifier = Modifier.testTag("friendButtonText"))
-                    }
-              }
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                  horizontalArrangement = Arrangement.Absolute.Center) {
+                    Button(
+                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
+                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
+                          Text("See inventory")
+                        }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = { /*TODO: friends */},
+                        modifier = Modifier.weight(1f).testTag("friendButton")) {
+                          Text("Edit Profile [not yet implemented]")
+                        }
+                  }
             }
       }
 }

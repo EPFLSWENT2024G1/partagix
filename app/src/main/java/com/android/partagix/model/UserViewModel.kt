@@ -35,7 +35,6 @@ class UserViewModel(
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
-    println("UserViewModel init")
     if (user.id == "") {
       setUserToCurrent()
     } else {
@@ -51,11 +50,8 @@ class UserViewModel(
     } else if (userID != "" &&
         false) { // TODO: remove false when logged in users are in the database
       database.getUser(userID) { updateUIState(it) }
-      println("User logged-in tried to watch current user profile : $userID")
     } else {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-      println(
-          "User logged-in tried to watch current user profile but no user ID found. Defaulted to grinch user.")
     }
   }
 
@@ -64,7 +60,6 @@ class UserViewModel(
         _uiState.value.copy(
             user = new,
         )
-    println("User updated: $new")
   }
 
   companion object {
