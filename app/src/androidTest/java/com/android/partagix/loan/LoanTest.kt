@@ -54,6 +54,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
+    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs
@@ -97,7 +99,16 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           longitude = 6.566109
         }
 
-    inventoryUIState = MutableStateFlow(InventoryUIState(listOf(item1, item2), ""))
+    inventoryUIState =
+        MutableStateFlow(
+            InventoryUIState(
+                listOf(item1, item2),
+                "",
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList()))
     userUIStateWithLocation = MutableStateFlow(UserUIState(user, location))
     userUIStateWithoutLocation = MutableStateFlow(UserUIState(user))
 

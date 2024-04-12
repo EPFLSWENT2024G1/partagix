@@ -178,7 +178,9 @@ fun LoanScreen(
                                         modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }
                         },
-                        modifier = modifier.testTag("LoanScreenItemListView"))
+                        modifier = modifier.testTag("LoanScreenItemListView"),
+                        users = emptyList(),
+                        loan = emptyList())
                   }
             }
       }

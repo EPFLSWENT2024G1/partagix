@@ -1,0 +1,56 @@
+name: APK build
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+    contents: write
+      
+jobs:
+    build:
+      name: Build Release APK
+      runs-on: ubuntu-latest
+  
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+  
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Load the google-services.json file from the secrets
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+  
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+  
+      - name: Build APK
+        run: ./gradlew build
+
+      - name: Rename APK
+        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/partagix-v1.0.0.apk
+
+      - name: Upload APK in artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: partagix
+          path: app/build/outputs/apk/debug/partagix-v1.0.0.apk
+          if-no-files-found: error
+          retention-days: 90
+          
+      - name: Release APK
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Partagix v1.0.0
+          files: app/build/outputs/apk/debug/partagix-v1.0.0.apk
+          draft: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+        
+    
