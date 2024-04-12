@@ -1,6 +1,5 @@
 package com.android.partagix.ui.screens
 
-import android.util.Half
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -160,20 +159,21 @@ fun ViewAccount(
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
               Spacer(modifier = Modifier.height(16.dp))
-              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {
-                Button(
-                    onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                    modifier = Modifier.weight(1f).testTag("inventoryButton")) {
-                      Text("See inventory")
-                    }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { /*TODO: friends */},
-                    modifier = Modifier.weight(1f).testTag("friendButton")) {
-                      Text("Edit Profile [not yet implemented]")
-                    }
-              }
+                    Button(
+                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
+                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
+                          Text("See inventory")
+                        }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = { /*TODO: friends */},
+                        modifier = Modifier.weight(1f).testTag("friendButton")) {
+                          Text("Edit Profile [not yet implemented]")
+                        }
+                  }
             }
       }
 }
