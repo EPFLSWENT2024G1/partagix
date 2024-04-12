@@ -32,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
+import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import java.time.Duration
@@ -47,17 +50,15 @@ import kotlin.math.log
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ItemUi(item: ItemViewModel) {
-    /*val user : User = item.findUser(item.uiState.value.item.idUser) // TODO: findUser
-    val currentDate = Date ()
-    val after: Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
+fun ItemUi(item: Item, user: User, loan:Loan) {
+    val inventory =InventoryViewModel()
      val Date: Date =
-         if (after) {
-           item.findLoan(item.uiState.value.item).endDate
+         if (loan.startDate.before(Date())) {
+           loan.endDate
          } else {
-           item.findLoan(item.uiState.value.item).startDate
+           loan.startDate
          }
-     val time = Duration.between(currentDate.toInstant(), Date.toInstant())*/
+     val time = Duration.between(Date().toInstant(), Date.toInstant())
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.fillMaxWidth().padding(PaddingValues(start = 10.dp, end = 10.dp))) {
@@ -75,11 +76,11 @@ fun ItemUi(item: ItemViewModel) {
               Column(modifier = Modifier.weight(weight = 1f)) {
                 Row(modifier = Modifier.height(25.dp)) {
                   Text(
-                      text = "lvl 4", //user.rank,
+                      text = user.rank,
                       modifier = Modifier.width(50.dp))
 
                   Text(
-                      text = "name", // user.name,
+                      text = user.name,
                        color = Color(0xff49454f),
                       lineHeight = 1.33.em,
                       style =
@@ -93,16 +94,15 @@ fun ItemUi(item: ItemViewModel) {
                       modifier = Modifier.fillMaxWidth())
                 }
                 Text(
-                    text = "date",
-                        /*if (item.findStatus(item.uiState.value.item)) {
-                          if (after) {
-                            "available in : /${time}"
-                          } else {
-                            "borrowed in : /${time}"
-                          }
+                    text = if(loan.idItem.equals("")) {
+                            "not borrowed"
                         } else {
-                          "not borrowed"
-                        },*/
+                            if (loan.startDate.before(Date())) {
+                            "available in : /${Date}"
+                        } else {
+                            "borrowed in : /${Date}"
+                        }
+                    },
                     // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
@@ -110,7 +110,7 @@ fun ItemUi(item: ItemViewModel) {
               }
               Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
                 Text(
-                    text = item.uiState.value.item.name,
+                    text = item.name,
                     textAlign = TextAlign.End,
                     lineHeight = 1.45.em,
                     style =
@@ -123,7 +123,7 @@ fun ItemUi(item: ItemViewModel) {
                         ),
                     modifier = Modifier.width(100.dp).height(40.dp).padding(top = 10.dp))
                 Text(
-                    text = "Quantity: " + item.uiState.value.item.quantity.toString(),
+                    text = "Quantity: " + item.quantity.toString(),
                     style =
                         TextStyle(
                             fontSize = 9.sp,

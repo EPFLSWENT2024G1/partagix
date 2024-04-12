@@ -83,13 +83,18 @@ fun InventoryScreen(
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             ItemListColumn(
                 List = uiState.borrowedItems,
+                users = uiState.usersBor,
+                loan = uiState.loanBor,
                 Title = "borrowed items",
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.height(220.dp))
-            ItemListColumn(
+
+              ItemListColumn(
                 List = uiState.items,
+                users = uiState.users,
+                loan = uiState.loan,
                 Title = "inventory item",
                 corner = uiState.items.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },

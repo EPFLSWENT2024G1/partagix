@@ -91,69 +91,6 @@ class ItemViewModel(
       database.setItem(_uiState.value.item)
     }
   }
-
-
-  fun findUser(uid: String): User {
-    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", Inventory("", emptyList()) )
-    database.getUser(uid) {
-        Log.w(it.id, it.name)
-    /*if (it.id.equals(uid)){ user = it } else { Log.w("error", "user not found") } */}
-      Log.w(user.id, user.name)
-    return user
-  }
-
-    /**
-     * findStatus is a function that tells us if an item will be loaned or not
-     *
-     * @param item is the item we want to check
-     *
-     * @return a boolean to tells us wether or not there is some accepted loan on that item
-     */
-  fun findStatus(item: Item): Boolean {
-    var state: Boolean = false
-    database.getLoans {
-      it.filter { it.idItem.equals(item.id) }
-          .forEach {
-            if (it.state == LoanState.ACCEPTED) {
-              state = true
-            } else {
-                state = false
-
-            }
-          }
-    }
-    return state
-  }
-
-    /**
-     * findLoan is a function that searches for the possible loan an item could have
-     * and return the loan that is the nearest in term of time
-     *
-     * @param item is the item for which we want to check
-     *
-     * @return the next loan in term of time
-     */
-    fun findLoan(item: Item): Loan {
-    var loan: List<Loan> = emptyList()
-    var currentDate = java.util.Date()
-    var nextLoan: Loan =
-        Loan("", "", "", currentDate, currentDate, "", "", "", "", LoanState.CANCELLED)
-    database.getLoans {
-      it.filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
-          .forEach {
-            if (it.startDate.before(currentDate) && it.endDate.after(currentDate)) {
-              nextLoan = it
-            } else {
-              if (it.startDate.after(currentDate)) {
-                if (nextLoan.startDate.after(it.startDate)) {
-                  nextLoan = it
-                }
-              }
-            }
-          }
-    }
-    return nextLoan
-  }
 }
 
 data class ItemUIState(val item: Item)

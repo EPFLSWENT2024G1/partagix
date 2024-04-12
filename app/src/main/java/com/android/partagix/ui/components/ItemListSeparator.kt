@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.user.User
 
 
 /**
@@ -33,6 +35,8 @@ import com.android.partagix.model.item.Item
 @Composable
 fun ItemListColumn(
     List: List<Item>,
+    users : List<User>,
+    loan : List<Loan>,
     Title: String,
     corner: String,
     onClick: (Item) -> Unit,
@@ -59,6 +63,7 @@ fun ItemListColumn(
           modifier = Modifier.clickable { onClickCorner() })
     }
 
-    ItemList(itemList = List, onClick = onClick, modifier = Modifier.fillMaxSize())
+    ItemList(itemList = List,users = users,loan = loan,
+        onClick = onClick, modifier = Modifier.fillMaxSize())
   }
 }
