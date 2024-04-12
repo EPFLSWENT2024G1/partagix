@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -125,7 +126,12 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
             inventoryViewModel = inventoryViewModel,
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
-      composable(Route.ACCOUNT) { ViewAccount(navigationActions =navigationActions)}
+      composable(
+          Route.ACCOUNT,) {
+          println("navigated to account screen")
+          ViewAccount(navigationActions =navigationActions, userViewModel = UserViewModel())
+
+      }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {

@@ -37,21 +37,23 @@ class UserViewModel(
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
+    println("UserViewModel init")
     if (user.id == "") {
-      // setUserToCurrent()
-      database.getUser("lzMnQv5a4kpGBsPhRcDS") { updateUIState(it) }
+      setUserToCurrent()
     } else {
-      updateUIState(user)
+      database.getUser(user.id) { updateUIState(it) }
     }
   }
 
   private fun setUserToCurrent() {
-    val user = FirebaseAuth.getInstance().currentUser?.uid
+    val userID = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
-      if (user == null) {
+      if (userID == null) {
         println("No user logged-in tried to watch current user profile")
       } else {
-        database.getUser(user) { updateUIState(it) }
+
+        database.getUser(userID) { updateUIState(it) }
+        println("User logged-in tried to watch current user profile : $userID")
       }
     }
   }
@@ -61,6 +63,7 @@ class UserViewModel(
         _uiState.value.copy(
             user = new,
         )
+    println("User updated: $new")
   }
 
   companion object {

@@ -52,9 +52,9 @@ import kotlin.math.round
 fun ViewAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
-    userViewModel: UserViewModel = UserViewModel(),
+    userViewModel: UserViewModel,
 ) {
-  val uiState by userViewModel.uiState.collectAsStateWithLifecycle()
+  val uiState by userViewModel.uiState.collectAsState()
   var user = uiState.user
   Scaffold(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
@@ -86,7 +86,8 @@ fun ViewAccount(
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
               LaunchedEffect(key1 = uiState) {
-                  user = userViewModel.uiState.value.user
+                  println("refreshed User: $user")
+                  user = uiState.user
 
               }
               Image(
