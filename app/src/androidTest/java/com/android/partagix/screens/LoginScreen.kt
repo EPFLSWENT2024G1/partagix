@@ -9,6 +9,7 @@ class LoginScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
         semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("LoginScreen") }) {
 
   val loginTitle: KNode = child { hasTestTag("LoginTitle") }
+  val popUpLoginButton: KNode = child { hasTestTag("PopUpLoginButton") }
   val loginButtonOpenBottomSheet: KNode = child { hasTestTag("LoginButtonOpenBottomSheet") }
   val loginBottomSheet: KNode = child { hasTestTag("LoginBottomSheet") }
   val loginButton: KNode = child { hasTestTag("LoginButton") }

@@ -44,14 +44,16 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
-    val items =
-        listOf(Item("1", cat1, "Name 1", "Description 1", Visibility.PUBLIC, 3, Location(""), ""))
+    val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
+
     nonEmptyMockUiState = MutableStateFlow(InventoryUIState(items, ""))
 
     mockInventoryViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
     every { mockInventoryViewModel.getInventory() } just Runs
-    every { mockInventoryViewModel.filterItems(any()) } just Runs
+    every { mockInventoryViewModel.filterItems(query = any()) } just Runs
+    every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
+    every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs

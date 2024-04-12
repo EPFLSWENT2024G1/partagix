@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -43,6 +44,7 @@ import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.WaitingScreen
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.android.partagix.ui.screens.ViewAccount
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -188,7 +190,12 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
             inventoryViewModel = inventoryViewModel,
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
-      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(
+          Route.ACCOUNT,
+      ) {
+        println("navigated to account screen")
+        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+      }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
