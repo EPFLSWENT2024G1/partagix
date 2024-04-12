@@ -51,7 +51,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
 
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.BOOT)
+    navigationActions.navigateTo(Route.LOAN)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {

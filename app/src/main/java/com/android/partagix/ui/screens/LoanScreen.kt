@@ -84,7 +84,7 @@ fun LoanScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
-                  contentPadding = PaddingValues(bottom = 80.dp),
+                  contentPadding = PaddingValues(bottom = 90.dp),
                   cameraPositionState = cameraPositionState) {
                     items.forEach { item ->
                       Marker(
@@ -134,8 +134,9 @@ fun LoanScreen(
                                     selectedValue = {
                                       inventoryViewModel.filterItems(it.toLong().toString())
                                     },
-                                    minUnit = "0 km",
-                                    maxUnit = "50 km",
+                                  unit = "km",
+                                    minUnit = "0",
+                                    maxUnit = "50",
                                     minValue = 0f,
                                     maxValue = 50f,
                                     sliderTextValue = {
@@ -154,6 +155,7 @@ fun LoanScreen(
                                     selectedValue = {
                                       inventoryViewModel.filterItems(it.toLong().toString())
                                     },
+                                    unit = "items",
                                     minUnit = "0",
                                     maxUnit = "100",
                                     minValue = 0f,

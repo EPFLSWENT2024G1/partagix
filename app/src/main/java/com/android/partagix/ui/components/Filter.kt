@@ -47,6 +47,7 @@ fun Filter(
     selectedValue: (Float) -> Unit,
     modifier: Modifier = Modifier,
     disabled: Boolean = false,
+    unit: String = "",
     minUnit: String = "",
     maxUnit: String = "",
     minValue: Float = 0f,
@@ -62,7 +63,7 @@ fun Filter(
   val bottomPadding = defaultPaddingValues.calculateBottomPadding()
 
   OutlinedButton(
-      modifier = modifier.fillMaxSize(),
+      modifier = modifier.fillMaxSize().height(50.dp),
       onClick = { showDialog = true },
       shape = RoundedCornerShape(12.dp),
       contentPadding =
@@ -72,6 +73,7 @@ fun Filter(
               end = 2.dp,
               bottom = bottomPadding,
           )) {
+    Column {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
@@ -92,17 +94,34 @@ fun Filter(
               modifier = modifier.size(22.dp),
           )
         }
+
+      if (sliderPosition > 0) {
+        Text(
+            text = "${sliderPosition.toInt()} $unit",
+            style =
+                TextStyle(
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily(Font(R.font.roboto)),
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF464646),
+                ),
+        )
+      }
+    }
       }
 
   if (showDialog && !disabled) {
     Dialog(onDismissRequest = { showDialog = false }) {
       Card(
-          modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(16.dp),
           shape = RoundedCornerShape(24.dp),
       ) {
         SliderFilter(
             minUnit = minUnit,
-            maxUnit = maxUnit,
+            maxUnit = "$maxUnit $unit",
             minValue = minValue,
             maxValue = maxValue,
             sliderPosition = sliderPosition,
