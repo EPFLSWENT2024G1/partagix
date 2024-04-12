@@ -48,72 +48,75 @@ fun InventoryScreen(
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-    inventoryViewModel.getInventory()
-    Scaffold(
-        modifier = modifier.testTag("inventoryScreen"),
-        topBar = {
-            TopSearchBar(
-                filter = { inventoryViewModel.filterItems(it) },
-                query = uiState.query,
-                modifier = modifier.testTag("inventoryScreenSearchBarBack"))
-        },
-        bottomBar = {
-            BottomNavigationBar(
-                selectedDestination = Route.INVENTORY,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
-                modifier = modifier.testTag("inventoryScreenBottomNavBar"))
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
-                    itemViewModel.updateUiState(i)
-                    navigationActions.navigateTo(Route.CREATE_ITEM) },
-                modifier = modifier.testTag("inventoryScreenFab"),
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Create")
-            }
-        }) { innerPadding ->
+  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  inventoryViewModel.getInventory()
+  Scaffold(
+      modifier = modifier.testTag("inventoryScreen"),
+      topBar = {
+        TopSearchBar(
+            filter = { inventoryViewModel.filterItems(it) },
+            query = uiState.query,
+            modifier = modifier.testTag("inventoryScreenSearchBarBack"))
+      },
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = Route.INVENTORY,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = modifier.testTag("inventoryScreenBottomNavBar"))
+      },
+      floatingActionButton = {
+        FloatingActionButton(
+            onClick = {
+              val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
+              itemViewModel.updateUiState(i)
+              navigationActions.navigateTo(Route.CREATE_ITEM)
+            },
+            modifier = modifier.testTag("inventoryScreenFab"),
+        ) {
+          Icon(Icons.Default.Add, contentDescription = "Create")
+        }
+      }) { innerPadding ->
         if (uiState.items.isEmpty()) {
-            Box(
-                modifier =
-                modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-                    .testTag("inventoryScreenNoItemBox")) {
+          Box(
+              modifier =
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text = "There is no items in the inventory.",
                     modifier =
-                    modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
-            }
+                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
+              }
         } else {
-            Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-                ItemListColumn(
-                    List = uiState.borrowedItems,
-                    users = uiState.usersBor,
-                    loan = uiState.loanBor,
-                    Title = "Borrowed items",
-                    corner = uiState.borrowedItems.size.toString(),
-                    onClick = {
-                        itemViewModel.updateUiState(it)
-                        navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
-                    onClickCorner = { /*TODO*/},
-                    modifier = Modifier.height(220.dp))
+          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+            ItemListColumn(
+                List = uiState.borrowedItems,
+                users = uiState.usersBor,
+                loan = uiState.loanBor,
+                Title = "Borrowed items",
+                corner = uiState.borrowedItems.size.toString(),
+                onClick = {
+                  itemViewModel.updateUiState(it)
+                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
+                },
+                onClickCorner = { /*TODO*/},
+                modifier = Modifier.height(220.dp))
 
-                ItemListColumn(
-                    List = uiState.items,
-                    users = uiState.users,
-                    loan = uiState.loan,
-                    Title = "Inventory item",
-                    corner = uiState.items.size.toString(),
-                    onClick = {
-                        itemViewModel.updateUiState(it)
-                        navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
-                    onClickCorner = { /*TODO*/},
-                    // modifier = Modifier
-                )
-            }
+            ItemListColumn(
+                List = uiState.items,
+                users = uiState.users,
+                loan = uiState.loan,
+                Title = "Inventory item",
+                corner = uiState.items.size.toString(),
+                onClick = {
+                  itemViewModel.updateUiState(it)
+                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
+                },
+                onClickCorner = { /*TODO*/},
+                // modifier = Modifier
+            )
+          }
         }
-    }
+      }
 }

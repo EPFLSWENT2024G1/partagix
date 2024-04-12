@@ -54,15 +54,16 @@ class ItemViewModel(
   private fun fillIdCategory(item: Item, onSuccess: (String) -> Unit) {
     var idCategory = ""
     database.getIdCategory(item.category.name, { idCategory = it })
-      println("truc a ecrire: $idCategory")
-    updateUiState( Item(
-        _uiState.value.item.id,
-        Category(idCategory, _uiState.value.item.category.name),
-        _uiState.value.item.name,
-        _uiState.value.item.description,
-        _uiState.value.item.visibility,
-        _uiState.value.item.quantity,
-        _uiState.value.item.location))
+    println("truc a ecrire: $idCategory")
+    updateUiState(
+        Item(
+            _uiState.value.item.id,
+            Category(idCategory, _uiState.value.item.category.name),
+            _uiState.value.item.name,
+            _uiState.value.item.description,
+            _uiState.value.item.visibility,
+            _uiState.value.item.quantity,
+            _uiState.value.item.location))
   }
 
   /**
@@ -80,22 +81,20 @@ class ItemViewModel(
   /** Save the item with the current UI state in the database */
   fun save(new: Item) {
     if (_uiState.value.item.id == "") {
-        database.getIdCategory(new.category.name) {
-            database.createItem(
-                FirebaseAuth.getInstance().currentUser!!.uid,
-                Item(
-                    new.id,
-                    Category(it, new.category.name),
-                    new.name,
-                    new.description,
-                    new.visibility,
-                    new.quantity,
-                    new.location
-
-                ))
-        }
+      database.getIdCategory(new.category.name) {
+        database.createItem(
+            FirebaseAuth.getInstance().currentUser!!.uid,
+            Item(
+                new.id,
+                Category(it, new.category.name),
+                new.name,
+                new.description,
+                new.visibility,
+                new.quantity,
+                new.location))
+      }
     } else {
-        updateUiState(new)
+      updateUiState(new)
       database.setItem(new)
     }
   }

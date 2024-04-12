@@ -36,46 +36,46 @@ fun ItemList(
     onClick: (Item) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(itemList.size) { index ->
-            val item = itemList[index]
-            Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {
-                ItemUi(
-                    item = item,
-                    user =
-                    if (users.isEmpty()) {
-                        User("", "noname", "", "norank", Inventory("", emptyList()))
-                    } else {
-                        users[index]
-                    },
-                    loan =
-                    if (loan.isEmpty()) {
-                        Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                    } else {
-                        loan[index]
-                    })
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+  LazyColumn(modifier = modifier.fillMaxSize()) {
+    items(itemList.size) { index ->
+      val item = itemList[index]
+      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {
+        ItemUi(
+            item = item,
+            user =
+                if (users.isEmpty()) {
+                  User("", "noname", "", "norank", Inventory("", emptyList()))
+                } else {
+                  users[index]
+                },
+            loan =
+                if (loan.isEmpty()) {
+                  Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                } else {
+                  loan[index]
+                })
+      }
+      Spacer(modifier = Modifier.height(8.dp))
     }
+  }
 }
 
 @Preview(device = "spec:width=1080px,height=1270px,dpi=440")
 @Composable
 fun ItemListPreview() {
-    val itemList = ArrayList<Item>()
+  val itemList = ArrayList<Item>()
 
-    for (i in 0..3) {
-        itemList.add(
-            Item(
-                i.toString(),
-                Category("1", "name"),
-                "name $i",
-                "description",
-                Visibility.PUBLIC,
-                1,
-                android.location.Location("location")))
-    }
+  for (i in 0..3) {
+    itemList.add(
+        Item(
+            i.toString(),
+            Category("1", "name"),
+            "name $i",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            android.location.Location("location")))
+  }
 
-    // ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
+  // ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
 }

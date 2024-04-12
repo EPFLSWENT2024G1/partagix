@@ -42,31 +42,31 @@ fun ItemListColumn(
     onClickCorner: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = Title,
-                style =
-                TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(1000),
-                    color = Color(0xFF000000),
-                ),
-                modifier = Modifier.width(350.dp).padding(horizontal = 10.dp))
+  Column(modifier = modifier) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+      Text(
+          text = Title,
+          style =
+              TextStyle(
+                  fontSize = 18.sp,
+                  fontWeight = FontWeight(1000),
+                  color = Color(0xFF000000),
+              ),
+          modifier = Modifier.width(350.dp).padding(horizontal = 10.dp))
 
-            Text(
-                text = corner,
-                textAlign = TextAlign.Right,
-                modifier = Modifier.clickable { onClickCorner() })
-        }
-
-        ItemList(
-            itemList = List,
-            users = users,
-            loan = loan,
-            onClick = onClick,
-            modifier = Modifier.fillMaxSize())
+      Text(
+          text = corner,
+          textAlign = TextAlign.Right,
+          modifier = Modifier.clickable { onClickCorner() })
     }
+
+    ItemList(
+        itemList = List,
+        users = users,
+        loan = loan,
+        onClick = onClick,
+        modifier = Modifier.fillMaxSize())
+  }
 }
