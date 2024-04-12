@@ -58,7 +58,7 @@ fun InventoryScreen(
             active = false,
             onActiveChange = { active = it },
             modifier = modifier.fillMaxWidth().padding(20.dp),
-            placeholder = { Text("Search a Task") },
+            placeholder = { Text("Search an Item") },
             leadingIcon = {
               if (!active) {
                 Icon(Icons.Default.Menu, contentDescription = "Search")
@@ -80,7 +80,7 @@ fun InventoryScreen(
                   contentDescription = "Search",
                   modifier = modifier.clickable { keyboardController?.hide() })
             }) {
-              Text("Search a Task")
+              Text("Search an Item")
             }
       },
       bottomBar = {
