@@ -48,6 +48,7 @@ class UserViewModel(
 
     if (userID == null) {
       println("No user logged-in tried to watch current user profile")
+      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
     } else {
 
       database.getUser(userID) { updateUIState(it) }
