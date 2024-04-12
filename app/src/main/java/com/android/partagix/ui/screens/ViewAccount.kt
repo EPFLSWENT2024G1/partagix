@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
@@ -29,7 +28,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,15 +55,17 @@ fun ViewAccount(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
         TopAppBar(
-            title = { Text("My Account") },
-            modifier = Modifier.fillMaxWidth().testTag("title"),
+            modifier = Modifier.fillMaxWidth().testTag("topBar"),
+            title = { Text("My Account", modifier = Modifier.fillMaxWidth().testTag("title")) },
             navigationIcon = {
-              IconButton(onClick = { navigationActions.goBack() }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                    modifier = Modifier.width(48.dp))
-              }
+              IconButton(
+                  modifier = Modifier.testTag("backButton"),
+                  onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.width(48.dp).testTag("backIcon"))
+                  }
             })
       },
       bottomBar = {
@@ -92,13 +92,13 @@ fun ViewAccount(
                   modifier = Modifier.fillMaxWidth().testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = user.name
-                    Text("$username's profile")
+                    Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
               TextField(
                   value = user.address,
                   onValueChange = {},
-                  label = { Text("Location") },
+                  label = { Text("Location", modifier = Modifier.testTag("addressText")) },
                   colors =
                       TextFieldDefaults.colors(
                           focusedIndicatorColor = Color.Transparent,
@@ -107,9 +107,14 @@ fun ViewAccount(
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("location"),
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
                   readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
+                  leadingIcon = {
+                    Icon(
+                        Icons.Default.LocationOn,
+                        contentDescription = null,
+                        modifier = Modifier.testTag("addressIcon"))
+                  })
               val rank = user.rank
               val stars: String
               if (rank == "") {
@@ -146,7 +151,7 @@ fun ViewAccount(
               TextField(
                   value = stars,
                   onValueChange = {},
-                  label = { Text("Trust") },
+                  label = { Text("Trust", modifier = Modifier.testTag("ratingText")) },
                   colors =
                       TextFieldDefaults.colors(
                           focusedIndicatorColor = Color.Transparent,
@@ -157,7 +162,12 @@ fun ViewAccount(
                           disabledContainerColor = Color.Transparent),
                   modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
                   readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
+                  leadingIcon = {
+                    Icon(
+                        Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier.testTag("ratingIcon"))
+                  })
               Spacer(modifier = Modifier.height(16.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
