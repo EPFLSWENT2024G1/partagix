@@ -53,6 +53,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
 
   var item = uiState.value.item
 
+
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
   Scaffold(
@@ -188,7 +189,6 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
 
                 Button(
                     onClick = {
-                        viewModel.updateUiState(item)
                         navigationActions.navigateTo("${Route.EDIT_ITEM}/${item.id}") },
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth())
