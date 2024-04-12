@@ -47,12 +47,14 @@ class UserViewModel(
     val userID = FirebaseAuth.getInstance().currentUser?.uid
 
     if (userID == null) {
-      println("No user logged-in tried to watch current user profile")
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else {
-
+    } else if (userID != "" && false) { // TODO: remove false when logged in users are in the database
       database.getUser(userID) { updateUIState(it) }
       println("User logged-in tried to watch current user profile : $userID")
+    } else {
+      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
+      println("User logged-in tried to watch current user profile but no user ID found. Defaulted to grinch user.")
+
     }
   }
 
