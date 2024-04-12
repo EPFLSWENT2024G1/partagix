@@ -29,7 +29,9 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
+import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
+import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.firebase.auth.FirebaseUser
@@ -129,6 +131,17 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             val itemId = it.arguments?.getString("itemId")
             InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
+          }
+      composable(
+          Route.CREATE_ITEM,
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            InventoryCreateOrEditItem(ItemViewModel(), navigationActions, mode = "create")
+          }
+      composable(
+          Route.EDIT_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            val itemId = it.arguments?.getString("itemId")
+            InventoryCreateOrEditItem(ItemViewModel(id = itemId), navigationActions, mode = "edit")
           }
     }
   }

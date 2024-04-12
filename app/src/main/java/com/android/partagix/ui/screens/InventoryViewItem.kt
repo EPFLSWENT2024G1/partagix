@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -36,7 +36,14 @@ import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 
+/**
+ * Screen to view an item.
+ *
+ * @param navigationActions a NavigationActions instance to navigate between screens.
+ * @param viewModel an ItemViewModel which handles functionality.
+ */
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +57,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
   Scaffold(
       topBar = {
         TopAppBar(
-            title = { Text("Back to selection" /*TODO: get item name*/) },
+            title = { Text("Back to selection") },
             modifier = Modifier.fillMaxWidth(),
             navigationIcon = {
               IconButton(onClick = { navigationActions.goBack() }) {
@@ -81,7 +88,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   }
                   Spacer(modifier = Modifier.width(8.dp))
 
-                  Column() {
+                  Column {
                     OutlinedTextField(
                         value = item.name,
                         onValueChange = {},
@@ -90,7 +97,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                         readOnly = true)
 
                     OutlinedTextField(
-                        value = item.author,
+                        value = item.idUser,
                         onValueChange = {},
                         label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),
@@ -176,7 +183,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { /*TODO: go to edit item page*/},
+                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth())
               }

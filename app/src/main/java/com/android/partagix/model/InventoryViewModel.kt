@@ -42,6 +42,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     viewModelScope.launch { database.getItems { update(it) } }
   }
 
+  /** Get the inventory of the current user */
   fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser?.uid
     viewModelScope.launch {
@@ -63,6 +64,11 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     fetchedList = new
   }
 
+  /**
+   * Filter items based on the query
+   *
+   * @param query the query to filter the items
+   */
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list =

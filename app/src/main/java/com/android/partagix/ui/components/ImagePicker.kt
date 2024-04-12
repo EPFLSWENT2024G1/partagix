@@ -31,6 +31,11 @@ import coil.compose.AsyncImage
 // Functions commented as "imported" are from this webpage :
 // https://medium.com/@jpmtech/jetpack-compose-display-a-photo-picker-6bcb9b357a3a
 
+/**
+ * PhotoSelectorView composable to display a photo picker
+ *
+ * @param maxSelectionCount the maximum number of photos that can be selected
+ */
 // imported
 @Composable
 fun PhotoSelectorView(maxSelectionCount: Int = 1) {
