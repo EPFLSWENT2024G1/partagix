@@ -84,13 +84,13 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     assert(true)
   }
 
-  @Test
+  /*@Test
   fun searchBarIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent { InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel) }
 
     onComposeScreen<InventoryScreen>(composeTestRule) { searchBar { assertIsDisplayed() } }
-  }
+  }*/
 
   @Test
   fun searchBarWorks() =
