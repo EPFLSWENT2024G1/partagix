@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
 import com.android.partagix.ui.components.ItemList
@@ -169,6 +170,8 @@ fun LoanScreen(
                                     modifier = modifier.fillMaxWidth(.3f))
                               }
                         },
+                        users = emptyList<User>(),
+                        loan = emptyList(),
                         modifier = modifier)
                   }
             }
