@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import android.util.Half
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,11 +81,6 @@ fun ViewAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
-              /*LaunchedEffect(key1 = uiState) {
-                  println("refreshed User: $user")
-                  user = uiState.user
-
-              }*/
               Image(
                   painter =
                       painterResource(
@@ -100,16 +96,15 @@ fun ViewAccount(
                     Text("$username's profile")
                   }
               Spacer(modifier = Modifier.height(16.dp))
-
               TextField(
                   value = user.address,
                   onValueChange = {},
                   label = { Text("Location") },
                   colors =
                       TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Gray,
-                          disabledIndicatorColor = Color.Gray,
-                          unfocusedIndicatorColor = Color.Gray,
+                          focusedIndicatorColor = Color.Transparent,
+                          disabledIndicatorColor = Color.Transparent,
+                          unfocusedIndicatorColor = Color.Transparent,
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
@@ -155,9 +150,9 @@ fun ViewAccount(
                   label = { Text("Trust") },
                   colors =
                       TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Gray,
-                          disabledIndicatorColor = Color.Gray,
-                          unfocusedIndicatorColor = Color.Gray,
+                          focusedIndicatorColor = Color.Transparent,
+                          disabledIndicatorColor = Color.Transparent,
+                          unfocusedIndicatorColor = Color.Transparent,
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
@@ -165,16 +160,17 @@ fun ViewAccount(
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
               Spacer(modifier = Modifier.height(16.dp))
-              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons")) {
+              Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                  horizontalArrangement = Arrangement.Absolute.Center) {
                 Button(
                     onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                    modifier = Modifier.fillMaxWidth(0.5f).testTag("inventoryButton")) {
+                    modifier = Modifier.weight(1f).testTag("inventoryButton")) {
                       Text("See inventory")
                     }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = { /*TODO: friends */},
-                    modifier = Modifier.fillMaxWidth().testTag("friendButton")) {
+                    modifier = Modifier.weight(1f).testTag("friendButton")) {
                       Text("Edit Profile [not yet implemented]")
                     }
               }
