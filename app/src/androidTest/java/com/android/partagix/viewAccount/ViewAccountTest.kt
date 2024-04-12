@@ -10,16 +10,13 @@ import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
-import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.screens.ViewAccount
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
-import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
 import io.mockk.every
@@ -31,14 +28,17 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.math.round
 
 @RunWith(AndroidJUnit4::class)
 class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
     @RelaxedMockK
     lateinit var mockNavActions: NavigationActions
+
     @RelaxedMockK
     lateinit var mockUserViewModel: UserViewModel
 
@@ -49,11 +49,12 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
 
-    private val emptyUser: User =
-        User("", "", "", "", Inventory("", emptyList()))
-    private val userOne: User =
-        User("id1", "name1", "address1", "rank1", Inventory("id1",
-                listOf(Item("1", cat1, "Name 1", "Description 1", "Author 1", vis1, 1, loc1))))
+    private val emptyUser: User = User("", "", "", "", Inventory("", emptyList()))
+    private val userOne: User = User(
+        "id1", "name1", "address1", "rank1", Inventory(
+            "id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
+        )
+    )
 
     @Before
     fun testSetup() {
@@ -73,7 +74,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
         every { mockNavActions.navigateTo(Route.BORROW) } just Runs
         every { mockNavActions.navigateTo(Route.BOOT) } just Runs
         every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
-            // todo right test ? or something for goBack instead ?
+        // todo right test ? or something for goBack instead ?
 
 
         /*    composeTestRule.setContent {
@@ -85,121 +86,320 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     fun testTest() = run {
         every { mockUserViewModel.uiState } returns emptyMockUiState
         composeTestRule.setContent {
-            ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
         }
 
         assert(true)
     }
 
-//    title
+    //    topBar
     @Test
-    fun titleIsDisplayed() = run {
+    fun topBarIsDisplayed() = run {
         every { mockUserViewModel.uiState } returns emptyMockUiState
         composeTestRule.setContent {
-            ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
         }
 
         onComposeScreen<ViewAccount>(composeTestRule) {
-            title { assertIsDisplayed() }
+            topBar { assertIsDisplayed() }
         }
     }
 
-//    accountScreenBottomNavBar
-@Test
-fun accountScreenBottomNavBarIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+    @Test
+    fun topBarWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            topBar { assertIsDisplayed() }
+            title { assertIsDisplayed() }
+            backButton { assertIsDisplayed() }
+//            backButton { performClick() }
+//            viewAccount { assertIsNotFocused() }
+        }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { accountScreenBottomNavBar { assertIsDisplayed() } }
-}
+    //    accountScreenBottomNavBar
+    @Test
+    fun accountScreenBottomNavBarIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    mainContent
-@Test
-fun mainContentIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) { accountScreenBottomNavBar { assertIsDisplayed() } }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { mainContent { assertIsDisplayed() } }
-}
+    //    mainContent
+    @Test
+    fun mainContentIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    userImage
-@Test
-fun userImageIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) { mainContent { assertIsDisplayed() } }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { userImage { assertIsDisplayed() } }
-}
+    //    userImage
+    @Test
+    fun userImageIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    username
-@Test
-fun usernameIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) { userImage { assertIsDisplayed() } }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { username { assertIsDisplayed() } }
-}
+    //    username
+    @Test
+    fun usernameIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    location
-@Test
-fun locationIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) { username { assertIsDisplayed() } }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { location { assertIsDisplayed() } }
-}
+    // usernameText
+    @Test
+    fun usernameWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    rating
-@Test
-fun ratingIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            username { assertIsDisplayed() }
+            usernameText { assertIsDisplayed() }
+            val username = mockUserViewModel.uiState.value.user.name
+            usernameText { assertTextEquals("$username's profile") }
+        }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { rating { assertIsDisplayed() } }
-}
+    //    address
+    @Test
+    fun addressIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    actionButtons
-@Test
-fun actionButtonsIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            address { assertIsDisplayed() }
+        }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { actionButtons { assertIsDisplayed() } }
-}
+    @Test
+    fun addressWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    inventoryButton
-@Test
-fun inventoryButtonIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            address { assertIsDisplayed() }
+            val userAddress = mockUserViewModel.uiState.value.user.address
+//        address { assertValueEquals(userAddress)}
+//        addressText { assertIsDisplayed() }
+//        addressIcon { assertIsDisplayed() }
+        }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { inventoryButton { assertIsDisplayed() } }
-}
+    //    rating
+    @Test
+    fun ratingIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
 
-//    friendButton
-@Test
-fun friendButtonIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-        ViewAccount(modifier = Modifier, userViewModel = mockUserViewModel, navigationActions = mockNavActions) // mockNavActions::navigateTo
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            rating { assertIsDisplayed() }
+        }
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { friendButton { assertIsDisplayed() } }
-}
+    @Test
+    fun ratingWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            rating { assertIsDisplayed() }
+//        ratingText { assertIsDisplayed() }
+
+            val rank = mockUserViewModel.uiState.value.user.rank
+            if (rank == "") {
+//            ratingText { assertTextEquals("No trust yet") }
+            } else {
+                ratingText { assertTextContains("/5)") }
+
+                val ratingUnit = round(rank.toFloat())
+                when (ratingUnit.toInt()) {
+                    0 -> {
+                        ratingText { assertTextContains("☆☆☆☆☆") }
+                    }
+
+                    1 -> {
+                        ratingText { assertTextContains("★☆☆☆☆") }
+                    }
+
+                    2 -> {
+                        ratingText { assertTextContains("★★☆☆☆") }
+                    }
+
+                    3 -> {
+                        ratingText { assertTextContains("★★★☆☆") }
+                    }
+
+                    4 -> {
+                        ratingText { assertTextContains("★★★★☆") }
+                    }
+
+                    5 -> {
+                        ratingText { assertTextContains("★★★★★") }
+                    }
+
+                    else -> {
+                        ratingText { assertTextContains("...") }
+                    }
+                }
+            }
+        }
+    }
+
+    //    actionButtons
+    @Test
+    fun actionButtonsIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) { actionButtons { assertIsDisplayed() } }
+    }
+
+    //    inventoryButton
+    @Test
+    fun inventoryButtonIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) { inventoryButton { assertIsDisplayed() } }
+    }
+
+    @Test
+    fun inventoryButtonWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            inventoryButton { assertIsDisplayed() }
+            inventoryButton { performClick() }
+//        inventoryButtonText { assertIsDisplayed() }
+        }
+    }
+
+    //    friendButton
+    @Test
+    fun friendButtonIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) { friendButton { assertIsDisplayed() } }
+    }
+
+    @Test
+    fun friendButtonWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                userViewModel = mockUserViewModel,
+                navigationActions = mockNavActions
+            ) // mockNavActions::navigateTo
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            friendButton { assertIsDisplayed() }
+            friendButton { performClick() }
+//        viewAccount { assertIsNotFocused() }
+        }
+    }
 }
