@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,10 +40,9 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
-import com.android.partagix.ui.screens.WaitingScreen
+import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.android.partagix.ui.screens.ViewAccount
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -56,6 +54,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel()
+  private val userViewModel = UserViewModel()
 
   @Composable
   fun Create() {
@@ -108,9 +107,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -124,16 +121,11 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
       return false
     }
 
-    if (ActivityCompat.checkSelfPermission(
-        activity,
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
-    ) {
+    if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED) {
       Log.d(TAG, "checkLocationPermissions: requesting permissions")
       ActivityCompat.requestPermissions(
-        activity,
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        1)
+          activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
 
       return checkLocationPermissions(retries - 1)
     } else {
@@ -156,34 +148,23 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.LOAN_PREP) {
+      composable(Route.LOAN) {
         if (checkLocationPermissions()) {
-          fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-              if (location != null) {
-                Log.d(TAG, "onCreate: location=$location")
-                navigationActions.navigateTo(Route.LOAN + "/${location.latitude}/${location.longitude}")
-              }
+          fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+              Log.d(TAG, "onCreate: location=$location")
+              userViewModel.updateLocation(location)
             }
-          WaitingScreen(navigationActions = navigationActions) // TODO: replace with a real screen
+          }
+          LoanScreen(
+              navigationActions = navigationActions,
+              inventoryViewModel = inventoryViewModel,
+              userViewModel = userViewModel,
+              modifier = modifier)
         } else {
           HomeScreen(navigationActions)
         }
       }
-      composable(Route.LOAN + "/{latitude}/{longitude}", arguments = listOf(
-          navArgument("latitude") { type = NavType.StringType },
-          navArgument("longitude") { type = NavType.StringType } )) {
-        val latitude = it.arguments?.getString("latitude")
-        val longitude = it.arguments?.getString("longitude")
-        LoanScreen(
-            navigationActions,
-            inventoryViewModel, // TODO: pass the loanViewModel
-            currentLocation = Location("").apply {
-              this.latitude = latitude?.toDouble() ?: 0.0
-              this.longitude = longitude?.toDouble() ?: 0.0
-            },
-          modifier = modifier
-        ) }
 
       composable(Route.INVENTORY) {
         InventoryScreen(

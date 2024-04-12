@@ -1,6 +1,5 @@
 package com.android.partagix.ui.screens
 
-import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
 import com.android.partagix.ui.components.ItemList
@@ -49,12 +49,15 @@ private const val TAG = "LoanScreen"
 fun LoanScreen(
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
+    userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
-    currentLocation: Location? = null,
 ) {
 
-  val uiState = inventoryViewModel.uiState.collectAsState()
-  var items = uiState.value.items
+  val inventoryUiState = inventoryViewModel.uiState.collectAsState()
+  var items = inventoryUiState.value.items
+
+  val userUiState = userViewModel.uiState.collectAsState()
+  var currentLocation = userUiState.value.location
 
   // Simulate a large list of items
   for (i in 0..3) {
@@ -71,7 +74,8 @@ fun LoanScreen(
     }
   }
 
-  LaunchedEffect(key1 = uiState) { items = uiState.value.items }
+  LaunchedEffect(key1 = inventoryUiState) { items = inventoryUiState.value.items }
+  LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
@@ -135,10 +139,12 @@ fun LoanScreen(
                                     title = "Distance",
                                     selectedValue = {
                                       if (currentLocation != null) {
-                                        inventoryViewModel.filterItems(currentPosition = currentLocation, radius = it.toDouble())
+                                        inventoryViewModel.filterItems(
+                                            currentPosition = currentLocation!!,
+                                            radius = it.toDouble())
                                       }
                                     },
-                                  unit = "km",
+                                    unit = "km",
                                     minUnit = "0",
                                     maxUnit = "50",
                                     minValue = 0f,
