@@ -182,7 +182,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            //val itemId = it.arguments?.getString("itemId")
+            // val itemId = it.arguments?.getString("itemId")
             InventoryViewItem(navigationActions, itemViewModel)
           }
       composable(
@@ -193,7 +193,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
       composable(
           Route.EDIT_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            //val itemId = it.arguments?.getString("itemId")
+            // val itemId = it.arguments?.getString("itemId")
             InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
           }
     }
