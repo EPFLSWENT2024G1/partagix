@@ -42,6 +42,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     viewModelScope.launch { database.getItems { update(it, false) } }
   }
 
+
     /**
      *  getInventory is a function that will update the uistate to have the items from your
      *  inventory and to have the possible items you borrowed by checking your loans
@@ -82,10 +83,11 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     }
   }
 
-    /**
-     * filterItems is a functions that we use in the search bar of our inventory to filter your
-     * items
-     */
+  /**
+   * Filter items based on the query
+   *
+   * @param query the query to filter the items
+   */
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list =

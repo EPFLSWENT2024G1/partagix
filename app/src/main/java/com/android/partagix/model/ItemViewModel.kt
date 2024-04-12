@@ -70,6 +70,11 @@ class ItemViewModel(
         _uiState.value.item.location)
   }
 
+  /**
+   * Update the UI state with a new item
+   *
+   * @param new the new item to update the UI state with
+   */
   fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
@@ -77,6 +82,7 @@ class ItemViewModel(
         )
   }
 
+  /** Save the item with the current UI state in the database */
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(
@@ -88,8 +94,9 @@ class ItemViewModel(
 
 
   fun findUser(uid: String): User {
-    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", inventory = Inventory("", emptyList()))
-    database.getUser(uid) { Log.w(it.id, it.name) }
+    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", )
+    database.getUser(uid) { if (it.id.equals(uid)){ user = it } else { Log.w("error", "user not found") } }
+      Log.w(user.id, user.name)
     return user
   }
 

@@ -41,25 +41,23 @@ import kotlin.math.log
 
 
 /**
- * ItemUi is a composable function that displays an item in the inventory,
- * and that will take us to the item's page when clicked.
+ * Composable function to display an item, in a rectangle form.
  *
- * @param item an ItemViewModel instance.
- *
+ * @param item an Item instance to display.
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: ItemViewModel) {
-  val user : User = item.findUser(item.uiState.value.item.idUser)
-        val currentDate = Date ()
-    /* val after: Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
+    val user : User = item.findUser(item.uiState.value.item.idUser) // TODO: findUser
+    val currentDate = Date ()
+    val after: Boolean = item.findLoan(item.uiState.value.item).startDate.before(currentDate)
      val Date: Date =
          if (after) {
            item.findLoan(item.uiState.value.item).endDate
          } else {
            item.findLoan(item.uiState.value.item).startDate
          }
-     val time = Duration.between(currentDate.toInstant(), Date.toInstant())*/
+     val time = Duration.between(currentDate.toInstant(), Date.toInstant())
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.fillMaxWidth().padding(PaddingValues(start = 10.dp, end = 10.dp))) {
@@ -95,8 +93,8 @@ fun ItemUi(item: ItemViewModel) {
                       modifier = Modifier.fillMaxWidth())
                 }
                 Text(
-                    text = "date"
-                        /*if (item.findStatus(item.uiState.value.item)) {
+                    text = //"date"
+                        if (item.findStatus(item.uiState.value.item)) {
                           if (after) {
                             "available in : /${time}"
                           } else {
@@ -104,7 +102,7 @@ fun ItemUi(item: ItemViewModel) {
                           }
                         } else {
                           "not borrowed"
-                        }*/,
+                        },
                     // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),

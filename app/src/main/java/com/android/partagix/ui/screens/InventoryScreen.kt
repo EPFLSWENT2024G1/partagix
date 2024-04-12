@@ -51,6 +51,7 @@ fun InventoryScreen(
             filter = { inventoryViewModel.filterItems(it) },
             query = uiState.query,
             modifier = modifier)
+
       },
       bottomBar = {
         BottomNavigationBar(
@@ -60,17 +61,24 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            onClick = { navigationActions.navigateTo(Route.CREATE_ITEM) }) {
+            onClick = { navigationActions.navigateTo(Route.CREATE_ITEM)},
+            modifier = modifier.testTag("inventoryScreenFab"),
+                ){
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
       }) { innerPadding ->
         if (uiState.items.isEmpty()) {
-          Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            Text(
-                text = "There is no items in the inventory.",
-                modifier =
-                    modifier.align(Alignment.Center).testTag("inventoryScreenMainContentText"))
-          }
+          Box(
+              modifier =
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .testTag("inventoryScreenNoItemBox")) {
+                Text(
+                    text = "There is no items in the inventory.",
+                    modifier =
+                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
+              }
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             ItemListColumn(
