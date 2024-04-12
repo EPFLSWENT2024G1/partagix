@@ -108,15 +108,6 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedCheck --parallel --build-cache
 
-      - name: Clean
-        run: |
-          ./gradlew clean
-
-      - name: Assemble
-        run: |
-          # To run the CI with debug information, add --info
-          ./gradlew assemble lint --parallel --build-cache
-
       # This step generates the coverage report which will be uploaded to sonar
       - name: Generate Coverage Report
         run: |
