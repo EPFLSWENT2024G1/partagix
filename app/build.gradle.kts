@@ -181,6 +181,9 @@ dependencies {
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
+
+    // ----------       New Icons     ------------
+    implementation("androidx.compose.material:material-icons-extended")
 }
 
 tasks.withType<Test> {
