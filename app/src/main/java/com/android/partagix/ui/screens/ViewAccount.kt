@@ -28,7 +28,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,9 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -46,7 +43,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
 
-//@Preview(showBackground = true)
+// @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewAccount(
@@ -54,8 +51,8 @@ fun ViewAccount(
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
 ) {
-  val uiState by userViewModel.uiState.collectAsState()
-  var user = uiState.user
+  val uiState = userViewModel.uiState.collectAsState()
+  val user = uiState.value.user
   Scaffold(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
@@ -63,9 +60,7 @@ fun ViewAccount(
             title = { Text("My Account") },
             modifier = Modifier.fillMaxWidth().testTag("title"),
             navigationIcon = {
-              IconButton(onClick = {
-                  navigationActions.goBack()
-              }) {
+              IconButton(onClick = { navigationActions.goBack() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
@@ -74,22 +69,22 @@ fun ViewAccount(
             })
       },
       bottomBar = {
-          BottomNavigationBar(
-              selectedDestination = Route.ACCOUNT,
-              navigateToTopLevelDestination = navigationActions::navigateTo,
-              modifier = modifier.testTag("accountScreenBottomNavBar"))}
-      ) {
+        BottomNavigationBar(
+            selectedDestination = Route.ACCOUNT,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = modifier.testTag("accountScreenBottomNavBar"))
+      }) {
         Column(
             modifier =
                 Modifier.fillMaxHeight()
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
-              LaunchedEffect(key1 = uiState) {
+              /*LaunchedEffect(key1 = uiState) {
                   println("refreshed User: $user")
                   user = uiState.user
 
-              }
+              }*/
               Image(
                   painter =
                       painterResource(

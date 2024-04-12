@@ -96,9 +96,7 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-              .fillMaxSize()
-              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -127,10 +125,10 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
       composable(
-          Route.ACCOUNT,) {
-          println("navigated to account screen")
-          ViewAccount(navigationActions =navigationActions, userViewModel = UserViewModel())
-
+          Route.ACCOUNT,
+      ) {
+        println("navigated to account screen")
+        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
