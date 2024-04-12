@@ -3,8 +3,8 @@
 package com.android.partagix.ui.screens
 
 import android.content.ContentValues.TAG
+import android.location.Location
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,14 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,7 +38,6 @@ import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.navigation.TopLevelDestination
 
 /**
  * InventoryScreen is a composable that displays the inventory screen of the user.
@@ -81,7 +76,9 @@ fun InventoryScreen(
         FloatingActionButton(
             modifier = modifier.testTag("inventoryScreenFab"),
             onClick = {
-              /*navigationActions.navigateTo(Route.CREATE_TODO)*/
+                val i = Item("", Category("", ""),"","", Visibility.PUBLIC, 1, Location(""), "")
+                itemViewModel.updateUiState(i)
+              navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
             }
