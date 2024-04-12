@@ -55,7 +55,7 @@ fun LoanScreen(
   var items = uiState.value.items
 
   // Simulate a large list of items
-  for (i in 0..10) {
+  for (i in 0..3) {
     items = items.plus(items)
   }
 
@@ -73,9 +73,7 @@ fun LoanScreen(
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
-      topBar = {
-        TopSearchBar(filter = { inventoryViewModel.filterItems(it) }, query = uiState.value.query)
-      },
+      topBar = { TopSearchBar(filter = { inventoryViewModel.filterItems(it) }) },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.LOAN,

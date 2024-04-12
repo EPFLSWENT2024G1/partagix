@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +80,7 @@ fun Filter(
               text = title,
               style =
                   TextStyle(
-                      fontSize = 20.sp,
+                      fontSize = 18.sp,
                       fontFamily = FontFamily(Font(R.font.roboto)),
                       fontWeight = FontWeight(500),
                       color = Color(0xFF464646),
@@ -90,7 +89,7 @@ fun Filter(
           Icon(
               imageVector = Icons.Default.ArrowDropDown,
               contentDescription = "Display distance filter",
-              modifier = modifier.size(32.dp),
+              modifier = modifier.size(22.dp),
           )
         }
       }
@@ -178,10 +177,4 @@ fun SliderFilter(
               ))
     }
   }
-}
-
-@Preview
-@Composable
-fun FilterPreview() {
-  // Filter(selectedValue = {})
 }
