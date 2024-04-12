@@ -34,22 +34,17 @@ class Database {
         .addOnSuccessListener { result ->
           for (document in result) {
             if (document.data["id"] as String == idUser) {
-                val user =
-                    User(
-                        document.data["id"] as String,
-                        document.data["name"] as String,
-                        document.data["addr"] as String,
-                        document.data["rank"] as String,)
 
-              /*getUserInventory(idUser) { inventory ->
+
+              getUserInventory(idUser) { inventory ->
                 val user =
                     User(
                         document.data["id"] as String,
                         document.data["name"] as String,
                         document.data["addr"] as String,
                         document.data["rank"] as String,
-                        inventory)*/
-                onSuccess(user)
+                        inventory)
+                onSuccess(user)}
 
             }
           }

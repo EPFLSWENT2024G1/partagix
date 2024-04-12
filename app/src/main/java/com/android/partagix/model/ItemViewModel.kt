@@ -94,8 +94,10 @@ class ItemViewModel(
 
 
   fun findUser(uid: String): User {
-    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", )
-    database.getUser(uid) { if (it.id.equals(uid)){ user = it } else { Log.w("error", "user not found") } }
+    var user: User = User("fdsafsdafds", "fdsafdsaf", "", "fdsafdsaf", Inventory("", emptyList()) )
+    database.getUser(uid) {
+        Log.w(it.id, it.name)
+    /*if (it.id.equals(uid)){ user = it } else { Log.w("error", "user not found") } */}
       Log.w(user.id, user.name)
     return user
   }
