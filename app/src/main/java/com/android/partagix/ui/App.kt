@@ -115,11 +115,14 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
+      composable(Route.HOME) {
+          println("home")
+          HomeScreen(navigationActions) }
       composable(Route.BORROW) {
         HomeScreen(navigationActions) /*TODO:Change to the borrow screen*/
       }
       composable(Route.INVENTORY) {
+          println("inventory")
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigateToTopLevelDestination = navigationActions::navigateTo)
