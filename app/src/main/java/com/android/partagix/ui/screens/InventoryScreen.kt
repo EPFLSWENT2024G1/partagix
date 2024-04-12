@@ -51,7 +51,6 @@ fun InventoryScreen(
             filter = { inventoryViewModel.filterItems(it) },
             query = uiState.query,
             modifier = modifier)
-
       },
       bottomBar = {
         BottomNavigationBar(
@@ -61,11 +60,11 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            onClick = { navigationActions.navigateTo(Route.CREATE_ITEM)},
+            onClick = { navigationActions.navigateTo(Route.CREATE_ITEM) },
             modifier = modifier.testTag("inventoryScreenFab"),
-                ){
-              Icon(Icons.Default.Add, contentDescription = "Create")
-            }
+        ) {
+          Icon(Icons.Default.Add, contentDescription = "Create")
+        }
       }) { innerPadding ->
         if (uiState.items.isEmpty()) {
           Box(
@@ -85,17 +84,17 @@ fun InventoryScreen(
                 List = uiState.borrowedItems,
                 users = uiState.usersBor,
                 loan = uiState.loanBor,
-                Title = "borrowed items",
+                Title = "Borrowed items",
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.height(220.dp))
 
-              ItemListColumn(
+            ItemListColumn(
                 List = uiState.items,
                 users = uiState.users,
                 loan = uiState.loan,
-                Title = "inventory item",
+                Title = "Inventory item",
                 corner = uiState.items.size.toString(),
                 onClick = { navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}") },
                 onClickCorner = { /*TODO*/},

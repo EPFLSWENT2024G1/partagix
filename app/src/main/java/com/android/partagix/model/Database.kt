@@ -10,9 +10,9 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
-import com.google.firebase.Timestamp
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 
@@ -26,7 +26,7 @@ class Database {
   private val itemLoan = db.collection("item_loan")
 
   init {
-   //createExampleForDb()
+    // createExampleForDb()
   }
 
   fun getUser(idUser: String, onSuccess: (User) -> Unit) {
@@ -36,7 +36,6 @@ class Database {
           for (document in result) {
             if (document.data["id"] as String == idUser) {
 
-
               getUserInventory(idUser) { inventory ->
                 val user =
                     User(
@@ -45,8 +44,8 @@ class Database {
                         document.data["addr"] as String,
                         document.data["rank"] as String,
                         inventory)
-                onSuccess(user)}
-
+                onSuccess(user)
+              }
             }
           }
         }
@@ -130,8 +129,8 @@ class Database {
         .addOnSuccessListener { result ->
           val ret = mutableListOf<Loan>()
           for (document in result) {
-              val start_date: Timestamp = document.data["start_date"] as Timestamp
-              val end_date: Timestamp = document.data["end_date"] as Timestamp
+            val start_date: Timestamp = document.data["start_date"] as Timestamp
+            val end_date: Timestamp = document.data["end_date"] as Timestamp
 
             val loan =
                 Loan(

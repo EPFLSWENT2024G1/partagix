@@ -17,17 +17,11 @@
 package com.android.partagix.model
 
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.loan.Loan
-import com.android.partagix.model.loan.LoanState
-import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
-import com.google.type.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

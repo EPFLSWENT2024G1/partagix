@@ -1,15 +1,15 @@
 package com.android.partagix.ui.components
 
-import android.content.ContentValues
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.android.partagix.model.ItemViewModel
+import androidx.compose.ui.unit.dp
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -20,39 +20,42 @@ import com.android.partagix.model.visibility.Visibility
 import java.util.ArrayList
 import java.util.Date
 
-
 /**
- * ItemList composable to display a scrollable list of items,
- * which can execute the onClick when clicked.
+ * ItemList composable to display a scrollable list of items, which can execute the onClick when
+ * clicked.
  *
  * @param itemList a list of items to display.
  * @param onClick a lambda to handle item click events.
  * @param modifier Modifier to apply to this layout.
  */
 @Composable
-fun ItemList(itemList: List<Item>,
-             users : List<User>,
-             loan : List<Loan>,
-             onClick: (Item) -> Unit,
-             modifier: Modifier = Modifier) {
+fun ItemList(
+    itemList: List<Item>,
+    users: List<User>,
+    loan: List<Loan>,
+    onClick: (Item) -> Unit,
+    modifier: Modifier = Modifier
+) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     items(itemList.size) { index ->
       val item = itemList[index]
       Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {
-        ItemUi(item = item,
-            user = if(users.isEmpty()){
-                User("","noname", "","norank", Inventory("", emptyList()))
-            } else{
-                users[index]
-            },
-            loan = if (loan.isEmpty()){
-                Loan("","","", Date(),Date(),
-                    "","","","",LoanState.CANCELLED)
-            } else{
-                loan[index]
-            }
-            )
+        ItemUi(
+            item = item,
+            user =
+                if (users.isEmpty()) {
+                  User("", "noname", "", "norank", Inventory("", emptyList()))
+                } else {
+                  users[index]
+                },
+            loan =
+                if (loan.isEmpty()) {
+                  Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                } else {
+                  loan[index]
+                })
       }
+      Spacer(modifier = Modifier.height(8.dp))
     }
   }
 }
@@ -74,5 +77,5 @@ fun ItemListPreview() {
             android.location.Location("location")))
   }
 
-  //ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
+  // ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
 }

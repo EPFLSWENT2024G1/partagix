@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +21,9 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
 
-
 /**
- * ItemListColumn is a composable function that displays a list of items in a column.
- * which is the function that will be called when we want to see a list of items.
+ * ItemListColumn is a composable function that displays a list of items in a column. which is the
+ * function that will be called when we want to see a list of items.
  *
  * @param List a list of items.
  * @param Title a string that represents the title of the column.
@@ -35,8 +35,8 @@ import com.android.partagix.model.user.User
 @Composable
 fun ItemListColumn(
     List: List<Item>,
-    users : List<User>,
-    loan : List<Loan>,
+    users: List<User>,
+    loan: List<Loan>,
     Title: String,
     corner: String,
     onClick: (Item) -> Unit,
@@ -45,17 +45,18 @@ fun ItemListColumn(
 ) {
   Log.w(Title, List.size.toString())
   Column(modifier = modifier) {
-    Row (modifier = Modifier.fillMaxWidth(),
+    Row(
+        modifier = Modifier.fillMaxWidth(),
     ) {
       Text(
           text = Title,
           style =
               TextStyle(
                   fontSize = 18.sp,
-                  fontWeight = FontWeight(500),
+                  fontWeight = FontWeight(1000),
                   color = Color(0xFF000000),
               ),
-          modifier = Modifier.width(350.dp))
+          modifier = Modifier.width(350.dp).padding(horizontal = 10.dp))
 
       Text(
           text = corner,
@@ -63,7 +64,11 @@ fun ItemListColumn(
           modifier = Modifier.clickable { onClickCorner() })
     }
 
-    ItemList(itemList = List,users = users,loan = loan,
-        onClick = onClick, modifier = Modifier.fillMaxSize())
+    ItemList(
+        itemList = List,
+        users = users,
+        loan = loan,
+        onClick = onClick,
+        modifier = Modifier.fillMaxSize())
   }
 }

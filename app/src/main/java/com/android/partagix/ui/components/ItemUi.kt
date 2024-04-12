@@ -1,7 +1,6 @@
 package com.android.partagix.ui.components
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,15 +32,11 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.InventoryViewModel
-import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
-import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import java.time.Duration
 import java.util.Date
-import kotlin.math.log
-
 
 /**
  * Composable function to display an item, in a rectangle form.
@@ -50,15 +45,15 @@ import kotlin.math.log
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ItemUi(item: Item, user: User, loan:Loan) {
-    val inventory =InventoryViewModel()
-     val Date: Date =
-         if (loan.startDate.before(Date())) {
-           loan.endDate
-         } else {
-           loan.startDate
-         }
-     val time = Duration.between(Date().toInstant(), Date.toInstant())
+fun ItemUi(item: Item, user: User, loan: Loan) {
+  val inventory = InventoryViewModel()
+  val Date: Date =
+      if (loan.startDate.before(Date())) {
+        loan.endDate
+      } else {
+        loan.startDate
+      }
+  val time = Duration.between(Date().toInstant(), Date.toInstant())
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.fillMaxWidth().padding(PaddingValues(start = 10.dp, end = 10.dp))) {
@@ -75,13 +70,11 @@ fun ItemUi(item: Item, user: User, loan:Loan) {
                     .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)) {
               Column(modifier = Modifier.weight(weight = 1f)) {
                 Row(modifier = Modifier.height(25.dp)) {
-                  Text(
-                      text = user.rank,
-                      modifier = Modifier.width(50.dp))
+                  Text(text = user.rank, modifier = Modifier.width(50.dp))
 
                   Text(
                       text = user.name,
-                       color = Color(0xff49454f),
+                      color = Color(0xff49454f),
                       lineHeight = 1.33.em,
                       style =
                           TextStyle(
@@ -94,15 +87,16 @@ fun ItemUi(item: Item, user: User, loan:Loan) {
                       modifier = Modifier.fillMaxWidth())
                 }
                 Text(
-                    text = if(loan.idItem.equals("")) {
-                            "not borrowed"
+                    text =
+                        if (loan.idItem.equals("")) {
+                          "not borrowed"
                         } else {
-                            if (loan.startDate.before(Date())) {
+                          if (loan.startDate.before(Date())) {
                             "available in : /${Date}"
-                        } else {
+                          } else {
                             "borrowed in : /${Date}"
-                        }
-                    },
+                          }
+                        },
                     // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
