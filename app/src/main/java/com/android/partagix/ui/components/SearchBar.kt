@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
  * @param query the query to filter the items.
  * @param modifier Modifier to apply to this layout.
  */
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {
@@ -64,3 +65,6 @@ fun TopSearchBar(filter: (String) -> Unit, query: String, modifier: Modifier) {
         Text("Search an Item")
       }
 }
+
+
+ */

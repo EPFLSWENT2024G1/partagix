@@ -40,6 +40,7 @@ fun BottomNavigationBar(
   }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun previewScaffold() {
@@ -49,3 +50,5 @@ fun previewScaffold() {
       selectedDestination = "Home",
       navigateToTopLevelDestination = { dest -> navigate.navigateTo(dest) })
 }
+
+ */

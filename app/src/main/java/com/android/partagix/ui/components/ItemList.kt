@@ -31,6 +31,7 @@ fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier =
   }
 }
 
+/*
 @Preview(device = "spec:width=1080px,height=1270px,dpi=440")
 @Composable
 fun ItemListPreview() {
@@ -50,3 +51,5 @@ fun ItemListPreview() {
 
   ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
 }
+
+ */

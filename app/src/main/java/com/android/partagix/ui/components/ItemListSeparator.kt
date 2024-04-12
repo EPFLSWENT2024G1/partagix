@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.model.item.Item
-
+/*
 @Composable
 fun ItemListColumn(
     List: List<Item>,
@@ -48,3 +48,6 @@ fun ItemListColumn(
     ItemList(itemList = List, onClick = onClick, modifier = Modifier.fillMaxSize())
   }
 }
+
+
+ */

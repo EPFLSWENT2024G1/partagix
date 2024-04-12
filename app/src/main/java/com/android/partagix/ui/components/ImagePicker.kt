@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
  * @param maxSelectionCount the maximum number of photos that can be selected
  */
 // imported
+/*
 @Composable
 fun PhotoSelectorView(maxSelectionCount: Int = 1) {
   var selectedImages by remember { mutableStateOf<List<Uri?>>(emptyList()) }
@@ -95,6 +96,8 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
     }
   }
 }
+
+ */
 
 /**
  * MainImagePicker composable to display the image picker

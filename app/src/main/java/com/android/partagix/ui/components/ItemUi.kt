@@ -96,6 +96,7 @@ fun Horizontalfullwidth(modifier: Modifier = Modifier) {
   }
 }
 
+/*
 @Composable
 fun BuildingBlocksstatelayer1Enabled(modifier: Modifier = Modifier) {
   Box(modifier = modifier.fillMaxSize().padding(bottom = 0.0000152587890625.dp))
@@ -114,3 +115,5 @@ fun ItemUiPreview() {
           1,
           android.location.Location("")))
 }
+
+ */
