@@ -60,7 +60,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
   fun Create() {
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
-
+    // -----------------------a changer
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
@@ -168,8 +168,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
 
       composable(Route.INVENTORY) {
         InventoryScreen(
-            inventoryViewModel = inventoryViewModel,
-            navigateToTopLevelDestination = navigationActions::navigateTo)
+            inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
       }
       composable(
           Route.ACCOUNT,
