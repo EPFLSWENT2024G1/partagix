@@ -6,8 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -76,7 +74,8 @@ class NavigationActions(private val navController: NavHostController) {
 val TOP_LEVEL_DESTINATIONS =
     listOf(
         TopLevelDestination(route = Route.HOME, icon = Icons.Filled.Home, textId = 1),
-        TopLevelDestination(route = Route.BORROW, icon = Icons.Default.SupervisorAccount, textId = 2),
+        TopLevelDestination(
+            route = Route.BORROW, icon = Icons.Default.SupervisorAccount, textId = 2),
         TopLevelDestination(route = Route.INVENTORY, icon = Icons.Default.Inventory, textId = 3),
         TopLevelDestination(route = Route.ACCOUNT, icon = Icons.Filled.AccountCircle, textId = 4),
     )

@@ -27,14 +27,14 @@ fun HomeScreen(navigationActions: NavigationActions, modifier: Modifier = Modifi
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("homeScreenBottomNavBar"))
       }) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding),verticalArrangement = Arrangement.Center,
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Home Screen coming soon!",
-                style = TextStyle(fontFamily = FontFamily.Monospace,
-                    fontSize = 24.sp),
-                modifier = Modifier.testTag("homeScreenMainContent")
-            )
-        }
+              Text(
+                  text = "Home Screen coming soon!",
+                  style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 24.sp),
+                  modifier = Modifier.testTag("homeScreenMainContent"))
+            }
       }
 }
