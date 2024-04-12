@@ -53,6 +53,7 @@ fun LoanScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    
   val inventoryUiState = inventoryViewModel.uiState.collectAsState()
   var items = inventoryUiState.value.items
 
