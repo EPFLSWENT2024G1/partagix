@@ -73,9 +73,10 @@ fun Stamp(
 
             Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth())
             Box(modifier = modifier.fillMaxWidth()) {
-              uiDimension =
+              /*uiDimension =
                   StampDimension.valueOf(
-                      DropDown("Dimensions", StampDimensions)) // todo return the right field
+                      DropDown("Dimensions", StampDimensions)) // todo return the right field */
+                uiDimension = StampDimension.MEDIUM
             }
 
             Spacer(modifier = modifier.height(8.dp))
@@ -93,8 +94,7 @@ fun Stamp(
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
                   onClick = {
-                    //                      TODO connect to viewModel
-                    navigationActions.goBack()
+                    stampViewModel.generateQRCodeAndSave("ZQWESXRDCFTVGY42", uiLabel, StampDimension.MEDIUM)
                   },
                   content = { Text("Download stamps") },
                   modifier = modifier.fillMaxWidth())

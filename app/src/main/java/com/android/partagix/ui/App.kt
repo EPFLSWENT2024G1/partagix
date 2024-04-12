@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -33,6 +34,7 @@ import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.Stamp
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -45,12 +47,13 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   private val inventoryViewModel = InventoryViewModel()
 
   @Composable
-  fun Create() {
+  fun Create(context : MainActivity) {
     ComposeNavigationSetup()
 
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.BOOT)
+    //navigationActions.navigateTo(Route.BOOT)
+    Stamp(stampViewModel = StampViewModel(context), navigationActions = navigationActions)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
