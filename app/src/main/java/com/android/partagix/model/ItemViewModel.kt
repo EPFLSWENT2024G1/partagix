@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
-    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
+    item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null
 ) : ViewModel() {
 
@@ -59,12 +59,16 @@ class ItemViewModel(
         Category(idCategory, _uiState.value.item.category.name),
         _uiState.value.item.name,
         _uiState.value.item.description,
-        _uiState.value.item.author,
         _uiState.value.item.visibility,
         _uiState.value.item.quantity,
         _uiState.value.item.location)
   }
 
+  /**
+   * Update the UI state with a new item
+   *
+   * @param new the new item to update the UI state with
+   */
   fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
@@ -72,6 +76,7 @@ class ItemViewModel(
         )
   }
 
+  /** Save the item with the current UI state in the database */
   fun saveWithUiState() {
     if (_uiState.value.item.id == "") {
       database.createItem(

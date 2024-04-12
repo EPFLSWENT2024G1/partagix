@@ -29,6 +29,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
+import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoginScreen
@@ -115,18 +116,33 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.BORROW) { /*BorrowScreen()*/}
+      composable(Route.BORROW) {
+        HomeScreen(navigationActions) /*TODO:Change to the borrow screen*/
+      }
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigateToTopLevelDestination = navigationActions::navigateTo)
       }
-      composable(Route.ACCOUNT) { /*AccountScreen()*/}
+      composable(Route.ACCOUNT) {
+        HomeScreen(navigationActions) /*TODO:Change to the account screen*/
+      }
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             val itemId = it.arguments?.getString("itemId")
             InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
+          }
+      composable(
+          Route.CREATE_ITEM,
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            InventoryCreateOrEditItem(ItemViewModel(), navigationActions, mode = "create")
+          }
+      composable(
+          Route.EDIT_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            val itemId = it.arguments?.getString("itemId")
+            InventoryCreateOrEditItem(ItemViewModel(id = itemId), navigationActions, mode = "edit")
           }
     }
   }

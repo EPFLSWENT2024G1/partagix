@@ -42,6 +42,12 @@ import com.android.partagix.model.auth.Authentication
 
 private const val TAG = "LoginActivity"
 
+/**
+ * Screen to display the login screen.
+ *
+ * @param authentication an Authentication instance to handle login.
+ * @param modifier Modifier to apply to this layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
