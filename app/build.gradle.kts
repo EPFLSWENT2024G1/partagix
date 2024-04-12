@@ -7,6 +7,14 @@ plugins {
     id("jacoco")
 }
 
+sonar {
+    properties {
+        property("sonar.projectKey", "EPFLSWENT2024G1_partageix")
+        property("sonar.organization", "epflswent2024g1")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+
 android {
     namespace = "com.android.partagix"
     compileSdk = 34
@@ -181,6 +189,9 @@ dependencies {
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
+
+    // ----------       New Icons     ------------
+    implementation("androidx.compose.material:material-icons-extended")
 }
 
 tasks.withType<Test> {
