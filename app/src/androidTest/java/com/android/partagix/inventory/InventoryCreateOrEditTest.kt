@@ -52,7 +52,7 @@ class InventoryCreateOrEditTest :
 
     mockViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    every { mockViewModel.saveWithUiState() } just Runs
+    every { mockViewModel.save(item) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
