@@ -16,6 +16,7 @@
 
 package com.android.partagix.model
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -49,6 +50,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
+    getItems()
     getInventory()
   }
 
@@ -215,6 +217,18 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
         }
 
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
+  }
+
+  fun filterItems(atLeastQuantity: Int) {
+    val currentState = _uiState.value
+    val list = fetchedList.filter { it.quantity >= atLeastQuantity }
+    _uiState.value = currentState.copy(items = list)
+  }
+
+  fun filterItems(currentPosition: Location, radius: Double) {
+    val currentState = _uiState.value
+    val list = fetchedList.filter { it.location.distanceTo(currentPosition) <= radius }
+    _uiState.value = currentState.copy(items = list)
   }
 }
 

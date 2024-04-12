@@ -16,6 +16,7 @@
 
 package com.android.partagix.model
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.user.User
@@ -62,9 +63,16 @@ class UserViewModel(
         )
   }
 
+  fun updateLocation(location: Location) {
+    _uiState.value =
+        _uiState.value.copy(
+            location = location,
+        )
+  }
+
   companion object {
     private const val TAG = "UserViewModel"
   }
 }
 
-data class UserUIState(val user: User)
+data class UserUIState(val user: User, val location: Location? = null)
