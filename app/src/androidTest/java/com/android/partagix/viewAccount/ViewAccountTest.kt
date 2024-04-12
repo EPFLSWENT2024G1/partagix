@@ -70,7 +70,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
-    every { mockNavActions.navigateTo(Route.BORROW) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.BOOT) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
     // todo right test ? or something for goBack instead ?
