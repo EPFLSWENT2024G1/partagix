@@ -50,7 +50,7 @@ jobs:
         with:
           name: Partagix v1.0.0
           files: app/build/outputs/apk/debug/partagix-v1.0.0.apk
-          draft: true
+          draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
         
     
