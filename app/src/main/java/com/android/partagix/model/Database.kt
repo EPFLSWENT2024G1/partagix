@@ -11,13 +11,14 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 
-class Database {
+class Database(database: FirebaseFirestore = Firebase.firestore) {
 
-  private val db = Firebase.firestore
+  private val db = database
   private val users = db.collection("users")
   private val items = db.collection("items")
   private val loan = db.collection("loan")
@@ -165,7 +166,7 @@ class Database {
         .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
   }
 
-  private fun getNewUid(collection: CollectionReference): String {
+  fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
   }

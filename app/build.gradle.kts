@@ -136,8 +136,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
-  implementation(libs.firebase.storage.ktx)
-  testImplementation(libs.junit)
+    implementation(libs.firebase.storage.ktx)
+    testImplementation(libs.junit)
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
