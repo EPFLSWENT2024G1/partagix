@@ -54,8 +54,6 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-  val keyboardController = LocalSoftwareKeyboardController.current
-  var active by remember { mutableStateOf(false) }
 
   inventoryViewModel.getInventory()
   Scaffold(
@@ -97,34 +95,6 @@ fun InventoryScreen(
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
         } else {
-          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            ItemListColumn(
-                List = uiState.borrowedItems,
-                users = uiState.usersBor,
-                loan = uiState.loanBor,
-                Title = "Borrowed items",
-                corner = uiState.borrowedItems.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
-                },
-                onClickCorner = { /*TODO*/},
-                modifier = Modifier.height(220.dp))
-
-            ItemListColumn(
-                List = uiState.items,
-                users = uiState.users,
-                loan = uiState.loan,
-                Title = "Inventory item",
-                corner = uiState.items.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
-                },
-                onClickCorner = { /*TODO*/},
-                // modifier = Modifier
-            )
-          }
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             ItemListColumn(
                 List = uiState.borrowedItems,

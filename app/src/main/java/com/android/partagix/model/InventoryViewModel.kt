@@ -198,26 +198,19 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
    */
   fun filterItems(query: String) {
     val currentState = _uiState.value
-    val list =
-        fetchedList.filter {
-          it.name.contains(query, ignoreCase = true) ||
-              it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true) ||
-              it.visibility.toString().contains(query, ignoreCase = true) ||
-              it.quantity.toString().contains(query, ignoreCase = true)
-        }
-    val listBorrowed =
-        fetchedBorrowed.filter {
-          it.name.contains(query, ignoreCase = true) ||
-              it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true) ||
-              it.visibility.toString().contains(query, ignoreCase = true) ||
-              it.quantity.toString().contains(query, ignoreCase = true)
-        }
-
+    val list = filter(fetchedList, query)
+    val listBorrowed = filter(fetchedBorrowed, query)
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
   }
 
+    fun filter(list : List<Item>, query: String): List<Item>{
+        return list.filter { it.name.contains(query, ignoreCase = true) ||
+                it.description.contains(query, ignoreCase = true) ||
+                it.category.toString().contains(query, ignoreCase = true) ||
+                it.visibility.toString().contains(query, ignoreCase = true) ||
+                it.quantity.toString().contains(query, ignoreCase = true)
+        }
+    }
   fun filterItems(atLeastQuantity: Int) {
     val currentState = _uiState.value
     val list = fetchedList.filter { it.quantity >= atLeastQuantity }

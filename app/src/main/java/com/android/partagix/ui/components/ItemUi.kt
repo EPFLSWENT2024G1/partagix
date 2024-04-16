@@ -133,12 +133,12 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                   contentScale = ContentScale.FillBounds,
                   modifier = Modifier.width(70.dp))
             }
-        Horizontalfullwidth()
+        //Horizontalfullwidth()
       }
   // BuildingBlocksstatelayer1Enabled()
 
 }
-
+/*
 @Composable
 fun Horizontalfullwidth(modifier: Modifier = Modifier) {
   Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxWidth()) {
@@ -151,7 +151,7 @@ fun BuildingBlocksstatelayer1Enabled(modifier: Modifier = Modifier) {
   Box(modifier = modifier.fillMaxSize().padding(bottom = 0.0000152587890625.dp))
 }
 
-/*@Preview
+@Preview
 @Composable
 fun ItemUiPreview() {
   ItemUi(

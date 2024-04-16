@@ -65,7 +65,7 @@ fun ItemList(
     }
   }
 }
-
+ /*
 @Preview(device = "spec:width=1080px,height=1270px,dpi=440")
 @Composable
 fun ItemListPreview() {
@@ -84,4 +84,4 @@ fun ItemListPreview() {
   }
 
   // ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
-}
+}*/
