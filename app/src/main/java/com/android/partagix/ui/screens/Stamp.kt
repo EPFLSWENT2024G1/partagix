@@ -93,7 +93,7 @@ fun Stamp(
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
                   onClick = {
-                    //                      TODO connect to viewModel
+                    stampViewModel.generateQRCodeAndSave("ZQWESXRDCFTVGY42", uiLabel, StampDimension.MEDIUM)
                     navigationActions.goBack()
                   },
                   content = { Text("Download stamps") },
