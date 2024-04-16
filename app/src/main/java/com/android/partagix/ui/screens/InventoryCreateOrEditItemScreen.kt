@@ -216,9 +216,11 @@ fun InventoryCreateOrEditItem(
                 },
                 content = {
                   if (mode == "edit") {
-                    Text("Save")
+                    Text("Save",
+                        modifier = modifier.testTag("EditScreen"))
                   } else {
-                    Text("Create")
+                    Text("Create",
+                            modifier = modifier.testTag("CreateScreen"))
                   }
                 },
                 modifier = modifier.fillMaxWidth())
