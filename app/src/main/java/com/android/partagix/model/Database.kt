@@ -29,6 +29,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     // createExampleForDb()
   }
 
+
+  /*
   fun getUser(idUser: String, onSuccess: (User) -> Unit) {
     users
         .get()
@@ -51,6 +53,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
   }
+
+   */
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
     items
@@ -123,6 +127,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
+  /*
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
     loan
         .get()
@@ -165,12 +170,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
   }
-
+ */
   fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
   }
 
+  /*
   private fun createExampleForDb(
       users: CollectionReference = this.users,
       items: CollectionReference = this.items,
@@ -256,6 +262,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
     latch.await()
   }
+
+   */
 
   fun createItem(userId: String, newItem: Item) {
 
