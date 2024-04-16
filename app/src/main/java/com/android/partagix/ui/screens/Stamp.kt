@@ -29,8 +29,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.stampDimension.StampDimension
-import com.android.partagix.ui.components.DropDown
-import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
 
 /**  */
@@ -73,9 +71,10 @@ fun Stamp(
 
             Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth())
             Box(modifier = modifier.fillMaxWidth()) {
-              uiDimension =
-                  StampDimension.valueOf(
-                      DropDown("Dimensions", StampDimensions)) // todo return the right field
+              /*uiDimension =
+              StampDimension.valueOf(
+                  DropDown("Dimensions", StampDimensions)) // todo return the right field */
+              uiDimension = StampDimension.MEDIUM
             }
 
             Spacer(modifier = modifier.height(8.dp))
@@ -93,9 +92,7 @@ fun Stamp(
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
                   onClick = {
-                    stampViewModel.generateQRCodeAndSave(
-                        "ZQWESXRDCFTVGY42", uiLabel, StampDimension.MEDIUM)
-                    navigationActions.goBack()
+                    stampViewModel.generateQRCodeAndSave("ZQWESXRDCFTVGY42", uiLabel, uiLabel)
                   },
                   content = { Text("Download stamps") },
                   modifier = modifier.fillMaxWidth())

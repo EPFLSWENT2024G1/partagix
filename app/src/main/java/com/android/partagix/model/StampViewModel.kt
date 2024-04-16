@@ -30,7 +30,9 @@ class StampViewModel(context: Activity) : ViewModel() {
 
   private fun addLabel(pngBytes: ByteArray, label: String) {}
 
-  fun generateQRCodeAndSave(itemId: String, label: String, dim: StampDimension) {
+  fun generateQRCodeAndSave(itemId: String, label: String, detailedDimension: String) {
+    var dim = StampDimension.MEDIUM
+    getDetailedDimensionOrdinal(detailedDimension) { d -> dim = d }
     setSize(qrCodeBuilder, itemId, label, dim)
     val qrCode = qrCodeBuilder.build(itemId).renderToBytes()
     val intent =
@@ -43,22 +45,24 @@ class StampViewModel(context: Activity) : ViewModel() {
     startActivityForResult(context, intent, CREATE_PNG_FILE, null)
   }
 
-  /**
-   * Get the ordinal of the dimension, given the detailedDimension string.
-   *
-   * @param detailedDimension the detailed dimension string
-   * @return the ordinal of the dimension, or -1 if the dimension is not found
-   */
-  fun getDetailedDimensionOrdinal(detailedDimension: String): Int {
-    for (stampDimension in StampDimension.values()) {
-      if (stampDimension.detailedDimension == detailedDimension) {
-        return stampDimension.ordinal
-      }
-    }
-    return -1
-  }
-
   companion object {
     private const val CREATE_PNG_FILE = 50
+  }
+
+  /**
+   * Get the StampDimension given the detailedDimension string.
+   *
+   * @param detailedDimension the detailed dimension string
+   * @param onSuccess the function to call when the dimension is found
+   */
+  private fun getDetailedDimensionOrdinal(
+      detailedDimension: String,
+      onSuccess: (StampDimension) -> Unit
+  ) {
+    for (stampDimension in StampDimension.values()) {
+      if (stampDimension.detailedDimension == detailedDimension) {
+        onSuccess(stampDimension)
+      }
+    }
   }
 }
