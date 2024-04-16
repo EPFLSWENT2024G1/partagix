@@ -47,12 +47,12 @@ class App(activity: MainActivity) : ComponentActivity(), SignInResultListener {
   private val inventoryViewModel = InventoryViewModel()
 
   @Composable
-  fun Create(context : MainActivity) {
+  fun Create(context: MainActivity) {
     ComposeNavigationSetup()
 
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    //navigationActions.navigateTo(Route.BOOT)
+    // navigationActions.navigateTo(Route.BOOT)
     Stamp(stampViewModel = StampViewModel(context), navigationActions = navigationActions)
   }
 
