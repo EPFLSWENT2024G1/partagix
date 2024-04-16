@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
-    item: Item = Item("", Category("", ""), "", "", "", Visibility.PUBLIC, 1, Location("")),
+    item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null
 ) : ViewModel() {
 
@@ -51,20 +51,26 @@ class ItemViewModel(
    * @param item an item with missing Category.id
    * @return the item with complete Category attribute, and an Error if categoryName is not found
    */
-  private fun fillIdCategory(item: Item): Item {
+  private fun fillIdCategory(item: Item, onSuccess: (String) -> Unit) {
     var idCategory = ""
     database.getIdCategory(item.category.name, { idCategory = it })
-    return Item(
-        _uiState.value.item.id,
-        Category(idCategory, _uiState.value.item.category.name),
-        _uiState.value.item.name,
-        _uiState.value.item.description,
-        _uiState.value.item.author,
-        _uiState.value.item.visibility,
-        _uiState.value.item.quantity,
-        _uiState.value.item.location)
+    println("truc a ecrire: $idCategory")
+    updateUiState(
+        Item(
+            _uiState.value.item.id,
+            Category(idCategory, _uiState.value.item.category.name),
+            _uiState.value.item.name,
+            _uiState.value.item.description,
+            _uiState.value.item.visibility,
+            _uiState.value.item.quantity,
+            _uiState.value.item.location))
   }
 
+  /**
+   * Update the UI state with a new item
+   *
+   * @param new the new item to update the UI state with
+   */
   fun updateUiState(new: Item) {
     _uiState.value =
         _uiState.value.copy(
@@ -72,12 +78,24 @@ class ItemViewModel(
         )
   }
 
-  fun saveWithUiState() {
+  /** Save the item with the current UI state in the database */
+  fun save(new: Item) {
     if (_uiState.value.item.id == "") {
-      database.createItem(
-          FirebaseAuth.getInstance().currentUser!!.uid, fillIdCategory(_uiState.value.item))
+      database.getIdCategory(new.category.name) {
+        database.createItem(
+            FirebaseAuth.getInstance().currentUser!!.uid,
+            Item(
+                new.id,
+                Category(it, new.category.name),
+                new.name,
+                new.description,
+                new.visibility,
+                new.quantity,
+                new.location))
+      }
     } else {
-      database.setItem(_uiState.value.item)
+      updateUiState(new)
+      database.setItem(new)
     }
   }
 

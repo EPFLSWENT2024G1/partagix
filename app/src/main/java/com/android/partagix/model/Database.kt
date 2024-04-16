@@ -10,6 +10,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.firestore
 import java.util.Date
@@ -20,13 +21,11 @@ class Database {
   private val db = Firebase.firestore
   private val users = db.collection("users")
   private val items = db.collection("items")
-  private val inventory = db.collection("inventories")
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
-  private val item_loan = db.collection("item_loan")
+  private val itemLoan = db.collection("item_loan")
 
   init {
-    // resetDB()
     // createExampleForDb()
   }
 
@@ -79,10 +78,10 @@ class Database {
                           categories[document.data["id_category"] as String]!!,
                           document.data["name"] as String,
                           document.data["description"] as String,
-                          document.data["author"] as String,
                           Visibility.values()[visibility],
                           document.data["quantity"] as Long,
                           location,
+                          document.data["id_user"] as String,
                       )
                   ret.add(item)
                 }
@@ -103,27 +102,25 @@ class Database {
     return location
   }
 
+  private fun locationToMap(location: Location): Map<String, Any?> {
+    val locationMap = mutableMapOf<String, Any?>()
+    locationMap["latitude"] = location.latitude
+    locationMap["longitude"] = location.longitude
+    // Add other relevant properties if needed
+
+    return locationMap
+  }
+
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
-    inventory
-        .get()
-        .addOnSuccessListener { result ->
-          val inventoryMap =
-              result.groupBy(
-                  { it.data["id_user"] as String }, // Key selector function
-                  { it.data["id_item"] as String } // Value selector function
-                  )
-          val listIdItem = inventoryMap[userId] ?: emptyList()
-          val listItems = mutableListOf<Item>()
-          getItems { items ->
-            for (item in items) {
-              if (listIdItem.contains(item.id)) {
-                listItems.add(item)
-              }
-            }
-            onSuccess(Inventory(userId, listItems))
-          }
+    getItems { items ->
+      val listItems = mutableListOf<Item>()
+      for (item in items) {
+        if (item.idUser == userId) {
+          listItems.add(item)
         }
-        .addOnFailureListener { Log.e(TAG, "Error getting user inventory", it) }
+      }
+      onSuccess(Inventory(userId, listItems))
+    }
   }
 
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
@@ -132,13 +129,16 @@ class Database {
         .addOnSuccessListener { result ->
           val ret = mutableListOf<Loan>()
           for (document in result) {
+            val start_date: Timestamp = document.data["start_date"] as Timestamp
+            val end_date: Timestamp = document.data["end_date"] as Timestamp
+
             val loan =
                 Loan(
                     document.data["id_owner"] as String,
                     document.data["id_loaner"] as String,
                     document.data["id_item"] as String,
-                    document.data["start_date"] as Date,
-                    document.data["end_date"] as Date,
+                    start_date.toDate(),
+                    end_date.toDate(),
                     document.data["review_owner"] as String,
                     document.data["review_loaner"] as String,
                     document.data["comment_owner"] as String,
@@ -177,7 +177,6 @@ class Database {
   private fun createExampleForDb(
       users: CollectionReference = this.users,
       items: CollectionReference = this.items,
-      inventory: CollectionReference = this.inventory,
       loan: CollectionReference = this.loan,
       categories: CollectionReference = this.categories
   ) {
@@ -207,22 +206,19 @@ class Database {
             "id_category" to idCategory,
             "name" to "name",
             "description" to "description",
-            "author" to "author",
             "visibility" to 0,
             "quantity" to 1,
-            "location" to Location(""),
+            "location" to locationToMap(Location("")),
+            "id_user" to idUser,
         )
     items.document(idItem).set(data3)
-
-    val idInventory = getNewUid(inventory)
-    val data4 = hashMapOf("id_user" to idUser, "id_item" to idItem)
-    inventory.document(idInventory).set(data4)
 
     val idLoan = getNewUid(loan)
     val data5 =
         hashMapOf(
             "id_owner" to idUser,
             "id_loaner" to idUser,
+            "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
             "review_owner" to "Review",
@@ -232,9 +228,9 @@ class Database {
             "state" to LoanState.FINISHED.toString())
     loan.document(idLoan).set(data5)
 
-    val idItemLoan = getNewUid(item_loan)
+    val idItemLoan = getNewUid(itemLoan)
     val data6 = hashMapOf("id_item" to idItem, "id_loan" to idLoan)
-    item_loan.document(idItemLoan).set(data6)
+    itemLoan.document(idItemLoan).set(data6)
   }
 
   private fun resetDB() {
@@ -248,10 +244,7 @@ class Database {
       result.forEach { it.reference.delete() }
       latch.countDown()
     }
-    inventory.get().addOnSuccessListener { result ->
-      result.forEach { it.reference.delete() }
-      latch.countDown()
-    }
+
     loan.get().addOnSuccessListener { result ->
       result.forEach { it.reference.delete() }
       latch.countDown()
@@ -260,7 +253,7 @@ class Database {
       result.forEach { it.reference.delete() }
       latch.countDown()
     }
-    item_loan.get().addOnSuccessListener { result ->
+    itemLoan.get().addOnSuccessListener { result ->
       result.forEach { it.reference.delete() }
       latch.countDown()
     }
@@ -277,15 +270,11 @@ class Database {
             "id_category" to newItem.category.id,
             "name" to newItem.name,
             "description" to newItem.description,
-            "author" to newItem.author,
+            "id_user" to userId,
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
-            "location" to newItem.location,
-        )
+            "location" to locationToMap(newItem.location))
     items.document(idItem).set(data3)
-
-    val data4 = hashMapOf("id_user" to userId, "id_item" to idItem)
-    this.inventory.document(userId).set(data4)
   }
 
   fun setItem(newItem: Item) {
@@ -295,50 +284,22 @@ class Database {
             "id_category" to newItem.category.id,
             "name" to newItem.name,
             "description" to newItem.description,
-            "author" to newItem.author,
+            "id_user" to newItem.idUser,
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
-            "location" to newItem.location,
+            "location" to locationToMap(newItem.location),
         )
     items.document(newItem.id).set(data3)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
-    items
-        .get()
-        .addOnSuccessListener { result ->
-          for (document in result) {
-            if (document.data["id"] as String == id) {
-              categories
-                  .get()
-                  .addOnSuccessListener { result2 ->
-                    val categories = mutableMapOf<String, Category>()
-                    for (document in result2) {
-                      categories[document.data["id"] as String] =
-                          Category(document.data["id"] as String, document.data["name"] as String)
-                    }
-                    val locationMap = document.data["location"] as HashMap<*, *>
-                    val location = toLocation(locationMap)
-
-                    val item =
-                        Item(
-                            document.data["id"] as String,
-                            categories[document.data["id_category"] as String]!!,
-                            document.data["name"] as String,
-                            document.data["description"] as String,
-                            document.data["author"] as String,
-                            Visibility.values()[(document.data["visibility"] as Long).toInt()],
-                            document.data["quantity"] as Long,
-                            location,
-                        )
-
-                    onSuccess(item)
-                  }
-                  .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
-            }
-          }
+    getItems { items ->
+      for (item in items) {
+        if (item.id == id) {
+          onSuccess(item)
         }
-        .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
+      }
+    }
   }
 
   /**

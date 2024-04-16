@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,13 +52,15 @@ import com.android.partagix.ui.navigation.NavigationActions
  * @param itemViewModel an ItemViewModel which handles functionality.
  * @param navigationActions a NavigationActions instance to navigate between screens.
  * @param modifier Modifier to apply to this layout.
+ * @param mode is in create by default, to go on edit use the string "edit".
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryCreateItem(
+fun InventoryCreateOrEditItem(
     itemViewModel: ItemViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
+    mode: String
 ) {
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
@@ -66,21 +69,37 @@ fun InventoryCreateItem(
       modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
       topBar = {
         TopAppBar(
-            title = { Text("Create a new item") },
-            modifier = modifier.fillMaxWidth(),
+            title = {
+              Text(
+                  modifier = modifier.testTag("title"),
+                  text =
+                      if (mode == "edit") {
+                        "Edit item"
+                      } else {
+                        "Create a new item"
+                      })
+            },
+            modifier = modifier.testTag("topBar").fillMaxWidth(),
             navigationIcon = {
-              IconButton(onClick = { navigationActions.goBack() }) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-              }
+              IconButton(
+                  modifier = modifier.testTag("navigationIcon"),
+                  onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
             })
       },
   ) {
-    var uiCategory by remember { mutableStateOf(Category("", "")) }
-    var uiName by remember { mutableStateOf("") }
-    var uiDescription by remember { mutableStateOf("") }
-    var uiVisibility by remember { mutableStateOf(Visibility.PUBLIC) }
-    var uiQuantity by remember { mutableStateOf(1L) }
-    var uiLocation by remember { mutableStateOf(Location("")) }
+    val uis = itemViewModel.uiState.collectAsState()
+    val i = uis.value.item
+
+    var uiCategory by remember { mutableStateOf(i.category) }
+    var uiName by remember { mutableStateOf(i.name) }
+    var uiDescription by remember { mutableStateOf(i.description) }
+    var uiVisibility by remember { mutableStateOf(i.visibility) }
+    var uiQuantity by remember { mutableStateOf(i.quantity) }
+    var uiLocation by remember { mutableStateOf(Location(i.location)) }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
@@ -89,7 +108,7 @@ fun InventoryCreateItem(
             Row(modifier = modifier.fillMaxWidth()) {
               Box(
                   contentAlignment = Alignment.Center,
-                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)) {
+                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
                     MainImagePicker()
                   }
 
@@ -98,19 +117,19 @@ fun InventoryCreateItem(
               Column {
                 OutlinedTextField(
                     value = uiName,
-                    onValueChange = { uiName = it },
+                    onValueChange = { it -> uiName = it },
                     label = { Text("Object name") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.testTag("name").fillMaxWidth(),
                     readOnly = false)
 
                 OutlinedTextField(
                     value =
                         uiState.item
-                            .author, // TODO: check with future implementation of Item if author is
+                            .idUser, // TODO: check with future implementation of Item if author is
                     // correctly linked to user.name by default
                     onValueChange = {},
                     label = { Text("Author") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.testTag("idUser").fillMaxWidth(),
                     readOnly = true)
               }
             }
@@ -118,21 +137,32 @@ fun InventoryCreateItem(
           Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
             OutlinedTextField(
                 value = uiDescription,
-                onValueChange = { uiDescription = it },
+                onValueChange = { it -> uiDescription = it },
                 label = { Text("Description") },
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier.testTag("description").fillMaxWidth(),
                 minLines = 5,
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))
 
             Row(modifier = modifier.fillMaxWidth()) {
-              Box(modifier = modifier.fillMaxWidth(.5f).padding(end = 8.dp)) {
-                uiCategory = Category("", DropDown("Category", CategoryItems))
+              Box(modifier = modifier.testTag("category").fillMaxWidth(.5f).padding(end = 8.dp)) {
+                val c = DropDown(uiCategory.name, CategoryItems)
+                println("Category: $c")
+                uiCategory = Category(uiCategory.id, c)
               }
-              Box(modifier = modifier.fillMaxWidth()) {
+              Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
+                val v =
+                    DropDown(
+                        (uiVisibility.toString().substring(0, 1).uppercase() +
+                            uiVisibility.toString().substring(1).lowercase()),
+                        VisibilityItems)
                 uiVisibility =
-                    Visibility.valueOf(DropDown("Visibility", VisibilityItems).uppercase())
+                    when (v) {
+                      "Friends" -> Visibility.FRIENDS
+                      "Private" -> Visibility.PRIVATE
+                      else -> Visibility.PUBLIC
+                    }
               }
             }
 
@@ -140,17 +170,17 @@ fun InventoryCreateItem(
 
             OutlinedTextField(
                 value = uiQuantity.toString(),
-                onValueChange = { uiQuantity = it.toLong() },
+                onValueChange = { it -> uiQuantity = it.toLong() },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier.testTag("quantity").fillMaxWidth(),
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))
 
             OutlinedTextField(
                 value = uiLocation.toString(), // TODO: get default or user's location
-                onValueChange = { uiLocation = Location(it) },
+                onValueChange = { it -> uiLocation = Location(it) },
                 label = { Text("Where") },
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
@@ -168,20 +198,29 @@ fun InventoryCreateItem(
 
             Button(
                 onClick = {
-                  itemViewModel.updateUiState(
+                  var id = ""
+                  if (mode == "edit") {
+                    id = i.id
+                  }
+                  println("id: $id")
+                  itemViewModel.save(
                       Item(
-                          "",
+                          id,
                           uiCategory,
                           uiName,
                           uiDescription,
-                          uiState.item.author,
                           uiVisibility,
                           uiQuantity,
                           uiLocation))
-                  itemViewModel.saveWithUiState()
                   navigationActions.goBack()
                 },
-                content = { Text("Create") },
+                content = {
+                  if (mode == "edit") {
+                    Text("Save")
+                  } else {
+                    Text("Create")
+                  }
+                },
                 modifier = modifier.fillMaxWidth())
           }
         }
