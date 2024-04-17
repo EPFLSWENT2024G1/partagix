@@ -10,6 +10,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -134,13 +135,16 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnSuccessListener { result ->
           val ret = mutableListOf<Loan>()
           for (document in result) {
+            val start_date: Timestamp = document.data["start_date"] as Timestamp
+            val end_date: Timestamp = document.data["end_date"] as Timestamp
+
             val loan =
                 Loan(
                     document.data["id_owner"] as String,
                     document.data["id_loaner"] as String,
                     document.data["id_item"] as String,
-                    document.data["start_date"] as Date,
-                    document.data["end_date"] as Date,
+                    start_date.toDate(),
+                    end_date.toDate(),
                     document.data["review_owner"] as String,
                     document.data["review_loaner"] as String,
                     document.data["comment_owner"] as String,
@@ -221,6 +225,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         hashMapOf(
             "id_owner" to idUser,
             "id_loaner" to idUser,
+            "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
             "review_owner" to "Review",
