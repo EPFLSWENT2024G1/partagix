@@ -106,7 +106,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     return location
   }
 
-  private fun locationToMap(location: Location): Map<String, Any?> {
+  fun locationToMap(location: Location): Map<String, Any?> {
     val locationMap = mutableMapOf<String, Any?>()
     locationMap["latitude"] = location.latitude
     locationMap["longitude"] = location.longitude

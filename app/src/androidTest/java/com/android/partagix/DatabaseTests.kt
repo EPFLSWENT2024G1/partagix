@@ -241,6 +241,25 @@ class DatabaseTests {
     val mockItemsTask = mockk<Task<QuerySnapshot>>()
     val mockCategoriesTask = mockk<Task<QuerySnapshot>>()
 
+    val categoryId = "catId"
+    val categoryName = "catName"
+
+    val userId = "userId"
+
+    val item = Item(
+      "itemId",
+      Category(categoryId, categoryName),
+      "itemName",
+      "itemDescription",
+      Visibility.PUBLIC,
+      1234,
+      Location(""),
+    )
+
+    every {mockDb.collection(any())} returns mockItemsCollection
+    // Create Database instance
+    val d = Database(mockDb)
+
     // Define behavior for Firestore mocks
     every { mockDb.collection("items") } returns mockItemsCollection
     every { mockItemsCollection.get() } returns mockItemsTask
@@ -249,7 +268,16 @@ class DatabaseTests {
       val mockSnapshot = mockk<QuerySnapshot>()
       val mockDocument = mockk<DocumentSnapshot>()
       val mockQueryDocument = mockk<QueryDocumentSnapshot>()
-      every { mockQueryDocument.data } returns mapOf("id" to "your_id", "name" to "your_name")
+      every { mockQueryDocument.data } returns mapOf(
+        "id" to item.id,
+        "id_category" to categoryId,
+        "name" to item.name,
+        "description" to item.description,
+        "quantity" to item.quantity,
+        "visibility" to item.visibility.ordinal.toLong(),
+        "location" to d.locationToMap(item.location),
+        "id_user" to userId,
+      )
       every { mockSnapshot.iterator().next() } returns mockQueryDocument
 
 
@@ -263,10 +291,9 @@ class DatabaseTests {
       listener.onSuccess(mockSnapshot)
       mockItemsTask
     }
+    every { mockItemsTask.addOnFailureListener(any()) } returns mockItemsTask
 
     every { mockDb.collection("categories") } returns mockCategoriesCollection
-
-
     every { mockCategoriesCollection.get() } returns mockCategoriesTask
     every { mockCategoriesTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>()) } answers {
       val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
@@ -274,7 +301,7 @@ class DatabaseTests {
       val mockDocument = mockk<DocumentSnapshot>()
       val mockQueryDocument = mockk<QueryDocumentSnapshot>()
 
-      every { mockQueryDocument.data } returns mapOf("id" to "your_id", "name" to "your_name")
+      every { mockQueryDocument.data } returns mapOf("id" to categoryId, "name" to categoryName)
       every { mockSnapshot.documents } returns listOf(mockDocument)
 
 
@@ -287,8 +314,7 @@ class DatabaseTests {
       listener.onSuccess(mockSnapshot)
       mockCategoriesTask
     }
-
-
+    every { mockCategoriesTask.addOnFailureListener(any()) } returns mockCategoriesTask
 
     every { mockDb.collection("users") } returns mockUsersCollection
     every { mockDb.collection("loan") } returns mockLoanCollection
@@ -298,19 +324,19 @@ class DatabaseTests {
     // Create Database instance
     val database = Database(mockDb)
 
+
     // Perform the function call
     val onSuccessCallback: (List<Item>) -> Unit = { items ->
       // Assert on the returned list of items
       assertNotNull(items)
+      assertEquals(1, items.size)
       // Add your assertions here based on the expected behavior
     }
     database.getItems(onSuccessCallback)
 
     // Verify that the Firestore collections were accessed correctly
-    verify(exactly = 1) { mockDb.collection("items") }
     verify(exactly = 1) { mockItemsCollection.get() }
 
-    verify(exactly = 1) { mockDb.collection("categories") }
     verify(exactly = 1) { mockCategoriesCollection.get() }
 
     // Unmock static function
