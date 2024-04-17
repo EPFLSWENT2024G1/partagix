@@ -27,24 +27,24 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
+import java.sql.Date
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import java.sql.Date
 
 class DatabaseTests {
   val path = "rentals"
   val documentId = "2507"
-  val document = mutableMapOf<String, Any>(
-    "Id" to documentId,
-    "Name" to "905 Maple Drive",
-    "CreatedDt" to Timestamp.now(),
-    "OwnerName" to "Jim Smith"
-  )
+  val document =
+      mutableMapOf<String, Any>(
+          "Id" to documentId,
+          "Name" to "905 Maple Drive",
+          "CreatedDt" to Timestamp.now(),
+          "OwnerName" to "Jim Smith")
   /**
-   * Mocks the simplest behaviour of a task so .await() can return task or throw exception
-   * See more on [await] and inside of that on awaitImpl
+   * Mocks the simplest behaviour of a task so .await() can return task or throw exception See more
+   * on [await] and inside of that on awaitImpl
    */
   inline fun <reified T> mockTask(result: T?, exception: Exception? = null): Task<T> {
     val task: Task<T> = mockk(relaxed = true)
@@ -75,7 +75,8 @@ class DatabaseTests {
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
-    every { mockDocument.set(any()) } returns taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
     val mockDb: FirebaseFirestore = mockk {}
 
@@ -83,28 +84,27 @@ class DatabaseTests {
 
     val database = spyk(Database(mockDb), recordPrivateCalls = true)
 
-    val item = Item(
-      documentId,
-      Category("id", "House"),
-      "Jim Smith",
-      "Jim Smith",
-      Visibility.PUBLIC,
-      1234,
-      Location(""),
-    )
+    val item =
+        Item(
+            documentId,
+            Category("id", "House"),
+            "Jim Smith",
+            "Jim Smith",
+            Visibility.PUBLIC,
+            1234,
+            Location(""),
+        )
 
     runBlocking {
       database.createItem(documentId, item)
 
-      coVerify(exactly = 1) {
-        database.createItem(documentId, item)
-      }
-
+      coVerify(exactly = 1) { database.createItem(documentId, item) }
     }
 
     //  Don't forget to unmock.
     unmockkStatic(::now)
   }
+
   @Test
   fun testSetItem() {
     mockkStatic(::now)
@@ -123,7 +123,8 @@ class DatabaseTests {
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
-    every { mockDocument.set(any()) } returns taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
     val mockDb: FirebaseFirestore = mockk {}
 
@@ -131,23 +132,21 @@ class DatabaseTests {
 
     val database = spyk(Database(mockDb), recordPrivateCalls = true)
 
-    val item = Item(
-      documentId,
-      Category("id", "House"),
-      "Jim Smith",
-      "Jim Smith",
-      Visibility.PUBLIC,
-      1234,
-      Location(""),
-    )
+    val item =
+        Item(
+            documentId,
+            Category("id", "House"),
+            "Jim Smith",
+            "Jim Smith",
+            Visibility.PUBLIC,
+            1234,
+            Location(""),
+        )
 
     runBlocking {
       database.setItem(item)
 
-      coVerify(exactly = 1) {
-        database.setItem(item)
-      }
-
+      coVerify(exactly = 1) { database.setItem(item) }
     }
 
     //  Don't forget to unmock.
@@ -172,18 +171,18 @@ class DatabaseTests {
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
-    every { mockDocument.set(any()) } returns taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
-    val documentSnapshot = mockk<DocumentSnapshot> {
-      every { id } returns documentId
-      every { data } returns document
-    }
+    val documentSnapshot =
+        mockk<DocumentSnapshot> {
+          every { id } returns documentId
+          every { data } returns document
+        }
 
     val mockDb: FirebaseFirestore = mockk {
-      every {
-        document("$path/$documentId")
-          .get()
-      } returns mockTask<DocumentSnapshot>(documentSnapshot)
+      every { document("$path/$documentId").get() } returns
+          mockTask<DocumentSnapshot>(documentSnapshot)
     }
 
     every { mockDb.collection(any()) } returns mockCollection
@@ -201,25 +200,21 @@ class DatabaseTests {
     every { task.addOnSuccessListener(any()) } returns task
     every { task.addOnFailureListener(any()) } returns task
 
-
     val firebaseCrud = spyk(Database(mockDb), recordPrivateCalls = true)
 
-    val item = Item(
-      documentId,
-      Category("id", "House"),
-      "Jim Smith",
-      "Jim Smith",
-      Visibility.PUBLIC,
-      1234,
-      Location(""),
-    )
+    val item =
+        Item(
+            documentId,
+            Category("id", "House"),
+            "Jim Smith",
+            "Jim Smith",
+            Visibility.PUBLIC,
+            1234,
+            Location(""),
+        )
 
     runBlocking {
-      firebaseCrud.getItem(
-        documentId
-      ) {
-        assertEquals(document.get("OwnerName"), item)
-      }
+      firebaseCrud.getItem(documentId) { assertEquals(document.get("OwnerName"), item) }
     }
   }
 
@@ -246,84 +241,90 @@ class DatabaseTests {
 
     val userId = "userId"
 
-    val item = Item(
-      "itemId",
-      Category(categoryId, categoryName),
-      "itemName",
-      "itemDescription",
-      Visibility.PUBLIC,
-      1234,
-      Location(""),
-    )
+    val item =
+        Item(
+            "itemId",
+            Category(categoryId, categoryName),
+            "itemName",
+            "itemDescription",
+            Visibility.PUBLIC,
+            1234,
+            Location(""),
+        )
 
-    every {mockDb.collection(any())} returns mockItemsCollection
+    every { mockDb.collection(any()) } returns mockItemsCollection
     // Create Database instance
     val d = Database(mockDb)
 
     // Define behavior for Firestore mocks
     every { mockDb.collection("items") } returns mockItemsCollection
     every { mockItemsCollection.get() } returns mockItemsTask
-    every { mockItemsTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>()) } answers {
-      val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
-      val mockSnapshot = mockk<QuerySnapshot>()
-      val mockDocument = mockk<DocumentSnapshot>()
-      val mockQueryDocument = mockk<QueryDocumentSnapshot>()
-      every { mockQueryDocument.data } returns mapOf(
-        "id" to item.id,
-        "id_category" to categoryId,
-        "name" to item.name,
-        "description" to item.description,
-        "quantity" to item.quantity,
-        "visibility" to item.visibility.ordinal.toLong(),
-        "location" to d.locationToMap(item.location),
-        "id_user" to userId,
-      )
-      every { mockSnapshot.iterator().next() } returns mockQueryDocument
+    every { mockItemsTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>()) } answers
+        {
+          val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
+          val mockSnapshot = mockk<QuerySnapshot>()
+          val mockDocument = mockk<DocumentSnapshot>()
+          val mockQueryDocument = mockk<QueryDocumentSnapshot>()
+          every { mockQueryDocument.data } returns
+              mapOf(
+                  "id" to item.id,
+                  "id_category" to categoryId,
+                  "name" to item.name,
+                  "description" to item.description,
+                  "quantity" to item.quantity,
+                  "visibility" to item.visibility.ordinal.toLong(),
+                  "location" to d.locationToMap(item.location),
+                  "id_user" to userId,
+              )
+          every { mockSnapshot.iterator().next() } returns mockQueryDocument
 
+          every { mockSnapshot.iterator().next() } returns mockQueryDocument
+          every { mockSnapshot.iterator() } returns mockk()
+          every { mockSnapshot.iterator().hasNext() } returns true andThen false
+          every { mockSnapshot.documents.iterator().hasNext() } returns true andThen false
+          every {
+            mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext()
+          } returns true andThen false
 
-      every { mockSnapshot.iterator().next() } returns mockQueryDocument
-      every { mockSnapshot.iterator() } returns mockk()
-      every { mockSnapshot.iterator().hasNext() } returns true andThen false
-      every { mockSnapshot.documents.iterator().hasNext() } returns true andThen false
-      every { mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext() } returns true andThen false
-
-
-      listener.onSuccess(mockSnapshot)
-      mockItemsTask
-    }
+          listener.onSuccess(mockSnapshot)
+          mockItemsTask
+        }
     every { mockItemsTask.addOnFailureListener(any()) } returns mockItemsTask
 
     every { mockDb.collection("categories") } returns mockCategoriesCollection
     every { mockCategoriesCollection.get() } returns mockCategoriesTask
-    every { mockCategoriesTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>()) } answers {
-      val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
-      val mockSnapshot = mockk<QuerySnapshot>()
-      val mockDocument = mockk<DocumentSnapshot>()
-      val mockQueryDocument = mockk<QueryDocumentSnapshot>()
+    every {
+      mockCategoriesTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>())
+    } answers
+        {
+          val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
+          val mockSnapshot = mockk<QuerySnapshot>()
+          val mockDocument = mockk<DocumentSnapshot>()
+          val mockQueryDocument = mockk<QueryDocumentSnapshot>()
 
-      every { mockQueryDocument.data } returns mapOf("id" to categoryId, "name" to categoryName)
-      every { mockSnapshot.documents } returns listOf(mockDocument)
+          every { mockQueryDocument.data } returns mapOf("id" to categoryId, "name" to categoryName)
+          every { mockSnapshot.documents } returns listOf(mockDocument)
 
+          every { mockSnapshot.iterator().next() } returns mockQueryDocument
+          every { mockSnapshot.iterator() } returns mockk()
+          every { mockSnapshot.iterator().hasNext() } returns true andThen false
+          every { mockSnapshot.documents.iterator().hasNext() } returns true andThen false
+          every {
+            mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext()
+          } returns true andThen false
 
-      every { mockSnapshot.iterator().next() } returns mockQueryDocument
-      every { mockSnapshot.iterator() } returns mockk()
-      every { mockSnapshot.iterator().hasNext() } returns true andThen false
-      every { mockSnapshot.documents.iterator().hasNext() } returns true andThen false
-      every { mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext() } returns true andThen false
-
-      listener.onSuccess(mockSnapshot)
-      mockCategoriesTask
-    }
+          listener.onSuccess(mockSnapshot)
+          mockCategoriesTask
+        }
     every { mockCategoriesTask.addOnFailureListener(any()) } returns mockCategoriesTask
 
     every { mockDb.collection("users") } returns mockUsersCollection
     every { mockDb.collection("loan") } returns mockLoanCollection
     every { mockDb.collection("item_loan") } returns mockItemLoanCollection
-    //every {mockDb.collection(any())} returns mockItemsCollection
+    // every {mockDb.collection(any())} returns mockItemsCollection
 
     // Create Database instance
     val database = Database(mockDb)
-
 
     // Perform the function call
     val onSuccessCallback: (List<Item>) -> Unit = { items ->
