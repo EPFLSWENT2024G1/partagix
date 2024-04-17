@@ -16,6 +16,7 @@
 
 package com.android.partagix.model
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -77,12 +78,21 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
               it.name.contains(query, ignoreCase = true) ||
               it.description.contains(query, ignoreCase = true) ||
               it.category.toString().contains(query, ignoreCase = true)
-          // formatDate(it.dueDate).contains(query, ignoreCase = true) ||
-          // it.loaned?.contains(query, ignoreCase = true) ||
-          // it.quantity?.contains(query, ignoreCase = true)
         }
 
     _uiState.value = currentState.copy(query = query, items = list)
+  }
+
+  fun filterItems(atLeastQuantity: Int) {
+    val currentState = _uiState.value
+    val list = fetchedList.filter { it.quantity >= atLeastQuantity }
+    _uiState.value = currentState.copy(items = list)
+  }
+
+  fun filterItems(currentPosition: Location, radius: Double) {
+    val currentState = _uiState.value
+    val list = fetchedList.filter { it.location.distanceTo(currentPosition) <= radius }
+    _uiState.value = currentState.copy(items = list)
   }
 }
 

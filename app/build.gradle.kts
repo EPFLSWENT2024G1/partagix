@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("jacoco")
 }
 
@@ -136,9 +137,12 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
+
     implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    implementation(libs.play.services.location)
+
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -189,11 +193,33 @@ dependencies {
     testImplementation("io.mockk:mockk:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+
+    // ----------       Google Maps     ------------
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.maps.android:maps-compose-utils:4.3.0")
+    implementation("com.google.maps.android:maps-compose-widgets:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
+}
+
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
 
 tasks.withType<Test> {

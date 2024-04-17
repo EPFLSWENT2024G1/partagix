@@ -2,6 +2,7 @@ package com.android.partagix.ui.components
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,9 +22,18 @@ import java.util.ArrayList
  * @param onClick a function to handle the click event on an item.
  * @param modifier Modifier to apply to this layout.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemList(itemList: List<Item>, onClick: (Item) -> Unit, modifier: Modifier = Modifier) {
+fun ItemList(
+    itemList: List<Item>,
+    onClick: (Item) -> Unit,
+    stickyHeader: @Composable() (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
+    if (stickyHeader != null) {
+      stickyHeader { stickyHeader() }
+    }
     items(itemList.size) { index ->
       val item = itemList[index]
       Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) { ItemUi(item) }
