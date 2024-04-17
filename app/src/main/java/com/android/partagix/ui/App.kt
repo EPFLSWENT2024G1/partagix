@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
@@ -48,7 +49,9 @@ import kotlinx.coroutines.launch
 
 class App(
   private val activity: MainActivity,
-  private val auth: Authentication? = null
+  private val auth: Authentication? = null,
+  private val db: Database = Database()
+
 ) : ComponentActivity(), SignInResultListener {
 
   private var authentication: Authentication = auth ?: Authentication(activity, this)
@@ -57,49 +60,25 @@ class App(
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
-  private val inventoryViewModel = InventoryViewModel()
-  private val itemViewModel = ItemViewModel()
-  private val userViewModel = UserViewModel()
+
+  private val itemViewModel = ItemViewModel(db = db)
 
   @Composable
   fun Create() {
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-    ComposeNavigationSetup()
-    // -----------------------a changer
-    // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    navigationActions.navigateTo(Route.BOOT)
+
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
-    navigationActions.navigateTo(Route.HOME)
-    Log.d(TAG, "onSignInSuccess: user=$user")
+
   }
 
   override fun onSignInFailure(errorCode: Int) {
-    // Go back to safe state and report error
-    navigationActions.navigateTo(Route.BOOT)
-    Log.e(TAG, "onSignInFailure: errorCode=$errorCode")
+
   }
 
   @Composable
   private fun ComposeNavigationSetup() {
-    Log.d(TAG, "onComposeNavigationSetup: called")
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
-    val navController = rememberNavController()
-    navigationActions = remember(navController) { NavigationActions(navController) }
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-
-    ComposeMainContent(
-        navController = navController,
-        selectedDestination = selectedDestination,
-    ) {
-      scope.launch { drawerState.open() }
-    }
   }
 
   @Composable
@@ -109,34 +88,11 @@ class App(
       selectedDestination: String,
       onDrawerClicked: () -> Unit = {},
   ) {
-    Row(modifier = modifier.fillMaxSize()) {
-      Column(
-          modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
-            ComposeNavigationHost(
-                navController = navController,
-                modifier = Modifier.weight(1f),
-            )
-          }
-    }
+
   }
 
   private fun checkLocationPermissions(retries: Int = 3): Boolean {
-    if (retries == 0) {
-      return false
-    }
-
-    if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=
-        PackageManager.PERMISSION_GRANTED) {
-      Log.d(TAG, "checkLocationPermissions: requesting permissions")
-      ActivityCompat.requestPermissions(
-          activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-
-      return checkLocationPermissions(retries - 1)
-    } else {
-      Log.d(TAG, "checkLocationPermissions: permissions granted")
-      return true
-    }
+    return true
   }
 
   @SuppressLint("MissingPermission")
@@ -145,62 +101,7 @@ class App(
       navController: NavHostController,
       modifier: Modifier = Modifier
   ) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = Route.INVENTORY,
-    ) {
-      composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
-      composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
-      composable(Route.LOAN) {
-        if (checkLocationPermissions()) {
-          fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-              Log.d(TAG, "onCreate: location=$location")
-              userViewModel.updateLocation(location)
-            }
-          }
-          LoanScreen(
-              navigationActions = navigationActions,
-              inventoryViewModel = inventoryViewModel,
-              userViewModel = userViewModel,
-              modifier = modifier)
-        } else {
-          HomeScreen(navigationActions)
-        }
-      }
 
-      composable(Route.INVENTORY) {
-        InventoryScreen(
-            inventoryViewModel = inventoryViewModel,
-            navigationActions = navigationActions,
-            itemViewModel = itemViewModel)
-      }
-      composable(
-          Route.ACCOUNT,
-      ) {
-        println("navigated to account screen")
-        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
-      }
-      composable(
-          Route.VIEW_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, itemViewModel)
-          }
-      composable(
-          Route.CREATE_ITEM,
-      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
-        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
-      }
-      composable(
-          Route.EDIT_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
-          }
-    }
   }
 
   companion object {
