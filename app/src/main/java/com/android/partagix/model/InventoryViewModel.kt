@@ -29,9 +29,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
+class InventoryViewModel(
+  items: List<Item> = emptyList(),
+  db:Database = Database()
+  ) : ViewModel() {
 
-  private val database = Database()
+  private val database = db
   private var fetchedList: List<Item> = emptyList()
   private var fetchedBorrowed: List<Item> = emptyList()
 

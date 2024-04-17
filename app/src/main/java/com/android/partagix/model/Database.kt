@@ -12,13 +12,14 @@ import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 
-class Database {
+class Database(database: FirebaseFirestore = Firebase.firestore) {
 
-  private val db = Firebase.firestore
+  private val db = database
   private val users = db.collection("users")
   private val items = db.collection("items")
   private val loan = db.collection("loan")

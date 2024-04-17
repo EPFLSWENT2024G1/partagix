@@ -51,17 +51,17 @@ class App(
   private val activity: MainActivity,
   private val auth: Authentication? = null,
   private val db: Database = Database()
-
 ) : ComponentActivity(), SignInResultListener {
 
-  private var authentication: Authentication = auth ?: Authentication(activity, this)
+  private var authentication: Authentication = Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
-
+  private val inventoryViewModel = InventoryViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
+  private val userViewModel = UserViewModel(db = db)
 
   @Composable
   fun Create() {
@@ -92,7 +92,21 @@ class App(
   }
 
   private fun checkLocationPermissions(retries: Int = 3): Boolean {
-    return true
+    if (retries == 0) {
+      return false
+    }
+
+    if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED) {
+      Log.d(TAG, "checkLocationPermissions: requesting permissions")
+      ActivityCompat.requestPermissions(
+          activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
+      return checkLocationPermissions(retries - 1)
+    } else {
+      Log.d(TAG, "checkLocationPermissions: permissions granted")
+      return true
+    }
   }
 
   @SuppressLint("MissingPermission")
@@ -101,7 +115,62 @@ class App(
       navController: NavHostController,
       modifier: Modifier = Modifier
   ) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Route.INVENTORY,
+    ) {
+      composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
+      composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
+      composable(Route.HOME) { HomeScreen(navigationActions) }
+      composable(Route.LOAN) {
+        if (checkLocationPermissions()) {
+          fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+              Log.d(TAG, "onCreate: location=$location")
+              userViewModel.updateLocation(location)
+            }
+          }
+          LoanScreen(
+              navigationActions = navigationActions,
+              inventoryViewModel = inventoryViewModel,
+              userViewModel = userViewModel,
+              modifier = modifier)
+        } else {
+          HomeScreen(navigationActions)
+        }
+      }
 
+      composable(Route.INVENTORY) {
+        InventoryScreen(
+            inventoryViewModel = inventoryViewModel,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
+      }
+      composable(
+          Route.ACCOUNT,
+      ) {
+        println("navigated to account screen")
+        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+      }
+      composable(
+          Route.VIEW_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryViewItem(navigationActions, itemViewModel)
+          }
+      composable(
+          Route.CREATE_ITEM,
+      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
+        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
+      }
+      composable(
+          Route.EDIT_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+          }
+    }
   }
 
   companion object {
