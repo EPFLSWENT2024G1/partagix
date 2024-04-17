@@ -17,6 +17,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.Query
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import io.github.kakaocup.compose.node.element.ComposeScreen
@@ -52,13 +53,19 @@ class NavigationTest {
     val mockDb: FirebaseFirestore = mockk()
     val mockCollection = mockk<CollectionReference>()
     val mockTask = mockk<Task<QuerySnapshot>>()
+    val mockDocument = mockk<DocumentReference>()
 
 
     every { mockDb.collection(any()) } returns mockCollection
 
     every {mockCollection.get()} returns mockTask
 
-    every {mockCollection.addOnSuccessListener {  } } returns mockTask
+
+    every { mockCollection.document(any()) } returns mockDocument
+    every { mockCollection.document() } returns mockDocument
+
+
+    every {mockTask.addOnSuccessListener {  } } returns mockTask
     every {mockTask.addOnFailureListener {  } } returns mockTask
     // Create Database instance
     val d = Database(mockDb)
