@@ -46,8 +46,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class App(private val activity: MainActivity) : ComponentActivity(), SignInResultListener {
-  private var authentication: Authentication = Authentication(activity, this)
+class App(
+  private val activity: MainActivity,
+  private val auth: Authentication? = null
+) : ComponentActivity(), SignInResultListener {
+
+  private var authentication: Authentication = auth ?: Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
