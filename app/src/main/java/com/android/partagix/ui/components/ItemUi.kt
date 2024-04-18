@@ -5,18 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +43,6 @@ import java.util.Date
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: Item, user: User, loan: Loan) {
-  val inventory = InventoryViewModel()
   val Date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
@@ -79,7 +75,6 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                       style =
                           TextStyle(
                               fontSize = 18.sp,
-                              // fontFamily = FontFamily(Font(R.font.inter)),
                               fontWeight = FontWeight(500),
                               color = Color(0xFF000000),
                               textAlign = TextAlign.Left,
@@ -97,7 +92,6 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                             "borrowed in : /${Date}"
                           }
                         },
-                    // color = Color(0xff49454f),
                     lineHeight = 1.43.em,
                     style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
                     modifier = Modifier.fillMaxWidth())
@@ -110,7 +104,6 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                     style =
                         TextStyle(
                             fontSize = 18.sp,
-                            // fontFamily = FontFamily(Font(R.font.inter)),
                             fontWeight = FontWeight(500),
                             color = Color(0xFF000000),
                             textAlign = TextAlign.Right,
@@ -133,7 +126,7 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                   contentScale = ContentScale.FillBounds,
                   modifier = Modifier.width(70.dp))
             }
-        //Horizontalfullwidth()
+        // Horizontalfullwidth()
       }
   // BuildingBlocksstatelayer1Enabled()
 
