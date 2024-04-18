@@ -108,7 +108,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
    * @param newLoanBor the new loans borrowed to update the inventory
    * @param newloan the new loans to update the inventory
    */
-  private fun update(
+  /*private fun update(
       newInv: List<Item>,
       newBor: List<Item>,
       user: List<User>,
@@ -126,7 +126,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
             loan = newloan)
     fetchedBorrowed = newBor
     fetchedList = newInv
-  }
+  }*/
 
   private fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)

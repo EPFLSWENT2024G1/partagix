@@ -24,20 +24,23 @@ import com.android.partagix.model.user.User
  * function that will be called when we want to see a list of items.
  *
  * @param List a list of items.
- * @param Title a string that represents the title of the column.
+ * @param users a list of the users from the items
+ * @param loan a list of loans associated to the items
+ * @param title a string that represents the title of the column.
  * @param corner a string that represents the corner of the column.
+ * @param isCornerClickable is a boolean that makes the corner text clickable or not
  * @param onClick a function that takes an item and returns a Unit.
  * @param onClickCorner a function that returns a Unit.
  * @param modifier a Modifier.
  */
 @Composable
 fun ItemListColumn(
-    List: List<Item>,
+    list: List<Item>,
     users: List<User>,
     loan: List<Loan>,
-    Title: String,
+    title: String,
     corner: String,
-    isClickable: Boolean,
+    isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
     modifier: Modifier = Modifier
@@ -47,7 +50,7 @@ fun ItemListColumn(
         modifier = Modifier.fillMaxWidth(),
     ) {
       Text(
-          text = Title,
+          text = title,
           style =
               TextStyle(
                   fontSize = 18.sp,
@@ -59,7 +62,7 @@ fun ItemListColumn(
           text = corner,
           textAlign = TextAlign.Right,
           modifier =
-              if (isClickable) {
+              if (isCornerClickable) {
                 Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() }
               } else {
                 Modifier.fillMaxWidth().padding(end = 10.dp)
@@ -67,7 +70,7 @@ fun ItemListColumn(
     }
 
     ItemList(
-        itemList = List,
+        itemList = list,
         users = users,
         loan = loan,
         onClick = onClick,

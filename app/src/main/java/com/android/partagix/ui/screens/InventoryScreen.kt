@@ -97,14 +97,14 @@ fun InventoryScreen(
                 List = uiState.borrowedItems,
                 users = uiState.usersBor,
                 loan = uiState.loanBor,
-                Title = "Borrowed items",
+                title = "Borrowed items",
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
                   navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
                 },
-                onClickCorner = { /*TODO*/},
-                isClickable = false,
+                onClickCorner = {},
+                isCornerClickable = false,
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -112,14 +112,14 @@ fun InventoryScreen(
                 List = uiState.items,
                 users = uiState.users,
                 loan = uiState.loan,
-                Title = "Inventory item",
+                title = "Inventory item",
                 corner = uiState.items.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
                   navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
                 },
-                onClickCorner = { /*TODO*/},
-                isClickable = false,
+                onClickCorner = {},
+                isCornerClickable = false,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }
