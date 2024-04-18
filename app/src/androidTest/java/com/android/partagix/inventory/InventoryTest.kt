@@ -156,7 +156,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     }
   }
 
-    @Test
+  @Test
   fun itemListIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
