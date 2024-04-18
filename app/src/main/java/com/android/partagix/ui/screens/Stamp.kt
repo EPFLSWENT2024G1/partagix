@@ -56,12 +56,6 @@ fun Stamp(
       },
   ) {
 
-    /*
-    DropDown of stamp sizes "XXcm x XXcm (XX per A4 page)"
-    "additional text on the stamp (optional), max XX characters"
-    Generate and Download stamps
-    */
-
     var uiDetailedDimension by remember { mutableStateOf("") }
     var uiLabel by remember { mutableStateOf("") }
 
@@ -76,11 +70,11 @@ fun Stamp(
                 uiDetailedDimension = DropDown("Dimensions", StampDimensions)
             }
 
-            Spacer(modifier = modifier.height(8.dp))
+            Spacer(modifier = modifier.height(16.dp))
 
-            Text(text = "Label on stamp", modifier = modifier.fillMaxWidth(0.3f))
+            Text(text = "Label on stamps", modifier = modifier.fillMaxWidth())
             OutlinedTextField(
-                value = uiLabel, // todo
+                value = uiLabel,
                 onValueChange = { uiLabel = it }, // todo limit to 40 characters
                 label = { Text("(optional) max. 40 characters") },
                 modifier = modifier.fillMaxWidth(),
