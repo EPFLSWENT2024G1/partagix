@@ -53,11 +53,11 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     getInventory()
   }
 
-  private fun getItems() {
+  /*private fun getItems() {
     viewModelScope.launch {
       database.getItems { update(it, it, emptyList(), emptyList(), emptyList(), emptyList()) }
     }
-  }
+  }*/
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
@@ -69,29 +69,29 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
       if (user == null) {
         database.getUserInventory(/*user.uid*/ " sdfasdf") {
           updateInv(it.items)
-          getusers(it.items, ::updateUsers)
-          findtime(it.items, ::updateLoan)
+          getUsers(it.items, ::updateUsers)
+          findTime(it.items, ::updateLoan)
         }
         database.getLoans {
           it.filter { it.idLoaner.equals(user) }
               .forEach { loan ->
                 database.getItems { items: List<Item> ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
-                  getusers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
-                  findtime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
+                  getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
+                  findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
               }
         }
       } else {
         database.getItems {
           updateBor(it)
-          getusers(it, ::updateUsersBor)
-          findtime(it, ::updateLoanBor)
+          getUsers(it, ::updateUsersBor)
+          findTime(it, ::updateLoanBor)
         }
         database.getItems {
           updateInv(it)
-          getusers(it, ::updateUsers)
-          findtime(it, ::updateLoan)
+          getUsers(it, ::updateUsers)
+          findTime(it, ::updateLoan)
         }
         println("----- error user unknown")
       }
@@ -160,8 +160,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
    * @param list the list of items to find the users
    * @param update a function to update the user list
    */
-  fun getusers(list: List<Item>, update: (User) -> Unit) {
-    val users = mutableListOf<User>()
+  fun getUsers(list: List<Item>, update: (User) -> Unit) {
     list.forEach { database.getUser(it.idUser) { user -> update(user) } }
   }
 
@@ -171,7 +170,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
    * @param items the list of items to find the loans
    * @param update a function to update the loan list
    */
-  fun findtime(items: List<Item>, update: (Loan) -> Unit) {
+  fun findTime(items: List<Item>, update: (Loan) -> Unit) {
     database.getLoans { loan ->
       items.forEach { item ->
         val list =

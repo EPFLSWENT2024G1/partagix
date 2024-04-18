@@ -28,12 +28,12 @@ import java.util.Date
 @OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemList(
+    modifier: Modifier = Modifier,
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
     onClick: (Item) -> Unit,
     stickyHeader: @Composable() (() -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {

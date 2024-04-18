@@ -8,7 +8,6 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -59,8 +58,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
     every { mockInventoryViewModel.getInventory() } just Runs
 
-    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
-    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
+    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs

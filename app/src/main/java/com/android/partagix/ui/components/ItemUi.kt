@@ -31,7 +31,6 @@ import com.android.partagix.R
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
-import java.time.Duration
 import java.util.Date
 
 /**
@@ -42,13 +41,13 @@ import java.util.Date
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: Item, user: User, loan: Loan) {
-  val Date: Date =
+  val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
       } else {
         loan.startDate
       }
-  val time = Duration.between(Date().toInstant(), Date.toInstant())
+  // val time = Duration.between(Date().toInstant(), date.toInstant())
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.fillMaxWidth().padding(PaddingValues(start = 10.dp, end = 10.dp))) {
@@ -86,9 +85,9 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                           "not borrowed"
                         } else {
                           if (loan.startDate.before(Date())) {
-                            "available in : /${Date}"
+                            "available in : /${date}"
                           } else {
-                            "borrowed in : /${Date}"
+                            "borrowed in : /${date}"
                           }
                         },
                     lineHeight = 1.43.em,
