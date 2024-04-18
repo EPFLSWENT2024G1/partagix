@@ -198,9 +198,11 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
             // val itemId = it.arguments?.getString("itemId")
             InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
           }
-      composable(Route.STAMP) {
-        Stamp(stampViewModel = StampViewModel(activity), navigationActions = navigationActions)
-      }
+      composable(
+          Route.STAMP + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            Stamp(stampViewModel = StampViewModel(activity), navigationActions = navigationActions)
+          }
     }
   }
 
