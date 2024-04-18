@@ -45,6 +45,7 @@ import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 
 /**
  * Screen to create a new item in user's inventory.
@@ -189,7 +190,7 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
-                  onClick = { /*TODO*/},
+                  onClick = { navigationActions.navigateTo(Route.STAMP)},
                   content = { Text("Download QR code") },
                   modifier = modifier.fillMaxWidth())
             }

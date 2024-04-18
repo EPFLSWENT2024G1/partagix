@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -40,6 +41,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.Stamp
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -108,7 +110,9 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -196,6 +200,9 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
             // val itemId = it.arguments?.getString("itemId")
             InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
           }
+      composable(Route.STAMP) {
+        Stamp(stampViewModel = StampViewModel(activity), navigationActions = navigationActions)
+      }
     }
   }
 

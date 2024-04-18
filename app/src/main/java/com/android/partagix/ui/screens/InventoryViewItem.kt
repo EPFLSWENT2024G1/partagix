@@ -157,14 +157,14 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = "Disponibility", /*TODO: get item disponibility*/
+                    value = "Availability", /*TODO: get item availability*/
                     onValueChange = {},
-                    label = { Text("Disponibility") },
+                    label = { Text("Availability") },
                     readOnly = true,
                     modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
                     trailingIcon = {
                       IconButton(
-                          onClick = { /*TODO: see calendar with disponibilities*/},
+                          onClick = { /*TODO: see calendar with availabilities*/},
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
 
@@ -172,7 +172,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
-                      onClick = { /*TODO: go to qrcode dl page*/},
+                      onClick = { navigationActions.navigateTo(Route.STAMP)},
                       content = { Text("Download QR code") },
                       modifier = Modifier.fillMaxWidth(0.5f))
 
