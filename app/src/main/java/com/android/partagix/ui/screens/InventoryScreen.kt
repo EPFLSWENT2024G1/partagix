@@ -104,6 +104,7 @@ fun InventoryScreen(
                   navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
                 },
                 onClickCorner = { /*TODO*/},
+                isClickable = false,
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -118,6 +119,7 @@ fun InventoryScreen(
                   navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
                 },
                 onClickCorner = { /*TODO*/},
+                isClickable = false,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }
