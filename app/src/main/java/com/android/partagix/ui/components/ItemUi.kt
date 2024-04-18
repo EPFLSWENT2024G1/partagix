@@ -37,6 +37,8 @@ import java.util.Date
  * Composable function to display an item, in a rectangle form.
  *
  * @param item an Item instance to display.
+ * @param user the user of the item
+ * @param loan the possible loan of the item
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
