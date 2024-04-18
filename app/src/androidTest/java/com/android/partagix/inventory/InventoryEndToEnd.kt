@@ -21,6 +21,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.time.delay
+import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,10 +52,15 @@ class InventoryEndToEnd {
       mockItemViewModel = mockk()
       every { mockItemViewModel.uiState } returns mockUiState2
       every { mockItemViewModel.updateUiState(i) } just Runs
+      every { mockItemViewModel.updateUiState(iempty) } just Runs
       every { mockItemViewModel.save(i) } just Runs
+      every { mockItemViewModel.save(iempty) } just Runs
 
 
     mockNavActions = mockk<NavigationActions>()
+    every { mockNavActions.navigateTo("CreateItem") } just Runs
+    every { mockNavActions.navigateTo("ViewItem") } just Runs
+    every { mockNavActions.navigateTo("EditItem") } just Runs
   }
 
   @Test
@@ -78,7 +85,7 @@ class InventoryEndToEnd {
     }
 
     // Click on the first item in the inventory list
-    composeTestRule.onNodeWithTag("inventoryItem_0").performClick()
+    composeTestRule.onNodeWithTag("inventoryScreenItemList").performClick()
 
     // Verify navigation to the view item screen
     composeTestRule.onNodeWithTag("inventoryViewItem").assertExists()
