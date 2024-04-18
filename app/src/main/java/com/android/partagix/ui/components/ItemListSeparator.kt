@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,6 +37,7 @@ fun ItemListColumn(
     loan: List<Loan>,
     Title: String,
     corner: String,
+    isClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
     modifier: Modifier = Modifier
@@ -58,8 +58,12 @@ fun ItemListColumn(
       Text(
           text = corner,
           textAlign = TextAlign.Right,
-          modifier = Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() })
-      Text(text = "", modifier = Modifier.width(10.dp))
+          modifier =
+              if (isClickable) {
+                Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() }
+              } else {
+                Modifier.fillMaxWidth().padding(end = 10.dp)
+              })
     }
 
     ItemList(
