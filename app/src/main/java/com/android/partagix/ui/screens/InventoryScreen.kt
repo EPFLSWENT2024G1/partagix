@@ -94,7 +94,7 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             ItemListColumn(
-                List = uiState.borrowedItems,
+                list = uiState.borrowedItems,
                 users = uiState.usersBor,
                 loan = uiState.loanBor,
                 title = "Borrowed items",
@@ -109,7 +109,7 @@ fun InventoryScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
-                List = uiState.items,
+                list = uiState.items,
                 users = uiState.users,
                 loan = uiState.loan,
                 title = "Inventory item",
