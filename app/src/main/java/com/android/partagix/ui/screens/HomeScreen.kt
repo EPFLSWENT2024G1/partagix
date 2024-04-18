@@ -13,12 +13,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import com.android.partagix.model.HomeViewModel
+import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
 @Composable
-fun HomeScreen(navigationActions: NavigationActions, modifier: Modifier = Modifier) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    inventoryViewModel: InventoryViewModel,
+    navigationActions: NavigationActions,
+    modifier: Modifier = Modifier
+) {
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       bottomBar = {
