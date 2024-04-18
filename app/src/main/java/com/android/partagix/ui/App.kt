@@ -54,6 +54,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel()
+  private val itemViewModel = ItemViewModel()
   private val userViewModel = UserViewModel()
 
   @Composable
@@ -168,7 +169,9 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
 
       composable(Route.INVENTORY) {
         InventoryScreen(
-            inventoryViewModel = inventoryViewModel, navigationActions = navigationActions)
+            inventoryViewModel = inventoryViewModel,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
       }
       composable(
           Route.ACCOUNT,
@@ -179,19 +182,19 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
       composable(
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, ItemViewModel(id = itemId))
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryViewItem(navigationActions, itemViewModel)
           }
       composable(
           Route.CREATE_ITEM,
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            InventoryCreateOrEditItem(ItemViewModel(), navigationActions, mode = "create")
-          }
+      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
+        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
+      }
       composable(
           Route.EDIT_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            val itemId = it.arguments?.getString("itemId")
-            InventoryCreateOrEditItem(ItemViewModel(id = itemId), navigationActions, mode = "edit")
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
           }
     }
   }
