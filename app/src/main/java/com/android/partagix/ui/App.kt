@@ -110,9 +110,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
