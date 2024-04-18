@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.StampViewModel
-import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
@@ -41,6 +40,7 @@ fun Stamp(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
 ) {
+  val MAX_LABEL_LENGTH = 40
 
   Scaffold(
       modifier = modifier.testTag("").fillMaxWidth(),
@@ -55,7 +55,6 @@ fun Stamp(
             })
       },
   ) {
-
     var uiDetailedDimension by remember { mutableStateOf("") }
     var uiLabel by remember { mutableStateOf("") }
 
@@ -67,7 +66,7 @@ fun Stamp(
 
             Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth())
             Box(modifier = modifier.fillMaxWidth()) {
-                uiDetailedDimension = DropDown("Dimensions", StampDimensions)
+              uiDetailedDimension = DropDown("Dimensions", StampDimensions)
             }
 
             Spacer(modifier = modifier.height(16.dp))
@@ -75,7 +74,7 @@ fun Stamp(
             Text(text = "Label on stamps", modifier = modifier.fillMaxWidth())
             OutlinedTextField(
                 value = uiLabel,
-                onValueChange = { uiLabel = it }, // todo limit to 40 characters
+                onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
                 label = { Text("(optional) max. 40 characters") },
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
@@ -85,7 +84,8 @@ fun Stamp(
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
                   onClick = {
-                    stampViewModel.generateQRCodeAndSave("ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
+                    stampViewModel.generateQRCodeAndSave(
+                        "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
                   },
                   content = { Text("Download stamps") },
                   modifier = modifier.fillMaxWidth())

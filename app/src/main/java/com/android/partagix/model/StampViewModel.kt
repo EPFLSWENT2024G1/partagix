@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.stampDimension.StampDimension
-import org.jetbrains.annotations.TestOnly
 import qrcode.QRCode
 import qrcode.QRCodeBuilder
 
@@ -14,7 +13,6 @@ class StampViewModel(context: Activity) : ViewModel() {
   private val context = context
 
   init {}
-
 
   private fun setSize(
       qrCodeBuilder: QRCodeBuilder,
@@ -54,9 +52,10 @@ class StampViewModel(context: Activity) : ViewModel() {
    * Get the StampDimension given the detailedDimension string.
    *
    * @param detailedDimension the detailed dimension string
-   * @return the StampDimension corresponding to the detailedDimension, or StampDimension.MEDIUM if not found
+   * @return the StampDimension corresponding to the detailedDimension, or StampDimension.MEDIUM if
+   *   not found
    */
-  private fun getStampDimension (detailedDimension: String) : StampDimension {
+  private fun getStampDimension(detailedDimension: String): StampDimension {
     var ret = StampDimension.MEDIUM
     for (stampDimension in StampDimension.values()) {
       if (stampDimension.detailedDimension == detailedDimension) {
