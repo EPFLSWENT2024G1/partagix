@@ -64,9 +64,16 @@ class NavigationTest {
     every { mockCollection.document(any()) } returns mockDocument
     every { mockCollection.document() } returns mockDocument
 
+    val mockQuerySnapshot = mockk<QuerySnapshot>()
 
-    every {mockTask.addOnSuccessListener {  } } returns mockTask
-    every {mockTask.addOnFailureListener {  } } returns mockTask
+    // Wrap the QuerySnapshot into a Task object
+    every { mockTask.result } returns mockQuerySnapshot
+
+    // Define the behavior for the `addOnSuccessListener` function call
+    every { mockTask.addOnSuccessListener(any()) } returns mockTask
+    every { mockTask.addOnFailureListener(any()) } returns mockTask
+
+
     // Create Database instance
     val d = Database(mockDb)
 
