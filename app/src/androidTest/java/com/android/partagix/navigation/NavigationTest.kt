@@ -83,7 +83,10 @@ class NavigationTest {
   @Test
   fun basicDisplay() {
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
-    
+      homeButton { assertIsDisplayed() }
+      loanButton { assertIsDisplayed() }
+      inventoryButton { assertIsDisplayed() }
+      accountButton { assertIsDisplayed() }
     }
   }
   @Test
