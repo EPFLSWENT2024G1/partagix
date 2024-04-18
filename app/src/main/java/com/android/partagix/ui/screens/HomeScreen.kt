@@ -65,7 +65,8 @@ fun HomeScreen(
                   IconButton(onClick = { /* TODO go to notification screen */ }) {
                       Icon(Icons.Default.Notifications, contentDescription = "Notifications")
                   }
-              }
+              },
+              modifier = Modifier.testTag("homeScreenTopAppBar")
           )
       },
       bottomBar = {
@@ -77,7 +78,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)) {
+                .padding(innerPadding)
+                .testTag("homeScreenMainContent")) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth())
                 Text(
                     text = "Quick access",
@@ -115,14 +117,14 @@ fun HomeScreen(
                         .padding(start = 16.dp, top = 16.dp),
                     style = MaterialTheme.typography.titleLarge
                 )
-                ItemListColumn(
+/*                ItemListColumn(
                     List = uiState.borrowedItems, // TODO replace this with the actual list of borrowing requests
                     users = uiState.usersBor,
                     loan = uiState.loanBor,
                     Title = "",
                     corner = "", // TODO this should be a button to the full borrowing screen
-                    onClick = { /*TODO navigate to borrow request*/},
-                    onClickCorner = { /*TODO*/})
+                    onClick = { *//*TODO navigate to borrow request*//*},
+                    onClickCorner = { *//*TODO*//*})*/
                 }
       }
 }
