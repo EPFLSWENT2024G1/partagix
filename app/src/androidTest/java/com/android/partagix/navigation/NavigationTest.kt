@@ -1,4 +1,4 @@
-package com.android.partagix.authentication
+package com.android.partagix.navigation
 
 import android.content.Intent
 import android.location.Location
@@ -83,7 +83,7 @@ class NavigationTest {
   @Test
   fun basicDisplay() {
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
-
+    
     }
   }
   @Test
