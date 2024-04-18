@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.stampDimension.StampDimension
+import org.jetbrains.annotations.TestOnly
 import qrcode.QRCode
 import qrcode.QRCodeBuilder
 
@@ -13,6 +14,7 @@ class StampViewModel(context: Activity) : ViewModel() {
   private val context = context
 
   init {}
+
 
   private fun setSize(
       qrCodeBuilder: QRCodeBuilder,
@@ -31,8 +33,7 @@ class StampViewModel(context: Activity) : ViewModel() {
   private fun addLabel(pngBytes: ByteArray, label: String) {}
 
   fun generateQRCodeAndSave(itemId: String, label: String, detailedDimension: String) {
-    var dim = StampDimension.MEDIUM
-    getDetailedDimensionOrdinal(detailedDimension) { d -> dim = d }
+    var dim = getStampDimension(detailedDimension)
     setSize(qrCodeBuilder, itemId, label, dim)
     val qrCode = qrCodeBuilder.build(itemId).renderToBytes()
     val intent =
@@ -53,16 +54,15 @@ class StampViewModel(context: Activity) : ViewModel() {
    * Get the StampDimension given the detailedDimension string.
    *
    * @param detailedDimension the detailed dimension string
-   * @param onSuccess the function to call when the dimension is found
+   * @return the StampDimension corresponding to the detailedDimension, or StampDimension.MEDIUM if not found
    */
-  private fun getDetailedDimensionOrdinal(
-      detailedDimension: String,
-      onSuccess: (StampDimension) -> Unit
-  ) {
+  private fun getStampDimension (detailedDimension: String) : StampDimension {
+    var ret = StampDimension.MEDIUM
     for (stampDimension in StampDimension.values()) {
       if (stampDimension.detailedDimension == detailedDimension) {
-        onSuccess(stampDimension)
+        ret = stampDimension
       }
     }
+    return ret
   }
 }
