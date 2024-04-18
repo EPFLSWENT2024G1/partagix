@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,8 +64,8 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
                     .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)) {
               Column(modifier = Modifier.weight(weight = 1f)) {
-                Row(modifier = Modifier.height(25.dp)) {
-                  Text(text = user.rank, modifier = Modifier.width(50.dp))
+                Row(modifier = Modifier.fillMaxHeight(0.5f)) {
+                  Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.3f))
 
                   Text(
                       text = user.name,
@@ -77,7 +78,7 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                               color = Color(0xFF000000),
                               textAlign = TextAlign.Left,
                           ),
-                      modifier = Modifier.fillMaxWidth())
+                      modifier = Modifier.fillMaxWidth(0.5f))
                 }
                 Text(
                     text =
@@ -106,7 +107,7 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                             color = Color(0xFF000000),
                             textAlign = TextAlign.Right,
                         ),
-                    modifier = Modifier.width(100.dp).height(40.dp).padding(top = 10.dp))
+                    modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
                 Text(
                     text = "Quantity: " + item.quantity.toString(),
                     style =
@@ -116,13 +117,13 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                         ),
                     textAlign = TextAlign.End,
                     lineHeight = 0.8.em,
-                    modifier = Modifier.width(100.dp).height(20.dp))
+                    modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
               }
               Image(
                   painter = painterResource(id = R.drawable.mutliprise),
                   contentDescription = "fds",
                   contentScale = ContentScale.FillBounds,
-                  modifier = Modifier.width(70.dp))
+                  modifier = Modifier.fillMaxWidth(0.3f))
             }
         // Horizontalfullwidth()
       }

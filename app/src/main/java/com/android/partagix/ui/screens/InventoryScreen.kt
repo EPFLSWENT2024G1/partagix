@@ -7,6 +7,7 @@ import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -105,6 +106,7 @@ fun InventoryScreen(
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
+            Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
                 List = uiState.items,
                 users = uiState.users,

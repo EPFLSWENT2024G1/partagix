@@ -54,7 +54,7 @@ fun ItemListColumn(
                   fontWeight = FontWeight(1000),
                   color = Color(0xFF000000),
               ),
-          modifier = Modifier.width(150.dp).padding(horizontal = 10.dp))
+          modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,
