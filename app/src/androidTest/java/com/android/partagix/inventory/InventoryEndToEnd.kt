@@ -54,7 +54,7 @@ class InventoryEndToEnd {
 
 
     mockNavActions = mockk<NavigationActions>()
-    every { mockNavActions.navigateTo("CreateItem") } answers { InventoryCreateOrEditItemScreen(mockItemViewModel, mockNavActions, mode = "create")}
+    every { mockNavActions.navigateTo("CreateItem") } just Runs
     every { mockNavActions.navigateTo("ViewItem") } just Runs
     every { mockNavActions.navigateTo("EditItem") } just Runs
 
