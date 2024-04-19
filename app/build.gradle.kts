@@ -163,8 +163,25 @@ dependencies {
     debugImplementation(libs.compose.test.manifest)
 
     // --------- Kaspresso test framework ----------
-    globalTestImplementation(libs.kaspresso)
-    globalTestImplementation(libs.kaspresso.compose)
+    testImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    testImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation("androidx.test:core:1.4.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+
+
+    androidTestImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)

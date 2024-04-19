@@ -36,6 +36,7 @@ fun BootScreen(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier
 ) {
+  println("----- BootScreen")
   Column(
       modifier = modifier.padding(15.dp).testTag("BootScreen"),
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,6 +57,7 @@ fun BootScreen(
   Handler(Looper.getMainLooper())
       .postDelayed(
           {
+            println("----- BootScreen: postDelayed ${authentication.isAlreadySignedIn()}")
             if (authentication.isAlreadySignedIn()) {
               navigationActions.navigateTo(Route.HOME)
             } else {

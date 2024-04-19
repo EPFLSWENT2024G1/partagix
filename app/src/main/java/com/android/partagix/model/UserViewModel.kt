@@ -37,6 +37,7 @@ class UserViewModel(
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
+    println("----- UserViewModel")
     if (user.id == "") {
       setUserToCurrent()
     } else {

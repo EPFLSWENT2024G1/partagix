@@ -16,6 +16,7 @@ class MainActivity : ComponentActivity() {
   private lateinit var app: App
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    println("----- MainActivity")
     super.onCreate(savedInstanceState)
     app = App(this)
 
