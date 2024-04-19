@@ -29,7 +29,6 @@ fun BottomNavigationBar(
 ) {
   NavigationBar(modifier = modifier.testTag("navigationBar").fillMaxWidth()) {
     TOP_LEVEL_DESTINATIONS.forEach { destination ->
-      println("----- destination: ${destination.route}")
       NavigationBarItem(
           modifier = Modifier.testTag("bottomNavBarItem-${destination.route}"),
           selected = selectedDestination == destination.route,

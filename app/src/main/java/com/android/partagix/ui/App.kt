@@ -48,9 +48,9 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class App(
-  private val activity: MainActivity,
-  private val auth: Authentication? = null,
-  private val db: Database = Database(),
+    private val activity: MainActivity,
+    private val auth: Authentication? = null,
+    private val db: Database = Database(),
 ) : ComponentActivity(), SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
@@ -63,7 +63,6 @@ class App(
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
 
-
   @Composable
   fun Create() {
     print("----- App")
@@ -74,6 +73,10 @@ class App(
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
+  }
+
+  fun navigateForTest(route: String) {
+    navigationActions.navigateTo(route)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -100,8 +103,8 @@ class App(
     val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
 
     ComposeMainContent(
-      navController = navController,
-      selectedDestination = selectedDestination,
+        navController = navController,
+        selectedDestination = selectedDestination,
     ) {
       scope.launch { drawerState.open() }
     }
@@ -109,20 +112,20 @@ class App(
 
   @Composable
   fun ComposeMainContent(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    selectedDestination: String,
-    onDrawerClicked: () -> Unit = {},
+      modifier: Modifier = Modifier,
+      navController: NavHostController,
+      selectedDestination: String,
+      onDrawerClicked: () -> Unit = {},
   ) {
     Row(modifier = modifier.fillMaxSize()) {
       Column(
-        modifier =
-        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
-        ComposeNavigationHost(
-          navController = navController,
-          modifier = Modifier.weight(1f),
-        )
-      }
+          modifier =
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+            ComposeNavigationHost(
+                navController = navController,
+                modifier = Modifier.weight(1f),
+            )
+          }
     }
   }
 
@@ -132,10 +135,10 @@ class App(
     }
 
     if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=
-      PackageManager.PERMISSION_GRANTED) {
+        PackageManager.PERMISSION_GRANTED) {
       Log.d(TAG, "checkLocationPermissions: requesting permissions")
       ActivityCompat.requestPermissions(
-        activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+          activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
 
       return checkLocationPermissions(retries - 1)
     } else {
@@ -147,13 +150,13 @@ class App(
   @SuppressLint("MissingPermission")
   @Composable
   private fun ComposeNavigationHost(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+      navController: NavHostController,
+      modifier: Modifier = Modifier
   ) {
     NavHost(
-      modifier = modifier,
-      navController = navController,
-      startDestination = Route.INVENTORY,
+        modifier = modifier,
+        navController = navController,
+        startDestination = Route.INVENTORY,
     ) {
       println("----- ComposeNavigationHost")
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
@@ -168,45 +171,44 @@ class App(
             }
           }
           LoanScreen(
-            navigationActions = navigationActions,
-            inventoryViewModel = inventoryViewModel,
-            userViewModel = userViewModel,
-            modifier = modifier)
+              navigationActions = navigationActions,
+              inventoryViewModel = inventoryViewModel,
+              userViewModel = userViewModel,
+              modifier = modifier)
         } else {
           HomeScreen(navigationActions)
         }
       }
       composable(Route.INVENTORY) {
-        println("----- navigated to inventory screen")
         InventoryScreen(
-          inventoryViewModel = inventoryViewModel,
-          navigationActions = navigationActions,
-          itemViewModel = itemViewModel)
+            inventoryViewModel = inventoryViewModel,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
       }
 
       composable(
-        Route.ACCOUNT,
+          Route.ACCOUNT,
       ) {
         println("navigated to account screen")
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
       composable(
-        Route.VIEW_ITEM + "/{itemId}",
-        arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-        // val itemId = it.arguments?.getString("itemId")
-        InventoryViewItem(navigationActions, itemViewModel)
-      }
+          Route.VIEW_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryViewItem(navigationActions, itemViewModel)
+          }
       composable(
-        Route.CREATE_ITEM,
-        /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
+          Route.CREATE_ITEM,
+      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
       composable(
-        Route.EDIT_ITEM + "/{itemId}",
-        arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-        // val itemId = it.arguments?.getString("itemId")
-        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
-      }
+          Route.EDIT_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            // val itemId = it.arguments?.getString("itemId")
+            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+          }
     }
   }
 

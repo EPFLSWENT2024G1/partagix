@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import com.android.partagix.resources.C
+import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.theme.PartagixAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,6 +31,10 @@ class MainActivity : ComponentActivity() {
             }
       }
     }
+  }
+
+  fun myInitializationFunction() {
+    app.navigateForTest(Route.HOME)
   }
 
   companion object {

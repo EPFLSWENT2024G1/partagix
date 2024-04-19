@@ -5,8 +5,9 @@ import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.github.kakaocup.compose.node.element.KNode
 
 class NavigationBar(semanticsProvider: SemanticsNodeInteractionsProvider) :
-  ComposeScreen<NavigationBar>(
-    semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("navigationBar") }) {
+    ComposeScreen<NavigationBar>(
+        semanticsProvider = semanticsProvider,
+        viewBuilderAction = { hasTestTag("navigationBar") }) {
 
   val homeButton: KNode = onNode { hasTestTag("bottomNavBarItem-Home") }
   val loanButton: KNode = onNode { hasTestTag("bottomNavBarItem-Loan") }
