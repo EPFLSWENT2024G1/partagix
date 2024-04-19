@@ -13,7 +13,6 @@ import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.InventoryScreen
 import io.mockk.Runs
 import io.mockk.every
@@ -21,8 +20,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.time.delay
-import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,7 +32,6 @@ class InventoryEndToEnd {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
-
 
   private val i = Item("1", Category("1","cat"), "name", "description", Visibility.PUBLIC, 1, Location(""), "")
   private val iempty = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
@@ -58,16 +54,19 @@ class InventoryEndToEnd {
 
 
     mockNavActions = mockk<NavigationActions>()
-    every { mockNavActions.navigateTo("CreateItem") } just Runs
+    every { mockNavActions.navigateTo("CreateItem") } answers { InventoryCreateOrEditItemScreen(mockItemViewModel, mockNavActions, mode = "create")}
     every { mockNavActions.navigateTo("ViewItem") } just Runs
     every { mockNavActions.navigateTo("EditItem") } just Runs
+
   }
+
+
 
   @Test
   fun testNavigateToCreateItem() {
     // Launch the inventory screen
     composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions,mockItemViewModel)
+      InventoryScreen(mockInventoryViewModel, mockNavActions ,mockItemViewModel)
     }
 
     // Click on the "Create" floating action button
