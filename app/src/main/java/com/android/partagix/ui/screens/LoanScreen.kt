@@ -60,7 +60,7 @@ fun LoanScreen(
   var currentLocation = userUiState.value.location
 
   // Simulate a large list of items
-  for (i in 0..3) {
+  for (i in 0..1) {
     items = items.plus(items)
   }
 
@@ -75,13 +75,17 @@ fun LoanScreen(
   }
 
   LaunchedEffect(key1 = inventoryUiState) { items = inventoryUiState.value.items }
-  LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
+  LaunchedEffect(key1 = userUiState) {
+    currentLocation = userUiState.value.location
+    Log.d(TAG, "!!! currentLocation: $currentLocation")
+  }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
         TopSearchBar(
             filter = { inventoryViewModel.filterItems(it) },
+            query = inventoryUiState.value.query,
             modifier = modifier.testTag("LoanScreenSearchBar"))
       },
       bottomBar = {
@@ -110,6 +114,14 @@ fun LoanScreen(
                             true
                           })
                     }
+
+                    /*if (currentLocation != null) {
+                      Marker(
+                        state = MarkerState(position = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)),
+                        title = "You are here",
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                      )
+                    }*/
                   }
             }
         Box(

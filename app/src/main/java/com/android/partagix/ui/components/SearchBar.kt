@@ -54,7 +54,7 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
               contentDescription = "Search",
               modifier =
                   modifier.clickable {
-                    filter("")
+                    // filter("")
 
                     keyboardController?.hide()
                   })
