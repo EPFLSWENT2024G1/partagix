@@ -254,7 +254,7 @@ class DatabaseTests {
 
     every { mockDb.collection(any()) } returns mockItemsCollection
     // Create Database instance
-    val d = Database(mockDb)
+    val databaseUsedOnlyOnce = Database(mockDb)
 
     // Define behavior for Firestore mocks
     every { mockDb.collection("items") } returns mockItemsCollection
@@ -273,7 +273,7 @@ class DatabaseTests {
                   "description" to item.description,
                   "quantity" to item.quantity,
                   "visibility" to item.visibility.ordinal.toLong(),
-                  "location" to d.locationToMap(item.location),
+                  "location" to Database(mockDb).locationToMap(item.location),
                   "id_user" to userId,
               )
           every { mockSnapshot.iterator().next() } returns mockQueryDocument
