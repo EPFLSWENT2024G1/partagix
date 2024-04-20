@@ -59,6 +59,7 @@ fun HomeScreen(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
         TopAppBar(
+            modifier = Modifier.testTag("homeScreenTopAppBar"),
             title = { Text(text = "Welcome back, ${"User" /* TODO get actual user name */}") },
             actions = {
               IconButton(onClick = { /* TODO go to notification screen */}) {
