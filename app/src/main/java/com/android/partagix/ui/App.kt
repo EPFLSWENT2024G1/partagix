@@ -149,7 +149,12 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(homeViewModel = HomeViewModel(), inventoryViewModel = InventoryViewModel(), navigationActions = navigationActions) }
+      composable(Route.HOME) {
+        HomeScreen(
+            homeViewModel = HomeViewModel(),
+            inventoryViewModel = InventoryViewModel(),
+            navigationActions = navigationActions)
+      }
       composable(Route.LOAN) {
         if (checkLocationPermissions()) {
           fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -164,7 +169,10 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
               userViewModel = userViewModel,
               modifier = modifier)
         } else {
-            HomeScreen(homeViewModel = HomeViewModel(), inventoryViewModel = InventoryViewModel(), navigationActions = navigationActions)
+          HomeScreen(
+              homeViewModel = HomeViewModel(),
+              inventoryViewModel = InventoryViewModel(),
+              navigationActions = navigationActions)
         }
       }
 

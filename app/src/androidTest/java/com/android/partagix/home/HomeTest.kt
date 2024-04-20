@@ -12,7 +12,6 @@ import com.android.partagix.screens.HomeScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.HomeScreen
-import com.android.partagix.ui.screens.InventoryScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -45,8 +44,8 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
     mockUiState =
-      MutableStateFlow(
-        InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+        MutableStateFlow(
+            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
@@ -68,18 +67,15 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     composeTestRule.setContent {
       HomeScreen(
-        homeViewModel = mockHomeViewModel,
-        inventoryViewModel = mockInventoryViewModel,
-        navigationActions = mockNavActions
-      )
+          homeViewModel = mockHomeViewModel,
+          inventoryViewModel = mockInventoryViewModel,
+          navigationActions = mockNavActions)
     }
   }
 
   @Test
   fun topBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
-      topBar { assertIsDisplayed() }
-    }
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
   }
 
   @Test

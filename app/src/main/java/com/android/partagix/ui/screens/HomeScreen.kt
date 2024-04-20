@@ -33,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -54,20 +53,19 @@ fun HomeScreen(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier
 ) {
-    val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-    inventoryViewModel.getInventory()
+  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  inventoryViewModel.getInventory()
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
-          TopAppBar(
-              title = { Text(text = "Welcome back, ${"User" /* TODO get actual user name */}") },
-              actions = {
-                  IconButton(onClick = { /* TODO go to notification screen */ }) {
-                      Icon(Icons.Default.Notifications, contentDescription = "Notifications")
-                  }
-              },
-              modifier = Modifier.testTag("homeScreenTopAppBar")
-          )
+        TopAppBar(
+            title = { Text(text = "Welcome back, ${"User" /* TODO get actual user name */}") },
+            actions = {
+              IconButton(onClick = { /* TODO go to notification screen */}) {
+                Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+              }
+            },
+            modifier = Modifier.testTag("homeScreenTopAppBar"))
       },
       bottomBar = {
         BottomNavigationBar(
@@ -76,88 +74,76 @@ fun HomeScreen(
             modifier = modifier.testTag("homeScreenBottomNavBar"))
       }) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .testTag("homeScreenMainContent")) {
-                HorizontalDivider(modifier = Modifier.fillMaxWidth())
-                Text(
-                    text = "Quick access",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp),
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+            modifier =
+                Modifier.fillMaxSize().padding(innerPadding).testTag("homeScreenMainContent")) {
+              HorizontalDivider(modifier = Modifier.fillMaxWidth())
+              Text(
+                  text = "Quick access",
+                  modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
+                  style = MaterialTheme.typography.titleLarge)
+              Spacer(modifier = Modifier.height(8.dp))
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                  horizontalArrangement = Arrangement.SpaceBetween) {
                     BigButton(
                         logo = Icons.Default.PersonSearch,
-                        text = "Find item to borrow", onClick = {},
+                        text = "Find item to borrow",
+                        onClick = {},
                         modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
-                        text = "Quick scan", onClick = {},
+                        text = "Quick scan",
+                        onClick = {},
                         modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
-                        text = "Find item in inventory", onClick = {},
+                        text = "Find item in inventory",
+                        onClick = {},
                         modifier = Modifier.weight(1f))
-                }
-                Text(
-                    text = "New borrowing requests",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp),
-                    style = MaterialTheme.typography.titleLarge
-                )
-                ItemListColumn(
-                    List = uiState.borrowedItems, // TODO replace this with the actual list of borrowing requests
-                    users = uiState.usersBor,
-                    loan = uiState.loanBor,
-                    Title = "",
-                    corner = "", // TODO this should be a button to the full borrowing screen
-                    onClick = { /* TODO navigate to borrow request */},
-                    onClickCorner = { /* TODO */ })
-                }
+                  }
+              Text(
+                  text = "New borrowing requests",
+                  modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
+                  style = MaterialTheme.typography.titleLarge)
+              ItemListColumn(
+                  List =
+                      uiState
+                          .borrowedItems, // TODO replace this with the actual list of borrowing
+                                          // requests
+                  users = uiState.usersBor,
+                  loan = uiState.loanBor,
+                  Title = "",
+                  corner = "", // TODO this should be a button to the full borrowing screen
+                  onClick = { /* TODO navigate to borrow request */},
+                  onClickCorner = { /* TODO */})
+            }
       }
 }
 
 @Composable
-fun BigButton(
-    logo: ImageVector,
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            //.weight(1f) // Répartit l'espace horizontal disponible équitablement
-            .aspectRatio(1f) // Garde le bouton carré
-            .size(70.dp) // Vous pouvez ajuster la taille en fonction de vos besoins
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(8.dp)
-            ) // Add a rounded borer the button
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
+fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  Box(
+      modifier =
+          modifier
+              // .weight(1f) // Répartit l'espace horizontal disponible équitablement
+              .aspectRatio(1f) // Garde le bouton carré
+              .size(70.dp) // Vous pouvez ajuster la taille en fonction de vos besoins
+              .border(
+                  width = 1.dp,
+                  color = Color.Black,
+                  shape = RoundedCornerShape(8.dp)) // Add a rounded borer the button
+              .clickable(onClick = onClick),
+      contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(imageVector = logo, contentDescription = null, modifier = Modifier.size(32.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Black, // Vous pouvez ajuster la couleur en fonction de vos besoins
-                textAlign = TextAlign.Center
-            )
+          Icon(imageVector = logo, contentDescription = null, modifier = Modifier.size(32.dp))
+          Spacer(modifier = Modifier.height(8.dp))
+          Text(
+              text = text,
+              style = MaterialTheme.typography.bodyMedium,
+              color = Color.Black, // Vous pouvez ajuster la couleur en fonction de vos besoins
+              textAlign = TextAlign.Center)
         }
-    }
+      }
 }
