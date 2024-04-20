@@ -65,14 +65,13 @@ fun HomeScreen(
               IconButton(onClick = { /* TODO go to notification screen */}) {
                 Icon(Icons.Default.Notifications, contentDescription = "Notifications")
               }
-            },
-            modifier = Modifier.testTag("homeScreenTopAppBar"))
+            })
       },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.HOME,
             navigateToTopLevelDestination = navigationActions::navigateTo,
-            modifier = modifier.testTag("homeScreenBottomNavBar"))
+            modifier = Modifier.testTag("homeScreenBottomNavBar"))
       }) { innerPadding ->
         Column(
             modifier =
@@ -90,19 +89,19 @@ fun HomeScreen(
                         logo = Icons.Default.PersonSearch,
                         text = "Find item to borrow",
                         onClick = {},
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = "Quick scan",
                         onClick = {},
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
                         text = "Find item in inventory",
                         onClick = {},
-                        modifier = Modifier.weight(1f))
+                        modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               Text(
                   text = "New borrowing requests",
@@ -110,9 +109,8 @@ fun HomeScreen(
                   style = MaterialTheme.typography.titleLarge)
               ItemListColumn(
                   List =
-                      uiState
-                          .borrowedItems, // TODO replace this with the actual list of borrowing
-                                          // requests
+                      uiState.borrowedItems, // TODO replace this with the actual list of borrowing
+                  // requests
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
                   Title = "",

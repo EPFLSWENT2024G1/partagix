@@ -98,4 +98,34 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       bottomNavBarItemInventory { assertIsDisplayed() }
     }
   }
+
+  @Test
+  fun firstBigButton() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      firstBigButton {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+  }
+
+  @Test
+  fun secondBigButton() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      secondBigButton {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+  }
+
+  @Test
+  fun thirdBigButton() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      thirdBigButton {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+  }
 }

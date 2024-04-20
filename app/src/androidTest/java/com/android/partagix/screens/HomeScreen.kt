@@ -15,4 +15,8 @@ class HomeScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
       bottomNavBar.child { hasTestTag("bottomNavBarItem-Inventory") }
 
   val mainContent: KNode = onNode { hasTestTag("homeScreenMainContent") }
+
+  val firstBigButton: KNode = onNode { hasTestTag("homeScreenFirstBigButton") }
+  val secondBigButton: KNode = onNode { hasTestTag("homeScreenSecondBigButton") }
+  val thirdBigButton: KNode = onNode { hasTestTag("homeScreenThirdBigButton") }
 }
