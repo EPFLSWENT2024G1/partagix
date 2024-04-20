@@ -139,7 +139,7 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    testImplementation(libs.mockito.kotlin)
     implementation(libs.play.services.location)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
