@@ -8,7 +8,7 @@ class HomeScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<HomeScreen>(
         semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("homeScreen") }) {
 
-  val topBar: KNode = onNode { hasTestTag("homeScreenTopBar") }
+  val topBar: KNode = onNode { hasTestTag("homeScreenTopAppBar") }
   val bottomNavBar: KNode = onNode { hasTestTag("homeScreenBottomNavBar") }
 
   val bottomNavBarItemInventory: KNode =
