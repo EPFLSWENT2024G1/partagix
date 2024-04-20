@@ -116,7 +116,8 @@ fun HomeScreen(
                   Title = "",
                   corner = "", // TODO this should be a button to the full borrowing screen
                   onClick = { /* TODO navigate to borrow request */},
-                  onClickCorner = { /* TODO */})
+                  onClickCorner = { /* TODO */},
+                  modifier = Modifier.testTag("homeScreenItemList"))
             }
       }
 }

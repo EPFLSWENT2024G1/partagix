@@ -128,4 +128,14 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       }
     }
   }
+
+  @Test
+  fun itemList() = run {
+    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      itemList {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+  }
 }
