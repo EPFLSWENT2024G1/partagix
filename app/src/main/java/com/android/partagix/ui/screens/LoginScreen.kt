@@ -90,7 +90,6 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
     }
   }
   if (showSignIn) {
-    println("----- we are there")
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
