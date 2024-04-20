@@ -48,13 +48,10 @@ class LoginTest {
       }
     }
     ComposeScreen.onComposeScreen<LoginScreen2>(composeTestRule) {
-      loginButton {
-        assertIsDisplayed()
-      }
+      loginButton { assertIsDisplayed() }
     }
+  }
 
-
-    }
   companion object {
     const val SLEEP_TIME = 2000L
   }
