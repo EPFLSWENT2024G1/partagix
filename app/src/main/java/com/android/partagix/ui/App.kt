@@ -26,11 +26,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
+import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
@@ -43,6 +46,7 @@ import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -68,6 +72,21 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
+    if (user != null) {
+      val db = Database()
+      val newUser = User(
+        user.uid,
+        user.displayName ?: "",
+        user.email ?: "",
+        "0",
+        Inventory(user.uid, emptyList())
+      )
+      db.getUser(
+        user.uid,
+        {db.createUser(newUser)},
+        {}
+      )
+    }
     navigationActions.navigateTo(Route.HOME)
     Log.d(TAG, "onSignInSuccess: user=$user")
   }
