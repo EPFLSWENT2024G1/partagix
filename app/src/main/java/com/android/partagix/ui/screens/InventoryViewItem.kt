@@ -61,10 +61,13 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
             title = { Text("Back to selection") },
             modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
             navigationIcon = {
-              IconButton(onClick = { navigationActions.goBack() },
+              IconButton(
+                  onClick = { navigationActions.goBack() },
                   modifier = Modifier.testTag("navigationIcon")) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-              }
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
             })
       },
       bottomBar = {
@@ -188,7 +191,10 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM/*"${Route.EDIT_ITEM}/${item.id}"*/) },
+                    onClick = {
+                      navigationActions.navigateTo(
+                          Route.EDIT_ITEM /*"${Route.EDIT_ITEM}/${item.id}"*/)
+                    },
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
               }

@@ -20,12 +20,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
@@ -192,23 +190,21 @@ class App(
         println("navigated to account screen")
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(
-          Route.VIEW_ITEM /*+ "/{itemId}",
+      composable(Route.VIEW_ITEM /*+ "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, itemViewModel)
-          }
+        // val itemId = it.arguments?.getString("itemId")
+        InventoryViewItem(navigationActions, itemViewModel)
+      }
       composable(
           Route.CREATE_ITEM,
       /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
-      composable(
-          Route.EDIT_ITEM /*+ "/{itemId}",
+      composable(Route.EDIT_ITEM /*+ "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
-          }
+        // val itemId = it.arguments?.getString("itemId")
+        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+      }
     }
   }
 

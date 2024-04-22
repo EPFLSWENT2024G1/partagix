@@ -1,32 +1,18 @@
 package com.android.partagix.navigation
 
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.partagix.model.Database
-import com.android.partagix.model.auth.Authentication
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.screens.NavigationBar
-import com.android.partagix.ui.App
 import com.android.partagix.ui.MainActivity
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import io.github.kakaocup.compose.node.element.ComposeScreen
-import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
 /*
 @RunWith(AndroidJUnit4::class)
 class NavigationTest {
@@ -178,8 +164,6 @@ class MyTestSuite {
       inventoryButton { performClick() }
     }
 
-    ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule){
-      
-    }
+    ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {}
   }
 }

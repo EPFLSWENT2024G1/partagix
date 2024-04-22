@@ -40,7 +40,8 @@ fun DropDown(label: String, list: List<String>): String {
         DropdownMenu(
             expanded = expend.value,
             onDismissRequest = { expend.value = false },
-            modifier = Modifier.fillMaxWidth().requiredSizeIn(maxHeight = 250.dp).testTag("dropdownmenu"),
+            modifier =
+                Modifier.fillMaxWidth().requiredSizeIn(maxHeight = 250.dp).testTag("dropdownmenu"),
             scrollState = rememberScrollState(),
         ) {
           list.forEach {
