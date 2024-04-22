@@ -1,16 +1,8 @@
 package com.android.partagix.navigation
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.partagix.screens.InventoryScreen
-import com.android.partagix.screens.NavigationBar
-import com.android.partagix.ui.MainActivity
-import io.github.kakaocup.compose.node.element.ComposeScreen
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
 /*
