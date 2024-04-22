@@ -51,17 +51,19 @@ class ItemViewModel(
    * @param item an item with missing Category.id
    * @return the item with complete Category attribute, and an Error if categoryName is not found
    */
-  private fun fillIdCategory(item: Item): Item {
+  private fun fillIdCategory(item: Item, onSuccess: (String) -> Unit) {
     var idCategory = ""
     database.getIdCategory(item.category.name, { idCategory = it })
-    return Item(
-        _uiState.value.item.id,
-        Category(idCategory, _uiState.value.item.category.name),
-        _uiState.value.item.name,
-        _uiState.value.item.description,
-        _uiState.value.item.visibility,
-        _uiState.value.item.quantity,
-        _uiState.value.item.location)
+    println("truc a ecrire: $idCategory")
+    updateUiState(
+        Item(
+            _uiState.value.item.id,
+            Category(idCategory, _uiState.value.item.category.name),
+            _uiState.value.item.name,
+            _uiState.value.item.description,
+            _uiState.value.item.visibility,
+            _uiState.value.item.quantity,
+            _uiState.value.item.location))
   }
 
   /**
@@ -77,12 +79,23 @@ class ItemViewModel(
   }
 
   /** Save the item with the current UI state in the database */
-  fun saveWithUiState() {
+  fun save(new: Item) {
     if (_uiState.value.item.id == "") {
-      database.createItem(
-          FirebaseAuth.getInstance().currentUser!!.uid, fillIdCategory(_uiState.value.item))
+      database.getIdCategory(new.category.name) {
+        database.createItem(
+            FirebaseAuth.getInstance().currentUser!!.uid,
+            Item(
+                new.id,
+                Category(it, new.category.name),
+                new.name,
+                new.description,
+                new.visibility,
+                new.quantity,
+                new.location))
+      }
     } else {
-      database.setItem(_uiState.value.item)
+      updateUiState(new)
+      database.setItem(new)
     }
   }
 

@@ -10,4 +10,6 @@ app/.idea/
 .cxx
 
 local.properties
+local.defaults.properties
 google-services.json
+secrets.properties
