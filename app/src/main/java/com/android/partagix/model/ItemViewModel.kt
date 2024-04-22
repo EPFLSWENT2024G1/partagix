@@ -47,27 +47,6 @@ class ItemViewModel(
   }
 
   /**
-   * Get the category id (full category object) from the item's category name
-   *
-   * @param item an item with missing Category.id
-   * @return the item with complete Category attribute, and an Error if categoryName is not found
-   */
-  private fun fillIdCategory(item: Item, onSuccess: (String) -> Unit) {
-    var idCategory = ""
-    database.getIdCategory(item.category.name, { idCategory = it })
-    println("truc a ecrire: $idCategory")
-    updateUiState(
-        Item(
-            _uiState.value.item.id,
-            Category(idCategory, _uiState.value.item.category.name),
-            _uiState.value.item.name,
-            _uiState.value.item.description,
-            _uiState.value.item.visibility,
-            _uiState.value.item.quantity,
-            _uiState.value.item.location))
-  }
-
-  /**
    * Update the UI state with a new item
    *
    * @param new the new item to update the UI state with
