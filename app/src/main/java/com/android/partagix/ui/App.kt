@@ -187,22 +187,13 @@ class App(
       composable(
           Route.ACCOUNT,
       ) {
-        println("navigated to account screen")
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM /*+ "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/) {
-        // val itemId = it.arguments?.getString("itemId")
-        InventoryViewItem(navigationActions, itemViewModel)
-      }
-      composable(
-          Route.CREATE_ITEM,
-      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
+      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel) }
+      composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
-      composable(Route.EDIT_ITEM /*+ "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/) {
-        // val itemId = it.arguments?.getString("itemId")
+      composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
     }

@@ -53,7 +53,6 @@ fun InventoryScreen(
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
-  println("----- inventory screen")
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
   val keyboardController = LocalSoftwareKeyboardController.current
   var active by remember { mutableStateOf(false) }
@@ -107,7 +106,7 @@ fun InventoryScreen(
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM /*+ "/${it.id}"*/)
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.height(220.dp))
@@ -120,7 +119,7 @@ fun InventoryScreen(
                 corner = uiState.items.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM /*+ "/${it.id}"*/)
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
                 // modifier = Modifier
@@ -135,7 +134,7 @@ fun InventoryScreen(
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM /* + "/${it.id}"*/)
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
@@ -148,7 +147,7 @@ fun InventoryScreen(
                 corner = uiState.items.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM /*+ "/${it.id}"*/)
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
                 modifier = Modifier.testTag("inventoryScreenItemList"))

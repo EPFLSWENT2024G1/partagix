@@ -191,10 +191,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = {
-                      navigationActions.navigateTo(
-                          Route.EDIT_ITEM /*"${Route.EDIT_ITEM}/${item.id}"*/)
-                    },
+                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                     content = { Text("Edit") },
                     modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
               }
