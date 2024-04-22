@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 /**
@@ -27,8 +28,8 @@ import androidx.compose.ui.unit.dp
 fun DropDown(label: String, list: List<String>): String {
   val expend = remember { mutableStateOf(false) }
   val selectedValue = remember { mutableStateOf(label) }
-  Box(modifier = Modifier.fillMaxWidth()) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+  Box(modifier = Modifier.fillMaxWidth().testTag("dropdown")) {
+    Column(modifier = Modifier.fillMaxWidth().testTag("dropdownColumn")) {
       OutlinedButton(
           onClick = { expend.value = true },
           content = { Text(selectedValue.value) },
@@ -39,7 +40,7 @@ fun DropDown(label: String, list: List<String>): String {
         DropdownMenu(
             expanded = expend.value,
             onDismissRequest = { expend.value = false },
-            modifier = Modifier.fillMaxWidth().requiredSizeIn(maxHeight = 250.dp),
+            modifier = Modifier.fillMaxWidth().requiredSizeIn(maxHeight = 250.dp).testTag("dropdownmenu"),
             scrollState = rememberScrollState(),
         ) {
           list.forEach {
@@ -48,7 +49,8 @@ fun DropDown(label: String, list: List<String>): String {
                   selectedValue.value = it
                   expend.value = false
                 },
-                text = { Text(it) })
+                text = { Text(it) },
+                modifier = Modifier.testTag(it))
           }
         }
       }
