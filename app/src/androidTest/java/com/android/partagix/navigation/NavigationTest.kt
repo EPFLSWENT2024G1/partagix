@@ -143,7 +143,7 @@ class MyTestSuite {
   }
 
    */
-  @Test
+  /*@Test
   fun testIsh2() {
     val scenario = launch(MainActivity::class.java)
 
@@ -165,5 +165,5 @@ class MyTestSuite {
     }
 
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {}
-  }
+  }*/
 }

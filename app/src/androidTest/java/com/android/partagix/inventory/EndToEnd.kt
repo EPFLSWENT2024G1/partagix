@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class InventoryEndToEnd {
+class EndToEnd {
   @get:Rule val composeTestRule = createComposeRule()
   @get:Rule val composeTestRule2 = createComposeRule()
 
