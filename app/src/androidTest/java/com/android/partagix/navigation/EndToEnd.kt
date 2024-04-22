@@ -23,7 +23,7 @@ class EndToEnd {
   @get:Rule val composeTestRule2 = createComposeRule()
 
   @Test
-  fun NavigationInventory() {
+  fun NavigationBetweenScreens() {
     val scenario = ActivityScenario.launch(MainActivity::class.java)
 
     scenario.onActivity { mainActivity ->
