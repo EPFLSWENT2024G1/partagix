@@ -24,7 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
