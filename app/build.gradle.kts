@@ -175,6 +175,10 @@ dependencies {
         exclude(group="com.google.protobuf", module="protobuf-lite")
     }
 
+    androidTestImplementation("androidx.test:core:1.4.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+
+
     androidTestImplementation(libs.kaspresso.compose) {
         exclude(group="com.google.protobuf", module="protobuf-lite")
     }

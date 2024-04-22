@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
@@ -46,25 +47,36 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class App(private val activity: MainActivity) : ComponentActivity(), SignInResultListener {
+class App(
+    private val activity: MainActivity,
+    private val auth: Authentication? = null,
+    private val db: Database = Database(),
+) : ComponentActivity(), SignInResultListener {
+
   private var authentication: Authentication = Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
-  private val inventoryViewModel = InventoryViewModel()
-  private val itemViewModel = ItemViewModel()
-  private val userViewModel = UserViewModel()
+  private val inventoryViewModel = InventoryViewModel(db = db)
+  private val itemViewModel = ItemViewModel(db = db)
+  private val userViewModel = UserViewModel(db = db)
 
   @Composable
   fun Create() {
+    print("----- App")
+
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
     // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
+  }
+
+  fun navigateForTest(route: String) {
+    navigationActions.navigateTo(route)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -146,6 +158,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
         navController = navController,
         startDestination = Route.INVENTORY,
     ) {
+      println("----- ComposeNavigationHost")
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) { HomeScreen(navigationActions) }
@@ -166,13 +179,13 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
           HomeScreen(navigationActions)
         }
       }
-
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
             itemViewModel = itemViewModel)
       }
+
       composable(
           Route.ACCOUNT,
       ) {

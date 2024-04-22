@@ -26,16 +26,18 @@ import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
     user: User = User("", "", "", "", Inventory("", emptyList())),
+    db: Database = Database()
 ) : ViewModel() {
 
   // private val user = user
-  private val database = Database()
+  private val database = db
 
   // UI state exposed to the UI
   private val _uiState = MutableStateFlow(UserUIState(user))
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
+    println("----- UserViewModel")
     if (user.id == "") {
       setUserToCurrent()
     } else {

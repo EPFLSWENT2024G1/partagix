@@ -45,6 +45,7 @@ class NavigationActions(private val navController: NavHostController) {
    * @param route the route to navigate to.
    */
   fun navigateTo(route: String) {
+    println("----- NavigationActions.navigateTo: route=$route")
     navController.navigate(route) {
       launchSingleTop = true
       restoreState = true

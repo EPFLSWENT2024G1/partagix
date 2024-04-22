@@ -26,6 +26,8 @@ class LoginTest {
 
   @Before
   fun setup() {
+
+    println("----- LoginTest")
     authentication = mockk<Authentication>()
     mockNavActions = mockk<NavigationActions>()
 

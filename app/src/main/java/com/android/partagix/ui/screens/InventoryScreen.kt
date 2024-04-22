@@ -53,6 +53,7 @@ fun InventoryScreen(
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
+  println("----- inventory screen")
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
   val keyboardController = LocalSoftwareKeyboardController.current
   var active by remember { mutableStateOf(false) }
