@@ -63,7 +63,6 @@ class App(
 
   @Composable
   fun Create() {
-    print("----- App")
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
