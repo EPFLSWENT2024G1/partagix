@@ -1,4 +1,4 @@
-package com.android.partagix.inventory
+package com.android.partagix.navigation
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -119,6 +119,8 @@ class EndToEnd {
 
     /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
 
+    // Close the activity after the test
+    scenario.close()
   }
 
   /*@get:Rule val composeTestRule = createComposeRule()
