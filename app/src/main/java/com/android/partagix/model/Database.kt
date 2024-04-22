@@ -48,7 +48,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
               }
             }
           }
-          if(!found) {
+          if (!found) {
             onNoUser()
           }
         }
@@ -328,13 +328,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   fun createUser(user: User) {
-   val data =
-      hashMapOf(
-        "id" to user.id,
-        "name" to user.name,
-        "addr" to user.address,
-        "rank" to user.rank,
-      )
+    val data =
+        hashMapOf(
+            "id" to user.id,
+            "name" to user.name,
+            "addr" to user.address,
+            "rank" to user.rank,
+        )
     users.document(user.id).set(data)
   }
 

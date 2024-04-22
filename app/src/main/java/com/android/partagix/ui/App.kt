@@ -46,7 +46,6 @@ import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -74,18 +73,14 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
       val db = Database()
-      val newUser = User(
-        user.uid,
-        user.displayName ?: "",
-        user.email ?: "",
-        "0",
-        Inventory(user.uid, emptyList())
-      )
-      db.getUser(
-        user.uid,
-        {db.createUser(newUser)},
-        {}
-      )
+      val newUser =
+          User(
+              user.uid,
+              user.displayName ?: "",
+              user.email ?: "",
+              "0",
+              Inventory(user.uid, emptyList()))
+      db.getUser(user.uid, { db.createUser(newUser) }, {})
     }
     navigationActions.navigateTo(Route.HOME)
     Log.d(TAG, "onSignInSuccess: user=$user")
