@@ -2,6 +2,8 @@ package com.android.partagix.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
@@ -28,8 +30,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.StampViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.ui.navigation.NavigationActions
@@ -60,7 +62,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
   private val userViewModel = UserViewModel()
 
   @Composable
-  fun Create() {
+  fun Create(context: MainActivity) {
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
     // -----------------------a changer

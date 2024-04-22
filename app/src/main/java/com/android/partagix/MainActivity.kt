@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -13,15 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import com.android.partagix.model.CREATE_PNG_FILE
+import com.android.partagix.model.WRITE_PNG_FILE
 import com.android.partagix.resources.C
 import com.android.partagix.ui.theme.PartagixAppTheme
 import java.io.FileOutputStream
 import java.io.IOException
 
-private const val REQUEST_CODE_SAVE_FILE = 50
-
 class MainActivity : ComponentActivity() {
   private lateinit var app: App
+  private var qrBytes: ByteArray? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,15 +41,19 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  fun setQrBytes (qrBytes: ByteArray) {
+    this.qrBytes = qrBytes
+  }
+
   @Deprecated("Deprecated in Java")
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == REQUEST_CODE_SAVE_FILE && resultCode == RESULT_OK) {
+    if (requestCode == CREATE_PNG_FILE && resultCode == RESULT_OK) {
       if (data != null && data.data != null) {
         val uri = data.data
         try {
-          if (uri != null) {
-            saveImageToUri(uri, data)
+          if (uri != null && qrBytes != null) {
+            saveImageToUri(uri, qrBytes!!)
             Toast.makeText(this, "Image saved successfully", Toast.LENGTH_SHORT).show()
           } else {
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show()
@@ -61,15 +67,13 @@ class MainActivity : ComponentActivity() {
   }
 
   @Throws(IOException::class)
-  private fun saveImageToUri(uri: Uri, data: Intent) {
+  private fun saveImageToUri(uri: Uri, data: ByteArray) {
     println("Saving image to $uri")
     val outputStream = contentResolver.openOutputStream(uri) as FileOutputStream?
-    val qrByteArray = data.getByteArrayExtra(Intent.EXTRA_STREAM)
-    println("qrByteArray: $qrByteArray")
-    // outputStream?.write(qrByteArray) TODO : write qr code to output stream
+    println("qrByteArray: $data")
+    outputStream?.write(data)
     outputStream?.close()
   }
-
   companion object {
     private const val TAG = "Main"
   }
