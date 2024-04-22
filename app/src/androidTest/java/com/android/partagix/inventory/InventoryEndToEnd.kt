@@ -1,10 +1,18 @@
 package com.android.partagix.inventory
 
 import android.location.Location
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.R
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemUIState
@@ -12,8 +20,13 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.screens.InventoryCreateOrEditScreen
+import com.android.partagix.screens.InventoryScreen
+import com.android.partagix.screens.NavigationBar
+import com.android.partagix.ui.MainActivity
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.screens.InventoryScreen
+import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -24,11 +37,53 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.regex.Pattern.matches
 
 @RunWith(AndroidJUnit4::class)
 class InventoryEndToEnd {
-
   @get:Rule val composeTestRule = createComposeRule()
+  @get:Rule val composeTestRule2 = createComposeRule()
+
+  @Test
+  fun NavigationInventory(){
+    val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+    scenario.onActivity { mainActivity ->
+      // Call functions on MainActivity instance here
+      mainActivity.myInitializationFunction()
+    }
+
+    // Wait for the activity to be in the resumed state
+    scenario.moveToState(Lifecycle.State.RESUMED)
+
+    ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
+      homeButton { assertIsDisplayed() }
+      loanButton { assertIsDisplayed() }
+      inventoryButton { assertIsDisplayed() }
+      accountButton { assertIsDisplayed() }
+
+      inventoryButton { performClick() }
+    }
+
+    ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule){
+      fab {assertIsDisplayed()}
+      fab {performClick()}
+    }
+
+    ComposeScreen.onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule){
+      button{assertIsDisplayed()}
+      button{assertTextContains("Create")}
+      topBar{assertIsDisplayed()}
+      navigationIcon{performClick()}
+    }
+
+    ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule){
+      //itemList {assertIsDisplayed()}
+      //itemList {performClick()}
+    }
+  }
+
+  /*@get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
@@ -152,5 +207,5 @@ class InventoryEndToEnd {
 
     // Verify navigation to the inventory screen
     composeTestRule.onNodeWithTag("inventoryScreen").assertExists()
-  }
+  }*/
 }

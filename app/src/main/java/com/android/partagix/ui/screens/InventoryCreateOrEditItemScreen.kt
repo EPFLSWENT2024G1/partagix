@@ -216,14 +216,12 @@ fun InventoryCreateOrEditItem(
                 },
                 content = {
                   if (mode == "edit") {
-                    Text("Save",
-                        modifier = modifier.testTag("EditScreen"))
+                    Text("Save")
                   } else {
-                    Text("Create",
-                            modifier = modifier.testTag("CreateScreen"))
+                    Text("Create")
                   }
                 },
-                modifier = modifier.fillMaxWidth())
+                modifier = modifier.fillMaxWidth().testTag("button"))
           }
         }
   }
