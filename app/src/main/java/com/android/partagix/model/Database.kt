@@ -14,8 +14,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import java.util.Date
-import java.util.concurrent.CountDownLatch
 
 class Database(database: FirebaseFirestore = Firebase.firestore) {
 
@@ -103,7 +101,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     return location
   }
 
-  private fun locationToMap(location: Location): Map<String, Any?> {
+  fun locationToMap(location: Location): Map<String, Any?> {
     val locationMap = mutableMapOf<String, Any?>()
     locationMap["latitude"] = location.latitude
     locationMap["longitude"] = location.longitude
@@ -151,30 +149,31 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
-
-  fun getCategories(onSuccess: (List<Category>) -> Unit) {
-    categories
-        .get()
-        .addOnSuccessListener { result ->
-          val ret = mutableListOf<Category>()
-          for (document in result) {
-            val category =
-                Category(
-                    document.data["id"] as String,
-                    document.data["name"] as String,
-                )
-            ret.add(category)
-          }
-          onSuccess(ret)
-        }
-        .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
-  }
-
-  private fun getNewUid(collection: CollectionReference): String {
+  /*
+   fun getCategories(onSuccess: (List<Category>) -> Unit) {
+     categories
+         .get()
+         .addOnSuccessListener { result ->
+           val ret = mutableListOf<Category>()
+           for (document in result) {
+             val category =
+                 Category(
+                     document.data["id"] as String,
+                     document.data["name"] as String,
+                 )
+             ret.add(category)
+           }
+           onSuccess(ret)
+         }
+         .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
+   }
+  */
+  fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
   }
 
+  /*
   private fun createExampleForDb(
       users: CollectionReference = this.users,
       items: CollectionReference = this.items,
@@ -261,6 +260,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
     latch.await()
   }
+
+   */
 
   fun createItem(userId: String, newItem: Item) {
 
