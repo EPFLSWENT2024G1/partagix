@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 /**
@@ -48,7 +49,8 @@ fun DropDown(label: String, list: List<String>): String {
                   selectedValue.value = it
                   expend.value = false
                 },
-                text = { Text(it) })
+                text = { Text(it) },
+                modifier = Modifier.testTag(it))
           }
         }
       }
