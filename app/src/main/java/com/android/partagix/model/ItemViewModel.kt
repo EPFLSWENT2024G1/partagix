@@ -27,10 +27,11 @@ import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
-    id: String? = null
+    id: String? = null,
+    db: Database = Database()
 ) : ViewModel() {
 
-  private val database = Database()
+  private val database = db
 
   // UI state exposed to the UI
   private val _uiState = MutableStateFlow(ItemUIState(item))
