@@ -5,6 +5,17 @@ import java.io.File
 import java.util.*
 
 // Function to upload image to Firebase Storage
+
+/*
+Example of Uri :
+ val resourceId: Int = R.drawable.logo // Replace "your_image" with the name of your image resource
+    val imageUri: Uri = Uri.Builder()
+      .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+      .authority(resources.getResourcePackageName(resourceId))
+      .appendPath(resources.getResourceTypeName(resourceId))
+      .appendPath(resources.getResourceEntryName(resourceId))
+      .build()
+ */
 fun uploadImageToFirebaseStorage(imageUri: Uri) {
   val storage = Firebase.storage
   val storageRef = storage.reference
@@ -12,17 +23,11 @@ fun uploadImageToFirebaseStorage(imageUri: Uri) {
   // Generate a random image name
   val imageName = UUID.randomUUID().toString()
 
-  println("----- 1 $imageName")
-
   // Create a reference to 'images/imageName.jpg'
   val imageRef = storageRef.child("images/$imageName.jpg")
 
-  println("----- 2 $imageRef")
-
   // Upload the file to Firebase Storage
   val uploadTask = imageRef.putFile(imageUri)
-
-  println("----- 3 $uploadTask")
 
   // Register observers to listen for upload success or failure
   uploadTask
@@ -34,8 +39,6 @@ fun uploadImageToFirebaseStorage(imageUri: Uri) {
         // Image upload failed
         println("----- Image upload failed: $exception")
       }
-
-  println("----- 4")
 }
 
 fun getImageFromFirebaseStorage(path: String) {

@@ -42,6 +42,12 @@ import com.android.partagix.model.auth.Authentication
 
 private const val TAG = "LoginActivity"
 
+/**
+ * Screen to display the login screen.
+ *
+ * @param authentication an Authentication instance to handle login.
+ * @param modifier Modifier to apply to this layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
@@ -65,7 +71,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
             ))
 
     OutlinedButton(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier.testTag("PopUpLoginButton").fillMaxWidth().padding(16.dp),
         onClick = { showSignIn = true },
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, Color(0xffafafaf)),
@@ -87,12 +93,12 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
-        modifier = modifier.fillMaxHeight(.35f).testTag("LoginBottomSheet"),
+        modifier = modifier.fillMaxHeight(.35f),
     ) {
       Column(
           verticalArrangement = Arrangement.Top,
           horizontalAlignment = Alignment.CenterHorizontally,
-          modifier = modifier.fillMaxSize(),
+          modifier = modifier.fillMaxSize().testTag("LoginScreen2"),
       ) {
         OutlinedButton(
             onClick = {

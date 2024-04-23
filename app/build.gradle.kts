@@ -4,7 +4,16 @@ plugins {
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.sonar)
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("jacoco")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "EPFLSWENT2024G1_partageix")
+        property("sonar.organization", "epflswent2024g1")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 android {
@@ -40,7 +49,7 @@ android {
     }
 
     testCoverage {
-        jacocoVersion = "0.8.8"
+        jacocoVersion = "0.8.12"
     }
 
     buildFeatures {
@@ -128,10 +137,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
   androidTestImplementation(platform(libs.compose.bom))
   androidTestImplementation(libs.compose.test.junit)
   globalTestImplementation(libs.androidx.junit)
+    testImplementation(libs.mockito.kotlin)
+    implementation(libs.play.services.location)
+    globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
     // ------------- Jetpack Compose ------------------
@@ -155,8 +168,25 @@ dependencies {
     debugImplementation(libs.compose.test.manifest)
 
     // --------- Kaspresso test framework ----------
-    globalTestImplementation(libs.kaspresso)
-    globalTestImplementation(libs.kaspresso.compose)
+    testImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    testImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation("androidx.test:core:1.4.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+
+
+    androidTestImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
@@ -168,9 +198,9 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
-        {
-            exclude(group = "com.google.protobuf", module="protobuf-java")
-        }
+    {
+        exclude(group = "com.google.protobuf", module="protobuf-java")
+    }
 
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
@@ -182,6 +212,33 @@ dependencies {
     testImplementation("io.mockk:mockk:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+
+    // ----------       Google Maps     ------------
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.maps.android:maps-compose-utils:4.3.0")
+    implementation("com.google.maps.android:maps-compose-widgets:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // ----------       Coil     ------------
+    implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
+
+    // ----------       New Icons     ------------
+    implementation("androidx.compose.material:material-icons-extended")
+}
+
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
 
 tasks.withType<Test> {
@@ -220,4 +277,12 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         include("outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec")
     })
+
+    doLast {
+        val reportFile = reports.xml.outputLocation.asFile.get()
+        val newContent = reportFile.readText().replace("<line[^>]+nr=\"65535\"[^>]*>".toRegex(), "")
+        reportFile.writeText(newContent)
+
+        logger.quiet("Wrote summarized jacoco test coverage report xml to $reportFile.absolutePath}")
+    }
 }

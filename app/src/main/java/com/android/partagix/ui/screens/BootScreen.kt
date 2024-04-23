@@ -23,6 +23,13 @@ import com.android.partagix.ui.navigation.Route
 
 private const val TAG = "BootActivity"
 
+/**
+ * Screen to display the boot screen.
+ *
+ * @param authentication an Authentication instance to handle login.
+ * @param navigationActions a NavigationActions instance to navigate between screens.
+ * @param modifier Modifier to apply to this layout.
+ */
 @Composable
 fun BootScreen(
     authentication: Authentication,
