@@ -222,7 +222,7 @@ fun InventoryCreateOrEditItem(
                     Text("Create")
                   }
                 },
-                modifier = modifier.fillMaxWidth())
+                modifier = modifier.fillMaxWidth().testTag("button"))
           }
         }
   }
