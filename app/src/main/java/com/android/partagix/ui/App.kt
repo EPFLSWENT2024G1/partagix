@@ -47,9 +47,9 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class App(
-  private val activity: MainActivity,
-  private val auth: Authentication? = null,
-  private val db: Database = Database(),
+    private val activity: MainActivity,
+    private val auth: Authentication? = null,
+    private val db: Database = Database(),
 ) : ComponentActivity(), SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
