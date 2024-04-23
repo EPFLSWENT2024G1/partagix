@@ -16,18 +16,9 @@
         android:theme="@style/Theme.Partagix"
         android:usesCleartextTraffic="false"
         tools:targetApi="31">
+
         <activity
-            android:name=".ui.testUpload"
-            android:exported="false"
-            android:label="@string/title_activity_test_upload"
-            android:theme="@style/Theme.Partagix" />
-        <activity
-            android:name=".SecondActivity"
-            android:exported="false"
-            android:label="@string/title_activity_second"
-            android:theme="@style/Theme.Partagix" />
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.Partagix">

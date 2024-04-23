@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import com.android.partagix.resources.C
+import com.android.partagix.ui.App
 import com.android.partagix.ui.theme.PartagixAppTheme
 
 class MainActivity : ComponentActivity() {

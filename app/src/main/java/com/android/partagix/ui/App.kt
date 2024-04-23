@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
@@ -46,9 +47,9 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class App(
-    private val activity: MainActivity,
-    private val auth: Authentication? = null,
-    private val db: Database = Database(),
+  private val activity: MainActivity,
+  private val auth: Authentication? = null,
+  private val db: Database = Database(),
 ) : ComponentActivity(), SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
