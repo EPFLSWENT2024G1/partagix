@@ -5,7 +5,7 @@ import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.github.kakaocup.compose.node.element.KNode
 
 class StampScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
-    ComposeScreen<ViewAccount>(
+    ComposeScreen<StampScreen>(
         semanticsProvider = semanticsProvider,
         viewBuilderAction = {
           hasTestTag("stampScreen") // scaffold
