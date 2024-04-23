@@ -77,8 +77,6 @@ class ItemViewModelTests {
 
     every { mockCollection.document(any()) } returns mockDocument
 
-    every { mockCollection.document() } returns mockDocument
-
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
@@ -123,8 +121,6 @@ class ItemViewModelTests {
     val mockDocument = mockk<DocumentReference>()
 
     every { mockCollection.document(any()) } returns mockDocument
-
-    every { mockCollection.document() } returns mockDocument
 
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
