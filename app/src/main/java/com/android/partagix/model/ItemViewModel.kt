@@ -27,10 +27,11 @@ import kotlinx.coroutines.flow.StateFlow
 
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
-    id: String? = null
+    id: String? = null,
+    db: Database = Database()
 ) : ViewModel() {
 
-  private val database = Database()
+  private val database = db
 
   // UI state exposed to the UI
   private val _uiState = MutableStateFlow(ItemUIState(item))
@@ -43,27 +44,6 @@ class ItemViewModel(
       updateUiState(item)
     }
     // TODO: set the author field as the User's name
-  }
-
-  /**
-   * Get the category id (full category object) from the item's category name
-   *
-   * @param item an item with missing Category.id
-   * @return the item with complete Category attribute, and an Error if categoryName is not found
-   */
-  private fun fillIdCategory(item: Item, onSuccess: (String) -> Unit) {
-    var idCategory = ""
-    database.getIdCategory(item.category.name, { idCategory = it })
-    println("truc a ecrire: $idCategory")
-    updateUiState(
-        Item(
-            _uiState.value.item.id,
-            Category(idCategory, _uiState.value.item.category.name),
-            _uiState.value.item.name,
-            _uiState.value.item.description,
-            _uiState.value.item.visibility,
-            _uiState.value.item.quantity,
-            _uiState.value.item.location))
   }
 
   /**
