@@ -201,7 +201,10 @@ class App(
       composable(
           Route.STAMP + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            Stamp(stampViewModel = StampViewModel(activity), navigationActions = navigationActions)
+            Stamp(
+                modifier = modifier,
+                stampViewModel = StampViewModel(activity),
+                navigationActions = navigationActions)
           }
     }
   }

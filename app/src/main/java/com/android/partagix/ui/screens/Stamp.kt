@@ -36,9 +36,9 @@ import com.android.partagix.ui.navigation.NavigationActions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Stamp(
+    modifier: Modifier = Modifier,
     stampViewModel: StampViewModel,
     navigationActions: NavigationActions,
-    modifier: Modifier = Modifier,
 ) {
   val MAX_LABEL_LENGTH = 40
 
@@ -49,9 +49,13 @@ fun Stamp(
             modifier = modifier.fillMaxWidth().testTag("topAppBar"),
             title = { Text("Export QR code stamps", modifier = Modifier.testTag("title")) },
             navigationIcon = {
-              IconButton(modifier = Modifier.testTag("backButton"), onClick = { navigationActions.goBack() }) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-              }
+              IconButton(
+                  modifier = Modifier.testTag("backButton"),
+                  onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
             })
       },
   ) {
@@ -59,39 +63,40 @@ fun Stamp(
     var uiLabel by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier.padding(it).fillMaxSize().padding(horizontal = 8.dp).testTag("mainContent"),
+        modifier =
+            modifier.padding(it).fillMaxSize().padding(horizontal = 8.dp).testTag("mainContent"),
         horizontalAlignment = Alignment.CenterHorizontally) {
+          Spacer(modifier = modifier.height(16.dp))
 
-            Spacer(modifier = modifier.height(16.dp))
-
-            Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth().testTag("dimensionLabel"))
-            Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
-              uiDetailedDimension = DropDown("Dimensions", StampDimensions)
-            }
-
-            Spacer(modifier = modifier.height(16.dp))
-
-            Text(text = "Label on stamps", modifier = modifier.fillMaxWidth().testTag("labelLabel"))
-            OutlinedTextField(
-                modifier = modifier.fillMaxWidth().testTag("labelTextField"),
-                value = uiLabel,
-                onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
-                label = { Text("(optional) max. 40 characters") },
-                readOnly = false)
-
-            Spacer(modifier = modifier.height(32.dp))
-
-            Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
-              Button(
-                  modifier = modifier.fillMaxWidth().testTag("downloadButton"),
-                  onClick = {
-                    stampViewModel.generateQRCodeAndSave(
-                        "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
-                    navigationActions.goBack()
-                  },
-                  content = { Text("Download stamps") })
-            }
+          Text(
+              text = "Dimension of stamps",
+              modifier = modifier.fillMaxWidth().testTag("dimensionLabel"))
+          Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
+            uiDetailedDimension = DropDown("Dimensions", StampDimensions)
           }
 
+          Spacer(modifier = modifier.height(16.dp))
+
+          Text(text = "Label on stamps", modifier = modifier.fillMaxWidth().testTag("labelLabel"))
+          OutlinedTextField(
+              modifier = modifier.fillMaxWidth().testTag("labelTextField"),
+              value = uiLabel,
+              onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
+              label = { Text("(optional) max. 40 characters") },
+              readOnly = false)
+
+          Spacer(modifier = modifier.height(32.dp))
+
+          Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
+            Button(
+                modifier = modifier.fillMaxWidth().testTag("downloadButton"),
+                onClick = {
+                  stampViewModel.generateQRCodeAndSave(
+                      "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
+                  navigationActions.goBack()
+                },
+                content = { Text("Download stamps") })
+          }
+        }
   }
 }
