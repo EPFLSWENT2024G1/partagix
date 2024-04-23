@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -100,6 +101,7 @@ fun LoanScreen(
               GoogleMap(
                   contentPadding = PaddingValues(bottom = 90.dp),
                   cameraPositionState = cameraPositionState,
+                  properties = MapProperties(isMyLocationEnabled = true),
                   modifier = modifier.testTag("LoanScreenMaps")) {
                     items.forEach { item ->
                       Marker(
@@ -114,14 +116,6 @@ fun LoanScreen(
                             true
                           })
                     }
-
-                    /*if (currentLocation != null) {
-                      Marker(
-                        state = MarkerState(position = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)),
-                        title = "You are here",
-                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
-                      )
-                    }*/
                   }
             }
         Box(
