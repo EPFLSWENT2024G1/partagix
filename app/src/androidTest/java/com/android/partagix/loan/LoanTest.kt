@@ -1,8 +1,24 @@
 package com.android.partagix.loan
 
+import android.content.Context
+import android.location.Criteria
 import android.location.Location
+import android.location.LocationManager
+import android.os.SystemClock
+import android.util.Log
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChild
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.UserUIState
@@ -12,6 +28,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.LoanScreen
+import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.LoanScreen
@@ -35,6 +52,12 @@ import org.junit.runner.RunWith
 class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule val composeTestRule = createComposeRule()
 
+  @get:Rule
+  val grantPermissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(
+          android.Manifest.permission.ACCESS_FINE_LOCATION,
+          android.Manifest.permission.ACCESS_COARSE_LOCATION)
+
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
@@ -51,7 +74,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     mockInventoryViewModel = mockk()
     every { mockInventoryViewModel.getInventory() } just Runs
-    every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
     every { mockInventoryViewModel.getusers(any(), any()) } just Runs
@@ -113,6 +135,41 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     userUIStateWithoutLocation = MutableStateFlow(UserUIState(user))
 
     every { mockInventoryViewModel.uiState } returns inventoryUIState
+
+    val locationManager =
+        InstrumentationRegistry.getInstrumentation()
+            .targetContext
+            .getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+    // Create a new Location object with the mock location data
+    val mockLocation =
+        Location(LocationManager.GPS_PROVIDER).apply {
+          latitude = 46.520238
+          longitude = 6.566109
+          altitude = 300.0
+          time = System.currentTimeMillis()
+          elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
+        }
+
+    // Set the mock location
+    try {
+      locationManager.addTestProvider(
+          LocationManager.GPS_PROVIDER,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          Criteria.POWER_LOW,
+          Criteria.ACCURACY_FINE)
+      locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true)
+      locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, mockLocation)
+    } catch (e: SecurityException) {
+      // Handle the exception
+      Log.e(TAG, "SecurityException: ${e.message}")
+    }
   }
 
   @Test
@@ -191,24 +248,49 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
   }
 
-  /*@Test
+  @Test
   fun searchBarWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    every { mockInventoryViewModel.filterItems(query = any()) } answers
+        {
+          val query = firstArg<String>()
+          val filteredItems = inventoryUIState.value.items.filter { it.name.contains(query) }
+          inventoryUIState.value = inventoryUIState.value.copy(items = filteredItems, query = query)
+        }
+
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockInventoryViewModel, mockUserViewModel)
     }
 
-    onComposeScreen<LoanScreen>(composeTestRule) {
-      searchBar {
-        assertIsDisplayed()
-        performClick()
-        performTextInput("dog")
+    val node = composeTestRule.onNodeWithTag("LoanScreenSearchBar").onChild()
 
-        assert(inventoryUIState.value.query == "dog")
-        assert(inventoryUIState.value.items.size == 1)
-      }
+    node.assertIsDisplayed()
+    node.performClick()
+    node.performTextInput("dog")
+
+    val state = mockInventoryViewModel.uiState.value
+    assert(state.query == "dog")
+    assert(state.items.size == 1)
+  }
+
+  @Test
+  fun testSearchField() {
+    var value = ""
+
+    composeTestRule.setContent {
+      TopSearchBar(filter = { value = it }, modifier = Modifier.testTag("SearchBar"))
     }
-  }*/
+
+    // Find the SearchField by its test tag
+    val node = composeTestRule.onNodeWithTag("SearchBar").onChild()
+
+    node.assertIsDisplayed()
+    node.performClick()
+    node.performTextInput("dog")
+
+    assert(value == "dog")
+    node.assert(hasText("dog"))
+  }
 
   @Test
   fun filtersAreClickable() {
@@ -246,5 +328,9 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         verify { mockNavActions.navigateTo(Route.VIEW_ITEM + "/id1") }
       }
     }
+  }
+
+  companion object {
+    private const val TAG = "LoanTest"
   }
 }

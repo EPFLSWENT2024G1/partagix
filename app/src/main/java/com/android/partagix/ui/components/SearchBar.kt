@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
@@ -39,8 +41,14 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
   }
   SearchBar(
       query = optionalQuery,
-      onQueryChange = { filter(it) },
-      onSearch = { filter(it) },
+      onQueryChange = {
+        filter(it)
+        optionalQuery = it
+      },
+      onSearch = {
+        filter(it)
+        optionalQuery = it
+      },
       active = false,
       onActiveChange = { active = it },
       modifier = modifier.fillMaxWidth().padding(20.dp),
@@ -53,9 +61,9 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
               Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Search",
               modifier =
-                  modifier.clickable {
+                  Modifier.clickable {
                     // filter("")
-
+                    active = false
                     keyboardController?.hide()
                   })
         }
@@ -64,8 +72,18 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
         Icon(
             Icons.Default.Search,
             contentDescription = "Search",
-            modifier = modifier.clickable { keyboardController?.hide() })
+            modifier = Modifier.clickable { keyboardController?.hide() })
       }) {
-        Text("Search an Item")
+        Text("Search an Item", modifier = Modifier.testTag("bar"))
+        /*TextField(
+        value = optionalQuery,
+        onValueChange = { filter(it) },
+        modifier = Modifier.testTag("SearchField"))*/
       }
+}
+
+@Preview
+@Composable
+fun TopSearchBarPreview() {
+  TopSearchBar(filter = {})
 }
