@@ -43,13 +43,13 @@ fun Stamp(
   val MAX_LABEL_LENGTH = 40
 
   Scaffold(
-      modifier = modifier.testTag("").fillMaxWidth(),
+      modifier = modifier.testTag("").fillMaxWidth().testTag("stampScreen"),
       topBar = {
         TopAppBar(
-            title = { Text("Export QR code stamps") },
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth().testTag("topAppBar"),
+            title = { Text("Export QR code stamps", modifier = Modifier.testTag("title")) },
             navigationIcon = {
-              IconButton(onClick = { navigationActions.goBack() }) {
+              IconButton(modifier = Modifier.testTag("backButton"), onClick = { navigationActions.goBack() }) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
               }
             })
@@ -59,38 +59,39 @@ fun Stamp(
     var uiLabel by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier.padding(it).fillMaxSize(),
+        modifier = modifier.padding(it).fillMaxSize().padding(horizontal = 8.dp).testTag("mainContent"),
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+
             Spacer(modifier = modifier.height(16.dp))
 
-            Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth())
-            Box(modifier = modifier.fillMaxWidth()) {
+            Text(text = "Dimension of stamps", modifier = modifier.fillMaxWidth().testTag("dimensionLabel"))
+            Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
               uiDetailedDimension = DropDown("Dimensions", StampDimensions)
             }
 
             Spacer(modifier = modifier.height(16.dp))
 
-            Text(text = "Label on stamps", modifier = modifier.fillMaxWidth())
+            Text(text = "Label on stamps", modifier = modifier.fillMaxWidth().testTag("labelLabel"))
             OutlinedTextField(
+                modifier = modifier.fillMaxWidth().testTag("labelTextField"),
                 value = uiLabel,
                 onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
                 label = { Text("(optional) max. 40 characters") },
-                modifier = modifier.fillMaxWidth(),
                 readOnly = false)
 
             Spacer(modifier = modifier.height(32.dp))
 
-            Row(modifier = modifier.fillMaxWidth()) {
+            Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
               Button(
+                  modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                   onClick = {
                     stampViewModel.generateQRCodeAndSave(
                         "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
+                    navigationActions.goBack()
                   },
-                  content = { Text("Download stamps") },
-                  modifier = modifier.fillMaxWidth())
+                  content = { Text("Download stamps") })
             }
           }
-        }
+
   }
 }
