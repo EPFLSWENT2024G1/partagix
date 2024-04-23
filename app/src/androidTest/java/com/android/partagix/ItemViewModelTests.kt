@@ -49,6 +49,10 @@ class ItemViewModelTests {
   val itemNoID =
       Item("", Category("0", "Category 1"), "test", "test", Visibility.PUBLIC, 1, Location(""))
 
+  /**
+   * Test the updateUiState method Start with an empty item, update the UI state and check it's
+   * indeed updated
+   */
   @Test
   fun testUpdateUiState() {
     val _uiState = MutableStateFlow(ItemUIState(emptyItem))
@@ -64,6 +68,7 @@ class ItemViewModelTests {
     assert(mockUiState.value.item == itemWithID)
   }
 
+  /** Test the save method Start with an empty item, save it and check it's saved */
   @Test
   fun testSaveNewItem() {
     val _uiState = MutableStateFlow(ItemUIState(emptyItem))
@@ -109,6 +114,10 @@ class ItemViewModelTests {
     }
   }
 
+  /**
+   * Test the save method Start with an item with an ID, modify it and save it, check it's indeed
+   * been modify
+   */
   @Test
   fun testSaveAnItem() {
     val _uiState = MutableStateFlow(ItemUIState(itemWithID))
