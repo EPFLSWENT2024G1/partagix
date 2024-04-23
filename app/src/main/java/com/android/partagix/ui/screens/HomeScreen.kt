@@ -45,6 +45,16 @@ import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
+private const val quickAccessText = "Quick access"
+
+private const val findItemButtonName = "Find item to borrow"
+
+private const val quickScanButtonName = "Quick scan"
+
+private const val findItemIventoryName = "Find item in inventory"
+
+private const val newBorrowingRequestsText = "New borrowing requests"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -78,7 +88,7 @@ fun HomeScreen(
                 Modifier.fillMaxSize().padding(innerPadding).testTag("homeScreenMainContent")) {
               HorizontalDivider(modifier = Modifier.fillMaxWidth())
               Text(
-                  text = "Quick access",
+                  text = quickAccessText,
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               Spacer(modifier = Modifier.height(8.dp))
@@ -87,24 +97,24 @@ fun HomeScreen(
                   horizontalArrangement = Arrangement.SpaceBetween) {
                     BigButton(
                         logo = Icons.Default.PersonSearch,
-                        text = "Find item to borrow",
+                        text = findItemButtonName,
                         onClick = {},
                         modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
-                        text = "Quick scan",
+                        text = quickScanButtonName,
                         onClick = {},
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
-                        text = "Find item in inventory",
+                        text = findItemIventoryName,
                         onClick = {},
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               Text(
-                  text = "New borrowing requests",
+                  text = newBorrowingRequestsText,
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               ItemListColumn(
