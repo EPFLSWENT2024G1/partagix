@@ -64,11 +64,15 @@ class ItemViewModelTests {
         {
           _uiState.value = ItemUIState(itemWithID)
         }
+    assert(mockUiState.value.item == emptyItem)
     itemViewModel.updateUiState(itemWithID)
     assert(mockUiState.value.item == itemWithID)
   }
 
-  /** Test the save method Start with an empty item, save it and check it's saved */
+  /**
+   * Test the save method Start with an empty item, save it and check it's saved Similar to create
+   * an item
+   */
   @Test
   fun testSaveNewItem() {
     val _uiState = MutableStateFlow(ItemUIState(emptyItem))
@@ -108,6 +112,7 @@ class ItemViewModelTests {
     val itemViewModel = spyk(ItemViewModel(db = db))
 
     runBlocking {
+      assert(mockUiState.value.item == emptyItem)
       itemViewModel.save(itemNoID)
 
       coVerify(exactly = 1) { itemViewModel.save(itemNoID) }
@@ -116,7 +121,7 @@ class ItemViewModelTests {
 
   /**
    * Test the save method Start with an item with an ID, modify it and save it, check it's indeed
-   * been modify
+   * been modify Similar to edit an item
    */
   @Test
   fun testSaveAnItem() {
@@ -169,6 +174,7 @@ class ItemViewModelTests {
         }
 
     runBlocking {
+      assert(mockUiState.value.item == itemWithID)
       itemViewModel.save(itemWithIDmodified)
 
       coVerify(exactly = 1) { itemViewModel.save(itemWithIDmodified) }
