@@ -24,12 +24,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -52,6 +55,15 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
+
+  var color = TextFieldDefaults.colors(
+      focusedIndicatorColor = Color.Transparent,
+      disabledIndicatorColor = Color.Transparent,
+      unfocusedIndicatorColor = Color.Transparent,
+      focusedContainerColor = Color.Transparent,
+      unfocusedContainerColor = Color.Transparent,
+      disabledContainerColor = Color.Transparent,
+      )
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -95,76 +107,84 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column {
-                    OutlinedTextField(
+                    TextField(
                         value = item.name,
                         onValueChange = {},
                         label = { Text("Object name") },
                         modifier = Modifier.fillMaxWidth(),
-                        readOnly = true)
+                        readOnly = true,
+                        colors = color)
 
-                    OutlinedTextField(
+                    TextField(
                         value = item.idUser,
                         onValueChange = {},
                         label = { Text("Author") },
                         modifier = Modifier.fillMaxWidth(),
-                        readOnly = true)
+                        readOnly = true,
+                        colors = color)
                   }
                 }
               }
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                OutlinedTextField(
+                TextField(
                     value = item.description,
                     onValueChange = {},
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 5,
-                    readOnly = true)
+                    readOnly = true,
+                    colors = color)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = item.category.name,
                     onValueChange = {},
                     label = { Text("Category") },
                     modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                    readOnly = true,
+                    colors = color)
 
                 println("Category: ${item.category.name}")
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = item.visibility.name,
                     onValueChange = {},
                     label = { Text("Visibility") },
                     modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                    readOnly = true,
+                    colors = color)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = item.quantity.toString(),
                     onValueChange = {},
                     label = { Text("Quantity") },
                     modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                    readOnly = true,
+                    colors = color)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = item.location.toString(),
                     onValueChange = {},
                     label = { Text("Where") },
                     modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                    readOnly = true,
+                    colors = color)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                TextField(
                     value = "Disponibility", /*TODO: get item disponibility*/
                     onValueChange = {},
                     label = { Text("Disponibility") },
                     readOnly = true,
+                    colors = color,
                     modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
                     trailingIcon = {
                       IconButton(
