@@ -1,16 +1,19 @@
 package com.android.partagix.model
 
-import android.app.Activity
 import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.stampDimension.StampDimension
+import com.android.partagix.ui.MainActivity
 import qrcode.QRCode
 import qrcode.QRCodeBuilder
 
-class StampViewModel(context: Activity) : ViewModel() {
-  private val qrCodeBuilder = QRCode.ofRoundedSquares()
+public const val CREATE_PNG_FILE = 50
+public const val WRITE_PNG_FILE = 51
+
+class StampViewModel(context: MainActivity) : ViewModel() {
   private val context = context
+  private val qrCodeBuilder = QRCode.ofRoundedSquares()
 
   init {}
 
@@ -39,14 +42,12 @@ class StampViewModel(context: Activity) : ViewModel() {
           addCategory(Intent.CATEGORY_OPENABLE)
           type = "image/png"
         }
-    // intent.putExtra(Intent.EXTRA_STREAM, qrCode).putExtra(Intent.EXTRA_TITLE, "qr-code.png") TODO
-    // : add qr code to intent
+    intent.putExtra(Intent.EXTRA_TITLE, "qr-code.png")
+    context.setQrBytes(qrCode)
     startActivityForResult(context, intent, CREATE_PNG_FILE, null)
   }
 
-  companion object {
-    private const val CREATE_PNG_FILE = 50
-  }
+  companion object {}
 
   /**
    * Get the StampDimension given the detailedDimension string.
