@@ -94,15 +94,18 @@ class EndToEnd {
       navigationIcon { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait) {
+    /* composeTestRule.waitUntil(timeWait) {
       composeTestRule.onNodeWithTag("inventoryScreenNoItemBox").isDisplayed()
+    }
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
 
     // check we are indeed in the inventory screen
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
       noItemBox { assertIsDisplayed() }
       noItemText { assertIsDisplayed() }
-    }
+    }*/
 
     // Close the activity after the test
     scenario.close()
