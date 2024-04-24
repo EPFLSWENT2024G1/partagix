@@ -159,9 +159,6 @@ class EndToEnd {
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
       noItemBox { assertIsDisplayed() }
       noItemText { assertIsDisplayed() }
-
-
-      
     }
 
     // Close the activity after the test
