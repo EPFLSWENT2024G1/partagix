@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.screens.InventoryCreateOrEditScreen
@@ -31,7 +32,7 @@ class EndToEnd {
     }
 
     // Wait for the activity to be in the resumed state
-    // scenario.moveToState(Lifecycle.State.RESUMED)
+    scenario.moveToState(Lifecycle.State.RESUMED)
 
     // check that the bottom bar is well displayed
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
