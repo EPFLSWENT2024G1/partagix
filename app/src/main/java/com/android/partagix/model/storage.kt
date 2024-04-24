@@ -1,5 +1,6 @@
 import android.net.Uri
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.util.*
@@ -16,12 +17,12 @@ Example of Uri :
       .appendPath(resources.getResourceEntryName(resourceId))
       .build()
  */
-fun uploadImageToFirebaseStorage(imageUri: Uri) {
-  val storage = Firebase.storage
+fun uploadImageToFirebaseStorage(
+  imageUri: Uri,
+  storage: FirebaseStorage = Firebase.storage,
+  imageName: String = UUID.randomUUID().toString()
+) {
   val storageRef = storage.reference
-
-  // Generate a random image name
-  val imageName = UUID.randomUUID().toString()
 
   // Create a reference to 'images/imageName.jpg'
   val imageRef = storageRef.child("images/$imageName.jpg")
@@ -41,9 +42,8 @@ fun uploadImageToFirebaseStorage(imageUri: Uri) {
       }
 }
 
-fun getImageFromFirebaseStorage(path: String) {
+fun getImageFromFirebaseStorage(path: String, storage: FirebaseStorage = Firebase.storage,) {
   // Get the image from Firebase Storage
-  val storage = Firebase.storage
   val storageRef = storage.reference
 
   // Create a reference to the image

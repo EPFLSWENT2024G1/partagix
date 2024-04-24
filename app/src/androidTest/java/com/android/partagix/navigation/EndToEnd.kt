@@ -7,6 +7,7 @@ import androidx.compose.ui.test.performClick
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.MainActivity
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.screens.NavigationBar
