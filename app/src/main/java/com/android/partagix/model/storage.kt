@@ -18,9 +18,9 @@ Example of Uri :
       .build()
  */
 fun uploadImageToFirebaseStorage(
-  imageUri: Uri,
-  storage: FirebaseStorage = Firebase.storage,
-  imageName: String = UUID.randomUUID().toString()
+    imageUri: Uri,
+    storage: FirebaseStorage = Firebase.storage,
+    imageName: String = UUID.randomUUID().toString()
 ) {
   val storageRef = storage.reference
 
@@ -42,7 +42,10 @@ fun uploadImageToFirebaseStorage(
       }
 }
 
-fun getImageFromFirebaseStorage(path: String, storage: FirebaseStorage = Firebase.storage,) {
+fun getImageFromFirebaseStorage(
+    path: String,
+    storage: FirebaseStorage = Firebase.storage,
+) {
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
