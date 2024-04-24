@@ -34,7 +34,7 @@ class EndToEnd {
 
     // Wait for the activity to be in the resumed state
     scenario.moveToState(Lifecycle.State.RESUMED)
-    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed()}
+    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed() }
 
     // check that the bottom bar is well displayed
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
