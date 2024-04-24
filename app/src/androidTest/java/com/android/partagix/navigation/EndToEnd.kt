@@ -56,6 +56,9 @@ class EndToEnd {
       fab { performClick() }
     }
 
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("inventoryCreateItem").isDisplayed()
+    }
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Create").isDisplayed() }
     // check that the create item screen is well displayed and that you can use the fields
     ComposeScreen.onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
