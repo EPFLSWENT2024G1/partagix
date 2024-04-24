@@ -1,5 +1,6 @@
 package com.android.partagix.navigation
 
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -33,6 +34,7 @@ class EndToEnd {
 
     // Wait for the activity to be in the resumed state
     scenario.moveToState(Lifecycle.State.RESUMED)
+    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed()}
 
     // check that the bottom bar is well displayed
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
