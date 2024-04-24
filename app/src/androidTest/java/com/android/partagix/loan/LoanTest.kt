@@ -17,6 +17,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
@@ -277,6 +278,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     node.assertIsDisplayed()
     node.performClick()
     node.performTextInput("dog")
+    node.performImeAction()
 
     val state = mockInventoryViewModel.uiState.value
     assert(state.query == "dog")
@@ -297,6 +299,16 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     node.assertIsDisplayed()
     node.performClick()
     node.performTextInput("dog")
+
+    val backButton = composeTestRule.onNodeWithTag("SearchBarBack")
+    backButton.assertIsDisplayed()
+    backButton.performClick()
+
+    node.performClick()
+
+    val searchButton = composeTestRule.onNodeWithTag("SearchBarSearch")
+    searchButton.assertIsDisplayed()
+    searchButton.performClick()
 
     assert(value == "dog")
     node.assert(hasText("dog"))
