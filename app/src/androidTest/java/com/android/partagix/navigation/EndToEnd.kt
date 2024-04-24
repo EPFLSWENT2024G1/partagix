@@ -47,7 +47,7 @@ class EndToEnd {
       inventoryButton { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait) {
+    composeTestRule.waitUntil(10001) {
       composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
     // click to create a new item
@@ -56,7 +56,7 @@ class EndToEnd {
       fab { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait) {
+    composeTestRule.waitUntil(10002) {
       composeTestRule.onNodeWithTag("inventoryCreateItem").isDisplayed()
     }
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Create").isDisplayed() }
@@ -69,24 +69,20 @@ class EndToEnd {
       description { performTextInput("Christmas Tree") }
 
       category { performClick() }
-      composeTestRule.waitUntil(timeWait) {
-        composeTestRule.onNodeWithTag("Category 1").isDisplayed()
-      }
+      composeTestRule.waitUntil(10003) { composeTestRule.onNodeWithTag("Category 1").isDisplayed() }
       composeTestRule.onNodeWithTag("Category 1").performClick()
       composeTestRule.onNodeWithText("Category 1").assertExists()
       category { performClick() }
-      composeTestRule.waitUntil(timeWait) {
-        composeTestRule.onNodeWithTag("Category 3").isDisplayed()
-      }
+      composeTestRule.waitUntil(10004) { composeTestRule.onNodeWithTag("Category 3").isDisplayed() }
       composeTestRule.onNodeWithTag("Category 3").performClick()
       composeTestRule.onNodeWithText("Category 3").assertExists()
 
       visibility { performClick() }
-      composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("Friends").isDisplayed() }
+      composeTestRule.waitUntil(10005) { composeTestRule.onNodeWithTag("Friends").isDisplayed() }
       composeTestRule.onNodeWithTag("Friends").performClick()
       composeTestRule.onNodeWithText("Friends").assertExists()
       visibility { performClick() }
-      composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("Private").isDisplayed() }
+      composeTestRule.waitUntil(10006) { composeTestRule.onNodeWithTag("Private").isDisplayed() }
       composeTestRule.onNodeWithTag("Private").performClick()
       composeTestRule.onNodeWithText("Private").assertExists()
 
@@ -94,10 +90,10 @@ class EndToEnd {
       navigationIcon { performClick() }
     }
 
-    /* composeTestRule.waitUntil(timeWait) {
+    composeTestRule.waitUntil(10007) {
       composeTestRule.onNodeWithTag("inventoryScreenNoItemBox").isDisplayed()
     }
-    composeTestRule.waitUntil(timeWait) {
+    composeTestRule.waitUntil(10008) {
       composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
 
@@ -105,7 +101,7 @@ class EndToEnd {
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
       noItemBox { assertIsDisplayed() }
       noItemText { assertIsDisplayed() }
-    }*/
+    }
 
     // Close the activity after the test
     scenario.close()
