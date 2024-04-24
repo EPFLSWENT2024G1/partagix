@@ -24,9 +24,8 @@ class EndToEnd {
   @get:Rule val composeTestRule2 = createComposeRule()
 
   @Test
-  fun NavigationBetweenScreens() {
-
-    val timeWait:Long = 10000
+  fun NavigationInventory() {
+    val timeWait: Long = 10000
     val scenario = ActivityScenario.launch(MainActivity::class.java)
 
     scenario.onActivity { mainActivity ->
@@ -48,7 +47,9 @@ class EndToEnd {
       inventoryButton { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed() }
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
+    }
     // click to create a new item
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
       fab { assertIsDisplayed() }
@@ -65,11 +66,15 @@ class EndToEnd {
       description { performTextInput("Christmas Tree") }
 
       category { performClick() }
-      composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("Category 1").isDisplayed() }
+      composeTestRule.waitUntil(timeWait) {
+        composeTestRule.onNodeWithTag("Category 1").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Category 1").performClick()
       composeTestRule.onNodeWithText("Category 1").assertExists()
       category { performClick() }
-      composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("Category 3").isDisplayed() }
+      composeTestRule.waitUntil(timeWait) {
+        composeTestRule.onNodeWithTag("Category 3").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Category 3").performClick()
       composeTestRule.onNodeWithText("Category 3").assertExists()
 
@@ -93,12 +98,48 @@ class EndToEnd {
       composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
 
-      // check we are indeed in the inventory screen
+    // check we are indeed in the inventory screen
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
       noItemBox { assertIsDisplayed() }
       noItemText { assertIsDisplayed() }
+    }
 
+    // Close the activity after the test
+    scenario.close()
+  }
 
+  @Test
+  fun NavigationAccount() {
+    val timeWait: Long = 10000
+    val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+    scenario.onActivity { mainActivity ->
+      // Call functions on MainActivity instance here
+      mainActivity.myInitializationFunction("Account")
+    }
+
+    // Wait for the activity to be in the resumed state
+    scenario.moveToState(Lifecycle.State.RESUMED)
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("viewAccount").isDisplayed()
+    }
+
+    ComposeScreen.onComposeScreen<ViewAccount>(composeTestRule) {
+      viewAccount { assertIsDisplayed() }
+      inventoryButton { performClick() }
+    }
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("inventoryScreenNoItemBox").isDisplayed()
+    }
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
+    }
+
+    ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) {
+      noItemBox { assertIsDisplayed() }
+      noItemText { assertIsDisplayed() }
     }
 
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
@@ -106,21 +147,11 @@ class EndToEnd {
       accountButton { performClick() }
     }
 
-
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("viewAccount").isDisplayed() }
-
     ComposeScreen.onComposeScreen<ViewAccount>(composeTestRule) {
       viewAccount { assertIsDisplayed() }
-      inventoryButton { performClick() }
+      backButton { performClick() }
     }
 
-    /*
-    //composeTestRule.waitUntil { composeTestRule.onNodeWithTag("bottomNavBarItem-Account").isDisplayed() }
-    // go on the account screen
-
-    // check we are indeed in the account screen and go to inventory via inventory button
-
-     */
     composeTestRule.waitUntil(timeWait) {
       composeTestRule.onNodeWithTag("inventoryScreenNoItemBox").isDisplayed()
     }
@@ -130,32 +161,9 @@ class EndToEnd {
       noItemText { assertIsDisplayed() }
     }
 
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Account").isDisplayed() }
-    // go to the account screen
-    ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
-      accountButton { performClick() }
-    }
-
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("viewAccount").isDisplayed() }
-    // check we are indeed in the account screen and go to inventory via go back button
-    ComposeScreen.onComposeScreen<ViewAccount>(composeTestRule) {
-      viewAccount { assertIsDisplayed() }
-      backButton { performClick() }
-    }
-
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Home").isDisplayed() }
-    // go to the home screen
-    ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
-      // faudrait accepter de base la loca map sinon ça fait crash
-      // loanButton { performClick() }
-      homeButton { performClick() }
-    }
-
-    /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
-
-
-
     // Close the activity after the test
     scenario.close()
   }
+
+  /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
 }
