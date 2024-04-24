@@ -14,7 +14,6 @@ import com.android.partagix.screens.NavigationBar
 import com.android.partagix.screens.ViewAccount
 import com.android.partagix.ui.MainActivity
 import io.github.kakaocup.compose.node.element.ComposeScreen
-import okhttp3.internal.wait
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +47,7 @@ class EndToEnd {
       inventoryButton { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait +1) {
+    composeTestRule.waitUntil(timeWait + 1) {
       composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
     // click to create a new item
@@ -57,7 +56,7 @@ class EndToEnd {
       fab { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait +2) {
+    composeTestRule.waitUntil(timeWait + 2) {
       composeTestRule.onNodeWithTag("inventoryCreateItem").isDisplayed()
     }
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Create").isDisplayed() }
@@ -70,20 +69,28 @@ class EndToEnd {
       description { performTextInput("Christmas Tree") }
 
       category { performClick() }
-      composeTestRule.waitUntil(timeWait +3) { composeTestRule.onNodeWithTag("Category 1").isDisplayed() }
+      composeTestRule.waitUntil(timeWait + 3) {
+        composeTestRule.onNodeWithTag("Category 1").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Category 1").performClick()
       composeTestRule.onNodeWithText("Category 1").assertExists()
       category { performClick() }
-      composeTestRule.waitUntil(timeWait +4) { composeTestRule.onNodeWithTag("Category 3").isDisplayed() }
+      composeTestRule.waitUntil(timeWait + 4) {
+        composeTestRule.onNodeWithTag("Category 3").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Category 3").performClick()
       composeTestRule.onNodeWithText("Category 3").assertExists()
 
       visibility { performClick() }
-      composeTestRule.waitUntil(timeWait +5) { composeTestRule.onNodeWithTag("Friends").isDisplayed() }
+      composeTestRule.waitUntil(timeWait + 5) {
+        composeTestRule.onNodeWithTag("Friends").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Friends").performClick()
       composeTestRule.onNodeWithText("Friends").assertExists()
       visibility { performClick() }
-      composeTestRule.waitUntil(timeWait +6) { composeTestRule.onNodeWithTag("Private").isDisplayed() }
+      composeTestRule.waitUntil(timeWait + 6) {
+        composeTestRule.onNodeWithTag("Private").isDisplayed()
+      }
       composeTestRule.onNodeWithTag("Private").performClick()
       composeTestRule.onNodeWithText("Private").assertExists()
 
@@ -91,10 +98,10 @@ class EndToEnd {
       navigationIcon { performClick() }
     }
 
-    composeTestRule.waitUntil(timeWait +7) {
+    composeTestRule.waitUntil(timeWait + 7) {
       composeTestRule.onNodeWithTag("inventoryScreenNoItemBox").isDisplayed()
     }
-    composeTestRule.waitUntil(timeWait +8) {
+    composeTestRule.waitUntil(timeWait + 8) {
       composeTestRule.onNodeWithTag("inventoryScreenFab").isDisplayed()
     }
 
