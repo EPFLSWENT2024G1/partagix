@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
@@ -71,7 +72,9 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
       topBar = {
         TopAppBar(
             title = { Text("Back to selection") },
-            modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("inventoryViewItemTopBar"),
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
@@ -88,11 +91,19 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier.fillMaxWidth().testTag("inventoryViewItem")) {
+      modifier = Modifier
+          .fillMaxWidth()
+          .testTag("inventoryViewItem")) {
         Column(
-            modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
-              Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
+              Box(modifier = Modifier
+                  .fillMaxWidth()
+                  .height(140.dp)
+                  .padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
 
                   /*TODO: get photo and display it*/
@@ -107,6 +118,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column {
+                    LabeledText(label = "Object Name", text = item.name)
                     TextField(
                         value = item.name,
                         onValueChange = {},
@@ -125,7 +137,10 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   }
                 }
               }
-              Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+              Column(
+                  Modifier
+                      .fillMaxWidth()
+                      .padding(horizontal = 8.dp)) {
                 TextField(
                     value = item.description,
                     onValueChange = {},
@@ -213,7 +228,9 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Button(
                     onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                     content = { Text("Edit") },
-                    modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("editItemButton"))
               }
             }
       }
