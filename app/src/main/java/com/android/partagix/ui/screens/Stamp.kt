@@ -1,11 +1,10 @@
 package com.android.partagix.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -58,50 +57,49 @@ fun Stamp(
                         contentDescription = null)
                   }
             })
-      },
-  ) {
-    var uiDetailedDimension by remember { mutableStateOf("") }
-    var uiLabel by remember { mutableStateOf("") }
+      }) {
+        var uiDetailedDimension by remember { mutableStateOf("") }
+        var uiLabel by remember { mutableStateOf("") }
 
-    Column(
-        modifier =
-            modifier.padding(it).fillMaxSize().testTag("mainContent"),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-      Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        Column(
+            modifier =
+                modifier
+                    .padding(it)
+                    .fillMaxWidth()
+                    .height(280.dp)
+                    .padding(horizontal = 8.dp)
+                    .testTag("mainContent"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top) {
+              Text(
+                  text = "Dimension of stamps",
+                  modifier = modifier.fillMaxWidth().padding(top = 24.dp).testTag("dimensionLabel"))
+              Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
+                uiDetailedDimension = DropDown("Dimensions", StampDimensions)
+              }
 
-      Spacer(modifier = modifier.height(16.dp))
+              Text(
+                  text = "Label on stamps",
+                  modifier = modifier.fillMaxWidth().padding(top = 16.dp).testTag("labelLabel"))
+              OutlinedTextField(
+                  modifier = modifier.fillMaxWidth().testTag("labelTextField"),
+                  value = uiLabel,
+                  onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
+                  label = { Text("(optional) max. 40 characters") },
+                  readOnly = false)
 
-            Text(
-              text = "Dimension of stamps",
-              modifier = modifier.fillMaxWidth().testTag("dimensionLabel"))
-            Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
-              uiDetailedDimension = DropDown("Dimensions", StampDimensions)
+              Spacer(modifier = modifier.height(24.dp))
+
+              Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
+                Button(
+                    modifier = modifier.fillMaxWidth().testTag("downloadButton"),
+                    onClick = {
+                      stampViewModel.generateQRCodeAndSave(
+                          "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
+                      navigationActions.goBack()
+                    },
+                    content = { Text("Download stamps") })
+              }
             }
-
-            Spacer(modifier = modifier.height(16.dp))
-
-            Text(text = "Label on stamps", modifier = modifier.fillMaxWidth().testTag("labelLabel"))
-            OutlinedTextField(
-              modifier = modifier.fillMaxWidth().testTag("labelTextField"),
-              value = uiLabel,
-              onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
-              label = { Text("(optional) max. 40 characters") },
-              readOnly = false)
-
-
-          Spacer(modifier = modifier.height(32.dp))
-
-          Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
-            Button(
-                modifier = modifier.fillMaxWidth().testTag("downloadButton"),
-                onClick = {
-                  stampViewModel.generateQRCodeAndSave(
-                      "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
-                  navigationActions.goBack()
-                },
-                content = { Text("Download stamps") })
-          }
-        }
       }
-  }
 }
