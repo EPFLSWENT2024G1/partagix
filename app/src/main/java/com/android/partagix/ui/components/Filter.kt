@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -178,7 +179,7 @@ fun SliderFilter(
                 activeTrackColor = MaterialTheme.colorScheme.primary,
                 inactiveTrackColor = Color(0xFFFFFFFF),
             ),
-        modifier = modifier.fillMaxWidth())
+        modifier = Modifier.fillMaxWidth().testTag("SliderFilter"))
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
       Text(
           text = sliderTextValue(sliderPosition),

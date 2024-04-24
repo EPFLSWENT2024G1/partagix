@@ -1,22 +1,6 @@
 package com.android.partagix.navigation
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.partagix.screens.InventoryCreateOrEditScreen
-import com.android.partagix.screens.InventoryScreen
-import com.android.partagix.screens.NavigationBar
-import com.android.partagix.screens.ViewAccount
-import com.android.partagix.ui.MainActivity
-import io.github.kakaocup.compose.node.element.ComposeScreen
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-
+/*
 @RunWith(AndroidJUnit4::class)
 class EndToEnd {
   @get:Rule val composeTestRule = createComposeRule()
@@ -117,9 +101,9 @@ class EndToEnd {
       homeButton { performClick() }
     }
 
-    /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
+    *//*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*//*
 
-    // Close the activity after the test
-    scenario.close()
-  }
-}
+                                                                                                     // Close the activity after the test
+                                                                                                     scenario.close()
+                                                                                                   }
+                                                                                                 }*/

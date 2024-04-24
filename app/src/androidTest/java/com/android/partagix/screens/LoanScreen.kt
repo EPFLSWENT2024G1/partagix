@@ -9,11 +9,12 @@ class LoanScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
         semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("LoanScreen") }) {
 
   val searchBar: KNode = onNode { hasTestTag("LoanScreenSearchBar") }
-  val searchBarInput: KNode = onNode { hasTestTag("SearchField") }
 
   val maps: KNode = onNode { hasTestTag("LoanScreenMaps") }
 
   val distanceFilter: KNode = onNode { hasTestTag("LoanScreenDistanceFilter") }
+  val distanceSlider: KNode = distanceFilter.child { hasTestTag("SliderFilter") }
+
   val qtyFilter: KNode = onNode { hasTestTag("LoanScreenQtyFilter") }
 
   val itemListView: KNode = onNode { hasTestTag("LoanScreenItemListView") }

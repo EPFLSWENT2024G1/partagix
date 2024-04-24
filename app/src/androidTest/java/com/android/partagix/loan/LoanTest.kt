@@ -8,6 +8,8 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
@@ -16,6 +18,8 @@ import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeRight
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -66,6 +70,12 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   private lateinit var userUIStateWithLocation: MutableStateFlow<UserUIState>
   private lateinit var userUIStateWithoutLocation: MutableStateFlow<UserUIState>
 
+  private val currentPosition =
+      Location("").apply {
+        latitude = 46.520238
+        longitude = 6.566109
+      }
+
   @Before
   fun testSetup() {
     mockNavActions = mockk<NavigationActions>()
@@ -93,7 +103,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
             location =
                 Location("").apply {
                   latitude = 46.520238
-                  longitude = 6.566109
+                  longitude = 6.566209
                 },
             idUser = "id_user1")
 
@@ -104,11 +114,11 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
             name = "dog",
             description = "this is a description",
             visibility = Visibility.PRIVATE,
-            quantity = 3,
+            quantity = 10,
             location =
                 Location("").apply {
-                  latitude = 46.520438
-                  longitude = 6.566509
+                  latitude = 46.450438
+                  longitude = 6.576509
                 },
             idUser = "id_user2")
 
@@ -144,8 +154,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     // Create a new Location object with the mock location data
     val mockLocation =
         Location(LocationManager.GPS_PROVIDER).apply {
-          latitude = 46.520238
-          longitude = 6.566109
+          latitude = currentPosition.latitude
+          longitude = currentPosition.longitude
           altitude = 300.0
           time = System.currentTimeMillis()
           elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
@@ -310,6 +320,85 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         performClick()
       }
     }
+  }
+
+  @OptIn(ExperimentalTestApi::class)
+  @Test
+  fun distanceFilterWorks() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } answers
+        {
+          val currentPosition = firstArg<Location>()
+          val radius = secondArg<Double>()
+          val filteredItems =
+              inventoryUIState.value.items.filter {
+                it.location.distanceTo(currentPosition) <= (radius * 1000)
+              }
+          inventoryUIState.value = inventoryUIState.value.copy(items = filteredItems)
+        }
+
+    composeTestRule.setContent {
+      LoanScreen(mockNavActions, mockInventoryViewModel, mockUserViewModel)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) {
+      distanceFilter {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+
+    for (item in mockInventoryViewModel.uiState.value.items) {
+      Log.d(TAG, "before: item: ${item.location.distanceTo(currentPosition)}")
+    }
+
+    val slider = composeTestRule.onNodeWithTag("SliderFilter")
+    slider.assertIsDisplayed()
+    slider.performTouchInput(
+        fun TouchInjectionScope.() {
+          swipeRight()
+        })
+
+    for (item in mockInventoryViewModel.uiState.value.items) {
+      Log.d(TAG, "after: item: ${item.location.distanceTo(currentPosition)}")
+    }
+
+    val state = mockInventoryViewModel.uiState.value
+    assert(state.items.size == 1)
+    assert(state.items[0].name == "cat")
+  }
+
+  @Test
+  fun quantityFilterWorks() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } answers
+        {
+          val atLeastQuantity = firstArg<Int>()
+          val filteredItems = inventoryUIState.value.items.filter { it.quantity >= atLeastQuantity }
+          inventoryUIState.value = inventoryUIState.value.copy(items = filteredItems)
+        }
+
+    composeTestRule.setContent {
+      LoanScreen(mockNavActions, mockInventoryViewModel, mockUserViewModel)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) {
+      qtyFilter {
+        assertIsDisplayed()
+        performClick()
+      }
+    }
+
+    val slider = composeTestRule.onNodeWithTag("SliderFilter")
+    slider.assertIsDisplayed()
+    slider.performTouchInput(
+        fun TouchInjectionScope.() {
+          swipeRight(endX = left + (right - left) / 8)
+        })
+
+    val state = mockInventoryViewModel.uiState.value
+    assert(state.items.size == 1)
+    assert(state.items[0].name == "dog")
   }
 
   @Test
