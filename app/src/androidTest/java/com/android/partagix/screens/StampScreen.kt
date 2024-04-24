@@ -10,7 +10,7 @@ class StampScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
         viewBuilderAction = {
           hasTestTag("stampScreen") // scaffold
         }) {
-  val stampScreen: KNode = child { hasTestTag("stampScreen") }
+  val stampScreen: KNode = onNode { hasTestTag("stampScreen") }
   val topAppBar: KNode = child { hasTestTag("topAppBar") }
   val title: KNode = child { hasTestTag("title") }
   val backButton: KNode = child { hasTestTag("backButton") }

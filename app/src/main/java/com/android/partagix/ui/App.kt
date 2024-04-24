@@ -42,7 +42,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
-import com.android.partagix.ui.screens.Stamp
+import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -201,7 +201,7 @@ class App(
       composable(
           Route.STAMP + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            Stamp(
+            StampScreen(
                 modifier = modifier,
                 stampViewModel = StampViewModel(activity),
                 navigationActions = navigationActions)

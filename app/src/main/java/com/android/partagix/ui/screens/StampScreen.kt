@@ -35,7 +35,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 /**  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Stamp(
+fun StampScreen(
     modifier: Modifier = Modifier,
     stampViewModel: StampViewModel,
     navigationActions: NavigationActions,

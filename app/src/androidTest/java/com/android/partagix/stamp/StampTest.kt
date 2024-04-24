@@ -7,7 +7,7 @@ import com.android.partagix.model.StampViewModel
 import com.android.partagix.screens.StampScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.screens.Stamp
+import com.android.partagix.ui.screens.StampScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -28,16 +28,10 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
 
-  //  private lateinit var nonEmptyMockUiState: MutableStateFlow<StampUIState>
-
-  //  private val stampOne : Stamp = Stamp(modifier = Modifier, stampViewModel = mockStampViewModel,
-  // navigationActions = mockNavActions)
-
   @Before
   fun testSetup() {
 
     mockStampViewModel = mockk()
-    //        every { mockUserViewModel.getInventory() } just Runs // no function here todo
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -52,15 +46,13 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     every { mockNavActions.navigateTo(Route.STAMP) } just Runs
     every { mockNavActions.goBack() } just Runs
 
-    /*    composeTestRule.setContent {
-      Stamp(Modifier, mockStampViewModel, mockNavActions)
-    }*/
+    composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, mockNavActions) }
   }
 
   @Test
   fun testTest() = run {
     composeTestRule.setContent {
-      Stamp(
+      StampScreen(
           modifier = Modifier,
           stampViewModel = mockStampViewModel,
           navigationActions = mockNavActions)
@@ -72,31 +64,70 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   //    topAppBar
   @Test
   fun topAppBarIsDisplayed() = run {
-    composeTestRule.setContent {
-      Stamp(
-          modifier = Modifier,
-          stampViewModel = mockStampViewModel,
-          navigationActions = mockNavActions)
-    }
-
     onComposeScreen<StampScreen>(composeTestRule) { topAppBar { assertIsDisplayed() } }
   }
 
   @Test
   fun topAppBarWorks() = run {
-    composeTestRule.setContent {
-      Stamp(
-          modifier = Modifier,
-          stampViewModel = mockStampViewModel,
-          navigationActions = mockNavActions)
-    }
-
     onComposeScreen<StampScreen>(composeTestRule) {
       topAppBar { assertIsDisplayed() }
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
       backButton { performClick() }
-      //                  stampScreen { assertIsNotFocused() }
+      stampScreen { assertIsNotFocused() }
+    }
+  }
+
+  //    mainContent
+  @Test
+  fun mainContentIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { mainContent { assertIsDisplayed() } }
+  }
+
+  //    dimensionLabel
+  @Test
+  fun dimensionLabelIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { dimensionLabel { assertIsDisplayed() } }
+  }
+
+  //    dimensionBox
+  @Test
+  fun dimensionBoxIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { dimensionBox { assertIsDisplayed() } }
+  }
+
+  //    labelLabel
+  @Test
+  fun labelLabelIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { labelLabel { assertIsDisplayed() } }
+  }
+
+  //    labelTextField
+  @Test
+  fun labelTextFieldIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { labelTextField { assertIsDisplayed() } }
+  }
+
+  //    downloadRow
+  @Test
+  fun downloadRowIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { downloadRow { assertIsDisplayed() } }
+  }
+
+  //    downloadButton
+  @Test
+  fun downloadButtonIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { downloadButton { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun downloadButtonWorks() = run {
+    onComposeScreen<StampScreen>(composeTestRule) {
+      downloadButton {
+        assertIsDisplayed()
+        performClick()
+      }
+      stampScreen { assertIsNotFocused() }
     }
   }
 }
