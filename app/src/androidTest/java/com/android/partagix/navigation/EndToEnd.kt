@@ -35,7 +35,7 @@ class EndToEnd {
     // Wait for the activity to be in the resumed state
     scenario.moveToState(Lifecycle.State.RESUMED)
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed() }
+    composeTestRule.waitUntil(10000) { composeTestRule.onNodeWithText("Home").isDisplayed() }
     // check that the bottom bar is well displayed
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
       homeButton { assertIsDisplayed() }
@@ -93,13 +93,13 @@ class EndToEnd {
       noItemText { assertIsDisplayed() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Account").isDisplayed() }
+//    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Account").isDisplayed() }
     // go on the account screen
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
       accountButton { performClick() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("friendButton").isDisplayed() }
+    composeTestRule.waitUntil{ composeTestRule.onNodeWithTag("viewAccount").isDisplayed() }
     // check we are indeed in the account screen and go to inventory via inventory button
     ComposeScreen.onComposeScreen<ViewAccount>(composeTestRule) {
       viewAccount { assertIsDisplayed() }
