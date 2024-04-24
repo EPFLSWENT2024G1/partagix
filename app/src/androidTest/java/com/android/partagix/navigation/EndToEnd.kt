@@ -93,13 +93,13 @@ class EndToEnd {
       noItemText { assertIsDisplayed() }
     }
 
-//    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Account").isDisplayed() }
+    //    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Account").isDisplayed() }
     // go on the account screen
     ComposeScreen.onComposeScreen<NavigationBar>(composeTestRule) {
       accountButton { performClick() }
     }
 
-    composeTestRule.waitUntil{ composeTestRule.onNodeWithTag("viewAccount").isDisplayed() }
+    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("viewAccount").isDisplayed() }
     // check we are indeed in the account screen and go to inventory via inventory button
     ComposeScreen.onComposeScreen<ViewAccount>(composeTestRule) {
       viewAccount { assertIsDisplayed() }
