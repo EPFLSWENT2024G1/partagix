@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.InventoryViewModel
@@ -81,6 +82,9 @@ fun LoanScreen(
     Log.d(TAG, "!!! currentLocation: $currentLocation")
   }
 
+  val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+  val mapPadding = screenHeight * 0.1f
+
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
@@ -99,9 +103,9 @@ fun LoanScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
-                  contentPadding = PaddingValues(bottom = 90.dp),
+                  contentPadding = PaddingValues(bottom = mapPadding),
                   cameraPositionState = cameraPositionState,
-                  properties = MapProperties(isMyLocationEnabled = true),
+                  properties = MapProperties(isMyLocationEnabled = true, isIndoorEnabled = true),
                   modifier = modifier.testTag("LoanScreenMaps")) {
                     items.forEach { item ->
                       Marker(
@@ -145,7 +149,10 @@ fun LoanScreen(
                               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
                               verticalArrangement =
                                   Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
-                              modifier = modifier.background(Color.White)) {
+                              modifier =
+                                  modifier
+                                      .background(Color.White)
+                                      .padding(PaddingValues(bottom = 10.dp))) {
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
