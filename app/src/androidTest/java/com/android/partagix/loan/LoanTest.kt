@@ -303,8 +303,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val backButton = composeTestRule.onNodeWithTag("SearchBarBack")
     backButton.assertIsDisplayed()
     backButton.performClick()
+    assert(value == "")
 
     node.performClick()
+    node.performTextInput("dog")
 
     val searchButton = composeTestRule.onNodeWithTag("SearchBarSearch")
     searchButton.assertIsDisplayed()

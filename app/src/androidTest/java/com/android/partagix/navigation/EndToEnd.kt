@@ -184,4 +184,6 @@ class EndToEnd {
     // Close the activity after the test
     scenario.close()
   }
+
+  /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
 }

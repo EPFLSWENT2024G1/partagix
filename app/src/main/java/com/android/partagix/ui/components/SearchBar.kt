@@ -1,5 +1,6 @@
 package com.android.partagix.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
+private const val TAG = "TopSearchBar"
+
 /**
  * TopSearchBar is a composable that displays a search bar at the top of the screen.
  *
@@ -38,6 +41,9 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
   if (query != null) {
     optionalQuery = query
   }
+
+  Log.d(TAG, "TopSearchBar: optionalQuery: $optionalQuery, active: $active, query: $query")
+
   SearchBar(
       query = optionalQuery,
       onQueryChange = {
@@ -47,6 +53,7 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
       onSearch = {
         filter(it)
         optionalQuery = it
+        active = false
       },
       active = false,
       onActiveChange = { active = it },
@@ -58,11 +65,14 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
         } else {
           Icon(
               Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = "Search",
+              contentDescription = "Back",
               modifier =
                   Modifier.clickable {
-                        active = false
+                        active = !active
+                        optionalQuery = ""
+                        filter(optionalQuery)
                         keyboardController?.hide()
+                        Log.d(TAG, "clickable: active: $active, optionalQuery: $optionalQuery")
                       }
                       .testTag("SearchBarBack"))
         }
@@ -71,8 +81,13 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
         Icon(
             Icons.Default.Search,
             contentDescription = "Search",
-            modifier = Modifier.clickable { keyboardController?.hide() }.testTag("SearchBarSearch"))
+            modifier =
+                Modifier.clickable {
+                      active = true
+                      keyboardController?.hide()
+                    }
+                    .testTag("SearchBarSearch"))
       }) {
-        Text("Search an Item", modifier = Modifier.testTag("bar"))
+        Text("Search an Item", modifier = Modifier.testTag("bar").clickable { active = true })
       }
 }
