@@ -2,6 +2,7 @@ package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,21 +22,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
@@ -52,6 +57,16 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
+
+  val color =
+      TextFieldDefaults.colors(
+          focusedIndicatorColor = Color.Transparent,
+          disabledIndicatorColor = Color.Transparent,
+          unfocusedIndicatorColor = Color.Transparent,
+          focusedContainerColor = Color.Transparent,
+          unfocusedContainerColor = Color.Transparent,
+          disabledContainerColor = Color.Transparent,
+      )
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -95,83 +110,58 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column {
-                    OutlinedTextField(
-                        value = item.name,
-                        onValueChange = {},
-                        label = { Text("Object name") },
-                        modifier = Modifier.fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText(label = "Object Name", text = item.name)
 
-                    OutlinedTextField(
-                        value = item.idUser,
-                        onValueChange = {},
-                        label = { Text("Author") },
-                        modifier = Modifier.fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText("Author", item.idUser)
                   }
                 }
               }
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                OutlinedTextField(
-                    value = item.description,
-                    onValueChange = {},
-                    label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 5,
-                    readOnly = true)
+                LabeledText("Description", item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = item.category.name,
-                    onValueChange = {},
-                    label = { Text("Category") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
-
-                println("Category: ${item.category.name}")
+                LabeledText("Category", item.category.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = item.visibility.name,
-                    onValueChange = {},
-                    label = { Text("Visibility") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                LabeledText("Visibility", item.visibility.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = item.quantity.toString(),
-                    onValueChange = {},
-                    label = { Text("Quantity") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                LabeledText("Quantity", item.quantity.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = item.location.toString(),
-                    onValueChange = {},
-                    label = { Text("Where") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true)
+                LabeledText("Where", item.location.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = "Disponibility", /*TODO: get item disponibility*/
-                    onValueChange = {},
-                    label = { Text("Disponibility") },
-                    readOnly = true,
-                    modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
-                    trailingIcon = {
-                      IconButton(
-                          onClick = { /*TODO: see calendar with disponibilities*/},
-                          content = { Icon(Icons.Default.DateRange, contentDescription = null) })
-                    })
+                Box(modifier = Modifier.padding(8.dp)) {
+                  Column() {
+                    Text(
+                        text = "Availability",
+                        style = TextStyle(color = Color.Gray),
+                        fontSize = 10.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                          Text(
+                              text = "available", /*TODO: get item disponibility*/
+                              style = TextStyle(color = Color.Black),
+                              modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
+                          )
 
+                          IconButton(
+                              onClick = { /*TODO: see calendar with disponibilities*/},
+                              content = {
+                                Icon(Icons.Default.DateRange, contentDescription = null)
+                              })
+                        }
+                  }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
