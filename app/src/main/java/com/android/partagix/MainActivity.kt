@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
     outputStream?.close()
   }
 
+  fun myInitializationFunction(route: String) {
+    app.navigateForTest(route)
+  }
   companion object {
     private const val TAG = "Main"
   }
