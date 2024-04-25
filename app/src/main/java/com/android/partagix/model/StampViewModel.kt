@@ -1,28 +1,21 @@
 package com.android.partagix.model
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
+import com.android.partagix.MainActivity
 import com.android.partagix.model.stampDimension.StampDimension
-import com.android.partagix.ui.MainActivity
 import qrcode.QRCode
 import qrcode.QRCodeBuilder
 
-public const val CREATE_PNG_FILE = 50
-public const val WRITE_PNG_FILE = 51
+const val CREATE_PNG_FILE = 50
 
-class StampViewModel(context: MainActivity) : ViewModel() {
-  private val context = context
+class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainActivity) :
+    ViewModel() {
   private val qrCodeBuilder = QRCode.ofRoundedSquares()
 
-  init {}
-
-  private fun setSize(
-      qrCodeBuilder: QRCodeBuilder,
-      itemId: String,
-      label: String,
-      dim: StampDimension
-  ) {
+  private fun setSize(qrCodeBuilder: QRCodeBuilder, dim: StampDimension) {
     when (dim) {
       StampDimension.SMALL -> qrCodeBuilder.withSize(5)
       StampDimension.MEDIUM -> qrCodeBuilder.withSize(10)
@@ -30,12 +23,12 @@ class StampViewModel(context: MainActivity) : ViewModel() {
       StampDimension.FULL_PAGE -> qrCodeBuilder.withSize(20)
     }
   }
-
-  private fun addLabel(pngBytes: ByteArray, label: String) {}
+  // TODO : add the label to the qr code
+  // private fun addLabel(pngBytes: ByteArray, label: String) {}
 
   fun generateQRCodeAndSave(itemId: String, label: String, detailedDimension: String) {
-    var dim = getStampDimension(detailedDimension)
-    setSize(qrCodeBuilder, itemId, label, dim)
+    val dim = getStampDimension(detailedDimension)
+    setSize(qrCodeBuilder, dim)
     val qrCode = qrCodeBuilder.build(itemId).renderToBytes()
     val intent =
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -46,8 +39,6 @@ class StampViewModel(context: MainActivity) : ViewModel() {
     context.setQrBytes(qrCode)
     startActivityForResult(context, intent, CREATE_PNG_FILE, null)
   }
-
-  companion object {}
 
   /**
    * Get the StampDimension given the detailedDimension string.

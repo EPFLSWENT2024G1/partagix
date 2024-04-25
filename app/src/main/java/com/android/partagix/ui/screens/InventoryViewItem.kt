@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -53,7 +54,11 @@ import com.android.partagix.ui.navigation.Route
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewModel) {
+fun InventoryViewItem(
+    navigationActions: NavigationActions,
+    viewModel: ItemViewModel,
+    stampViewModel: StampViewModel
+) {
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item

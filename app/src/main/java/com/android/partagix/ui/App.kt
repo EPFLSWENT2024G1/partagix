@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
@@ -65,6 +66,7 @@ class App(
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
+  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -201,7 +203,9 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel) }
+      composable(Route.VIEW_ITEM) {
+        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
+      }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }

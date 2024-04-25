@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix
 
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import com.android.partagix.model.CREATE_PNG_FILE
 import com.android.partagix.resources.C
+import com.android.partagix.ui.App
 import com.android.partagix.ui.theme.PartagixAppTheme
 import java.io.FileOutputStream
 import java.io.IOException
@@ -36,6 +37,10 @@ class MainActivity : ComponentActivity() {
             }
       }
     }
+  }
+
+  fun myInitializationFunction(route: String) {
+    app.navigateForTest(route)
   }
 
   fun setQrBytes(qrBytes: ByteArray) {
@@ -65,15 +70,9 @@ class MainActivity : ComponentActivity() {
 
   @Throws(IOException::class)
   private fun saveImageToUri(uri: Uri, data: ByteArray) {
-    println("Saving image to $uri")
     val outputStream = contentResolver.openOutputStream(uri) as FileOutputStream?
-    println("qrByteArray: $data")
     outputStream?.write(data)
     outputStream?.close()
-  }
-
-  fun myInitializationFunction(route: String) {
-    app.navigateForTest(route)
   }
 
   companion object {
