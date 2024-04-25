@@ -9,16 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
-import com.android.partagix.model.visibility.Visibility
-import java.util.ArrayList
 import java.util.Date
 
 /**
@@ -36,8 +33,8 @@ fun ItemList(
     users: List<User>,
     loan: List<Loan>,
     onClick: (Item) -> Unit,
+    modifier: Modifier = Modifier,
     stickyHeader: @Composable() (() -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
@@ -45,7 +42,7 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }) {
+      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }.testTag("ItemListItem")) {
         ItemUi(
             item = item,
             user =
@@ -64,24 +61,4 @@ fun ItemList(
       Spacer(modifier = Modifier.height(8.dp))
     }
   }
-}
-
-@Preview(device = "spec:width=1080px,height=1270px,dpi=440")
-@Composable
-fun ItemListPreview() {
-  val itemList = ArrayList<Item>()
-
-  for (i in 0..3) {
-    itemList.add(
-        Item(
-            i.toString(),
-            Category("1", "name"),
-            "name $i",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            android.location.Location("location")))
-  }
-
-  // ItemList(itemList = itemList, onClick = { Log.d(ContentValues.TAG, "Item clicked") })
 }
