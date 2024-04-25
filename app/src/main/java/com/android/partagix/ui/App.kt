@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.model.Database
+import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
@@ -161,7 +162,12 @@ class App(
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
+      composable(Route.HOME) {
+        HomeScreen(
+            homeViewModel = HomeViewModel(),
+            inventoryViewModel = InventoryViewModel(),
+            navigationActions = navigationActions)
+      }
       composable(Route.LOAN) {
         if (checkLocationPermissions()) {
           fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -174,9 +180,13 @@ class App(
               navigationActions = navigationActions,
               inventoryViewModel = inventoryViewModel,
               userViewModel = userViewModel,
+              itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          HomeScreen(navigationActions)
+          HomeScreen(
+              homeViewModel = HomeViewModel(),
+              inventoryViewModel = InventoryViewModel(),
+              navigationActions = navigationActions)
         }
       }
       composable(Route.INVENTORY) {
