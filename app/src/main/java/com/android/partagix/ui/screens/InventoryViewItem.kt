@@ -2,6 +2,7 @@ package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -72,9 +74,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
       topBar = {
         TopAppBar(
             title = { Text("Back to selection") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("inventoryViewItemTopBar"),
+            modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
@@ -91,19 +91,11 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier
-          .fillMaxWidth()
-          .testTag("inventoryViewItem")) {
+      modifier = Modifier.fillMaxWidth().testTag("inventoryViewItem")) {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
-              Box(modifier = Modifier
-                  .fillMaxWidth()
-                  .height(140.dp)
-                  .padding(8.dp)) {
+              Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
 
                   /*TODO: get photo and display it*/
@@ -119,94 +111,57 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
 
                   Column {
                     LabeledText(label = "Object Name", text = item.name)
-                    TextField(
-                        value = item.name,
-                        onValueChange = {},
-                        label = { Text("Object name") },
-                        modifier = Modifier.fillMaxWidth(),
-                        readOnly = true,
-                        colors = color)
 
-                    TextField(
-                        value = item.idUser,
-                        onValueChange = {},
-                        label = { Text("Author") },
-                        modifier = Modifier.fillMaxWidth(),
-                        readOnly = true,
-                        colors = color)
+                    LabeledText("Author", item.idUser)
                   }
                 }
               }
-              Column(
-                  Modifier
-                      .fillMaxWidth()
-                      .padding(horizontal = 8.dp)) {
-                TextField(
-                    value = item.description,
-                    onValueChange = {},
-                    label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 5,
-                    readOnly = true,
-                    colors = color)
+              Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                LabeledText("Description", item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
-                    value = item.category.name,
-                    onValueChange = {},
-                    label = { Text("Category") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    colors = color)
-
-                println("Category: ${item.category.name}")
+                LabeledText("Category", item.category.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
-                    value = item.visibility.name,
-                    onValueChange = {},
-                    label = { Text("Visibility") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    colors = color)
+                LabeledText("Visibility", item.visibility.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
-                    value = item.quantity.toString(),
-                    onValueChange = {},
-                    label = { Text("Quantity") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    colors = color)
+                LabeledText("Quantity", item.quantity.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
-                    value = item.location.toString(),
-                    onValueChange = {},
-                    label = { Text("Where") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    colors = color)
+                LabeledText("Where", item.location.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
-                    value = "Disponibility", /*TODO: get item disponibility*/
-                    onValueChange = {},
-                    label = { Text("Disponibility") },
-                    readOnly = true,
-                    colors = color,
-                    modifier = Modifier.fillMaxWidth(), // Apply any necessary modifier
-                    trailingIcon = {
-                      IconButton(
-                          onClick = { /*TODO: see calendar with disponibilities*/},
-                          content = { Icon(Icons.Default.DateRange, contentDescription = null) })
-                    })
+                Box(modifier = Modifier.padding(8.dp)) {
+                  Column() {
+                    Text(
+                        text = "Availability",
+                        style = TextStyle(color = Color.Gray),
+                        fontSize = 10.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                          Text(
+                              text = "available", /*TODO: get item disponibility*/
+                              style = TextStyle(color = Color.Black),
+                              modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
+                          )
 
+                          IconButton(
+                              onClick = { /*TODO: see calendar with disponibilities*/},
+                              content = {
+                                Icon(Icons.Default.DateRange, contentDescription = null)
+                              })
+                        }
+                  }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -228,9 +183,7 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
                 Button(
                     onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                     content = { Text("Edit") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("editItemButton"))
+                    modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
               }
             }
       }
