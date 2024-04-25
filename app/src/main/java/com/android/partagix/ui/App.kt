@@ -170,6 +170,7 @@ class App(
               navigationActions = navigationActions,
               inventoryViewModel = inventoryViewModel,
               userViewModel = userViewModel,
+              itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
           HomeScreen(navigationActions)

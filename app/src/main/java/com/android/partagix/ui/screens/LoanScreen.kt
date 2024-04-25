@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
@@ -51,6 +52,7 @@ private const val TAG = "LoanScreen"
 fun LoanScreen(
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
+    itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -143,7 +145,10 @@ fun LoanScreen(
                                   top = 30.dp, start = 20.dp, end = 20.dp, bottom = 30.dp))) {
                     ItemList(
                         itemList = items,
-                        onClick = { navigationActions.navigateTo("${Route.VIEW_ITEM}/${it.id}") },
+                        onClick = {
+                          itemViewModel.updateUiState(it)
+                          navigationActions.navigateTo(Route.VIEW_ITEM)
+                        },
                         stickyHeader = {
                           FlowRow(
                               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
