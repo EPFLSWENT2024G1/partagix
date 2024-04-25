@@ -24,9 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -49,6 +52,7 @@ private const val TAG = "LoanScreen"
 fun LoanScreen(
     navigationActions: NavigationActions,
     inventoryViewModel: InventoryViewModel,
+    itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -60,11 +64,11 @@ fun LoanScreen(
   var currentLocation = userUiState.value.location
 
   // Simulate a large list of items
-  for (i in 0..3) {
+  for (i in 0..1) {
     items = items.plus(items)
   }
 
-  var cameraPositionState by remember { mutableStateOf<CameraPositionState>(CameraPositionState()) }
+  var cameraPositionState by remember { mutableStateOf(CameraPositionState()) }
 
   if (currentLocation != null) {
     Log.d(TAG, "currentLocation: $currentLocation")
@@ -75,23 +79,36 @@ fun LoanScreen(
   }
 
   LaunchedEffect(key1 = inventoryUiState) { items = inventoryUiState.value.items }
-  LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
+  LaunchedEffect(key1 = userUiState) {
+    currentLocation = userUiState.value.location
+    Log.d(TAG, "!!! currentLocation: $currentLocation")
+  }
+
+  val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+  val mapPadding = screenHeight * 0.1f
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
-      topBar = { TopSearchBar(filter = { inventoryViewModel.filterItems(it) }) },
+      topBar = {
+        TopSearchBar(
+            filter = { inventoryViewModel.filterItems(it) },
+            query = inventoryUiState.value.query,
+            modifier = modifier.testTag("LoanScreenSearchBar"))
+      },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.LOAN,
             navigateToTopLevelDestination = navigationActions::navigateTo,
-            modifier = modifier)
+            modifier = modifier.testTag("LoanScreenBottomNavBar"))
       }) { innerPadding ->
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier.fillMaxWidth().fillMaxHeight(.5f)) {
               GoogleMap(
-                  contentPadding = PaddingValues(bottom = 90.dp),
-                  cameraPositionState = cameraPositionState) {
+                  contentPadding = PaddingValues(bottom = mapPadding),
+                  cameraPositionState = cameraPositionState,
+                  properties = MapProperties(isMyLocationEnabled = true, isIndoorEnabled = true),
+                  modifier = modifier.testTag("LoanScreenMaps")) {
                     items.forEach { item ->
                       Marker(
                           state =
@@ -101,7 +118,7 @@ fun LoanScreen(
                           title = item.name,
                           snippet = item.description,
                           onClick = {
-                            // TODO
+                            // do nothing for now on click
                             true
                           })
                     }
@@ -128,13 +145,19 @@ fun LoanScreen(
                                   top = 30.dp, start = 20.dp, end = 20.dp, bottom = 30.dp))) {
                     ItemList(
                         itemList = items,
-                        onClick = { navigationActions.navigateTo("${Route.VIEW_ITEM}/${it.id}") },
+                        onClick = {
+                          itemViewModel.updateUiState(it)
+                          navigationActions.navigateTo(Route.VIEW_ITEM)
+                        },
                         stickyHeader = {
                           FlowRow(
                               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
                               verticalArrangement =
                                   Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
-                              modifier = modifier.background(Color.White)) {
+                              modifier =
+                                  modifier
+                                      .background(Color.White)
+                                      .padding(PaddingValues(bottom = 10.dp))) {
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
@@ -152,7 +175,10 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
                                     },
-                                    modifier = modifier.fillMaxWidth(.3f))
+                                    modifier =
+                                        modifier
+                                            .fillMaxWidth(.3f)
+                                            .testTag("LoanScreenDistanceFilter"))
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
@@ -166,12 +192,13 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
                                     },
-                                    modifier = modifier.fillMaxWidth(.3f))
+                                    modifier =
+                                        modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }
                         },
+                        modifier = modifier.testTag("LoanScreenItemListView"),
                         users = emptyList(),
-                        loan = emptyList(),
-                        modifier = modifier)
+                        loan = emptyList())
                   }
             }
       }
