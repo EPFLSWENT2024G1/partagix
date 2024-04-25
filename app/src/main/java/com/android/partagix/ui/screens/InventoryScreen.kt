@@ -90,6 +90,7 @@ fun InventoryScreen(
                     text = "There is no items in the inventory.",
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
+              
               }
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
