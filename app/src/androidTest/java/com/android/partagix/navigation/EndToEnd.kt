@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -59,6 +60,7 @@ class EndToEnd {
     composeTestRule.waitUntil(timeWait + 2) {
       composeTestRule.onNodeWithTag("inventoryCreateItem").isDisplayed()
     }
+    composeTestRule.onNodeWithText("Create").performScrollTo()
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Create").isDisplayed() }
     // check that the create item screen is well displayed and that you can use the fields
     ComposeScreen.onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
