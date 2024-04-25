@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -33,6 +34,7 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
 
   private var item1: Item =
       Item(
@@ -52,11 +54,15 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     mockItemViewModel = mockk()
     every { mockItemViewModel.uiState } returns mockUiState
 
+    mockStampViewModel = mockk()
+
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    composeTestRule.setContent { InventoryViewItem(mockNavActions, mockItemViewModel) }
+    composeTestRule.setContent {
+      InventoryViewItem(mockNavActions, mockItemViewModel, mockStampViewModel)
+    }
   }
 
   @Test

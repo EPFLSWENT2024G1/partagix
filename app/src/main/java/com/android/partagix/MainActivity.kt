@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import com.android.partagix.model.CREATE_PNG_FILE
-import com.android.partagix.model.WRITE_PNG_FILE
 import com.android.partagix.resources.C
 import com.android.partagix.ui.theme.PartagixAppTheme
 import java.io.FileOutputStream
@@ -35,13 +33,13 @@ class MainActivity : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize().semantics { testTag = C.Tag.main_screen_container },
             color = MaterialTheme.colorScheme.background) {
-              app.Create(this)
+              app.Create()
             }
       }
     }
   }
 
-  fun setQrBytes (qrBytes: ByteArray) {
+  fun setQrBytes(qrBytes: ByteArray) {
     this.qrBytes = qrBytes
   }
 
@@ -68,12 +66,11 @@ class MainActivity : ComponentActivity() {
 
   @Throws(IOException::class)
   private fun saveImageToUri(uri: Uri, data: ByteArray) {
-    println("Saving image to $uri")
     val outputStream = contentResolver.openOutputStream(uri) as FileOutputStream?
-    println("qrByteArray: $data")
     outputStream?.write(data)
     outputStream?.close()
   }
+
   companion object {
     private const val TAG = "Main"
   }

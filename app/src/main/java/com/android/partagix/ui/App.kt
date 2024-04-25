@@ -2,8 +2,6 @@ package com.android.partagix.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
@@ -43,7 +41,6 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
-import com.android.partagix.ui.screens.Stamp
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -60,16 +57,16 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
   private val inventoryViewModel = InventoryViewModel()
   private val itemViewModel = ItemViewModel()
   private val userViewModel = UserViewModel()
+  private val stampViewModel = StampViewModel(activity)
 
   @Composable
-  fun Create(context: MainActivity) {
+  fun Create() {
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
-    // navigationActions.navigateTo(Route.BOOT)
-    Stamp(stampViewModel = StampViewModel(context), navigationActions = navigationActions)
+    navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+    navigationActions.navigateTo(Route.BOOT)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -188,7 +185,7 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
           Route.VIEW_ITEM + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             // val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, itemViewModel)
+            InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
           }
       composable(
           Route.CREATE_ITEM,
