@@ -64,7 +64,6 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
       backButton { performClick() }
-      // stampScreen { assertIsNotDisplayed() } //TODO Massimo
     }
   }
 
@@ -109,15 +108,4 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   fun downloadButtonIsDisplayed() = run {
     onComposeScreen<StampScreen>(composeTestRule) { downloadButton { assertIsDisplayed() } }
   }
-
-  /*@Test
-  fun downloadButtonWorks() = run {
-    onComposeScreen<StampScreen>(composeTestRule) {
-      downloadButton {
-        assertIsDisplayed()
-        performClick() // exception because no answer of the viewmodel is configured
-      }
-      stampScreen { assertIsNotDisplayed() }
-    }
-  }*/
 }
