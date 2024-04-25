@@ -1,5 +1,6 @@
 package com.android.partagix.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+
+private const val TAG = "TopSearchBar"
 
 /**
  * TopSearchBar is a composable that displays a search bar at the top of the screen.
@@ -37,10 +41,20 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
   if (query != null) {
     optionalQuery = query
   }
+
+  Log.d(TAG, "TopSearchBar: optionalQuery: $optionalQuery, active: $active, query: $query")
+
   SearchBar(
       query = optionalQuery,
-      onQueryChange = { filter(it) },
-      onSearch = { filter(it) },
+      onQueryChange = {
+        filter(it)
+        optionalQuery = it
+      },
+      onSearch = {
+        filter(it)
+        optionalQuery = it
+        active = false
+      },
       active = false,
       onActiveChange = { active = it },
       modifier = modifier.fillMaxWidth().padding(20.dp),
@@ -51,21 +65,29 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
         } else {
           Icon(
               Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = "Search",
+              contentDescription = "Back",
               modifier =
-                  modifier.clickable {
-                    filter("")
-
-                    keyboardController?.hide()
-                  })
+                  Modifier.clickable {
+                        active = !active
+                        optionalQuery = ""
+                        filter(optionalQuery)
+                        keyboardController?.hide()
+                        Log.d(TAG, "clickable: active: $active, optionalQuery: $optionalQuery")
+                      }
+                      .testTag("SearchBarBack"))
         }
       },
       trailingIcon = {
         Icon(
             Icons.Default.Search,
             contentDescription = "Search",
-            modifier = modifier.clickable { keyboardController?.hide() })
+            modifier =
+                Modifier.clickable {
+                      active = true
+                      keyboardController?.hide()
+                    }
+                    .testTag("SearchBarSearch"))
       }) {
-        Text("Search an Item")
+        Text("Search an Item", modifier = Modifier.testTag("bar").clickable { active = true })
       }
 }
