@@ -49,11 +49,7 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, mockNavActions) }
   }
 
-  @Test
-  fun testTest() = run {
-
-    assert(true)
-  }
+  @Test fun testTest() = run { assert(true) }
 
   //    topAppBar
   @Test

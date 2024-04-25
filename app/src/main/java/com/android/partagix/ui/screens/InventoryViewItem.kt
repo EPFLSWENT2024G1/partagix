@@ -137,7 +137,6 @@ fun InventoryViewItem(navigationActions: NavigationActions, viewModel: ItemViewM
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-
                 Box(modifier = Modifier.padding(8.dp)) {
                   Column() {
                     Text(
