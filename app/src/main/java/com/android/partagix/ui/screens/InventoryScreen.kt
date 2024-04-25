@@ -101,7 +101,7 @@ fun InventoryScreen(
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = {},
                 isCornerClickable = false,
@@ -116,7 +116,7 @@ fun InventoryScreen(
                 corner = uiState.items.size.toString(),
                 onClick = {
                   itemViewModel.updateUiState(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM + "/${it.id}")
+                  navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = {},
                 isCornerClickable = false,

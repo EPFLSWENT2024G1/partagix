@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.screens.LoginScreen
+import com.android.partagix.screens.LoginScreen2
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.LoginScreen
@@ -45,6 +46,9 @@ class LoginTest {
         assertIsDisplayed()
         performClick()
       }
+    }
+    ComposeScreen.onComposeScreen<LoginScreen2>(composeTestRule) {
+      loginButton { assertIsDisplayed() }
     }
   }
 

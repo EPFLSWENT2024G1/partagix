@@ -29,9 +29,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
+class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Database()) : ViewModel() {
 
-  private val database = Database()
+  private val database = db
   private var fetchedList: List<Item> = emptyList()
   private var fetchedBorrowed: List<Item> = emptyList()
 
@@ -50,7 +50,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    getInventory()
+    // getInventory()
   }
 
   /*private fun getItems() {
@@ -66,8 +66,8 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
   fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
-      if (user == null) {
-        database.getUserInventory(/*user.uid*/ " sdfasdf") {
+      if (user != null) {
+        database.getUserInventory(/*user.uid*/ "8WuTkKJZLTAr6zs5L7rH") {
           updateInv(it.items)
           getUsers(it.items, ::updateUsers)
           findTime(it.items, ::updateLoan)
@@ -128,29 +128,29 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     fetchedList = newInv
   }*/
 
-  private fun updateInv(new: List<Item>) {
+  fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
   }
 
-  private fun updateBor(new: List<Item>) {
+  fun updateBor(new: List<Item>) {
     _uiState.value = _uiState.value.copy(borrowedItems = new)
     fetchedBorrowed = new
   }
 
-  private fun updateUsers(new: User) {
+  fun updateUsers(new: User) {
     _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
   }
 
-  private fun updateUsersBor(new: User) {
+  fun updateUsersBor(new: User) {
     _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
   }
 
-  private fun updateLoanBor(new: Loan) {
+  fun updateLoanBor(new: Loan) {
     _uiState.value = _uiState.value.copy(loanBor = uiState.value.loanBor.plus(new))
   }
 
-  private fun updateLoan(new: Loan) {
+  fun updateLoan(new: Loan) {
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
 
@@ -206,7 +206,7 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     return list.filter {
       it.name.contains(query, ignoreCase = true) ||
           it.description.contains(query, ignoreCase = true) ||
-          it.category.toString().contains(query, ignoreCase = true) ||
+          it.category.name.contains(query, ignoreCase = true) ||
           it.visibility.toString().contains(query, ignoreCase = true) ||
           it.quantity.toString().contains(query, ignoreCase = true)
     }

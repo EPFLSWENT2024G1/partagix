@@ -93,12 +93,12 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
-        modifier = modifier.fillMaxHeight(.35f).testTag("LoginBottomSheet"),
+        modifier = modifier.fillMaxHeight(.35f),
     ) {
       Column(
           verticalArrangement = Arrangement.Top,
           horizontalAlignment = Alignment.CenterHorizontally,
-          modifier = modifier.fillMaxSize(),
+          modifier = modifier.fillMaxSize().testTag("LoginScreen2"),
       ) {
         OutlinedButton(
             onClick = {
