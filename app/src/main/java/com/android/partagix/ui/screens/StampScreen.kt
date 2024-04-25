@@ -43,7 +43,7 @@ fun StampScreen(
   val MAX_LABEL_LENGTH = 40
 
   Scaffold(
-      modifier = modifier.testTag("").fillMaxWidth().testTag("stampScreen"),
+      modifier = modifier.fillMaxWidth().testTag("stampScreen"),
       topBar = {
         TopAppBar(
             modifier = modifier.fillMaxWidth().testTag("topAppBar"),
