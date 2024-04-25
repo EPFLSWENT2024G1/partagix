@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
@@ -61,21 +62,24 @@ class EndToEnd {
       composeTestRule.onNodeWithTag("inventoryCreateItem").isDisplayed()
     }
     composeTestRule.onNodeWithText("Create").performScrollTo()
-    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Create").isDisplayed() }
+    composeTestRule.waitUntil(timeWait + 9) {
+      composeTestRule.onNodeWithText("Create").isDisplayed()
+    }
     // check that the create item screen is well displayed and that you can use the fields
     ComposeScreen.onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       button { assertIsDisplayed() }
       button { assertTextContains("Create") }
       topBar { assertIsDisplayed() }
-      name { performTextInput("Grinch") }
-      description { performTextInput("Christmas Tree") }
 
+      composeTestRule.onNodeWithTag("category").performScrollTo()
+      category { performClick() }
       category { performClick() }
       composeTestRule.waitUntil(timeWait + 3) {
         composeTestRule.onNodeWithTag("Category 1").isDisplayed()
       }
       composeTestRule.onNodeWithTag("Category 1").performClick()
       composeTestRule.onNodeWithText("Category 1").assertExists()
+
       category { performClick() }
       composeTestRule.waitUntil(timeWait + 4) {
         composeTestRule.onNodeWithTag("Category 3").isDisplayed()
@@ -89,6 +93,7 @@ class EndToEnd {
       }
       composeTestRule.onNodeWithTag("Friends").performClick()
       composeTestRule.onNodeWithText("Friends").assertExists()
+
       visibility { performClick() }
       composeTestRule.waitUntil(timeWait + 6) {
         composeTestRule.onNodeWithTag("Private").isDisplayed()
@@ -96,6 +101,12 @@ class EndToEnd {
       composeTestRule.onNodeWithTag("Private").performClick()
       composeTestRule.onNodeWithText("Private").assertExists()
 
+      name { performTextInput("Grinch") }
+
+      description { performTextInput("Christmas Tree") }
+      Espresso.closeSoftKeyboard()
+
+      quantity { performScrollTo() }
       quantity { performTextReplacement("10") }
       navigationIcon { performClick() }
     }
