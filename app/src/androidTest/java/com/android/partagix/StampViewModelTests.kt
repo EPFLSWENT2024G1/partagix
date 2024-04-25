@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import com.android.partagix.model.CREATE_PNG_FILE
 import com.android.partagix.model.StampViewModel
-import com.android.partagix.ui.MainActivity
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every

@@ -72,7 +72,6 @@ class App(
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
-    navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -200,7 +199,9 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel, stampViewModel) }
+      composable(Route.VIEW_ITEM) {
+        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
+      }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }

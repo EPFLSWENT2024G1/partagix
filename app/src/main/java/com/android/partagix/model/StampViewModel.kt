@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
+import com.android.partagix.MainActivity
 import com.android.partagix.model.stampDimension.StampDimension
-import com.android.partagix.ui.MainActivity
 import qrcode.QRCode
 import qrcode.QRCodeBuilder
 
