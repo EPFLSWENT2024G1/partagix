@@ -29,6 +29,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -62,6 +63,7 @@ class App(
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
+  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -70,7 +72,6 @@ class App(
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -198,7 +199,9 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel) }
+      composable(Route.VIEW_ITEM) {
+        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
+      }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
