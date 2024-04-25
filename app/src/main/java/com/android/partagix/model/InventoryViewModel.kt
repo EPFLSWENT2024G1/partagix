@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.item.Item
@@ -29,9 +30,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
+class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Database()) : ViewModel() {
 
-  private val database = Database()
+  private val database = db
   private var fetchedList: List<Item> = emptyList()
   private var fetchedBorrowed: List<Item> = emptyList()
 
@@ -224,10 +225,25 @@ class InventoryViewModel(items: List<Item> = emptyList()) : ViewModel() {
     _uiState.value = currentState.copy(items = list)
   }
 
+  /**
+   * Filter items based on the current position and the radius
+   *
+   * @param currentPosition the current position of the user
+   * @param radius the radius to filter the items (in meters)
+   */
   fun filterItems(currentPosition: Location, radius: Double) {
     val currentState = _uiState.value
-    val list = fetchedList.filter { it.location.distanceTo(currentPosition) <= radius }
+    fetchedList.forEach {
+      Log.d(
+          TAG,
+          "item: ${it.name}, distance: ${it.location.distanceTo(currentPosition)}, current: $currentPosition, item: ${it.location}")
+    }
+    val list = fetchedList.filter { it.location.distanceTo(currentPosition) <= (radius * 1000) }
     _uiState.value = currentState.copy(items = list)
+  }
+
+  companion object {
+    private const val TAG = "InventoryViewModel"
   }
 }
 

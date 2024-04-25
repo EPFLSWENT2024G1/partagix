@@ -20,12 +20,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.android.partagix.MainActivity
+import com.android.partagix.model.Database
+import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
@@ -47,26 +48,36 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class App(private val activity: MainActivity) : ComponentActivity(), SignInResultListener {
+class App(
+    private val activity: MainActivity,
+    private val auth: Authentication? = null,
+    private val db: Database = Database(),
+) : ComponentActivity(), SignInResultListener {
+
   private var authentication: Authentication = Authentication(activity, this)
 
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
-  private val inventoryViewModel = InventoryViewModel()
-  private val itemViewModel = ItemViewModel()
-  private val userViewModel = UserViewModel()
+  private val inventoryViewModel = InventoryViewModel(db = db)
+  private val itemViewModel = ItemViewModel(db = db)
+  private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
+
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
     navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
+  }
+
+  fun navigateForTest(route: String) {
+    navigationActions.navigateTo(route)
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
@@ -150,7 +161,12 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
+      composable(Route.HOME) {
+        HomeScreen(
+            homeViewModel = HomeViewModel(),
+            inventoryViewModel = InventoryViewModel(),
+            navigationActions = navigationActions)
+      }
       composable(Route.LOAN) {
         if (checkLocationPermissions()) {
           fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -163,41 +179,34 @@ class App(private val activity: MainActivity) : ComponentActivity(), SignInResul
               navigationActions = navigationActions,
               inventoryViewModel = inventoryViewModel,
               userViewModel = userViewModel,
+              itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          HomeScreen(navigationActions)
+          HomeScreen(
+              homeViewModel = HomeViewModel(),
+              inventoryViewModel = InventoryViewModel(),
+              navigationActions = navigationActions)
         }
       }
-
       composable(Route.INVENTORY) {
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
             itemViewModel = itemViewModel)
       }
+
       composable(
           Route.ACCOUNT,
       ) {
-        println("navigated to account screen")
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(
-          Route.VIEW_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
-          }
-      composable(
-          Route.CREATE_ITEM,
-      /*arguments = listOf(navArgument("itemId") { type = NavType.StringType })*/ ) {
+      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel, stampViewModel) }
+      composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
-      composable(
-          Route.EDIT_ITEM + "/{itemId}",
-          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
-            // val itemId = it.arguments?.getString("itemId")
-            InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
-          }
+      composable(Route.EDIT_ITEM) {
+        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+      }
     }
   }
 

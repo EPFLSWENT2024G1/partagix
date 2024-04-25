@@ -27,7 +27,7 @@ fun BottomNavigationBar(
     navigateToTopLevelDestination: (TopLevelDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  NavigationBar(modifier = modifier.fillMaxWidth()) {
+  NavigationBar(modifier = modifier.testTag("navigationBar").fillMaxWidth()) {
     TOP_LEVEL_DESTINATIONS.forEach { destination ->
       NavigationBarItem(
           modifier = Modifier.testTag("bottomNavBarItem-${destination.route}"),

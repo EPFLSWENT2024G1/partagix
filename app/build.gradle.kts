@@ -137,8 +137,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
-    implementation(libs.play.services.location)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
+  androidTestImplementation(platform(libs.compose.bom))
+  androidTestImplementation(libs.compose.test.junit)
+  globalTestImplementation(libs.androidx.junit)
+    testImplementation(libs.mockito.kotlin)
+    implementation(libs.play.services.location)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -163,8 +168,24 @@ dependencies {
     debugImplementation(libs.compose.test.manifest)
 
     // --------- Kaspresso test framework ----------
-    globalTestImplementation(libs.kaspresso)
-    globalTestImplementation(libs.kaspresso.compose)
+    testImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation(libs.kaspresso) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    testImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
+
+    androidTestImplementation("androidx.test:core:1.4.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+
+    androidTestImplementation(libs.kaspresso.compose) {
+        exclude(group="com.google.protobuf", module="protobuf-lite")
+    }
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
@@ -184,6 +205,7 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
 
     // ----------       Mockk     ------------
     testImplementation("io.mockk:mockk:${mockkVersion}")

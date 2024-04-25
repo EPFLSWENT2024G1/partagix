@@ -21,4 +21,6 @@ class InventoryCreateOrEditScreen(semanticsProvider: SemanticsNodeInteractionsPr
   val category: KNode = onNode { hasTestTag("category") }
   val visibility: KNode = onNode { hasTestTag("visibility") }
   val quantity: KNode = onNode { hasTestTag("quantity") }
+
+  val button: KNode = onNode { hasTestTag("button") }
 }

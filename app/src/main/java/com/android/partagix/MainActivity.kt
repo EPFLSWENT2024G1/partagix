@@ -1,4 +1,4 @@
-package com.android.partagix.ui
+package com.android.partagix
 
 import android.content.Intent
 import android.net.Uri
@@ -9,12 +9,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import com.android.partagix.model.CREATE_PNG_FILE
 import com.android.partagix.resources.C
+import com.android.partagix.ui.App
 import com.android.partagix.ui.theme.PartagixAppTheme
 import java.io.FileOutputStream
 import java.io.IOException
@@ -37,6 +37,10 @@ class MainActivity : ComponentActivity() {
             }
       }
     }
+  }
+
+  fun myInitializationFunction(route: String) {
+    app.navigateForTest(route)
   }
 
   fun setQrBytes(qrBytes: ByteArray) {
