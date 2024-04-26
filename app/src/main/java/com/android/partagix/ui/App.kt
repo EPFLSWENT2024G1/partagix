@@ -80,7 +80,6 @@ class App(
 
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
-      val db = Database()
       val newUser =
           User(
               user.uid,
