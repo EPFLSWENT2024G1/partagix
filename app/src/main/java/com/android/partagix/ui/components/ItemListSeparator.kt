@@ -42,6 +42,7 @@ fun ItemListColumn(
     corner: String,
     isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
+    isClickable : Boolean,
     onClickCorner: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +74,7 @@ fun ItemListColumn(
         itemList = list,
         users = users,
         loan = loan,
-        onClick = onClick,
+        onClick = if (isClickable) { onClick } else { {} },
         modifier = Modifier.fillMaxSize())
   }
 }

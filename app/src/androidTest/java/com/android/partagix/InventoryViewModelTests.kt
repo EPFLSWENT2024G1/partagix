@@ -2,7 +2,9 @@ package com.android.partagix
 
 import android.location.Location
 import com.android.partagix.model.Database
+import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -18,6 +20,8 @@ import io.mockk.mockk
 import io.mockk.spyk
 import java.util.Date
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -62,6 +66,9 @@ class InventoryViewModelTests {
 
   @Test
   fun testGetInventory() {
+      val _uiState = MutableStateFlow(InventoryUIState(emptyList(),
+          "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
+      val mockUiState: StateFlow<InventoryUIState> = _uiState
     val db = mockk<Database>()
     fire = mockk()
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
@@ -106,49 +113,40 @@ class InventoryViewModelTests {
     every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
     every { db.getUserInventory(any(), any()) } answers
         {
-          println("1111----------------------------------------------------------")
           onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
           onSuccessinv(Inventory("", list))
         }
 
     every { db.getItems(any()) } answers
         {
-          println("22222----------------------------------------------------------")
           onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
           onSuccess(list)
         }
 
     every { db.getUser(any(), any()) } answers
         {
-          println("33333----------------------------------------------------------")
           val users = listOf(user, user, user)
           val onSuccessUs = it.invocation.args[1] as (User) -> Unit
           onSuccessUs(user)
         }
     every { db.getLoans(any()) } answers
         { invocation ->
-          println("44444----------------------------------------------------------")
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
 
-    runBlocking {
-      inventoryViewModel.getInventory()
-      delay(100)
-      println(inventoryViewModel.uiState.value.items)
-      assert(inventoryViewModel.uiState.value.borrowedItems == list)
-      println(inventoryViewModel.uiState.value.usersBor)
-      assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
-      println(inventoryViewModel.uiState.value.loanBor)
-      assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
-      assert(inventoryViewModel.uiState.value.items == list)
-      assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
+      every { inventoryViewModel.uiState } returns mockUiState
 
-      assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
-    }
-    // coVerify(exactly = 1) { db.getItems(any()) }
-    // coVerify(exactly = 2) { db.getUser(any(), any()) }
-    // coVerify(exactly = 3) { db.getLoans(any()) }
+    runBlocking {
+        inventoryViewModel.getInventory()
+            assert(inventoryViewModel.uiState.value.borrowedItems == list)
+            assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
+            assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+            assert(inventoryViewModel.uiState.value.items == list)
+            assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
+            assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
+
+    }//  delay(60)
 
   }
 

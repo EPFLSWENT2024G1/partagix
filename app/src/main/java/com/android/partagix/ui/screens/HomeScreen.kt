@@ -128,6 +128,7 @@ fun HomeScreen(
                   onClick = { /* TODO navigate to borrow request */},
                   onClickCorner = {},
                   isCornerClickable = false,
+                  isClickable = true,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }
