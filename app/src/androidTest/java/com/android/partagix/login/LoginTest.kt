@@ -1,16 +1,16 @@
-package com.android.partagix.authentication
+package com.android.partagix.login
 
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.registerForActivityResult
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.screens.LoginScreen
 import com.android.partagix.screens.LoginScreen2
 import com.android.partagix.ui.App
-import com.android.partagix.ui.MainActivity
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.LoginScreen
