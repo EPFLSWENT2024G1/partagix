@@ -98,7 +98,7 @@ fun StampScreen(
                           "ZQWESXRDCFTVGY42",
                           uiLabel,
                           uiDetailedDimension) // TODO: have a clean way for the viewmodel to get
-                                               // the itemId, without relying on the ui to pass it.
+                      // the itemId, without relying on the ui to pass it.
                       navigationActions.goBack()
                     },
                     content = { Text("Download stamps") })
