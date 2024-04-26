@@ -1,12 +1,13 @@
 package com.android.partagix.stamp
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.text.TextRange
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.screens.StampScreen
 import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.StampScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -40,6 +41,12 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   }
 
   @Test fun testTest() = run { assert(true) }
+
+  //    scaffold
+  @Test
+  fun stampScreenIsDisplayed() = run {
+    onComposeScreen<StampScreen>(composeTestRule) { stampScreen { assertIsDisplayed() } }
+  }
 
   //    topAppBar
   @Test
@@ -85,6 +92,18 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   @Test
   fun labelTextFieldIsDisplayed() = run {
     onComposeScreen<StampScreen>(composeTestRule) { labelTextField { assertIsDisplayed() } }
+  }
+
+  @OptIn(ExperimentalTestApi::class)
+  fun labelTextFieldWorks() = run {
+    onComposeScreen<StampScreen>(composeTestRule) {
+      labelTextField {
+        assertIsDisplayed()
+        performTextInput(
+            "this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_")
+      }
+      performTextInputSelection(TextRange(0, 40))
+    }
   }
 
   //    downloadRow
