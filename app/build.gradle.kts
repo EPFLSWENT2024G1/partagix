@@ -221,6 +221,9 @@ dependencies {
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
 
+    // ----------       QR code     ------------
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1") // added for QRCode.kt
+
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
 }
