@@ -90,6 +90,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
           findTime(it, ::updateLoanBor)
         }
         database.getItems {
+          println(it)
           updateInv(it)
           getUsers(it, ::updateUsers)
           findTime(it, ::updateLoan)
@@ -135,6 +136,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   }
 
   fun updateBor(new: List<Item>) {
+    println(new)
     _uiState.value = _uiState.value.copy(borrowedItems = new)
     fetchedBorrowed = new
   }

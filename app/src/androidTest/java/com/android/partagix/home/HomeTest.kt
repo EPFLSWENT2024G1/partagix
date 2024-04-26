@@ -52,8 +52,8 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     every { mockInventoryViewModel.getInventory() } just Runs
 
-    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
-    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
+    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
