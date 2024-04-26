@@ -50,7 +50,6 @@ class Authentication(
     signInLauncher.launch(signInIntent)
   }
 
-    
   private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
     val response = result.idpResponse
     if (result.resultCode == RESULT_OK) {
