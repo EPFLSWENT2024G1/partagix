@@ -20,13 +20,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -41,6 +46,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -63,6 +69,7 @@ class App(
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
+  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -175,7 +182,12 @@ class App(
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
-      composable(Route.HOME) { HomeScreen(navigationActions) }
+      composable(Route.HOME) {
+        HomeScreen(
+            homeViewModel = HomeViewModel(),
+            inventoryViewModel = InventoryViewModel(),
+            navigationActions = navigationActions)
+      }
       composable(Route.LOAN) {
         if (checkLocationPermissions()) {
           fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -191,7 +203,10 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          HomeScreen(navigationActions)
+          HomeScreen(
+              homeViewModel = HomeViewModel(),
+              inventoryViewModel = InventoryViewModel(),
+              navigationActions = navigationActions)
         }
       }
       composable(Route.INVENTORY) {
@@ -206,13 +221,23 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM) { InventoryViewItem(navigationActions, itemViewModel) }
+      composable(Route.VIEW_ITEM) {
+        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
+      }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
+      composable(
+          Route.STAMP + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            StampScreen(
+                modifier = modifier,
+                stampViewModel = StampViewModel(activity),
+                navigationActions = navigationActions)
+          }
     }
   }
 
