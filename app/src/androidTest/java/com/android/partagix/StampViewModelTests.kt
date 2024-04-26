@@ -1,10 +1,7 @@
 package com.android.partagix
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.net.Uri
 import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.test.core.app.ActivityScenario
 import com.android.partagix.model.CREATE_PNG_FILE
 import com.android.partagix.model.StampViewModel
 import io.mockk.Runs
@@ -55,6 +52,7 @@ class StampViewModelTests {
     coVerify(exactly = 4) { mockContext.setQrBytes(any()) }
     coVerify(exactly = 4) { startActivityForResult(mockContext, any(), CREATE_PNG_FILE, null) }
   }
+
   @Test
   fun testGenerateQrCodeAndSaveEmptyLabel() {
     val itemId = "testItemId"
@@ -76,5 +74,4 @@ class StampViewModelTests {
     coVerify(exactly = 1) { mockContext.setQrBytes(any()) }
     coVerify(exactly = 1) { startActivityForResult(mockContext, any(), CREATE_PNG_FILE, null) }
   }
-
 }

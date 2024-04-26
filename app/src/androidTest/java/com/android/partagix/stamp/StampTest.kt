@@ -13,7 +13,6 @@ import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
-import io.mockk.Awaits
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
@@ -40,7 +39,9 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.goBack() } just Runs
 
-    composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, "123456",  mockNavActions) }
+    composeTestRule.setContent {
+      StampScreen(Modifier, mockStampViewModel, "123456", mockNavActions)
+    }
   }
 
   @Test fun testTest() = run { assert(true) }

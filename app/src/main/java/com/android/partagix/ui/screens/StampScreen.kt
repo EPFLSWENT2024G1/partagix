@@ -38,7 +38,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 fun StampScreen(
     modifier: Modifier = Modifier,
     stampViewModel: StampViewModel,
-    itemID : String,
+    itemID: String,
     navigationActions: NavigationActions,
 ) {
   val MAX_LABEL_LENGTH = 40
@@ -95,10 +95,7 @@ fun StampScreen(
                 Button(
                     modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                     onClick = {
-                      stampViewModel.generateQRCodeAndSave(
-                          itemID,
-                          uiLabel,
-                          uiDetailedDimension)
+                      stampViewModel.generateQRCodeAndSave(itemID, uiLabel, uiDetailedDimension)
                       navigationActions.goBack()
                     },
                     content = { Text("Download stamps") })
