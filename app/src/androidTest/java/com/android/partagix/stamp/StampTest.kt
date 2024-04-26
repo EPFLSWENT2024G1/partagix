@@ -34,7 +34,6 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     mockStampViewModel = mockk()
 
     mockNavActions = mockk<NavigationActions>()
-    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
