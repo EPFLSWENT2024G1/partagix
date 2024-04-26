@@ -218,6 +218,7 @@ class App(
             StampScreen(
                 modifier = modifier,
                 stampViewModel = StampViewModel(activity),
+                itemID = it.arguments?.getString("itemId") ?: "",
                 navigationActions = navigationActions)
           }
     }
