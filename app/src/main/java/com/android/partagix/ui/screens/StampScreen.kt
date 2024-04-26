@@ -95,7 +95,10 @@ fun StampScreen(
                     modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                     onClick = {
                       stampViewModel.generateQRCodeAndSave(
-                          "ZQWESXRDCFTVGY42", uiLabel, uiDetailedDimension)
+                          "ZQWESXRDCFTVGY42",
+                          uiLabel,
+                          uiDetailedDimension) // TODO: have a clean way for the viewmodel to get
+                                               // the itemId, without relying on the ui to pass it.
                       navigationActions.goBack()
                     },
                     content = { Text("Download stamps") })
