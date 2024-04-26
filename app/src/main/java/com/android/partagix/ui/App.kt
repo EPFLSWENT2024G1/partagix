@@ -51,10 +51,11 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
-) : ComponentActivity(), SignInResultListener {
+) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
 
+  private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -89,8 +90,12 @@ class App(
               Inventory(user.uid, emptyList()))
       db.getUser(user.uid, { db.createUser(newUser) }, {})
     }
-    navigationActions.navigateTo(Route.HOME)
-    Log.d(TAG, "onSignInSuccess: user=$user")
+    //test that navigationActions has been initialized
+
+    if(navigationActionsInitialized){
+      navigationActions.navigateTo(Route.HOME)
+    }
+      Log.d(TAG, "onSignInSuccess: user=$user")
   }
 
   override fun onSignInFailure(errorCode: Int) {
@@ -108,6 +113,7 @@ class App(
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
 
+    navigationActionsInitialized = true
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
 

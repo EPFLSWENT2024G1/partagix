@@ -10,12 +10,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.Database
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
+import com.android.partagix.screens.LoginScreen
+import com.android.partagix.screens.LoginScreen2
 import com.android.partagix.screens.NavigationBar
 import com.android.partagix.screens.ViewAccount
+import com.android.partagix.ui.App
 import com.android.partagix.ui.MainActivity
+import com.android.partagix.ui.navigation.Route
+import com.google.firebase.auth.FirebaseUser
 import io.github.kakaocup.compose.node.element.ComposeScreen
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -184,6 +191,7 @@ class EndToEnd {
     // Close the activity after the test
     scenario.close()
   }
+
 
   /*TODO: add the navigation to the loan screen when it's pushed on the main with its tests*/
 }
