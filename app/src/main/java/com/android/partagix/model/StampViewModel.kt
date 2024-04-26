@@ -20,7 +20,7 @@ const val CREATE_PNG_FILE = 50
 
 class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainActivity) :
     ViewModel() {
-  private val qrCodeBuilder = QRCode.ofRoundedSquares()
+  private val qrCodeBuilder = QRCode.ofSquares()
 
   private fun setSize(qrCodeBuilder: QRCodeBuilder, dim: StampDimension) {
     when (dim) {
@@ -92,7 +92,6 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
         } else {
           qrCode
         }
-
     val intent =
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
           addCategory(Intent.CATEGORY_OPENABLE)
