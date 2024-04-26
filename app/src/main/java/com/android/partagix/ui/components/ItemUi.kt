@@ -46,7 +46,6 @@ import java.util.Date
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: Item, user: User, loan: Loan) {
-  val inventory = InventoryViewModel()
   val Date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate

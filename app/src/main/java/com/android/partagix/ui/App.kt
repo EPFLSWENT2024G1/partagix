@@ -167,7 +167,7 @@ class App(
       composable(Route.HOME) {
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = InventoryViewModel(),
+            inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -187,7 +187,7 @@ class App(
         } else {
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = InventoryViewModel(),
+              inventoryViewModel = inventoryViewModel,
               navigationActions = navigationActions)
         }
       }
