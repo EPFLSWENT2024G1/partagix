@@ -171,7 +171,7 @@ fun InventoryViewItem(
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
-                      onClick = { /*TODO: go to qrcode dl page*/},
+                      onClick = { navigationActions.navigateTo("${Route.STAMP}/${item.id}") },
                       content = { Text("Download QR code") },
                       modifier = Modifier.fillMaxWidth(0.5f))
 

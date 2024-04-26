@@ -20,10 +20,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
@@ -42,6 +44,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -72,6 +75,7 @@ class App(
     ComposeNavigationSetup()
     // -----------------------a changer
     // Initially, navigate to the boot screen
+    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -208,6 +212,14 @@ class App(
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
+      composable(
+          Route.STAMP + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            StampScreen(
+                modifier = modifier,
+                stampViewModel = StampViewModel(activity),
+                navigationActions = navigationActions)
+          }
     }
   }
 
