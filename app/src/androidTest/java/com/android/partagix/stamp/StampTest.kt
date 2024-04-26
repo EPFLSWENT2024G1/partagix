@@ -34,16 +34,10 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     mockStampViewModel = mockk()
 
     mockNavActions = mockk<NavigationActions>()
-    every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
-    every { mockNavActions.navigateTo(Route.BOOT) } just Runs
-    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
-    every { mockNavActions.navigateTo(Route.EDIT_ITEM) } just Runs
-    every { mockNavActions.navigateTo(Route.CREATE_ITEM) } just Runs
-    every { mockNavActions.navigateTo(Route.STAMP) } just Runs
     every { mockNavActions.goBack() } just Runs
 
     composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, mockNavActions) }
