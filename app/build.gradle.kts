@@ -139,6 +139,9 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
+  androidTestImplementation(platform(libs.compose.bom))
+  androidTestImplementation(libs.compose.test.junit)
+  globalTestImplementation(libs.androidx.junit)
     testImplementation(libs.mockito.kotlin)
     implementation(libs.play.services.location)
     globalTestImplementation(libs.androidx.junit)
@@ -202,6 +205,7 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
 
     // ----------       Mockk     ------------
     testImplementation("io.mockk:mockk:${mockkVersion}")
@@ -216,6 +220,9 @@ dependencies {
 
     // ----------       Coil     ------------
     implementation("io.coil-kt:coil-compose:2.5.0") // added for ImagePicker.kt
+
+    // ----------       QR code     ------------
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1") // added for QRCode.kt
 
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")

@@ -14,7 +14,9 @@ import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.screens.NavigationBar
 import com.android.partagix.screens.ViewAccount
-import com.android.partagix.ui.MainActivity
+
+import com.android.partagix.model.Database
+import com.android.partagix.MainActivity
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import org.junit.Rule
 import org.junit.Test
@@ -37,6 +39,7 @@ class EndToEnd {
 
     // Wait for the activity to be in the resumed state
     scenario.moveToState(Lifecycle.State.RESUMED)
+    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed() }
 
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Home").isDisplayed() }
     // check that the bottom bar is well displayed
