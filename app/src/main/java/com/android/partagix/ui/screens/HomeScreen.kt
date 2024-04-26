@@ -118,15 +118,16 @@ fun HomeScreen(
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               ItemListColumn(
-                  List =
+                  list =
                       uiState.borrowedItems, // TODO replace this with the actual list of borrowing
                   // requests
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
-                  Title = "",
-                  corner = "", // TODO this should be a button to the full borrowing screen
-                  onClick = { /* TODO navigate to borrow request */},
-                  onClickCorner = {},
+                  title = "",
+                  corner = "see all", // TODO this should be a button to the full borrowing screen
+                  onClick = { /* TODO scroll down the borrow request */},
+                  onClickCorner = {/* TODO navigate to borrow request */},
+                  isCornerClickable = true,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }
