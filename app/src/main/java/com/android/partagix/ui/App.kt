@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -90,12 +89,12 @@ class App(
               Inventory(user.uid, emptyList()))
       db.getUser(user.uid, { db.createUser(newUser) }, {})
     }
-    //test that navigationActions has been initialized
+    // test that navigationActions has been initialized
 
-    if(navigationActionsInitialized){
+    if (navigationActionsInitialized) {
       navigationActions.navigateTo(Route.HOME)
     }
-      Log.d(TAG, "onSignInSuccess: user=$user")
+    Log.d(TAG, "onSignInSuccess: user=$user")
   }
 
   override fun onSignInFailure(errorCode: Int) {
