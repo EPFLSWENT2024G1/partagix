@@ -120,9 +120,10 @@ class App(
     navigationActions = remember(navController) { NavigationActions(navController) }
 
     navigationActionsInitialized = true
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-
+    //val navBackStackEntry by navController.currentBackStackEntryAsState()
+    //val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+      // The 2 previous lines were causing the navigation issues.
+    val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
         selectedDestination = selectedDestination,
