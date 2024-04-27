@@ -29,7 +29,7 @@ class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
     db: Database = Database(),
-    private val onItemSaved : (Item) -> Unit = {}
+    private val onItemSaved: (Item) -> Unit = {}
 ) : ViewModel() {
 
   private val database = db

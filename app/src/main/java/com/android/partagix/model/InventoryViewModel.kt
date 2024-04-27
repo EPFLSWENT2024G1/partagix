@@ -153,13 +153,10 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
 
-  fun updateItem(new: Item){
-    val items: List<Item> = _uiState.value.items.map {
-      if (it.id == new.id) new else it
-    }
-    val borrowedItems: List<Item> = _uiState.value.borrowedItems.map {
-      if (it.id == new.id) new else it
-    }
+  fun updateItem(new: Item) {
+    val items: List<Item> = _uiState.value.items.map { if (it.id == new.id) new else it }
+    val borrowedItems: List<Item> =
+        _uiState.value.borrowedItems.map { if (it.id == new.id) new else it }
     _uiState.value = _uiState.value.copy(items = items, borrowedItems = borrowedItems)
   }
   /**

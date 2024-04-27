@@ -64,8 +64,8 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val itemViewModel = ItemViewModel(db = db,
-    onItemSaved = { item -> inventoryViewModel.updateItem(item) })
+  private val itemViewModel =
+      ItemViewModel(db = db, onItemSaved = { item -> inventoryViewModel.updateItem(item) })
   private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
 
