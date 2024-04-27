@@ -88,8 +88,6 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
           updateBor(it)
           getusers(it, ::updateUsersBor)
           findtime(it, ::updateLoanBor)
-        }
-        database.getItems {
           updateInv(it)
           getusers(it, ::updateUsers)
           findtime(it, ::updateLoan)
