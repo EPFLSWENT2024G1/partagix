@@ -57,7 +57,6 @@ fun InventoryScreen(
   val keyboardController = LocalSoftwareKeyboardController.current
   var active by remember { mutableStateOf(false) }
 
-  inventoryViewModel.getInventory()
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
       topBar = {
