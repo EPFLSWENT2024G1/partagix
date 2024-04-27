@@ -28,7 +28,8 @@ import kotlinx.coroutines.flow.StateFlow
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
-    db: Database = Database()
+    db: Database = Database(),
+    private val onItemSaved : (Item) -> Unit = {}
 ) : ViewModel() {
 
   private val database = db
@@ -77,6 +78,7 @@ class ItemViewModel(
       updateUiState(new)
       database.setItem(new)
     }
+    onItemSaved(new)
   }
 
   companion object {
