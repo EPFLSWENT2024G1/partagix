@@ -1,6 +1,8 @@
 package com.android.partagix.ui.components
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,14 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.android.partagix.R
+import coil.compose.rememberAsyncImagePainter
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -127,8 +128,16 @@ fun ItemUi(item: Item, user: User, loan: Loan) {
                     lineHeight = 0.8.em,
                     modifier = Modifier.width(100.dp).height(20.dp))
               }
+              var imgBitmap: Bitmap? = null
+              val imgFile = item.imageId
+              if (imgFile.exists()) {
+                // on below line we are creating an image bitmap variable
+                // and adding a bitmap to it from image file.
+                imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+              }
+
               Image(
-                  painter = painterResource(id = R.drawable.mutliprise),
+                  painter = rememberAsyncImagePainter(model = imgBitmap),
                   contentDescription = "fds",
                   contentScale = ContentScale.FillBounds,
                   modifier = Modifier.width(70.dp))

@@ -14,6 +14,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import getImagesFromFirebaseStorage
 
 class Database(database: FirebaseFirestore = Firebase.firestore) {
 
@@ -24,9 +25,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val categories = db.collection("categories")
   private val itemLoan = db.collection("item_loan")
 
-  init {
-    // createExampleForDb()
-  }
+  init {}
 
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
@@ -59,6 +58,10 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     items
         .get()
         .addOnSuccessListener { result ->
+          val paths = mutableListOf<String>()
+          for (document in result) {
+            paths.add(document.data["image_path"] as String)
+          }
           categories
               .get()
               .addOnSuccessListener { result2 ->
@@ -68,27 +71,31 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       Category(document.data["id"] as String, document.data["name"] as String)
                 }
 
-                val ret = mutableListOf<Item>()
-                for (document in result) {
-                  val locationMap = document.data["location"] as HashMap<*, *>
-                  val location = toLocation(locationMap)
+                getImagesFromFirebaseStorage(paths) { localFiles ->
+                  val ret = mutableListOf<Item>()
+                  var count = 0
+                  for (document in result) {
+                    val locationMap = document.data["location"] as HashMap<*, *>
+                    val location = toLocation(locationMap)
 
-                  val visibility = (document.data["visibility"] as Long).toInt()
+                    val visibility = (document.data["visibility"] as Long).toInt()
 
-                  val item =
-                      Item(
-                          document.data["id"] as String,
-                          categories[document.data["id_category"] as String]!!,
-                          document.data["name"] as String,
-                          document.data["description"] as String,
-                          Visibility.values()[visibility],
-                          document.data["quantity"] as Long,
-                          location,
-                          document.data["id_user"] as String,
-                      )
-                  ret.add(item)
+                    val item =
+                        Item(
+                            document.data["id"] as String,
+                            categories[document.data["id_category"] as String]!!,
+                            document.data["name"] as String,
+                            document.data["description"] as String,
+                            Visibility.values()[visibility],
+                            document.data["quantity"] as Long,
+                            location,
+                            document.data["id_user"] as String,
+                            localFiles[count++])
+
+                    ret.add(item)
+                  }
+                  onSuccess(ret)
                 }
-                onSuccess(ret)
               }
               .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
         }
