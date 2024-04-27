@@ -28,13 +28,14 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     // createExampleForDb()
   }
 
-  fun getUser(idUser: String, onSuccess: (User) -> Unit) {
+  fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
         .get()
         .addOnSuccessListener { result ->
+          var found = false
           for (document in result) {
             if (document.data["id"] as String == idUser) {
-
+              found = true
               getUserInventory(idUser) { inventory ->
                 val user =
                     User(
@@ -46,6 +47,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                 onSuccess(user)
               }
             }
+          }
+          if (!found) {
+            onNoUser()
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
@@ -321,6 +325,17 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
+  }
+
+  fun createUser(user: User) {
+    val data =
+        hashMapOf(
+            "id" to user.id,
+            "name" to user.name,
+            "addr" to user.address,
+            "rank" to user.rank,
+        )
+    users.document(user.id).set(data)
   }
 
   companion object {
