@@ -55,7 +55,8 @@ fun ItemList(
                 if (loan.isEmpty()) {
                   Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                 } else {
-                  loan[index]
+                  Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                  //loan[index] TODO this causes issue because the index is not the same
                 })
       }
       Spacer(modifier = Modifier.height(8.dp))
