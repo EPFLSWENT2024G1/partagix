@@ -171,8 +171,11 @@ fun InventoryCreateOrEditItem(
             Spacer(modifier = modifier.height(8.dp))
 
             OutlinedTextField(
-                value = uiQuantity.toString(),
-                onValueChange = { it -> uiQuantity = it.toLong() },
+                value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
+                onValueChange = { str ->
+                  val longValue: Long? = str.toLongOrNull()
+                  uiQuantity = longValue ?: 0L
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
                 modifier = modifier.testTag("quantity").fillMaxWidth(),
