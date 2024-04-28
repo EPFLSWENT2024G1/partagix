@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - pp/fixAPKBuild
   workflow_dispatch:
 
 permissions:
