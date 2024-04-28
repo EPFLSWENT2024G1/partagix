@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
@@ -66,7 +65,12 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val itemViewModel = ItemViewModel(db = db)
+  private val itemViewModel =
+      ItemViewModel(
+          db = db,
+          onItemSaved = { item -> inventoryViewModel.updateItem(item) },
+          onItemCreated = { item -> inventoryViewModel.createItem(item) },
+      )
   private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
 
@@ -120,9 +124,10 @@ class App(
     navigationActions = remember(navController) { NavigationActions(navController) }
 
     navigationActionsInitialized = true
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-
+    // val navBackStackEntry by navController.currentBackStackEntryAsState()
+    // val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+    // The 2 previous lines were causing the navigation issues.
+    val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
         selectedDestination = selectedDestination,
@@ -184,7 +189,7 @@ class App(
       composable(Route.HOME) {
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = InventoryViewModel(),
+            inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -204,7 +209,7 @@ class App(
         } else {
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = InventoryViewModel(),
+              inventoryViewModel = inventoryViewModel,
               navigationActions = navigationActions)
         }
       }

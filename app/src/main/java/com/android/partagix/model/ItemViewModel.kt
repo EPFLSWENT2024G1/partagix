@@ -28,7 +28,9 @@ import kotlinx.coroutines.flow.StateFlow
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
-    db: Database = Database()
+    db: Database = Database(),
+    private val onItemSaved: (Item) -> Unit = {},
+    private val onItemCreated: (Item) -> Unit = {}
 ) : ViewModel() {
 
   private val database = db
@@ -60,7 +62,7 @@ class ItemViewModel(
 
   /** Save the item with the current UI state in the database */
   fun save(new: Item) {
-    if (_uiState.value.item.id == "") {
+    if (new.id == "") {
       database.getIdCategory(new.category.name) {
         database.createItem(
             FirebaseAuth.getInstance().currentUser!!.uid,
@@ -73,8 +75,10 @@ class ItemViewModel(
                 new.quantity,
                 new.location))
       }
+      onItemCreated(new)
     } else {
       updateUiState(new)
+      onItemSaved(new)
       database.setItem(new)
     }
   }

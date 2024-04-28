@@ -64,7 +64,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-  inventoryViewModel.getInventory()
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
