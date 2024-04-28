@@ -3,7 +3,9 @@ package com.android.partagix
 import android.location.Location
 import com.android.partagix.model.Database
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -42,6 +44,7 @@ class DatabaseTests {
           "Name" to "905 Maple Drive",
           "CreatedDt" to Timestamp.now(),
           "OwnerName" to "Jim Smith")
+
   /**
    * Mocks the simplest behaviour of a task so .await() can return task or throw exception See more
    * on [await] and inside of that on awaitImpl
@@ -341,6 +344,52 @@ class DatabaseTests {
     verify(exactly = 1) { mockCategoriesCollection.get() }
 
     // Unmock static function
+    unmockkStatic(::now)
+  }
+
+  @Test
+  fun testCreateUser() {
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val taskCompletionSource = TaskCompletionSource<Void>()
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val user =
+        User(
+            documentId,
+            "",
+            "",
+            "",
+            Inventory("id", listOf()),
+        )
+
+    runBlocking {
+      database.createUser(user)
+
+      coVerify(exactly = 1) { database.createUser(user) }
+    }
+
+    //  Don't forget to unmock.
     unmockkStatic(::now)
   }
 }
