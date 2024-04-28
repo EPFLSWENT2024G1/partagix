@@ -215,7 +215,9 @@ fun InventoryCreateOrEditItem(
                           uiDescription,
                           uiVisibility,
                           uiQuantity,
-                          uiLocation))
+                          uiLocation,
+                          i.idUser,
+                        ))
                   navigationActions.goBack()
                 },
                 content = {
