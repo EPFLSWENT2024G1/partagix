@@ -83,7 +83,6 @@ class ItemViewModel(
     }
   }
 
-
   companion object {
     private const val TAG = "ItemViewModel"
   }

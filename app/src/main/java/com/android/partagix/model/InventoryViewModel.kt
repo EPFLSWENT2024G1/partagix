@@ -161,9 +161,10 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   }
 
   fun createItem(new: Item) {
-    _uiState.value = _uiState.value.copy(
-      items = _uiState.value.items.plus(new),
-    )
+    _uiState.value =
+        _uiState.value.copy(
+            items = _uiState.value.items.plus(new),
+        )
   }
   /**
    * getusers is a function that will update the user list with the users that are in the list
