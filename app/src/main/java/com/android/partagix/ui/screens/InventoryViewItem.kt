@@ -44,6 +44,7 @@ import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * Screen to view an item.
@@ -185,10 +186,13 @@ fun InventoryViewItem(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Button(
-                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
-                    content = { Text("Edit") },
-                    modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                // This should be displayed only if the user is the owner of the item
+                if (item.idUser == FirebaseAuth.getInstance().currentUser?.uid) {
+                  Button(
+                      onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
+                      content = { Text("Edit") },
+                      modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                }
               }
             }
       }
