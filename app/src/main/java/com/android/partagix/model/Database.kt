@@ -277,7 +277,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun createItem(userId: String, newItem: Item) {
 
     val idItem = getNewUid(items)
-    val data3 =
+    val data =
         hashMapOf(
             "id" to idItem,
             "id_category" to newItem.category.id,
@@ -287,11 +287,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location))
-    items.document(idItem).set(data3)
+    items.document(idItem).set(data)
   }
 
   fun setItem(newItem: Item) {
-    val data3 =
+    val data =
         hashMapOf(
             "id" to newItem.id,
             "id_category" to newItem.category.id,
@@ -303,7 +303,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "location" to locationToMap(newItem.location),
             "image_path" to "images/${newItem.imageId.name}"
         )
-    items.document(newItem.id).set(data3)
+    items.document(newItem.id).set(data)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.R
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
@@ -47,7 +48,6 @@ import java.util.Date
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(item: Item, user: User, loan: Loan) {
-  val inventory = InventoryViewModel()
   val Date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
