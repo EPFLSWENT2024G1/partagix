@@ -139,6 +139,7 @@ class InventoryViewModelTests {
 
     runBlocking {
         inventoryViewModel.getInventory()
+
             assert(inventoryViewModel.uiState.value.borrowedItems == list)
             assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
             assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
