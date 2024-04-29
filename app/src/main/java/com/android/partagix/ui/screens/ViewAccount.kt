@@ -64,7 +64,7 @@ fun ViewAccount(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null,
-                        modifier = Modifier.width(48.dp).testTag("backIcon"))
+                        modifier = Modifier.width(48.dp))
                   }
             })
       },
@@ -109,12 +109,7 @@ fun ViewAccount(
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
                   readOnly = true,
-                  leadingIcon = {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = null,
-                        modifier = Modifier.testTag("addressIcon"))
-                  })
+                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
               val rank = user.rank
               val stars: String
               if (rank == "") {
@@ -149,9 +144,10 @@ fun ViewAccount(
                     }
               }
               TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
                   value = stars,
                   onValueChange = {},
-                  label = { Text("Trust", modifier = Modifier.testTag("ratingText")) },
+                  label = { Text("Trust") },
                   colors =
                       TextFieldDefaults.colors(
                           focusedIndicatorColor = Color.Transparent,
@@ -160,14 +156,8 @@ fun ViewAccount(
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
                   readOnly = true,
-                  leadingIcon = {
-                    Icon(
-                        Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.testTag("ratingIcon"))
-                  })
+                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
               Spacer(modifier = Modifier.height(16.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),

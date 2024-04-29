@@ -23,7 +23,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
-import kotlin.math.round
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -42,20 +41,18 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
 
-  val cat1 = Category("1", "Category 1")
-  val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
-  val loc1 = Location("1")
+  private val cat1 = Category("1", "Category 1")
+  private val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
+  private val loc1 = Location("1")
 
-  private val emptyUser: User =
-    User("", "", "", "", Inventory("", emptyList()))
+  private val emptyUser: User = User("", "", "", "", Inventory("", emptyList()))
   private val userOne: User =
       User(
           "id1",
           "name1",
           "address1",
           "rank1",
-          Inventory("id1", listOf(
-            Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
+          Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
 
   @Before
   fun testSetup() {
@@ -221,54 +218,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     onComposeScreen<ViewAccount>(composeTestRule) { rating { assertIsDisplayed() } }
   }
 
-  @Test
-  fun ratingWorks() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
-    }
-
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      rating { assertIsDisplayed() }
-      //        ratingText { assertIsDisplayed() }
-
-      val rank = mockUserViewModel.uiState.value.user.rank
-      if (rank == "") {
-        //            ratingText { assertTextEquals("No trust yet") }
-      } else {
-        ratingText { assertTextContains("/5)") }
-
-        val ratingUnit = round(rank.toFloat())
-        when (ratingUnit.toInt()) {
-          0 -> {
-            ratingText { assertTextContains("☆☆☆☆☆") }
-          }
-          1 -> {
-            ratingText { assertTextContains("★☆☆☆☆") }
-          }
-          2 -> {
-            ratingText { assertTextContains("★★☆☆☆") }
-          }
-          3 -> {
-            ratingText { assertTextContains("★★★☆☆") }
-          }
-          4 -> {
-            ratingText { assertTextContains("★★★★☆") }
-          }
-          5 -> {
-            ratingText { assertTextContains("★★★★★") }
-          }
-          else -> {
-            ratingText { assertTextContains("...") }
-          }
-        }
-      }
-    }
-  }
-
   //    actionButtons
   @Test
   fun actionButtonsIsDisplayed() = run {
@@ -310,7 +259,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     onComposeScreen<ViewAccount>(composeTestRule) {
       inventoryButton { assertIsDisplayed() }
       inventoryButton { performClick() }
-      //        inventoryButtonText { assertIsDisplayed() }
     }
   }
 
@@ -341,7 +289,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     onComposeScreen<ViewAccount>(composeTestRule) {
       friendButton { assertIsDisplayed() }
       friendButton { performClick() }
-      //        viewAccount { assertIsNotFocused() }
     }
   }
 }
