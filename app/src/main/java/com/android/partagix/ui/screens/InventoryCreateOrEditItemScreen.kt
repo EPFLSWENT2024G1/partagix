@@ -125,6 +125,7 @@ fun InventoryCreateOrEditItem(
                     },
                     label = { Text("Object name") },
                     modifier = modifier.testTag("name").fillMaxWidth(),
+                    maxLines = 1, // Ensure only one line is displayed
                     readOnly = false)
 
                 OutlinedTextField(
