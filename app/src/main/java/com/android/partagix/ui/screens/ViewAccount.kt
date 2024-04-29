@@ -96,6 +96,7 @@ fun ViewAccount(
                   }
               Spacer(modifier = Modifier.height(16.dp))
               TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
                   value = user.address,
                   onValueChange = {},
                   label = { Text("Location", modifier = Modifier.testTag("addressText")) },
@@ -107,7 +108,6 @@ fun ViewAccount(
                           focusedContainerColor = Color.Transparent,
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
                   readOnly = true,
                   leadingIcon = {
                     Icon(

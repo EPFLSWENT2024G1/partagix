@@ -207,25 +207,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     onComposeScreen<ViewAccount>(composeTestRule) { address { assertIsDisplayed() } }
   }
 
-  @Test
-  fun addressWorks() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
-    }
-
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      address { assertIsDisplayed() }
-      val userAddress = mockUserViewModel.uiState.value.user.address
-      //        address { assertValueEquals(userAddress)}
-      //        addressText { assertIsDisplayed() }
-      //        addressIcon { assertIsDisplayed() }
-    }
-  }
-
   //    rating
   @Test
   fun ratingIsDisplayed() = run {
