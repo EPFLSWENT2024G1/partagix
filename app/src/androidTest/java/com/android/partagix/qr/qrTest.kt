@@ -23,39 +23,37 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class qrTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
-    @get:Rule val composeTestRule = createComposeRule()
+  @get:Rule val composeTestRule = createComposeRule()
 
-    @RelaxedMockK lateinit var mockNavActions: NavigationActions
+  @RelaxedMockK lateinit var mockNavActions: NavigationActions
 
-    @Before
-    fun testSetup() {
-        mockNavActions = mockk<NavigationActions>()
-        every { mockNavActions.navigateTo(Route.HOME) } just Runs
-        every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
-        every { mockNavActions.goBack() } just Runs
+  @Before
+  fun testSetup() {
+    mockNavActions = mockk<NavigationActions>()
+    every { mockNavActions.navigateTo(Route.HOME) } just Runs
+    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.goBack() } just Runs
 
-        composeTestRule.setContent {
-            QrScanScreen(mockNavActions)
-        }
+    composeTestRule.setContent { QrScanScreen(mockNavActions) }
+  }
+
+  @Test
+  fun textIsDisplayed() {
+    onComposeScreen<QrScanScreen>(composeTestRule) {
+      text {
+        assertIsDisplayed()
+        hasText("QrScanScreen")
+      }
     }
+  }
 
-    @Test
-    fun textIsDisplayed() {
-        onComposeScreen<QrScanScreen>(composeTestRule){
-            text {
-                assertIsDisplayed()
-                hasText("QrScanScreen")
-            }
-        }
+  @Test
+  fun backButton() {
+    onComposeScreen<QrScanScreen>(composeTestRule) {
+      backButton {
+        assertIsDisplayed()
+        performClick()
+      }
     }
-
-    @Test
-    fun backButton() {
-        onComposeScreen<QrScanScreen>(composeTestRule){
-            backButton {
-                assertIsDisplayed()
-                performClick()
-            }
-        }
-    }
+  }
 }
