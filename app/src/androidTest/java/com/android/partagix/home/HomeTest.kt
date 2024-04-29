@@ -64,6 +64,9 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
+    every { mockNavActions.navigateTo(Route.QR_SCAN) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
 
     composeTestRule.setContent {
       HomeScreen(
