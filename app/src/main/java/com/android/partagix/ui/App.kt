@@ -227,9 +227,11 @@ class App(
         ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
       composable(Route.VIEW_ITEM) {
+        itemViewModel.getUser()
         InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
       }
       composable(Route.CREATE_ITEM) {
+        itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
       composable(Route.EDIT_ITEM) {

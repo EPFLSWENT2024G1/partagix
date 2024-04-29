@@ -429,7 +429,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     onComposeScreen<LoanScreen>(composeTestRule) {
       itemListViewItem {
         assertIsDisplayed()
-        every { itemViewModel.updateUiState(any()) } just Runs
+        every { itemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
 

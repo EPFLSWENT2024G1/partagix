@@ -49,7 +49,7 @@ class UserViewModel(
 
     if (userID == null) {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else  {
+    } else {
       database.getUser(userID) { updateUIState(it) }
     }
   }

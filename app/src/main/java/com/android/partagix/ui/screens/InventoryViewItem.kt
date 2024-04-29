@@ -63,6 +63,7 @@ fun InventoryViewItem(
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
+  val user = uiState.value.user
 
   val color =
       TextFieldDefaults.colors(
@@ -118,7 +119,7 @@ fun InventoryViewItem(
                   Column {
                     LabeledText(label = "Object Name", text = item.name)
 
-                    LabeledText("Author", item.idUser)
+                    LabeledText("Author", user.name)
                   }
                 }
               }

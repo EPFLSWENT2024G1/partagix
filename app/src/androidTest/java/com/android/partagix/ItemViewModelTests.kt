@@ -60,12 +60,12 @@ class ItemViewModelTests {
     val db = mockk<Database>()
     val itemViewModel = spyk(ItemViewModel(db = db))
     every { itemViewModel.uiState } returns mockUiState
-    every { itemViewModel.updateUiState(itemWithID) } answers
+    every { itemViewModel.updateUiItem(itemWithID) } answers
         {
           _uiState.value = ItemUIState(itemWithID)
         }
     assert(mockUiState.value.item == emptyItem)
-    itemViewModel.updateUiState(itemWithID)
+    itemViewModel.updateUiItem(itemWithID)
     assert(mockUiState.value.item == itemWithID)
   }
 
@@ -163,12 +163,12 @@ class ItemViewModelTests {
 
     every { itemViewModel.uiState } returns mockUiState
 
-    every { itemViewModel.updateUiState(itemWithID) } answers
+    every { itemViewModel.updateUiItem(itemWithID) } answers
         {
           _uiState.value = ItemUIState(itemWithID)
         }
 
-    every { itemViewModel.updateUiState(itemWithIDmodified) } answers
+    every { itemViewModel.updateUiItem(itemWithIDmodified) } answers
         {
           _uiState.value = ItemUIState(itemWithIDmodified)
         }

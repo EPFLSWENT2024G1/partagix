@@ -19,7 +19,9 @@ package com.android.partagix.model
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,20 +32,21 @@ class ItemViewModel(
     id: String? = null,
     db: Database = Database(),
     private val onItemSaved: (Item) -> Unit = {},
-    private val onItemCreated: (Item) -> Unit = {}
+    private val onItemCreated: (Item) -> Unit = {},
+    user: User = User("", "", "", "", Inventory("", emptyList()))
 ) : ViewModel() {
 
   private val database = db
 
   // UI state exposed to the UI
-  private val _uiState = MutableStateFlow(ItemUIState(item))
+  private val _uiState = MutableStateFlow(ItemUIState(item, user))
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
     if (id != null) {
-      database.getItem(id) { newItem -> updateUiState(newItem) }
+      database.getItem(id) { newItem -> updateUiItem(newItem) }
     } else {
-      updateUiState(item)
+      updateUiItem(item)
     }
     // TODO: set the author field as the User's name
   }
@@ -53,10 +56,17 @@ class ItemViewModel(
    *
    * @param new the new item to update the UI state with
    */
-  fun updateUiState(new: Item) {
+  fun updateUiItem(new: Item) {
     _uiState.value =
         _uiState.value.copy(
             item = new,
+        )
+  }
+
+  fun updateUiUser(new: User) {
+    _uiState.value =
+        _uiState.value.copy(
+            user = new,
         )
   }
 
@@ -77,10 +87,15 @@ class ItemViewModel(
       }
       onItemCreated(new)
     } else {
-      updateUiState(new)
+      updateUiItem(new)
       onItemSaved(new)
       database.setItem(new)
     }
+  }
+
+  fun getUser() {
+    println("----- getUser")
+    database.getUser(uiState.value.item.idUser) { user -> updateUiUser(user) }
   }
 
   companion object {
@@ -88,4 +103,4 @@ class ItemViewModel(
   }
 }
 
-data class ItemUIState(val item: Item)
+data class ItemUIState(val item: Item, val user: User)
