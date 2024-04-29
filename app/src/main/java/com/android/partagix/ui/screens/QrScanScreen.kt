@@ -15,12 +15,9 @@ import com.android.partagix.ui.navigation.NavigationActions
 fun QrScanScreen(navigationActions: NavigationActions, modifier: Modifier = Modifier) {
   Column {
     IconButton(
-      modifier = Modifier.testTag("backButton"),
-      onClick = { navigationActions.goBack() }) {
-      Icon(
-        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-        contentDescription = null)
-    }
+        modifier = Modifier.testTag("backButton"), onClick = { navigationActions.goBack() }) {
+          Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+        }
     Text(text = "QrScanScreen")
   }
 }
