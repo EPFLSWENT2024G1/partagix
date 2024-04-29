@@ -6,7 +6,9 @@ import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryViewItem
 import com.android.partagix.ui.navigation.NavigationActions
@@ -46,7 +48,9 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
           quantity = 1,
           location = mockk(),
           idUser = "id_user")
-  private var _uiState = MutableStateFlow(ItemUIState(item1))
+  val emptyUser = User("", "", "", "", Inventory("", emptyList()))
+
+  private var _uiState = MutableStateFlow(ItemUIState(item1, emptyUser))
   private var mockUiState: StateFlow<ItemUIState> = _uiState
 
   @Before

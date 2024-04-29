@@ -48,7 +48,6 @@ class ItemViewModel(
     } else {
       updateUiItem(item)
     }
-    // TODO: set the author field as the User's name
   }
 
   /**

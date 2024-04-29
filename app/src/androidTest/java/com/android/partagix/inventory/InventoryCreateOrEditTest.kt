@@ -6,7 +6,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.ui.navigation.NavigationActions
@@ -42,13 +44,14 @@ class InventoryCreateOrEditTest :
   fun testSetup() {
 
     val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
-    emptyMockUiState = MutableStateFlow(ItemUIState(emptyItem))
+    val emptyUser = User("", "", "", "", Inventory("", emptyList()))
+    emptyMockUiState = MutableStateFlow(ItemUIState(emptyItem,emptyUser))
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
     val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
 
-    nonEmptyMockUiState = MutableStateFlow(ItemUIState(item))
+    nonEmptyMockUiState = MutableStateFlow(ItemUIState(item,emptyUser))
 
     mockViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState

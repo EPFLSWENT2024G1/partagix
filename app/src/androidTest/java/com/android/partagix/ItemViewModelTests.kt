@@ -5,8 +5,10 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.model.user.User
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.firestore.CollectionReference
@@ -26,7 +28,7 @@ import org.junit.Test
 
 class ItemViewModelTests {
   val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
-
+  val emptyUser = User("", "", "", "", Inventory("", emptyList()))
   val itemWithID =
       Item(
           "8WuTkKJZLTAr6zs5L7rH",
@@ -55,14 +57,14 @@ class ItemViewModelTests {
    */
   @Test
   fun testUpdateUiState() {
-    val _uiState = MutableStateFlow(ItemUIState(emptyItem))
+    val _uiState = MutableStateFlow(ItemUIState(emptyItem,emptyUser))
     val mockUiState: StateFlow<ItemUIState> = _uiState
     val db = mockk<Database>()
     val itemViewModel = spyk(ItemViewModel(db = db))
     every { itemViewModel.uiState } returns mockUiState
     every { itemViewModel.updateUiItem(itemWithID) } answers
         {
-          _uiState.value = ItemUIState(itemWithID)
+          _uiState.value = ItemUIState(itemWithID,emptyUser)
         }
     assert(mockUiState.value.item == emptyItem)
     itemViewModel.updateUiItem(itemWithID)
@@ -75,7 +77,7 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveNewItem() {
-    val _uiState = MutableStateFlow(ItemUIState(emptyItem))
+    val _uiState = MutableStateFlow(ItemUIState(emptyItem,emptyUser))
     val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
@@ -125,7 +127,7 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveAnItem() {
-    val _uiState = MutableStateFlow(ItemUIState(itemWithID))
+    val _uiState = MutableStateFlow(ItemUIState(itemWithID,emptyUser))
     val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
@@ -165,12 +167,12 @@ class ItemViewModelTests {
 
     every { itemViewModel.updateUiItem(itemWithID) } answers
         {
-          _uiState.value = ItemUIState(itemWithID)
+          _uiState.value = ItemUIState(itemWithID,emptyUser)
         }
 
     every { itemViewModel.updateUiItem(itemWithIDmodified) } answers
         {
-          _uiState.value = ItemUIState(itemWithIDmodified)
+          _uiState.value = ItemUIState(itemWithIDmodified,emptyUser)
         }
 
     runBlocking {
