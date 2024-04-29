@@ -97,7 +97,7 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.PersonSearch,
                         text = findItemButtonName,
-                        onClick = {},
+                        onClick = {navigationActions.navigateTo(Route.LOAN)},
                         modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
