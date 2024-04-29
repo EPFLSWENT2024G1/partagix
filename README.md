@@ -1,6 +1,8 @@
 ![CI Status](https://github.com/EPFLSWENT2024G1/partagix/actions/workflows/ci.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EPFLSWENT2024G1_partageix&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EPFLSWENT2024G1_partageix)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=EPFLSWENT2024G1_partageix&metric=coverage)](https://sonarcloud.io/summary/new_code?id=EPFLSWENT2024G1_partageix)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=EPFLSWENT2024G1_partageix&metric=line_coverage)](https://sonarcloud.io/summary/new_code?id=EPFLSWENT2024G1_partageix)
+
 
 
 # PartageIx
