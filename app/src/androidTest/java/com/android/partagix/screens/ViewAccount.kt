@@ -17,10 +17,8 @@ class ViewAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val topBar: KNode = child { hasTestTag("topBar") } // topappbar
   val title: KNode = child { hasTestTag("title") } // text
   val backButton: KNode = child { hasTestTag("backButton") } // iconbutton
-  val backIcon: KNode = child { hasTestTag("backIcon") } // icon
   val accountScreenBottomNavBar: KNode = child {
-    hasTestTag("accountScreenBottomNavBar")
-  } // BottomNavigationBar
+    hasTestTag("accountScreenBottomNavBar") } // BottomNavigationBar
   val mainContent: KNode = child { hasTestTag("mainContent") } // column
   val userImage: KNode = child { hasTestTag("userImage") } // image
   val username: KNode = child { hasTestTag("username") } // row

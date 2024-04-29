@@ -112,7 +112,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       topBar { assertIsDisplayed() }
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
-                  backButton { performClick() }
+      backButton { performClick() }
     }
   }
 
@@ -187,7 +187,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
     onComposeScreen<ViewAccount>(composeTestRule) {
       username { assertIsDisplayed() }
-      //            usernameText { assertIsDisplayed() }
+      usernameText { assertIsDisplayed() }
       val username = mockUserViewModel.uiState.value.user.name
       usernameText { assertTextEquals("$username's profile") }
     }
