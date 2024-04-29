@@ -15,7 +15,7 @@ object Route {
   const val LOGIN = "Login"
   const val HOME = "Home"
   const val INVENTORY = "Inventory"
-  const val SCAN = "Scan"
+  const val QR_SCAN = "QrScan"
   const val VIEW_ITEM = "ViewItem"
   const val LOAN = "Loan"
   const val ACCOUNT = "Account"
