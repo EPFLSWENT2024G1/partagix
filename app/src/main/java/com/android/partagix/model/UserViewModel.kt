@@ -44,16 +44,13 @@ class UserViewModel(
     }
   }
 
-  private fun setUserToCurrent() {
+  fun setUserToCurrent() {
     val userID = FirebaseAuth.getInstance().currentUser?.uid
 
     if (userID == null) {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else if (userID != "" &&
-        false) { // TODO: remove false when logged in users are in the database
+    } else  {
       database.getUser(userID) { updateUIState(it) }
-    } else {
-      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
     }
   }
 

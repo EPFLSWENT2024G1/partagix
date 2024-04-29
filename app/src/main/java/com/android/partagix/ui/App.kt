@@ -223,7 +223,8 @@ class App(
       composable(
           Route.ACCOUNT,
       ) {
-        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+        userViewModel.setUserToCurrent()
+        ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
       composable(Route.VIEW_ITEM) {
         InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
