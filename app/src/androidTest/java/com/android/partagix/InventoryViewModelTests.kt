@@ -135,13 +135,12 @@ class InventoryViewModelTests {
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
 
-      every { inventoryViewModel.uiState } returns mockUiState
-
     runBlocking {
         inventoryViewModel.getInventory()
-
-            assert(inventoryViewModel.uiState.value.borrowedItems == list)
-            assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
+        delay(1260)
+        println(inventoryViewModel.uiState.value.borrowedItems)
+        assert(inventoryViewModel.uiState.value.borrowedItems == list)
+        assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
             assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
             assert(inventoryViewModel.uiState.value.items == list)
             assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
