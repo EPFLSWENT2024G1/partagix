@@ -18,6 +18,6 @@ fun QrScanScreen(navigationActions: NavigationActions, modifier: Modifier = Modi
         modifier = Modifier.testTag("backButton"), onClick = { navigationActions.goBack() }) {
           Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
         }
-    Text(text = "QrScanScreen")
+    Text(modifier = Modifier.testTag("TODO tag"), text = "QrScanScreen")
   }
 }
