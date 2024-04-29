@@ -94,7 +94,6 @@ class ItemViewModel(
   }
 
   fun getUser() {
-    println("----- getUser")
     database.getUser(uiState.value.item.idUser) { user -> updateUiUser(user) }
   }
 
