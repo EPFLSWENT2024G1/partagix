@@ -109,7 +109,7 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.ImageSearch,
                         text = findItemIventoryName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               Text(
