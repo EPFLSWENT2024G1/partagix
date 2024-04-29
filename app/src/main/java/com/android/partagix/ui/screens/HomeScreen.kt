@@ -103,7 +103,7 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = { navigationActions.navigateTo(Route.QR_SCAN )},
+                        onClick = { navigationActions.navigateTo(Route.QR_SCAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
