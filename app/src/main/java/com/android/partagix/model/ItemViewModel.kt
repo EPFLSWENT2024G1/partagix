@@ -82,9 +82,10 @@ class ItemViewModel(
       database.setItem(new)
     }
   }
-    fun check(id: String, userId : String?): Boolean {
-        return id == userId
-    }
+
+  fun check(id: String, userId: String?): Boolean {
+    return id == userId
+  }
 
   companion object {
     private const val TAG = "ItemViewModel"

@@ -197,4 +197,3 @@ fun InventoryViewItem(
             }
       }
 }
-
