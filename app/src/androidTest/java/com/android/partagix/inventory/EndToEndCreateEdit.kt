@@ -87,9 +87,7 @@ class EndToEndCreateEdit {
     mockItemUiState =
         MutableStateFlow(
             ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))))
-
     mockItemUiState2 = MutableStateFlow(ItemUIState(item2))
-
     mockItemUiState3 = MutableStateFlow(ItemUIState(item3))
 
     mockNavActions = mockk()
@@ -128,6 +126,7 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.email } returns "email"
   }
 
+  // Navigate from Home screen to Inventory screen
   @Test
   fun testA_goFromHomeToInventory() {
     every { mockInventoryViewModel.uiState } returns mockUiState
@@ -140,13 +139,12 @@ class EndToEndCreateEdit {
           navigationActions = mockNavActions)
     }
 
-    // val app = App(mockMainActivity, mockAuthentication, mockDatabase)
-
     composeTestRule.onNodeWithText("Inventory").performClick()
 
     coVerify(exactly = 1) { mockNavActions.navigateTo(TOP_LEVEL_DESTINATIONS[2]) }
   }
 
+  // Navigate from Inventory screen to Create Item screen
   @Test
   fun testB_InventoryEmptyToCreate() {
     every { mockInventoryViewModel.uiState } returns mockUiState
@@ -160,23 +158,23 @@ class EndToEndCreateEdit {
     }
 
     composeTestRule.onNodeWithText("There is no items in the inventory.").assertIsDisplayed()
-
     composeTestRule.onNodeWithTag("inventoryScreenFab").performClick()
 
     coVerify(exactly = 1) { mockNavActions.navigateTo(Route.CREATE_ITEM) }
   }
 
+  // Create an item
   @Test
   fun testC_CreateItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
+    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.save(any()) } just Runs
+
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
           itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "create")
     }
-
-    every { mockItemViewModel.updateUiState(any()) } just Runs
-    every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.onNodeWithTag("name").performTextInput("Object 1")
     composeTestRule.onNodeWithTag("description").performTextInput("Description 1")
@@ -192,26 +190,31 @@ class EndToEndCreateEdit {
     coVerify(exactly = 1) { mockNavActions.goBack() }
   }
 
+  // Go back to the Inventory screen and check if there is the created item
   @Test
   fun testD_InventoryOneItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState2
     every { mockItemViewModel.uiState } returns mockItemUiState2
+
     composeTestRule.setContent {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
           itemViewModel = mockItemViewModel)
     }
+
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
     composeTestRule.onNodeWithText("Object 1").performClick()
 
     coVerify(exactly = 1) { mockNavActions.navigateTo(Route.VIEW_ITEM) }
   }
 
+  // Go on the created item and check if the fields are correct
   @Test
   fun testE_goToViewItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState2
     every { mockItemViewModel.uiState } returns mockItemUiState2
+
     composeTestRule.setContent {
       InventoryViewItem(
           navigationActions = mockNavActions,
@@ -230,22 +233,21 @@ class EndToEndCreateEdit {
     coVerify(exactly = 1) { mockNavActions.navigateTo(Route.EDIT_ITEM) }
   }
 
+  // Edit the item
   @Test
   fun testF_EditItem() {
     every { mockItemViewModel.uiState } returns mockItemUiState2
+    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
           itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "edit")
     }
 
-    every { mockItemViewModel.updateUiState(any()) } just Runs
-    every { mockItemViewModel.save(any()) } just Runs
-
     composeTestRule.onNodeWithTag("name").performTextReplacement("Object 1 edited")
     composeTestRule.onNodeWithTag("description").performTextReplacement("Description 1 edited")
     composeTestRule.onNodeWithTag("quantity").performTextReplacement("3")
-
     composeTestRule.onNodeWithText("Save").performScrollTo()
     composeTestRule.onNodeWithText("Save").performClick()
 
@@ -253,16 +255,19 @@ class EndToEndCreateEdit {
     coVerify(exactly = 1) { mockNavActions.goBack() }
   }
 
+  // Go back and check that the field have been updated
   @Test
   fun testG_viewEditedToInventory() {
     every { mockInventoryViewModel.uiState } returns mockUiState3
     every { mockItemViewModel.uiState } returns mockItemUiState3
+
     composeTestRule.setContent {
       InventoryViewItem(
           navigationActions = mockNavActions,
           viewModel = mockItemViewModel,
           stampViewModel = mockStampViewModel)
     }
+
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("Description 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("3").assertIsDisplayed()
@@ -273,15 +278,18 @@ class EndToEndCreateEdit {
     coVerify(exactly = 1) { mockNavActions.goBack() }
   }
 
+  // Go back to the Inventory screen and check if the edited item is displayed
   @Test
   fun testH_inventoryWithEditedItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState3
+
     composeTestRule.setContent {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
           itemViewModel = mockItemViewModel)
     }
+
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("Object 1 edited").performClick()
   }
