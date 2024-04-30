@@ -11,14 +11,22 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
+import io.mockk.clearAllMocks
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
+import io.mockk.verify
 import java.util.Date
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 class LoanViewModelTests {
+  private val db = mockk<Database>()
+  private val loanViewModel = spyk(LoanViewModel(db = db))
+
   private val item1 =
       Item(
           "1",
@@ -97,18 +105,29 @@ class LoanViewModelTests {
 
   private val items = listOf(item1, item2, item3, item4, item5)
 
+  @Before
+  fun setUp() {
+    clearMocks(db)
+    clearMocks(loanViewModel)
+    clearAllMocks()
+
+    every { db.getLoans { lambda } } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
+
+    every { db.getItems { lambda } } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
+
+    every { db.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
+    every { db.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
+  }
+
+  @After
+  fun tearDown() {
+    clearMocks(db)
+    clearMocks(loanViewModel)
+    clearAllMocks()
+  }
+
   @Test
   fun testUpdate() {
-    val db = mockk<Database>()
-    val loanViewModel = spyk(LoanViewModel(db = db), recordPrivateCalls = false)
-
-    every { db.getLoans(any()) } answers {
-      firstArg<(List<Loan>) -> Unit>().invoke(mockLoans)
-    }
-    every { db.getItems(any()) } answers {
-      firstArg<(List<Item>) -> Unit>().invoke(items)
-    }
-
     val update =
         LoanViewModel::class.java.getDeclaredMethod("update", List::class.java, String::class.java)
     update.isAccessible = true
@@ -126,18 +145,8 @@ class LoanViewModelTests {
 
   @Test
   fun testGetAvailableLoansNoUser() {
-    val db = mockk<Database>()
-    val loanViewModel = spyk(LoanViewModel(db = db))
-
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns null
-
-    every { db.getLoans(any()) } answers {
-      firstArg<(List<Loan>) -> Unit>().invoke(mockLoans)
-    }
-    every { db.getItems(any()) } answers {
-      firstArg<(List<Item>) -> Unit>().invoke(items)
-    }
 
     loanViewModel.getAvailableLoans()
 
@@ -147,47 +156,32 @@ class LoanViewModelTests {
 
   @Test
   fun testGetAvailableLoansWithUser1() {
-    val db = mockk<Database>()
-    val loanViewModel = spyk(LoanViewModel(db = db))
-
     val mockUser = mockk<FirebaseUser>()
 
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user1"
 
-    every { db.getLoans(any()) } answers {
-      firstArg<(List<Loan>) -> Unit>().invoke(mockLoans)
-    }
-    every { db.getItems(any()) } answers {
-      firstArg<(List<Item>) -> Unit>().invoke(items)
-    }
-
     loanViewModel.getAvailableLoans()
-    Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
+
+    verify { db.getLoans(any()) }
+
     assert(loanViewModel.uiState.value.availableItems.size == 1)
     assert(loanViewModel.uiState.value.availableItems.contains(item5))
   }
 
   @Test
   fun testGetAvailableLoansWithUser5() {
-    val db = mockk<Database>()
-    val loanViewModel = spyk(LoanViewModel(db = db))
-
     val mockUser = mockk<FirebaseUser>()
 
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user5"
 
-    every { db.getLoans(any()) } answers {
-      firstArg<(List<Loan>) -> Unit>().invoke(mockLoans)
-    }
-    every { db.getItems(any()) } answers {
-      firstArg<(List<Item>) -> Unit>().invoke(items)
-    }
-
     loanViewModel.getAvailableLoans()
+
+    verify { db.getLoans(any()) }
+
     Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
     assert(loanViewModel.uiState.value.availableItems.size == 1)
     assert(loanViewModel.uiState.value.availableItems.contains(item1))
