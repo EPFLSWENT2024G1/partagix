@@ -74,7 +74,7 @@ class ItemViewModel(
     if (new.id == "") {
       database.getIdCategory(new.category.name) {
         database.createItem(
-            FirebaseAuth.getInstance().currentUser!!.uid,
+            new.id,
             Item(
                 new.id,
                 Category(it, new.category.name),

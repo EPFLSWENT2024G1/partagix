@@ -17,8 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -111,6 +113,13 @@ class ItemViewModelTests {
 
     val db = spyk(Database(mockDb), recordPrivateCalls = true)
 
+    every { db.getIdCategory(any(), any<(String) -> Unit>()) } answers
+        {
+          val callback = args[1] as (String) -> Unit
+          callback("0")
+        }
+    every { db.createItem(any(), any()) } just Runs
+
     val itemViewModel = spyk(ItemViewModel(db = db))
 
     runBlocking {
@@ -119,6 +128,7 @@ class ItemViewModelTests {
 
       coVerify(exactly = 1) { itemViewModel.save(itemNoID) }
       coVerify(exactly = 1) { db.getIdCategory(any(), any()) }
+      coVerify(exactly = 1) { db.createItem(any(), any()) }
     }
   }
 
