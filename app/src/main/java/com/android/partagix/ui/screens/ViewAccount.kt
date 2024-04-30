@@ -179,9 +179,9 @@ fun ViewAccount(
                         }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
-                        onClick = { /*TODO: friends */},
-                        modifier = Modifier.weight(1f).testTag("friendButton")) {
-                          Text("Edit Profile [not yet implemented]")
+                        onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
+                        modifier = Modifier.weight(1f).testTag("editButton")) {
+                          Text("Edit Profile")
                         }
                   }
             }
