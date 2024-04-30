@@ -93,8 +93,7 @@ fun EditAccount(
       }) {
         if (user.id !=
             userViewModel
-                .getLoggedUserId()) { // && false should be remove when users will be synced with
-                                      // google auth
+                .getLoggedUserId()) {
           Text(
               text = "You can only edit your own account. (this shouldn't be seen)",
               modifier = Modifier.padding(it).testTag("notYourAccount"))
