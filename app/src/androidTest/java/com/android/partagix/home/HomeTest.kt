@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.screens.HomeScreen
@@ -34,6 +35,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
+  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
 
@@ -49,11 +51,12 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
+    mockManageViewModel = mockk()
 
     every { mockInventoryViewModel.getInventory() } just Runs
 
-    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
-    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
+    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
@@ -68,7 +71,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     composeTestRule.setContent {
       HomeScreen(
           homeViewModel = mockHomeViewModel,
-          inventoryViewModel = mockInventoryViewModel,
+          manageLoanViewModel = mockManageViewModel,
           navigationActions = mockNavActions)
     }
   }
