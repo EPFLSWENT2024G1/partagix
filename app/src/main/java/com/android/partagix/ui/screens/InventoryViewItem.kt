@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,16 +62,6 @@ fun InventoryViewItem(
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
-
-  val color =
-      TextFieldDefaults.colors(
-          focusedIndicatorColor = Color.Transparent,
-          disabledIndicatorColor = Color.Transparent,
-          unfocusedIndicatorColor = Color.Transparent,
-          focusedContainerColor = Color.Transparent,
-          unfocusedContainerColor = Color.Transparent,
-          disabledContainerColor = Color.Transparent,
-      )
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -131,7 +120,7 @@ fun InventoryViewItem(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Visibility", item.visibility.name)
+                LabeledText("Visibility", item.visibility.visibilityLabel)
 
                 Spacer(modifier = Modifier.height(8.dp))
 

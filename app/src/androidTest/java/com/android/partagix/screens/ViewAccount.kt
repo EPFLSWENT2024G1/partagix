@@ -11,13 +11,10 @@ class ViewAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
           hasTestTag("viewAccount") // scaffold
         }) {
 
-  //  val : KNode = child { hasTestTag("") } //
-
   val viewAccount: KNode = onNode { hasTestTag("viewAccount") } // scaffold
   val topBar: KNode = child { hasTestTag("topBar") } // topappbar
   val title: KNode = child { hasTestTag("title") } // text
   val backButton: KNode = child { hasTestTag("backButton") } // iconbutton
-  val backIcon: KNode = child { hasTestTag("backIcon") } // icon
   val accountScreenBottomNavBar: KNode = child {
     hasTestTag("accountScreenBottomNavBar")
   } // BottomNavigationBar
@@ -26,14 +23,8 @@ class ViewAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val username: KNode = child { hasTestTag("username") } // row
   val usernameText: KNode = child { hasTestTag("usernameText") } // text
   val address: KNode = child { hasTestTag("address") } // textfield
-  val addressText: KNode = child { hasTestTag("addressText") } // text
-  val addressIcon: KNode = child { hasTestTag("addressIcon") } // icon
   val rating: KNode = child { hasTestTag("rating") } // textfield
-  val ratingText: KNode = child { hasTestTag("ratingText") } // textfield
-  val ratingIcon: KNode = child { hasTestTag("ratingIcon") } // textfield
   val actionButtons: KNode = child { hasTestTag("actionButtons") } // row
   val inventoryButton: KNode = child { hasTestTag("inventoryButton") } // button
-  val inventoryButtonText: KNode = child { hasTestTag("inventoryButtonText") } // text
   val editButton: KNode = child { hasTestTag("editButton") } // button
-  val friendButtonText: KNode = child { hasTestTag("friendButtonText") } // text
 }
