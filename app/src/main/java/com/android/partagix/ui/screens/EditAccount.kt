@@ -76,7 +76,7 @@ fun EditAccount(
                   modifier = Modifier.testTag("backButton"),
                   onClick = {
                     resetTempValues() // Reset temp values to real values when back button is
-                                      // pressed
+                    // pressed
                     navigationActions.goBack()
                   }) {
                     Icon(
