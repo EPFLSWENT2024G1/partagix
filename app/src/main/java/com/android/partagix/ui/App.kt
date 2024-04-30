@@ -13,7 +13,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -72,7 +71,6 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -225,9 +223,7 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
-      composable(Route.VIEW_ITEM) {
-        InventoryViewItemScreen(navigationActions, itemViewModel)
-      }
+      composable(Route.VIEW_ITEM) { InventoryViewItemScreen(navigationActions, itemViewModel) }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }

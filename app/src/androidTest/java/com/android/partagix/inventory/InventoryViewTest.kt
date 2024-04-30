@@ -56,9 +56,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    composeTestRule.setContent {
-      InventoryViewItemScreen(mockNavActions, mockItemViewModel)
-    }
+    composeTestRule.setContent { InventoryViewItemScreen(mockNavActions, mockItemViewModel) }
   }
 
   @Test

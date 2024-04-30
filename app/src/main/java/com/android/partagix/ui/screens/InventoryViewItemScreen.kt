@@ -53,10 +53,7 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItemScreen(
-    navigationActions: NavigationActions,
-    viewModel: ItemViewModel
-) {
+fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: ItemViewModel) {
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
