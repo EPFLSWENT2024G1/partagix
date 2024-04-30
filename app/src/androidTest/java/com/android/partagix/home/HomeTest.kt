@@ -55,13 +55,10 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockHomeViewModel = mockk()
 
     mockUiHomeState =
-      MutableStateFlow(
-        HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
-
-
+        MutableStateFlow(HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
 
     every { mockInventoryViewModel.getInventory() } just Runs
-    every { mockHomeViewModel.uiState} returns mockUiHomeState
+    every { mockHomeViewModel.uiState } returns mockUiHomeState
 
     every { mockInventoryViewModel.findtime(any(), any()) } just Runs
     every { mockInventoryViewModel.getusers(any(), any()) } just Runs
