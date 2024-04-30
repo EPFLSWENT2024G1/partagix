@@ -97,10 +97,8 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
           addCategory(Intent.CATEGORY_OPENABLE)
           type = "image/png"
         }
-    if (label == "")
-      intent.putExtra(Intent.EXTRA_TITLE, "stamp.png")
-    else
-      intent.putExtra(Intent.EXTRA_TITLE, "$label-stamp.png")
+    if (label == "") intent.putExtra(Intent.EXTRA_TITLE, "stamp.png")
+    else intent.putExtra(Intent.EXTRA_TITLE, "$label-stamp.png")
     context.setQrBytes(qrCodeWithLabel)
     startActivityForResult(context, intent, CREATE_PNG_FILE, null)
   }
