@@ -18,6 +18,7 @@ object Route {
   const val VIEW_ITEM = "ViewItem"
   const val LOAN = "Loan"
   const val ACCOUNT = "Account"
+  const val EDIT_ACCOUNT = "EditAccount"
   const val CREATE_ITEM = "CreateItem"
   const val EDIT_ITEM = "EditItem"
   const val STAMP = "Stamp"
