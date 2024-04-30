@@ -338,6 +338,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     users.document(user.id).set(data)
   }
 
+    /** Update a user in the database
+     *
+     * @param user the user to update (with the new values)
+     * @param onSuccess the function to call when the user is updated
+     */
   fun updateUser(user: User, onSuccess: (User) -> Unit) {
     val data =
         hashMapOf(
