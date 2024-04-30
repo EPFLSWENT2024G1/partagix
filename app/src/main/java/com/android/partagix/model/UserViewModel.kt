@@ -70,10 +70,20 @@ class UserViewModel(
         )
   }
 
+  /**
+   * Update the user in the database and update the UI state when done
+   *
+   * @param user the user to update (with the new values)
+   */
   fun updateUser(user: User) {
     database.updateUser(user) { updateUIState(it) }
   }
 
+  /**
+   * Get the user id of the logged user
+   *
+   * @return the user id of the logged user
+   */
   fun getLoggedUserId(): String? {
     return FirebaseAuth.getInstance().currentUser?.uid
   }
