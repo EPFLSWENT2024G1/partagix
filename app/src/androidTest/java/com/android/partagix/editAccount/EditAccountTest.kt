@@ -72,6 +72,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockNavActions.goBack() } just Runs
   }
 
+  /** Test if the EditAccount screen is displayed correctly */
   @Test
   fun isDisplayedGoodUser() {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState
@@ -97,6 +98,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
   }
 
+  //* Test if the EditAccount screen doesn't allow editing other user profiles */
   @Test
   fun isDisplayedBadUser() {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState
@@ -116,6 +118,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
   }
 
+  /** Test if the 'back' button works correctly */
   @Test
   fun backButtonClick() {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState
@@ -132,6 +135,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     verify(exactly = 1) { mockNavActions.goBack() }
   }
 
+  /** Test if the 'save' button works correctly */
   @Test
   fun saveButtonClick() {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState
