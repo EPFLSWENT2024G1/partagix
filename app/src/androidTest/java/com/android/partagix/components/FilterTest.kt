@@ -90,4 +90,34 @@ class FilterTest {
     val slider = composeTestRule.onNodeWithTag("SliderFilter")
     slider.assertIsNotDisplayed()
   }
+
+  @Test
+  fun filterWorksWithNonDefaultValue() {
+    var selectedValue = 0f
+    composeTestRule.setContent {
+      Filter(
+          title = "Title",
+          selectedValue = { selectedValue = it },
+          unit = "km",
+          minUnit = "1 km",
+          maxUnit = "10 km",
+          minValue = 1f,
+          maxValue = 10f,
+          sliderTextValue = null)
+    }
+
+    composeTestRule.onNodeWithText("Title").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Title").performClick()
+
+    composeTestRule.onNodeWithText("1 km").assertIsDisplayed()
+
+    val slider = composeTestRule.onNodeWithTag("SliderFilter")
+    slider.assertIsDisplayed()
+    slider.performTouchInput(
+        fun TouchInjectionScope.() {
+          swipeRight()
+        })
+
+    assert(selectedValue == 10f)
+  }
 }
