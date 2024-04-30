@@ -32,6 +32,8 @@ import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
 
+const val MAX_LABEL_LENGTH = 20
+
 /**  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,8 +43,6 @@ fun StampScreen(
     itemID: String,
     navigationActions: NavigationActions,
 ) {
-  val MAX_LABEL_LENGTH = 40
-
   Scaffold(
       modifier = modifier.fillMaxWidth().testTag("stampScreen"),
       topBar = {

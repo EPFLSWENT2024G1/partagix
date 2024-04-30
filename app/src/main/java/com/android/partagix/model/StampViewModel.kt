@@ -53,7 +53,7 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
     // Paint the new bottom part white
     canvas.drawColor(Color.WHITE)
 
-    // Create a Paint object for drawing text
+    // Create a Paint object for drawing text. TODO : adapt text size to the length of the string
     val paint = Paint()
     paint.color = Color.BLACK // Text color
     paint.textSize =
@@ -65,7 +65,7 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
         }
     paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD) // Text style
 
-    // Calculate text position (you can adjust this according to your requirement)
+    // Calculate text position
     val textWidth = paint.measureText(label)
     val x = (width - textWidth) / 2
     val y = originalBitmap.height + addedSpace * 0.6f
@@ -97,7 +97,7 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
           addCategory(Intent.CATEGORY_OPENABLE)
           type = "image/png"
         }
-    intent.putExtra(Intent.EXTRA_TITLE, "qr-code.png")
+    intent.putExtra(Intent.EXTRA_TITLE, "$label-stamp.png")
     context.setQrBytes(qrCodeWithLabel)
     startActivityForResult(context, intent, CREATE_PNG_FILE, null)
   }
