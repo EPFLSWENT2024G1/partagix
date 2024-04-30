@@ -49,8 +49,7 @@ class UserViewModel(
 
     if (userID == null) {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else if (userID != "" &&
-        false) { // TODO: remove false when logged in users are in the database
+    } else if (userID != "") {
       database.getUser(userID) { updateUIState(it) }
     } else {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
@@ -69,6 +68,14 @@ class UserViewModel(
         _uiState.value.copy(
             location = location,
         )
+  }
+
+  fun updateUser(user: User) {
+    database.updateUser(user) { updateUIState(it) }
+  }
+
+  fun getLoggedUserId(): String? {
+    return FirebaseAuth.getInstance().currentUser?.uid
   }
 
   companion object {
