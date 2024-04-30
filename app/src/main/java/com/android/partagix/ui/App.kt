@@ -38,6 +38,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
@@ -225,6 +226,13 @@ class App(
       ) {
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
+
+      composable(
+          Route.EDIT_ACCOUNT,
+      ) {
+        EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+      }
+
       composable(Route.VIEW_ITEM) {
         InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
       }
