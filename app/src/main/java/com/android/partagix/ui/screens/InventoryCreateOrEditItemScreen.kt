@@ -118,9 +118,14 @@ fun InventoryCreateOrEditItem(
               Column {
                 OutlinedTextField(
                     value = uiName,
-                    onValueChange = { it -> uiName = it },
+                    onValueChange = { input ->
+                      // Filter out newline characters from the input string
+                      val filteredInput = input.replace("\n", "")
+                      uiName = filteredInput
+                    },
                     label = { Text("Object name") },
                     modifier = modifier.testTag("name").fillMaxWidth(),
+                    maxLines = 1, // Ensure only one line is displayed
                     readOnly = false)
 
                 OutlinedTextField(
