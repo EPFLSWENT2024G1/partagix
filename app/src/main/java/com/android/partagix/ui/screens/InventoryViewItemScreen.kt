@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.StampViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -56,8 +55,7 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun InventoryViewItem(
     navigationActions: NavigationActions,
-    viewModel: ItemViewModel,
-    stampViewModel: StampViewModel
+    viewModel: ItemViewModel
 ) {
   val uiState = viewModel.uiState.collectAsState()
 
