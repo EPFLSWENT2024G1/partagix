@@ -30,7 +30,7 @@ class StampViewModelTests {
     val itemId = "testItemId"
     val label = "testLabel"
     val small = "Small, 5cm x 6cm (18 per A4 page)"
-    val med = "Medium, 8cm x 9cm 6 per A4 page)"
+    val med = "Medium, 8cm x 9cm (6 per A4 page)"
     val big = "Big, 14cm x 16cm (2 per A4 page)"
     val full = "Entire page, 20cm x 24cm (1 per A4 page)"
     val intent = slot<Intent>()
@@ -46,7 +46,7 @@ class StampViewModelTests {
 
     assert(intent.captured.action == Intent.ACTION_CREATE_DOCUMENT)
     assert(intent.captured.type == "image/png")
-    assert(intent.captured.getStringExtra(Intent.EXTRA_TITLE) == "qr-code.png")
+    assert(intent.captured.getStringExtra(Intent.EXTRA_TITLE) == "$label-stamp.png")
     assert(intent.captured.categories.contains(Intent.CATEGORY_OPENABLE))
 
     coVerify(exactly = 4) { mockContext.setQrBytes(any()) }
@@ -68,7 +68,7 @@ class StampViewModelTests {
 
     assert(intent.captured.action == Intent.ACTION_CREATE_DOCUMENT)
     assert(intent.captured.type == "image/png")
-    assert(intent.captured.getStringExtra(Intent.EXTRA_TITLE) == "qr-code.png")
+    assert(intent.captured.getStringExtra(Intent.EXTRA_TITLE) == "stamp.png")
     assert(intent.captured.categories.contains(Intent.CATEGORY_OPENABLE))
 
     coVerify(exactly = 1) { mockContext.setQrBytes(any()) }
