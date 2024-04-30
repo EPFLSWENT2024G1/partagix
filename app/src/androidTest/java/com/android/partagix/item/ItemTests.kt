@@ -67,11 +67,6 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   }
 
   @Test
-  fun testTest() {
-    assert(true)
-  }
-
-  @Test
   fun topBarIsDisplayed() = run {
     onComposeScreen<InventoryViewItem>(composeTestRule) { topBar { assertIsDisplayed() } }
   }

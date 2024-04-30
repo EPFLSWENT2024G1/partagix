@@ -19,6 +19,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
@@ -180,5 +182,19 @@ class ItemViewModelTests {
       coVerify(exactly = 1) { itemViewModel.save(itemWithIDmodified) }
       assert(mockUiState.value.item == itemWithIDmodified)
     }
+  }
+
+  @Test
+  fun checkTest() {
+    val userId = "123"
+    val itemId = "123"
+    val itemId2 = "000"
+    val itemViewModel = ItemViewModel()
+
+    val result = itemViewModel.check(itemId, userId)
+    val result2 = itemViewModel.check(itemId2, userId)
+
+    assertTrue(result)
+    assertFalse(result2)
   }
 }
