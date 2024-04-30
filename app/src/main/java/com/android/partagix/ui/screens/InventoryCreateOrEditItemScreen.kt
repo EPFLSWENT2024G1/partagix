@@ -39,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.model.visibility.getVisibility
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
@@ -159,17 +159,7 @@ fun InventoryCreateOrEditItem(
                 uiCategory = Category(uiCategory.id, c)
               }
               Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
-                val v =
-                    DropDown(
-                        (uiVisibility.toString().substring(0, 1).uppercase() +
-                            uiVisibility.toString().substring(1).lowercase()),
-                        VisibilityItems)
-                uiVisibility =
-                    when (v) {
-                      "Friends" -> Visibility.FRIENDS
-                      "Private" -> Visibility.PRIVATE
-                      else -> Visibility.PUBLIC
-                    }
+                uiVisibility = getVisibility(DropDown("Visibility", VisibilityItems))
               }
             }
 

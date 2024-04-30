@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.stampDimension.StampDimension
+import com.android.partagix.model.visibility.Visibility
 
 /**
  * DropDown composable to show a dropdown menu
@@ -74,6 +75,6 @@ val CategoryItems =
         "Category 10",
     )
 
-val VisibilityItems = listOf("Public", "Friends", "Private")
+val VisibilityItems = Visibility.values().map { it.visibilityLabel }
 
 val StampDimensions = StampDimension.values().map { it.detailedDimension }
