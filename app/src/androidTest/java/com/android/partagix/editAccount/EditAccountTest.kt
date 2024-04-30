@@ -98,7 +98,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
   }
 
-  //* Test if the EditAccount screen doesn't allow editing other user profiles */
+  // * Test if the EditAccount screen doesn't allow editing other user profiles */
   @Test
   fun isDisplayedBadUser() {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState

@@ -75,7 +75,8 @@ fun EditAccount(
               IconButton(
                   modifier = Modifier.testTag("backButton"),
                   onClick = {
-                    resetTempValues() // Reset temp values to real values when back button is pressed
+                    resetTempValues() // Reset temp values to real values when back button is
+                                      // pressed
                     navigationActions.goBack()
                   }) {
                     Icon(
@@ -91,7 +92,8 @@ fun EditAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("bottomNavBar"))
       }) {
-        if (user.id != userViewModel.getLoggedUserId()) { // Check if user is editing their own account
+        if (user.id !=
+            userViewModel.getLoggedUserId()) { // Check if user is editing their own account
           Text(
               text = "You can only edit your own account. (this shouldn't be seen)",
               modifier = Modifier.padding(it).testTag("notYourAccount"))
@@ -136,7 +138,10 @@ fun EditAccount(
                       Button(
                           onClick = {
                             userViewModel.updateUser(
-                                user.copy(name = tempUsername, address = tempAddress)) // Update user with new values in the database
+                                user.copy(
+                                    name = tempUsername,
+                                    address =
+                                        tempAddress)) // Update user with new values in the database
                             navigationActions.goBack()
                           },
                           modifier = Modifier.weight(1f).testTag("saveButton")) {
