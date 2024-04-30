@@ -12,7 +12,6 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -107,13 +106,7 @@ class LoanViewModelTests {
 
   @Before
   fun setUp() {
-    clearMocks(db)
-    clearMocks(loanViewModel)
     clearAllMocks()
-
-    every { db.getLoans { lambda } } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
-
-    every { db.getItems { lambda } } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
 
     every { db.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
     every { db.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
@@ -121,8 +114,6 @@ class LoanViewModelTests {
 
   @After
   fun tearDown() {
-    clearMocks(db)
-    clearMocks(loanViewModel)
     clearAllMocks()
   }
 
@@ -147,8 +138,6 @@ class LoanViewModelTests {
   fun testGetAvailableLoansNoUser() {
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns null
-
-    loanViewModel.getAvailableLoans()
 
     // nothing should be updated, may throw an error in the future
     assert(loanViewModel.uiState.value.availableItems.isEmpty())
