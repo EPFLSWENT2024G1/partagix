@@ -59,18 +59,13 @@ class ItemViewModelTests {
    */
   @Test
   fun testUpdateUiState() {
-    val _uiState = MutableStateFlow(ItemUIState(emptyItem, emptyUser))
-    val mockUiState: StateFlow<ItemUIState> = _uiState
     val db = mockk<Database>()
-    val itemViewModel = spyk(ItemViewModel(db = db))
-    every { itemViewModel.uiState } returns mockUiState
-    every { itemViewModel.updateUiItem(itemWithID) } answers
-        {
-          _uiState.value = ItemUIState(itemWithID, emptyUser)
-        }
-    assert(mockUiState.value.item == emptyItem)
+    val itemViewModel = ItemViewModel(db = db)
+
     itemViewModel.updateUiItem(itemWithID)
-    assert(mockUiState.value.item == itemWithID)
+    itemViewModel.updateUiUser(emptyUser)
+    assert(itemViewModel.uiState.value.item == itemWithID)
+    assert(itemViewModel.uiState.value.user == emptyUser)
   }
 
   /**
