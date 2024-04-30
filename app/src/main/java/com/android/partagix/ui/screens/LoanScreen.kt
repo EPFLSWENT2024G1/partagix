@@ -198,7 +198,9 @@ fun LoanScreen(
                         },
                         modifier = modifier.testTag("LoanScreenItemListView"),
                         users = emptyList(),
-                        loan = emptyList())
+                        loan = emptyList(),
+                        expandable = false,
+                        expanded = emptyList(),)
                   }
             }
       }

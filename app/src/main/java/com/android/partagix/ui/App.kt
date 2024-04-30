@@ -29,6 +29,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -42,6 +43,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -61,6 +63,7 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
+    private val manageViewModel = ManageLoanViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
@@ -120,7 +123,9 @@ class App(
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+              .fillMaxSize()
+              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -163,7 +168,7 @@ class App(
       composable(Route.HOME) {
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = InventoryViewModel(),
+            manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -183,7 +188,7 @@ class App(
         } else {
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = InventoryViewModel(),
+              manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
       }
@@ -208,6 +213,9 @@ class App(
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
+        composable(Route.MANAGE_LOAN_REQUEST) {
+          ManageLoanRequest(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions )
+        }
     }
   }
 

@@ -28,7 +28,7 @@ fun ManageLoanRequest(inventoryViewModel: InventoryViewModel,
         },
         bottomBar = {
              BottomNavigationBar(
-                 selectedDestination = Route.INVENTORY,
+                 selectedDestination = Route.HOME,
                  navigateToTopLevelDestination = navigationActions::navigateTo,
                  modifier = modifier.testTag("inventoryScreenBottomNavBar"))
         }) { innerPadding ->
@@ -39,8 +39,10 @@ fun ManageLoanRequest(inventoryViewModel: InventoryViewModel,
             title = "Borrowing requests",
             corner = uiState.items.size.toString(),
             isCornerClickable = false ,
-            onClick = {/* TODO: scroll down just like in the home screen */},
-            onClickCorner = {},
+            expandable = true,
+            expanded = uiState.items.map { false },
+            onClick = {/* isnt usefull for this column */},
+            onClickCorner = {/* isnt usefull for this column */},
             modifier = Modifier.padding(innerPadding))
 
     }

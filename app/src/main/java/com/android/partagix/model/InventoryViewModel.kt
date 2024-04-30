@@ -67,7 +67,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   fun getInventory() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
-      if (user != null) {
+      if (user == null) {
         database.getUserInventory(/*user.uid*/ "8WuTkKJZLTAr6zs5L7rH") {
           updateInv(it.items)
           getUsers(it.items, ::updateUsers)
@@ -176,14 +176,14 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
       items.forEach { item ->
         val list =
             loan
-                .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
                 .sortedBy { it.startDate }
         update(
             if (list.isEmpty()) {
               Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
             } else {
               loan
-                  .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                  .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
                   .sortedBy { it.startDate }
                   .first()
             })

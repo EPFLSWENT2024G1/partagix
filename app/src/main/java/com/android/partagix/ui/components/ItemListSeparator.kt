@@ -35,6 +35,7 @@ import com.android.partagix.model.user.User
  */
 @Composable
 fun ItemListColumn(
+    modifier: Modifier = Modifier,
     list: List<Item>,
     users: List<User>,
     loan: List<Loan>,
@@ -43,7 +44,8 @@ fun ItemListColumn(
     isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
-    modifier: Modifier = Modifier
+    expanded : List<Boolean> = emptyList() ,
+    expandable : Boolean,
 ) {
   Column(modifier = modifier) {
     Row(
@@ -74,6 +76,8 @@ fun ItemListColumn(
         users = users,
         loan = loan,
         onClick = onClick,
+        expandable = expandable,
+        expanded = expanded,
         modifier = Modifier.fillMaxSize())
   }
 }

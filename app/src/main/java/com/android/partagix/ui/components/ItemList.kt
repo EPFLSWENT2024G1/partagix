@@ -1,5 +1,8 @@
 package com.android.partagix.ui.components
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,6 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -33,6 +40,8 @@ fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
+    expandable :Boolean,
+    expanded : List<Boolean> ,
     onClick: (Item) -> Unit,
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
@@ -42,8 +51,16 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }.testTag("ItemListItem")) {
+      Box(modifier = Modifier.fillMaxSize().clickable { if(!expandable) {onClick(item)}}
+          .testTag("ItemListItem")) {
+
         ItemUi(
+            expandable = expandable,
+            expanded = if (expanded.isEmpty()){
+                false
+            } else {
+                expanded[index]
+            },
             item = item,
             user =
                 if (users.isEmpty()) {
@@ -56,7 +73,8 @@ fun ItemList(
                   Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                 } else {
                   loan[index]
-                })
+                },
+            index = index,)
       }
       Spacer(modifier = Modifier.height(8.dp))
     }
