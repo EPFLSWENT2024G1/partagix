@@ -118,6 +118,7 @@ class ItemViewModelTests {
       itemViewModel.save(itemNoID)
 
       coVerify(exactly = 1) { itemViewModel.save(itemNoID) }
+      coVerify(exactly = 1) { db.getIdCategory(any(), any()) }
     }
   }
 
