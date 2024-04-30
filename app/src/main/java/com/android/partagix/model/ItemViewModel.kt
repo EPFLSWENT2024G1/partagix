@@ -54,9 +54,20 @@ class ItemViewModel(
    * @param new the new item to update the UI state with
    */
   fun updateUiState(new: Item) {
+    val newWithUserId =
+        Item(
+            new.id,
+            new.category,
+            new.name,
+            new.description,
+            new.visibility,
+            new.quantity,
+            new.location,
+            FirebaseAuth.getInstance().currentUser!!.uid)
+
     _uiState.value =
         _uiState.value.copy(
-            item = new,
+            item = newWithUserId,
         )
   }
 
