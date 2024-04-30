@@ -199,7 +199,7 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
-                  onClick = { navigationActions.navigateTo(Route.STAMP) },
+                  onClick = { navigationActions.navigateTo(Route.STAMP + uiName) },
                   content = { Text("Download QR code") },
                   modifier = modifier.fillMaxWidth())
             }
