@@ -73,6 +73,8 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.BOOT) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
+    every { mockNavActions.navigateTo(Route.EDIT_ACCOUNT) } just Runs
+    every { mockNavActions.goBack() } just Runs
     // todo right test ? or something for goBack instead ?
 
     /*    composeTestRule.setContent {
@@ -343,9 +345,9 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
   }
 
-  //    friendButton
+  //    editButton
   @Test
-  fun friendButtonIsDisplayed() = run {
+  fun editButtonIsDisplayed() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       ViewAccount(
@@ -354,11 +356,11 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           navigationActions = mockNavActions) // mockNavActions::navigateTo
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { friendButton { assertIsDisplayed() } }
+    onComposeScreen<ViewAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
   }
 
   @Test
-  fun friendButtonWorks() = run {
+  fun editButtonWorks() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       ViewAccount(
@@ -368,9 +370,9 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
-      friendButton { assertIsDisplayed() }
-      friendButton { performClick() }
-      //        viewAccount { assertIsNotFocused() }
+      editButton { assertIsDisplayed() }
+      editButton { performClick() }
+      // viewAccount { assertIsNotFocused() }
     }
   }
 }

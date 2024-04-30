@@ -34,6 +34,6 @@ class ViewAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val actionButtons: KNode = child { hasTestTag("actionButtons") } // row
   val inventoryButton: KNode = child { hasTestTag("inventoryButton") } // button
   val inventoryButtonText: KNode = child { hasTestTag("inventoryButtonText") } // text
-  val friendButton: KNode = child { hasTestTag("friendButton") } // button
+  val editButton: KNode = child { hasTestTag("editButton") } // button
   val friendButtonText: KNode = child { hasTestTag("friendButtonText") } // text
 }
