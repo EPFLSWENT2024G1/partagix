@@ -53,7 +53,7 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem(
+fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     viewModel: ItemViewModel
 ) {

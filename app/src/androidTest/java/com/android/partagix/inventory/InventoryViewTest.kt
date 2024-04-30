@@ -7,10 +7,10 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
-import com.android.partagix.screens.InventoryViewItem
+import com.android.partagix.screens.InventoryViewItemScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -57,7 +57,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
     composeTestRule.setContent {
-      InventoryViewItem(mockNavActions, mockItemViewModel)
+      InventoryViewItemScreen(mockNavActions, mockItemViewModel)
     }
   }
 
@@ -68,12 +68,12 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
 
   @Test
   fun topBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItem>(composeTestRule) { topBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
   }
 
   @Test
   fun bottomBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItem>(composeTestRule) { bottomBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { bottomBar { assertIsDisplayed() } }
   }
 
   @Test
@@ -89,6 +89,6 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
             quantity = 1,
             location = mockk(),
             idUser = "id_user")
-    onComposeScreen<InventoryViewItem>(composeTestRule) { assertIsDisplayed() }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { assertIsDisplayed() }
   }
 }

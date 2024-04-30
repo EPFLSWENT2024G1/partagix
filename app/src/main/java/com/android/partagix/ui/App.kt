@@ -41,7 +41,7 @@ import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.StampScreen
@@ -226,7 +226,7 @@ class App(
         ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
       composable(Route.VIEW_ITEM) {
-        InventoryViewItem(navigationActions, itemViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel)
       }
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
