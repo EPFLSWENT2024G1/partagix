@@ -1,6 +1,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.auth.Authentication
@@ -23,7 +24,7 @@ class LoanViewModel(
   }
 
   /**
-   * Update the UI state with the available items for a loan.
+   * Update the UI state with the available items for a loan, fetched from the database.
    *
    * An item is considered to be available for a loan if :
    * - The item is not owned by the current user
@@ -35,7 +36,7 @@ class LoanViewModel(
    *
    * Returns the list of available items for a loan, and updates the UI state with it.
    */
-  private fun getAvailableLoans(onSuccess: (List<Item>) -> Unit = {}) {
+  fun getAvailableLoans(onSuccess: (List<Item>) -> Unit = {}) {
     val user = Authentication.getUser()
 
     if (user == null) {
@@ -45,7 +46,7 @@ class LoanViewModel(
       viewModelScope.launch {
         db.getLoans { loans: List<Loan> ->
           db.getItems { itemList: List<Item> ->
-            update(
+            val newItems =
                 itemList.filter { item ->
                   // item is not owned by the current user
                   item.idUser != user.uid &&
@@ -54,7 +55,9 @@ class LoanViewModel(
                       // item's visibility is either PUBLIC, or FRIENDS if the current user is a
                       // friend of the item's owner
                       item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
-                })
+                }
+            update(newItems)
+            onSuccess(newItems)
           }
         }
       }
