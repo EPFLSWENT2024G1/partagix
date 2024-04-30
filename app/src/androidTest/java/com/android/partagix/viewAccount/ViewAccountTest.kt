@@ -23,7 +23,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
-import kotlin.math.round
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -42,9 +41,9 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
 
-  val cat1 = Category("1", "Category 1")
-  val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
-  val loc1 = Location("1")
+  private val cat1 = Category("1", "Category 1")
+  private val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
+  private val loc1 = Location("1")
 
   private val emptyUser: User = User("", "", "", "", Inventory("", emptyList()))
   private val userOne: User =
@@ -58,28 +57,16 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @Before
   fun testSetup() {
     emptyMockUiState = MutableStateFlow(UserUIState(emptyUser))
-
     nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne))
 
     mockUserViewModel = mockk()
-    // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    //        every { mockUserViewModel.getInventory() } just Runs // no function here
-
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
-    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
-    every { mockNavActions.navigateTo(Route.BOOT) } just Runs
-    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
     every { mockNavActions.navigateTo(Route.EDIT_ACCOUNT) } just Runs
     every { mockNavActions.goBack() } just Runs
-    // todo right test ? or something for goBack instead ?
-
-    /*    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
-    }*/
   }
 
   @Test
@@ -89,7 +76,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     assert(true)
@@ -103,7 +90,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { topBar { assertIsDisplayed() } }
@@ -116,15 +103,14 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
       topBar { assertIsDisplayed() }
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
-      //            backButton { performClick() }
-      //            viewAccount { assertIsNotFocused() }
+      backButton { performClick() }
     }
   }
 
@@ -136,7 +122,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
@@ -152,7 +138,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { mainContent { assertIsDisplayed() } }
@@ -166,7 +152,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { userImage { assertIsDisplayed() } }
@@ -180,7 +166,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { username { assertIsDisplayed() } }
@@ -194,12 +180,12 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
       username { assertIsDisplayed() }
-      //            usernameText { assertIsDisplayed() }
+      usernameText { assertIsDisplayed() }
       val username = mockUserViewModel.uiState.value.user.name
       usernameText { assertTextEquals("$username's profile") }
     }
@@ -213,29 +199,10 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { address { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun addressWorks() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
-    }
-
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      address { assertIsDisplayed() }
-      val userAddress = mockUserViewModel.uiState.value.user.address
-      //        address { assertValueEquals(userAddress)}
-      //        addressText { assertIsDisplayed() }
-      //        addressIcon { assertIsDisplayed() }
-    }
   }
 
   //    rating
@@ -246,58 +213,10 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { rating { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun ratingWorks() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
-    }
-
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      rating { assertIsDisplayed() }
-      //        ratingText { assertIsDisplayed() }
-
-      val rank = mockUserViewModel.uiState.value.user.rank
-      if (rank == "") {
-        //            ratingText { assertTextEquals("No trust yet") }
-      } else {
-        ratingText { assertTextContains("/5)") }
-
-        val ratingUnit = round(rank.toFloat())
-        when (ratingUnit.toInt()) {
-          0 -> {
-            ratingText { assertTextContains("☆☆☆☆☆") }
-          }
-          1 -> {
-            ratingText { assertTextContains("★☆☆☆☆") }
-          }
-          2 -> {
-            ratingText { assertTextContains("★★☆☆☆") }
-          }
-          3 -> {
-            ratingText { assertTextContains("★★★☆☆") }
-          }
-          4 -> {
-            ratingText { assertTextContains("★★★★☆") }
-          }
-          5 -> {
-            ratingText { assertTextContains("★★★★★") }
-          }
-          else -> {
-            ratingText { assertTextContains("...") }
-          }
-        }
-      }
-    }
   }
 
   //    actionButtons
@@ -308,7 +227,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { actionButtons { assertIsDisplayed() } }
@@ -322,7 +241,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { inventoryButton { assertIsDisplayed() } }
@@ -335,13 +254,12 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
       inventoryButton { assertIsDisplayed() }
       inventoryButton { performClick() }
-      //        inventoryButtonText { assertIsDisplayed() }
     }
   }
 
@@ -353,7 +271,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
@@ -366,13 +284,12 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       ViewAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions) // mockNavActions::navigateTo
+          navigationActions = mockNavActions)
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
       editButton { assertIsDisplayed() }
       editButton { performClick() }
-      // viewAccount { assertIsNotFocused() }
     }
   }
 }
