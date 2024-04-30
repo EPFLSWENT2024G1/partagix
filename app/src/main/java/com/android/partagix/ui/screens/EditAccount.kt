@@ -91,9 +91,7 @@ fun EditAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("bottomNavBar"))
       }) {
-        if (user.id !=
-            userViewModel
-                .getLoggedUserId()) {
+        if (user.id != userViewModel.getLoggedUserId()) {
           Text(
               text = "You can only edit your own account. (this shouldn't be seen)",
               modifier = Modifier.padding(it).testTag("notYourAccount"))
