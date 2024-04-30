@@ -62,7 +62,7 @@ fun EditAccount(
     tempAddress = user.address
   }
 
-  // Set temporary values when the screen is opened
+  // Set temporary values to real values when the screen is opened
   LaunchedEffect(key1 = user.id) { resetTempValues() }
 
   Scaffold(
@@ -75,7 +75,7 @@ fun EditAccount(
               IconButton(
                   modifier = Modifier.testTag("backButton"),
                   onClick = {
-                    resetTempValues()
+                    resetTempValues() // Reset temp values to real values when back button is pressed
                     navigationActions.goBack()
                   }) {
                     Icon(
@@ -91,7 +91,7 @@ fun EditAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("bottomNavBar"))
       }) {
-        if (user.id != userViewModel.getLoggedUserId()) {
+        if (user.id != userViewModel.getLoggedUserId()) { // Check if user is editing their own account
           Text(
               text = "You can only edit your own account. (this shouldn't be seen)",
               modifier = Modifier.padding(it).testTag("notYourAccount"))
@@ -135,9 +135,8 @@ fun EditAccount(
                       Spacer(modifier = Modifier.width(8.dp))
                       Button(
                           onClick = {
-                            // TODO save to db
                             userViewModel.updateUser(
-                                user.copy(name = tempUsername, address = tempAddress))
+                                user.copy(name = tempUsername, address = tempAddress)) // Update user with new values in the database
                             navigationActions.goBack()
                           },
                           modifier = Modifier.weight(1f).testTag("saveButton")) {
