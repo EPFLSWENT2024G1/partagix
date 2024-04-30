@@ -107,28 +107,28 @@ fun InventoryViewItem(
                   Column {
                     LabeledText(label = "Object Name", text = item.name)
 
-                    LabeledText("Author", item.idUser)
+                    LabeledText(label = "Author", text = item.idUser)
                   }
                 }
               }
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                LabeledText("Description", item.description)
+                LabeledText(label = "Description", text = item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Category", item.category.name)
+                LabeledText(label = "Category", text = item.category.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Visibility", item.visibility.visibilityLabel)
+                LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Quantity", item.quantity.toString())
+                LabeledText(label = "Quantity", text = item.quantity.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Where", item.location.toString())
+                LabeledText(label = "Where", text = item.location.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
