@@ -326,7 +326,14 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
             "loanstate" to newLoan.state.toString())
-    loan.document(newLoan).set(data5)
+      itemLoan.get().addOnSuccessListener {
+          result ->
+          for (document in result) {
+              if (document.data["id_item"] as String == newLoan.idItem) {
+                  loan.document(document.id).set(data5)
+              }
+          }
+      }
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
