@@ -185,14 +185,14 @@ class ItemViewModelTests {
   }
 
   @Test
-  fun checkTest() {
+  fun compareIDsTest() {
     val userId = "123"
     val itemId = "123"
     val itemId2 = "000"
     val itemViewModel = ItemViewModel()
 
-    val result = itemViewModel.check(itemId, userId)
-    val result2 = itemViewModel.check(itemId2, userId)
+    val result = itemViewModel.compareIDs(itemId, userId)
+    val result2 = itemViewModel.compareIDs(itemId2, userId)
 
     assertTrue(result)
     assertFalse(result2)

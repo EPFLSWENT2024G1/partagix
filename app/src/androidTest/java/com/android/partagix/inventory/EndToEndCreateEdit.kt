@@ -3,7 +3,6 @@ package com.android.partagix.inventory
 import android.content.Intent
 import android.location.Location
 import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -31,7 +30,6 @@ import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItem
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.common.base.CharMatcher.any
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.Runs
 import io.mockk.coVerify
@@ -119,7 +117,7 @@ class EndToEndCreateEdit {
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
     every { mockDatabase.createUser(any()) } just Runs
 
-    every { mockItemViewModel.check(any(), any()) } returns true
+    every { mockItemViewModel.compareIDs(any(), any()) } returns true
 
     every { mockFirebaseUser.uid } returns "1234"
     every { mockFirebaseUser.displayName } returns "name"
