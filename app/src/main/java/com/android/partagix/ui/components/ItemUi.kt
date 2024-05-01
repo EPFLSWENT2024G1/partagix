@@ -120,13 +120,13 @@ fun ItemUi(
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
-                              "available in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                              "available until ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
                             } else {
-                              "borrowed in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                              "borrowed until ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
                             }
                           },
                       lineHeight = 1.43.em,
-                      style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
+                      style = TextStyle(fontSize = 13.sp, letterSpacing = 0.25.sp),
                       modifier = Modifier.fillMaxWidth())
                 }
                 Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
@@ -210,13 +210,13 @@ fun ItemUi(
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
           Row(
-              horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+              horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
               modifier = Modifier.fillMaxWidth().height(61.dp)
               // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
               ) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
-                    Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
+                    Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.1f))
 
                     Text(
                         text = user.name,
@@ -229,7 +229,7 @@ fun ItemUi(
                                 color = Color(0xFF000000),
                                 textAlign = TextAlign.Left,
                             ),
-                        modifier = Modifier.fillMaxWidth(0.85f))
+                        modifier = Modifier.fillMaxWidth(0.9f))
                   }
                   Text(
                       text =
@@ -237,9 +237,9 @@ fun ItemUi(
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
-                              "available in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                              "available until ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
                             } else {
-                              "borrowed in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                              "borrowed until ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
                             }
                           },
                       lineHeight = 1.43.em,
@@ -259,7 +259,7 @@ fun ItemUi(
                               textAlign = TextAlign.Right,
                           ),
                       modifier =
-                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
+                          Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 10.dp))
                   Text(
                       text = "Quantity: " + item.quantity.toString(),
                       style =
@@ -270,7 +270,7 @@ fun ItemUi(
                       textAlign = TextAlign.End,
                       lineHeight = 0.8.em,
                       modifier =
-                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
+                          Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
                 Image(
                     painter = painterResource(id = R.drawable.mutliprise),

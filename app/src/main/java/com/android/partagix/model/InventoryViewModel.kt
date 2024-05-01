@@ -51,7 +51,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    // getInventory()
+    getInventory()
   }
 
   /*private fun getItems() {

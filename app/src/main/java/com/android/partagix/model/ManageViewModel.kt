@@ -30,31 +30,24 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
    */
   fun getLoanRequests() {
     val user = FirebaseAuth.getInstance().currentUser
-    var listed = mutableListOf<Item>()
     viewModelScope.launch {
       if (user != null) {
-        database.getItems { list -> listed = list.toMutableList() }
-        database.getLoans {
-          // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
-          // }.size)
-          println(listed)
-          it.filter { loan -> loan.state == LoanState.PENDING && loan.idOwner == user.uid }
-              .forEach { loan ->
-                println(loan.id)
-                updateItems(listed.filter { it.id == loan.idItem }.first())
-                database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                updateExpandedReset()
-                updateLoans(loan)
-              }
+        database.getItems { list ->
+          database.getLoans {
+            it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
+                .forEach { loan ->
+                  updateItems(list.filter { it.id == loan.idItem }.first())
+                  database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                  updateExpandedReset()
+                  updateLoans(loan)
+                }
+          }
         }
       } else {
         database.getItems { list ->
           database.getLoans {
-            // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
-            // }.size)
             it.filter { loan -> loan.state == LoanState.PENDING }
                 .forEach { loan ->
-                  println(loan.id)
                   updateItems(list.filter { it.id == loan.idItem }.first())
                   database.getUser(loan.idOwner) { user -> updateUsers(user) }
                   updateExpandedReset()
@@ -133,9 +126,6 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
             loans = newLoans.value.loans,
             users = newLoans.value.users,
             expanded = newLoans.value.expanded)
-
-    println(_uiState.value.items)
-    println(uiState.value.loans)
   }
 }
 
