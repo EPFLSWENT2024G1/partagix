@@ -52,7 +52,6 @@ fun InventoryScreen(
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
-  inventoryViewModel.getInventory()
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
       topBar = {

@@ -88,7 +88,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
       } else {
         database.getItems {
           updateBor(it)
-          getUsers(it, ::updateUsersBor)
+            getUsers(it, ::updateUsersBor)
           findTime(it, ::updateLoanBor)
           updateInv(it)
           getUsers(it, ::updateUsers)
@@ -156,6 +156,19 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
 
+  fun updateItem(new: Item) {
+    val items: List<Item> = _uiState.value.items.map { if (it.id == new.id) new else it }
+    val borrowedItems: List<Item> =
+        _uiState.value.borrowedItems.map { if (it.id == new.id) new else it }
+    _uiState.value = _uiState.value.copy(items = items, borrowedItems = borrowedItems)
+  }
+
+  fun createItem(new: Item) {
+    _uiState.value =
+        _uiState.value.copy(
+            items = _uiState.value.items.plus(new),
+        )
+  }
   /**
    * getusers is a function that will update the user list with the users that are in the list
    *

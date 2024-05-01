@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
@@ -35,6 +33,8 @@ import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
+import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
@@ -55,16 +55,22 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
-) : ComponentActivity(), SignInResultListener {
+) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
 
+  private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val itemViewModel = ItemViewModel(db = db)
+  private val itemViewModel =
+      ItemViewModel(
+          db = db,
+          onItemSaved = { item -> inventoryViewModel.updateItem(item) },
+          onItemCreated = { item -> inventoryViewModel.createItem(item) },
+      )
   private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
 
@@ -84,7 +90,21 @@ class App(
   }
 
   override fun onSignInSuccess(user: FirebaseUser?) {
-    navigationActions.navigateTo(Route.HOME)
+    if (user != null) {
+      val newUser =
+          User(
+              user.uid,
+              user.displayName ?: "",
+              user.email ?: "",
+              "0",
+              Inventory(user.uid, emptyList()))
+      db.getUser(user.uid, { db.createUser(newUser) }, {})
+    }
+    // test that navigationActions has been initialized
+
+    if (navigationActionsInitialized) {
+      navigationActions.navigateTo(Route.HOME)
+    }
     Log.d(TAG, "onSignInSuccess: user=$user")
   }
 
@@ -103,9 +123,11 @@ class App(
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-
+    navigationActionsInitialized = true
+    // val navBackStackEntry by navController.currentBackStackEntryAsState()
+    // val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
+    // The 2 previous lines were causing the navigation issues.
+    val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
         selectedDestination = selectedDestination,
@@ -167,7 +189,7 @@ class App(
       composable(Route.HOME) {
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = InventoryViewModel(),
+            inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -187,7 +209,7 @@ class App(
         } else {
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = InventoryViewModel(),
+              inventoryViewModel = inventoryViewModel,
               navigationActions = navigationActions)
         }
       }
@@ -218,6 +240,7 @@ class App(
             StampScreen(
                 modifier = modifier,
                 stampViewModel = StampViewModel(activity),
+                itemID = it.arguments?.getString("itemId") ?: "",
                 navigationActions = navigationActions)
           }
     }

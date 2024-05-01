@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
     contents: write
@@ -27,6 +28,14 @@ jobs:
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA | base64 -di > app/google-services.json
+      
+      # Load the MAPS API key from the secrets
+      - name: Load MAPS API key
+        env:
+          DATA: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          echo $DATA > secrets.properties
+          echo $DATA > local.defaults.properties
   
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -34,23 +43,28 @@ jobs:
       - name: Build APK
         run: ./gradlew build
 
+      - name: Generate release tag
+        id: tag
+        run: echo "::set-output name=release_tag::partagix_$(date +"%Y.%m.%d_%H-%M")"
+      
       - name: Rename APK
-        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/partagix-v1.0.0.apk
+        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
 
       - name: Upload APK in artifacts
         uses: actions/upload-artifact@v4
         with:
           name: partagix
-          path: app/build/outputs/apk/debug/partagix-v1.0.0.apk
+          path: app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
           if-no-files-found: error
           retention-days: 90
           
       - name: Release APK
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Partagix v1.0.0
-          files: app/build/outputs/apk/debug/partagix-v1.0.0.apk
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
         
-    

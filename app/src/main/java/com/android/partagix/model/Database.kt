@@ -28,13 +28,14 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     // createExampleForDb()
   }
 
-  fun getUser(idUser: String, onSuccess: (User) -> Unit) {
+  fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
         .get()
         .addOnSuccessListener { result ->
+          var found = false
           for (document in result) {
             if (document.data["id"] as String == idUser) {
-
+              found = true
               getUserInventory(idUser) { inventory ->
                 val user =
                     User(
@@ -46,6 +47,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                 onSuccess(user)
               }
             }
+          }
+          if (!found) {
+            onNoUser()
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
@@ -266,7 +270,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun createItem(userId: String, newItem: Item) {
 
     val idItem = getNewUid(items)
-    val data3 =
+    val data =
         hashMapOf(
             "id" to idItem,
             "id_category" to newItem.category.id,
@@ -276,11 +280,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location))
-    items.document(idItem).set(data3)
+    items.document(idItem).set(data)
   }
 
   fun setItem(newItem: Item) {
-    val data3 =
+    val data =
         hashMapOf(
             "id" to newItem.id,
             "id_category" to newItem.category.id,
@@ -291,7 +295,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location),
         )
-    items.document(newItem.id).set(data3)
+    items.document(newItem.id).set(data)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
@@ -321,6 +325,17 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
+  }
+
+  fun createUser(user: User) {
+    val data =
+        hashMapOf(
+            "id" to user.id,
+            "name" to user.name,
+            "addr" to user.address,
+            "rank" to user.rank,
+        )
+    users.document(user.id).set(data)
   }
 
   companion object {

@@ -44,7 +44,7 @@ class InventoryCreateOrEditTest :
     val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
     emptyMockUiState = MutableStateFlow(ItemUIState(emptyItem))
     val cat1 = Category("1", "Category 1")
-    val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
+    val vis1 = Visibility.PUBLIC
     val loc1 = Location("1")
     val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
 
