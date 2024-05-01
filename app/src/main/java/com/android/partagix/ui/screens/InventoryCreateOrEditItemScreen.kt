@@ -39,12 +39,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.model.visibility.getVisibility
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 
 /**
  * Screen to create a new item in user's inventory.
@@ -117,9 +118,14 @@ fun InventoryCreateOrEditItem(
               Column {
                 OutlinedTextField(
                     value = uiName,
-                    onValueChange = { it -> uiName = it },
+                    onValueChange = { input ->
+                      // Filter out newline characters from the input string
+                      val filteredInput = input.replace("\n", "")
+                      uiName = filteredInput
+                    },
                     label = { Text("Object name") },
                     modifier = modifier.testTag("name").fillMaxWidth(),
+                    maxLines = 1, // Ensure only one line is displayed
                     readOnly = false)
 
                 OutlinedTextField(
@@ -153,25 +159,18 @@ fun InventoryCreateOrEditItem(
                 uiCategory = Category(uiCategory.id, c)
               }
               Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
-                val v =
-                    DropDown(
-                        (uiVisibility.toString().substring(0, 1).uppercase() +
-                            uiVisibility.toString().substring(1).lowercase()),
-                        VisibilityItems)
-                uiVisibility =
-                    when (v) {
-                      "Friends" -> Visibility.FRIENDS
-                      "Private" -> Visibility.PRIVATE
-                      else -> Visibility.PUBLIC
-                    }
+                uiVisibility = getVisibility(DropDown("Visibility", VisibilityItems))
               }
             }
 
             Spacer(modifier = modifier.height(8.dp))
 
             OutlinedTextField(
-                value = uiQuantity.toString(),
-                onValueChange = { it -> uiQuantity = it.toLong() },
+                value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
+                onValueChange = { str ->
+                  val longValue: Long? = str.toLongOrNull()
+                  uiQuantity = longValue ?: 0L
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text("Quantity") },
                 modifier = modifier.testTag("quantity").fillMaxWidth(),
@@ -190,7 +189,7 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
-                  onClick = { /*TODO*/},
+                  onClick = { navigationActions.navigateTo(Route.STAMP + uiName) },
                   content = { Text("Download QR code") },
                   modifier = modifier.fillMaxWidth())
             }

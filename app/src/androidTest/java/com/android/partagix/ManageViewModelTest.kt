@@ -79,16 +79,14 @@ class ManageViewModelTest {
         startDate = Date(),
         state = LoanState.PENDING
     )
-
     @Test
     fun testAcceptAndDecline() {
+
         val db = mockk<Database>()
         val manageViewModel = spyk(ManageLoanViewModel(db = db))
         every { db.setLoan(any()) } just Runs
-        every { db.getItems(any()) } answers
+        every { manageViewModel.getLoanRequests() } answers
                 {
-                    val onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
-                    onSuccess(listOf(item1,item1,item1))
                 }
         manageViewModel.update(
             listOf(item1, item1, item1), listOf(user, user, user),
@@ -112,9 +110,8 @@ class ManageViewModelTest {
     @Test
     fun testGetLoanRequests() {
         val db = mockk<Database>()
-        fire = mockk()
         val manageViewModel = spyk(ManageLoanViewModel(db = db))
-
+        fire = mockk()
 
         //val latch = CountDownLatch(1)
 
@@ -126,10 +123,10 @@ class ManageViewModelTest {
                     onSuccess(listOf(item1,item1,item1))
                 }
 
-        every { db.getUser(any(), any()) } answers
+        every { db.getUser(any(), any(), any()) } answers
                 {
                     val users = listOf(user, user, user)
-                    val onSuccessUs = it.invocation.args[1] as (User) -> Unit
+                    val onSuccessUs = it.invocation.args[2] as (User) -> Unit
                     onSuccessUs(user)
                 }
         every { db.getLoans(any()) } answers

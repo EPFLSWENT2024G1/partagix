@@ -8,6 +8,7 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -45,7 +46,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
             InventoryUIState(
                 emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
     val cat1 = Category("1", "Category 1")
-    val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
+    val vis1 = Visibility.PUBLIC
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
 

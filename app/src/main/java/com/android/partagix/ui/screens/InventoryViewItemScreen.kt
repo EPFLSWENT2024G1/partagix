@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,11 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.StampViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * Screen to view an item.
@@ -54,24 +53,10 @@ import com.android.partagix.ui.navigation.Route
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem(
-    navigationActions: NavigationActions,
-    viewModel: ItemViewModel,
-    stampViewModel: StampViewModel
-) {
+fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: ItemViewModel) {
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
-
-  val color =
-      TextFieldDefaults.colors(
-          focusedIndicatorColor = Color.Transparent,
-          disabledIndicatorColor = Color.Transparent,
-          unfocusedIndicatorColor = Color.Transparent,
-          focusedContainerColor = Color.Transparent,
-          unfocusedContainerColor = Color.Transparent,
-          disabledContainerColor = Color.Transparent,
-      )
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -130,7 +115,7 @@ fun InventoryViewItem(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Visibility", item.visibility.name)
+                LabeledText("Visibility", item.visibility.visibilityLabel)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -171,7 +156,7 @@ fun InventoryViewItem(
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
-                      onClick = { /*TODO: go to qrcode dl page*/},
+                      onClick = { navigationActions.navigateTo("${Route.STAMP}/${item.id}") },
                       content = { Text("Download QR code") },
                       modifier = Modifier.fillMaxWidth(0.5f))
 
@@ -185,10 +170,14 @@ fun InventoryViewItem(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Button(
-                    onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
-                    content = { Text("Edit") },
-                    modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                // This should be displayed only if the user is the owner of the item
+                if (viewModel.compareIDs(
+                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
+                  Button(
+                      onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
+                      content = { Text("Edit") },
+                      modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                }
               }
             }
       }
