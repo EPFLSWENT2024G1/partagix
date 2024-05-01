@@ -32,7 +32,7 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   fun getLoanRequests() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
-      if (user == null) {
+      if (user != null) {
         database.getItems { it.forEach { updateItems(it)} }
         database.getLoans {
           it.filter { loan -> /*loan.idOwner == user.uid &&*/

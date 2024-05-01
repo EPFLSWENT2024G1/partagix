@@ -129,7 +129,7 @@ class ManageViewModelTest {
         every { db.getUser(any(), any()) } answers
                 {
                     val users = listOf(user, user, user)
-                    val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+                    val onSuccessUs = it.invocation.args[1] as (User) -> Unit
                     onSuccessUs(user)
                 }
         every { db.getLoans(any()) } answers
