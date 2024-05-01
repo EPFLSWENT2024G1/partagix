@@ -28,7 +28,7 @@ import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.Runs
@@ -62,7 +62,7 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
 
   val cat1 = Category("1", "Category 1")
-  val vis1 = com.android.partagix.model.visibility.Visibility.FRIENDS
+  val vis1 = Visibility.FRIENDS
   val loc1 = Location("")
   val items = emptyList<Item>()
   val item2 = Item("1234", cat1, "Object 1", "Description 1", vis1, 2, loc1)
@@ -214,10 +214,7 @@ class EndToEndCreateEdit {
     every { mockItemViewModel.uiState } returns mockItemUiState2
 
     composeTestRule.setContent {
-      InventoryViewItem(
-          navigationActions = mockNavActions,
-          viewModel = mockItemViewModel,
-          stampViewModel = mockStampViewModel)
+      InventoryViewItemScreen(navigationActions = mockNavActions, viewModel = mockItemViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
@@ -260,10 +257,7 @@ class EndToEndCreateEdit {
     every { mockItemViewModel.uiState } returns mockItemUiState3
 
     composeTestRule.setContent {
-      InventoryViewItem(
-          navigationActions = mockNavActions,
-          viewModel = mockItemViewModel,
-          stampViewModel = mockStampViewModel)
+      InventoryViewItemScreen(navigationActions = mockNavActions, viewModel = mockItemViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
