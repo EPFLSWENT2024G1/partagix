@@ -63,7 +63,7 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
-    private val manageViewModel = ManageLoanViewModel(db = db)
+  private val manageViewModel = ManageLoanViewModel(db = db)
   private val itemViewModel = ItemViewModel(db = db)
   private val userViewModel = UserViewModel(db = db)
   private val stampViewModel = StampViewModel(activity)
@@ -123,9 +123,7 @@ class App(
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-              .fillMaxSize()
-              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -213,9 +211,10 @@ class App(
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
-        composable(Route.MANAGE_LOAN_REQUEST) {
-          ManageLoanRequest(inventoryViewModel = inventoryViewModel, navigationActions = navigationActions )
-        }
+      composable(Route.MANAGE_LOAN_REQUEST) {
+        ManageLoanRequest(
+            manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
+      }
     }
   }
 

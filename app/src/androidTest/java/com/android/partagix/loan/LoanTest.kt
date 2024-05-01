@@ -89,8 +89,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockInventoryViewModel.getInventory() } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
-    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
-    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
+    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs

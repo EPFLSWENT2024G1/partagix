@@ -44,8 +44,8 @@ fun ItemListColumn(
     isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
-    expanded : List<Boolean> = emptyList() ,
-    expandable : Boolean,
+    expanded: List<Boolean> = emptyList(),
+    expandable: Boolean,
 ) {
   Column(modifier = modifier) {
     Row(

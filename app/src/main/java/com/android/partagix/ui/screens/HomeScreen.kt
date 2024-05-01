@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.HomeViewModel
-import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
@@ -65,7 +64,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
-  manageLoanViewModel.getInventory()
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
@@ -119,18 +117,17 @@ fun HomeScreen(
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               ItemListColumn(
-                  list =
-                      uiState.items, // TODO replace this with the actual list of borrowing
+                  list = uiState.items, // TODO replace this with the actual list of borrowing
                   // requests
                   users = uiState.users,
                   loan = uiState.loans,
                   title = "",
                   corner = "see all",
                   onClick = { /* useless on this list */},
-                  onClickCorner = {navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST)},
+                  onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
                   isCornerClickable = true,
                   expandable = true,
-                    expanded = uiState.expanded,
+                  expanded = uiState.expanded,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }

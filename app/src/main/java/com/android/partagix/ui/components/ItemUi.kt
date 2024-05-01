@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,11 +41,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.core.text.util.LocalePreferences.FirstDayOfWeek.Days
 import com.android.partagix.R
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalUnit
 import java.util.Date
 
 /**
@@ -57,146 +61,230 @@ import java.util.Date
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ItemUi(item: Item, user: User, loan: Loan,
-           expanded: Boolean,
-           expandable : Boolean,
-           manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-           index :Int,) {
+fun ItemUi(
+    item: Item,
+    user: User,
+    loan: Loan,
+    expanded: Boolean,
+    expandable: Boolean,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    index: Int,
+) {
   val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
       } else {
         loan.startDate
       }
-    var expandables by remember { mutableStateOf(expandable) }
+  var expandables by remember { mutableStateOf(false) }
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
-  Column(
-      //horizontalAlignment = Alignment.CenterHorizontally,
-      horizontalAlignment = Alignment.Start,
-      modifier = Modifier
-          .fillMaxWidth()
-          .border(
-              width = 1.dp,
-              color = Color(0xFF939393),
-              shape = RoundedCornerShape(size = 4.dp)
-          ).animateContentSize(
-              animationSpec = tween(
-                  durationMillis = 300,
-                  easing = LinearOutSlowInEasing
-              )
-          )
-          .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
-          .padding(PaddingValues(start = 10.dp, end = 10.dp,top = 8.dp, bottom = 8.dp))
-          .clickable(onClick = { /*manageLoanViewModel.updateExpanded(index)*/
-              expandables = !expandables})
-  ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(61.dp)
-                //.padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-        ) {
-              Column(modifier = Modifier.weight(weight = 1f)) {
-                Row(modifier = Modifier.fillMaxHeight(0.5f)) {
-                  Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.3f))
+  if (expandable) {
+    Column(
+        // horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF939393),
+                    shape = RoundedCornerShape(size = 4.dp))
+                .animateContentSize(
+                    animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+                .clickable(
+                    onClick = {
+                      expandables = !expandables
+                    })) {
+          Row(
+              horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+              modifier = Modifier.fillMaxWidth().height(61.dp)
+              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
+              ) {
+                Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
+                  Row(modifier = Modifier.fillMaxHeight(0.5f)) {
+                    Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
 
+                    Text(
+                        text = user.name,
+                        color = Color(0xff49454f),
+                        lineHeight = 1.33.em,
+                        style =
+                            TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Left,
+                            ),
+                        modifier = Modifier.fillMaxWidth(0.85f))
+                  }
                   Text(
-                      text = user.name,
-                      color = Color(0xff49454f),
-                      lineHeight = 1.33.em,
+                      text =
+                          if (loan.idItem.equals("")) {
+                            "not borrowed"
+                          } else {
+                            if (loan.startDate.before(Date())) {
+                              "available in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                            } else {
+                              "borrowed in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                            }
+                          },
+                      lineHeight = 1.43.em,
+                      style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
+                      modifier = Modifier.fillMaxWidth())
+                }
+                Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
+                  Text(
+                      text = item.name,
+                      textAlign = TextAlign.End,
+                      lineHeight = 1.45.em,
                       style =
                           TextStyle(
                               fontSize = 18.sp,
                               fontWeight = FontWeight(500),
                               color = Color(0xFF000000),
-                              textAlign = TextAlign.Left,
+                              textAlign = TextAlign.Right,
                           ),
+                      modifier =
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
+                  Text(
+                      text = "Quantity: " + item.quantity.toString(),
+                      style =
+                          TextStyle(
+                              fontSize = 9.sp,
+                              textAlign = TextAlign.Right,
+                          ),
+                      textAlign = TextAlign.End,
+                      lineHeight = 0.8.em,
+                      modifier =
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.mutliprise),
+                    contentDescription = "fds",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+              }
+          if (expandables) {
+
+            Text(
+                text = "Stay in touch:",
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth())
+            Row(
+                horizontalArrangement = Arrangement.Absolute.Right,
+                modifier = Modifier.fillMaxWidth()) {
+                  Button(
+                      onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                      content = {
+                        Icon(
+                            Icons.Default.Check,
+                            contentDescription = "cancel",
+                            modifier = Modifier,
+                            Color.Green)
+                        Text(text = "validate")
+                      },
+                      border = BorderStroke(1.dp, Color.Green),
+                      modifier = Modifier.fillMaxWidth(0.35f))
+                  Button(
+                      onClick = { manageLoanViewModel.declineLoan(loan, index) },
+                      content = {
+                        Icon(
+                            Icons.Default.Cancel,
+                            contentDescription = "cancel",
+                            modifier = Modifier,
+                            Color.Red)
+                        Text(text = "cancel")
+                      },
+                      border = BorderStroke(1.dp, Color.Red),
                       modifier = Modifier.fillMaxWidth(0.5f))
                 }
-                Text(
-                    text =
-                        if (loan.idItem.equals("")) {
-                          "not borrowed"
-                        } else {
-                          if (loan.startDate.before(Date())) {
-                            "available in : /${date}"
-                          } else {
-                            "borrowed in : /${date}"
-                          }
-                        },
-                    lineHeight = 1.43.em,
-                    style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
-                    modifier = Modifier.fillMaxWidth())
-              }
-              Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
-                Text(
-                    text = item.name,
-                    textAlign = TextAlign.End,
-                    lineHeight = 1.45.em,
-                    style =
-                        TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight(500),
-                            color = Color(0xFF000000),
-                            textAlign = TextAlign.Right,
-                        ),
-                    modifier = Modifier
-                        .fillMaxWidth(0.3f)
-                        .fillMaxHeight(0.5f)
-                        .padding(top = 10.dp))
-                Text(
-                    text = "Quantity: " + item.quantity.toString(),
-                    style =
-                        TextStyle(
-                            fontSize = 9.sp,
-                            textAlign = TextAlign.Right,
-                        ),
-                    textAlign = TextAlign.End,
-                    lineHeight = 0.8.em,
-                    modifier = Modifier
-                        .fillMaxWidth(0.3f)
-                        .fillMaxHeight(0.5f)
-                        .padding(top = 5.dp))
-              }
-              Image(
-                  painter = painterResource(id = R.drawable.mutliprise),
-                  contentDescription = "fds",
-                  contentScale = ContentScale.FillBounds,
-                  modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black)
-              )
-            }
-        if (expandable) {
-            if (expandables){
-                Text(text = "Stay in touch:",
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier.fillMaxWidth())
-                Row (horizontalArrangement = Arrangement.Absolute.Right, modifier = Modifier.fillMaxWidth()){
-                    Button(onClick = { /*manageLoanViewModel.acceptLoan(loan, index)*/ },
-                        content = {
-                            Icon(Icons.Default.Check, contentDescription = "cancel",modifier = Modifier, Color.Green)
-                            Text(text = "validate")},
-                        modifier = Modifier
-                            .fillMaxWidth(0.35f)
-                            .border(1.dp, Color.Green )
-                    )
-                    Button(onClick = { /*manageLoanViewModel.declineLoan(loan, index)*/ },
-                        content = {
-                            Icon(Icons.Default.Cancel, contentDescription = "cancel", modifier = Modifier, Color.Red)
-                            Text(text = "cancel")},
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .border(1.dp, Color.Red )
-                    )
-                }
-            }
+          }
         }
+  } else {
+    Column(
+        // horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF939393),
+                    shape = RoundedCornerShape(size = 4.dp))
+                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
+          Row(
+              horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+              modifier = Modifier.fillMaxWidth().height(61.dp)
+              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
+              ) {
+                Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
+                  Row(modifier = Modifier.fillMaxHeight(0.5f)) {
+                    Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
 
-
-      }
-  // BuildingBlocksstatelayer1Enabled()
-
+                    Text(
+                        text = user.name,
+                        color = Color(0xff49454f),
+                        lineHeight = 1.33.em,
+                        style =
+                            TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Left,
+                            ),
+                        modifier = Modifier.fillMaxWidth(0.85f))
+                  }
+                  Text(
+                      text =
+                          if (loan.idItem.equals("")) {
+                            "not borrowed"
+                          } else {
+                            if (loan.startDate.before(Date())) {
+                              "available in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                            } else {
+                              "borrowed in : ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
+                            }
+                          },
+                      lineHeight = 1.43.em,
+                      style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
+                      modifier = Modifier.fillMaxWidth())
+                }
+                Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
+                  Text(
+                      text = item.name,
+                      textAlign = TextAlign.End,
+                      lineHeight = 1.45.em,
+                      style =
+                          TextStyle(
+                              fontSize = 18.sp,
+                              fontWeight = FontWeight(500),
+                              color = Color(0xFF000000),
+                              textAlign = TextAlign.Right,
+                          ),
+                      modifier =
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
+                  Text(
+                      text = "Quantity: " + item.quantity.toString(),
+                      style =
+                          TextStyle(
+                              fontSize = 9.sp,
+                              textAlign = TextAlign.Right,
+                          ),
+                      textAlign = TextAlign.End,
+                      lineHeight = 0.8.em,
+                      modifier =
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.mutliprise),
+                    contentDescription = "fds",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+              }
+        }
+  }
 }
 /*
 @Composable

@@ -200,7 +200,8 @@ fun LoanScreen(
                         users = emptyList(),
                         loan = emptyList(),
                         expandable = false,
-                        expanded = emptyList(),)
+                        expanded = emptyList(),
+                    )
                   }
             }
       }
