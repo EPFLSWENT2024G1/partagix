@@ -26,6 +26,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Date
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -64,38 +65,38 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getInventory() {
+  fun getInventory(latch: CountDownLatch = CountDownLatch(1)) {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user != null) {
-        database.getUserInventory(/*user.uid*/ "8WuTkKJZLTAr6zs5L7rH") {
+        database.getUserInventory(/*user.uid*/ "3eNGFi1PZTM50iiUZITCq1M37Wn1") {
           updateInv(it.items)
           getUsers(it.items, ::updateUsers)
           findTime(it.items, ::updateLoan)
         }
-        database.getLoans {
-          it.filter { it.idLoaner.equals(user) }
-              .forEach { loan ->
-                database.getItems { items: List<Item> ->
+
+        database.getItems { items: List<Item> ->
+          database.getLoans {
+            it.filter { it.idLoaner.equals(user) }
+                .forEach { loan ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
                   getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
                   findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
-              }
+          }
         }
       } else {
         database.getItems {
-            updateBor(it)
-            getUsers(it, ::updateUsersBor)
-            findTime(it, ::updateLoanBor)
-        }
-          database.getItems {
+          updateBor(it)
+          getUsers(it, ::updateUsersBor)
+          findTime(it, ::updateLoanBor)
           updateInv(it)
           getUsers(it, ::updateUsers)
           findTime(it, ::updateLoan)
         }
         println("----- error user unknown")
       }
+      latch.countDown()
     }
   }
 

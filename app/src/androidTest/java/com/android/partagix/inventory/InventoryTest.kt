@@ -56,7 +56,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockItemViewModel = mockk()
     mockInventoryViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    every { mockInventoryViewModel.getInventory() } just Runs
+    every { mockInventoryViewModel.getInventory(any()) } just Runs
 
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
     every { mockInventoryViewModel.getUsers(any(), any()) } just Runs

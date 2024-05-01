@@ -4,7 +4,6 @@ import android.location.Location
 import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
-import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -19,7 +18,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.spyk
 import java.util.Date
-import kotlinx.coroutines.delay
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
@@ -66,9 +65,11 @@ class InventoryViewModelTests {
 
   @Test
   fun testGetInventory() {
-      val _uiState = MutableStateFlow(InventoryUIState(emptyList(),
-          "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
-      val mockUiState: StateFlow<InventoryUIState> = _uiState
+    val _uiState =
+        MutableStateFlow(
+            InventoryUIState(
+                emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
+    val mockUiState: StateFlow<InventoryUIState> = _uiState
     val db = mockk<Database>()
     fire = mockk()
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
@@ -110,6 +111,8 @@ class InventoryViewModelTests {
             "",
             LoanState.ACCEPTED)
 
+    val latch = CountDownLatch(1)
+
     every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
     every { db.getUserInventory(any(), any()) } answers
         {
@@ -135,19 +138,19 @@ class InventoryViewModelTests {
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
 
+    inventoryViewModel.getInventory(latch)
+    latch.await()
     runBlocking {
-        inventoryViewModel.getInventory()
-        delay(1260)
-        println(inventoryViewModel.uiState.value.borrowedItems)
-        assert(inventoryViewModel.uiState.value.borrowedItems == list)
-        assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
-            assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
-            assert(inventoryViewModel.uiState.value.items == list)
-            assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
-            assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
 
-    }//  delay(60)
-
+      // delay(12600)
+      println(inventoryViewModel.uiState.value.borrowedItems)
+      assert(inventoryViewModel.uiState.value.borrowedItems == list)
+      assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
+      assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+      assert(inventoryViewModel.uiState.value.items == list)
+      assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
+      assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
+    } //  delay(60)
   }
 
   @Test
