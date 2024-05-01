@@ -83,6 +83,11 @@ class ItemViewModel(
     }
   }
 
+  /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
+  fun compareIDs(id: String, userId: String?): Boolean {
+    return id == userId
+  }
+
   companion object {
     private const val TAG = "ItemViewModel"
   }

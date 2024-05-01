@@ -51,17 +51,13 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   fun testSetup() {
     mockItemViewModel = mockk()
     every { mockItemViewModel.uiState } returns mockUiState
+    every { mockItemViewModel.compareIDs(any(), any()) } returns true
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
     composeTestRule.setContent { InventoryViewItemScreen(mockNavActions, mockItemViewModel) }
-  }
-
-  @Test
-  fun testTest() {
-    assert(true)
   }
 
   @Test
