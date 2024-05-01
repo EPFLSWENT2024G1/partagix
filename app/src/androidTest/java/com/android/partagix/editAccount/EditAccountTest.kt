@@ -12,9 +12,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.screens.EditAccount
 import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.EditAccount
-import com.google.common.base.Verify.verify
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -36,10 +34,8 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @get:Rule val composeTestRule = createComposeRule()
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
-
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
 
-  private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
 
   val cat1 = Category("1", "Category 1")
@@ -62,13 +58,6 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockUserViewModel.updateUser(any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
-    every { mockNavActions.navigateTo(Route.HOME) } just Runs
-    every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
-    every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
-    every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
-    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
-    every { mockNavActions.navigateTo(Route.BOOT) } just Runs
-    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
     every { mockNavActions.goBack() } just Runs
   }
 
