@@ -34,7 +34,7 @@ class LabeledTextTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
   @Test
   fun customLabeledTextIsDisplayed() = run {
-    composeTestRule.setContent { LabeledText(label= "testLabel",text= "testText") }
+    composeTestRule.setContent { LabeledText(label = "testLabel", text = "testText") }
     onComposeScreen<LabeledText>(composeTestRule) {
       labeledText { assertIsDisplayed() }
       mainColumn { assertIsDisplayed() }
