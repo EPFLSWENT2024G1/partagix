@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.auth.Authentication
+import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.visibility.Visibility
@@ -15,6 +16,8 @@ class LoanViewModel(
     private val availableItems: List<Item> = emptyList(),
     private val db: Database = Database()
 ) : ViewModel() {
+  private val filtering = Filtering()
+
   private val _uiState = MutableStateFlow(LoanUIState(availableItems))
   val uiState: StateFlow<LoanUIState> = _uiState
 
@@ -71,37 +74,18 @@ class LoanViewModel(
     }
   }
 
-  /**
-   * Filter items based on the query
-   *
-   * @param query the query to filter the items
-   */
   fun filterItems(query: String) {
-    val list =
-        availableItems.filter {
-          it.name.contains(query, ignoreCase = true) ||
-              it.description.contains(query, ignoreCase = true) ||
-              it.category.toString().contains(query, ignoreCase = true) ||
-              it.visibility.toString().contains(query, ignoreCase = true) ||
-              it.quantity.toString().contains(query, ignoreCase = true)
-        }
-
+    val list = filtering.filterItems(availableItems, query)
     update(list, query)
   }
 
   fun filterItems(atLeastQuantity: Int) {
-    val list = availableItems.filter { it.quantity >= atLeastQuantity }
+    val list = filtering.filterItems(availableItems, atLeastQuantity)
     update(list)
   }
 
-  /**
-   * Filter items based on the current position and the radius
-   *
-   * @param currentPosition the current position of the user
-   * @param radius the radius to filter the items (in meters)
-   */
   fun filterItems(currentPosition: Location, radius: Double) {
-    val list = availableItems.filter { it.location.distanceTo(currentPosition) <= (radius * 1000) }
+    val list = filtering.filterItems(availableItems, currentPosition, radius)
     update(list)
   }
 
