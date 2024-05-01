@@ -39,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.model.visibility.getVisibility
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
@@ -118,9 +118,14 @@ fun InventoryCreateOrEditItem(
               Column {
                 OutlinedTextField(
                     value = uiName,
-                    onValueChange = { it -> uiName = it },
+                    onValueChange = { input ->
+                      // Filter out newline characters from the input string
+                      val filteredInput = input.replace("\n", "")
+                      uiName = filteredInput
+                    },
                     label = { Text("Object name") },
                     modifier = modifier.testTag("name").fillMaxWidth(),
+                    maxLines = 1, // Ensure only one line is displayed
                     readOnly = false)
 
                 OutlinedTextField(
@@ -154,17 +159,7 @@ fun InventoryCreateOrEditItem(
                 uiCategory = Category(uiCategory.id, c)
               }
               Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
-                val v =
-                    DropDown(
-                        (uiVisibility.toString().substring(0, 1).uppercase() +
-                            uiVisibility.toString().substring(1).lowercase()),
-                        VisibilityItems)
-                uiVisibility =
-                    when (v) {
-                      "Friends" -> Visibility.FRIENDS
-                      "Private" -> Visibility.PRIVATE
-                      else -> Visibility.PUBLIC
-                    }
+                uiVisibility = getVisibility(DropDown("Visibility", VisibilityItems))
               }
             }
 
@@ -194,7 +189,7 @@ fun InventoryCreateOrEditItem(
 
             Row(modifier = modifier.fillMaxWidth()) {
               Button(
-                  onClick = { navigationActions.navigateTo(Route.STAMP) },
+                  onClick = { navigationActions.navigateTo(Route.STAMP + uiName) },
                   content = { Text("Download QR code") },
                   modifier = modifier.fillMaxWidth())
             }
