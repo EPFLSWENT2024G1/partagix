@@ -1,17 +1,16 @@
-package com.android.partagix.item
+package com.android.partagix.inventory
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
-import com.android.partagix.screens.InventoryViewItem
+import com.android.partagix.screens.InventoryViewItemScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -29,12 +28,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
+class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule val composeTestRule = createComposeRule()
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
-  @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
 
   private var item1: Item =
       Item(
@@ -53,31 +51,23 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   fun testSetup() {
     mockItemViewModel = mockk()
     every { mockItemViewModel.uiState } returns mockUiState
-
-    mockStampViewModel = mockk()
+    every { mockItemViewModel.compareIDs(any(), any()) } returns true
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    composeTestRule.setContent {
-      InventoryViewItem(mockNavActions, mockItemViewModel, mockStampViewModel)
-    }
-  }
-
-  @Test
-  fun testTest() {
-    assert(true)
+    composeTestRule.setContent { InventoryViewItemScreen(mockNavActions, mockItemViewModel) }
   }
 
   @Test
   fun topBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItem>(composeTestRule) { topBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
   }
 
   @Test
   fun bottomBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItem>(composeTestRule) { bottomBar { assertIsDisplayed() } }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { bottomBar { assertIsDisplayed() } }
   }
 
   @Test
@@ -93,6 +83,6 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
             quantity = 1,
             location = mockk(),
             idUser = "id_user")
-    onComposeScreen<InventoryViewItem>(composeTestRule) { assertIsDisplayed() }
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { assertIsDisplayed() }
   }
 }

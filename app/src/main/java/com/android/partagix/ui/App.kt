@@ -13,7 +13,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -42,7 +41,7 @@ import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.StampScreen
@@ -73,7 +72,6 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -233,9 +231,8 @@ class App(
         EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
       }
 
-      composable(Route.VIEW_ITEM) {
-        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
-      }
+      composable(Route.VIEW_ITEM) { InventoryViewItemScreen(navigationActions, itemViewModel) }
+
       composable(Route.CREATE_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
