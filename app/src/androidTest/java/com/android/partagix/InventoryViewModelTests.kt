@@ -56,6 +56,54 @@ class InventoryViewModelTests {
           4,
           Location(""),
           idUser = "8WuTkKJZLTAr6zs5L7rH")
+  val item4 =
+      Item(
+          "item4",
+          Category("0", "Category 3"),
+          "oops",
+          "description",
+          Visibility.PUBLIC,
+          4,
+          Location(""),
+          idUser = "8WuTkKJZLTAr6zs5L7rH")
+
+  val user = User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("", emptyList()))
+  val loaned1 =
+      Loan(
+          "8WuTkKJZLTAr6zs5L7rH",
+          "8WuTkKJZLTAr6zs5L7rH",
+          "item1",
+          Date(),
+          Date(),
+          "",
+          "",
+          "",
+          "",
+          LoanState.ACCEPTED)
+  val loaned2 =
+      Loan(
+          "8WuTkKJZLTAr6zs5L7rH",
+          "8WuTkKJZLTAr6zs5L7rH",
+          "item2",
+          Date(),
+          Date(),
+          "",
+          "",
+          "",
+          "",
+          LoanState.ACCEPTED)
+  val loaned3 =
+      Loan(
+          "8WuTkKJZLTAr6zs5L7rH",
+          "8WuTkKJZLTAr6zs5L7rH",
+          "item3",
+          Date(),
+          Date(),
+          "",
+          "",
+          "",
+          "",
+          LoanState.ACCEPTED)
   val list: List<Item> = listOf(item1, item2, item3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
@@ -73,43 +121,6 @@ class InventoryViewModelTests {
     val db = mockk<Database>()
     fire = mockk()
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
-    val user = User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("", emptyList()))
-    val loaned1 =
-        Loan(
-            "8WuTkKJZLTAr6zs5L7rH",
-            "8WuTkKJZLTAr6zs5L7rH",
-            "item1",
-            Date(),
-            Date(),
-            "",
-            "",
-            "",
-            "",
-            LoanState.ACCEPTED)
-    val loaned2 =
-        Loan(
-            "8WuTkKJZLTAr6zs5L7rH",
-            "8WuTkKJZLTAr6zs5L7rH",
-            "item2",
-            Date(),
-            Date(),
-            "",
-            "",
-            "",
-            "",
-            LoanState.ACCEPTED)
-    val loaned3 =
-        Loan(
-            "8WuTkKJZLTAr6zs5L7rH",
-            "8WuTkKJZLTAr6zs5L7rH",
-            "item3",
-            Date(),
-            Date(),
-            "",
-            "",
-            "",
-            "",
-            LoanState.ACCEPTED)
 
     val latch = CountDownLatch(1)
 
@@ -151,6 +162,33 @@ class InventoryViewModelTests {
       assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
       assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
     } //  delay(60)
+  }
+
+  @Test
+  fun testFindTime() {
+    val db = mockk<Database>()
+    every { db.getItems(any()) } answers
+        {
+          onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(list)
+        }
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val users = listOf(user, user, user)
+          val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+          onSuccessUs(user)
+        }
+    every { db.getLoans(any()) } answers
+        { invocation ->
+          onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+          onSuccessLoan(listOf(loaned1, loaned2, loaned3))
+        }
+    val inventoryViewModel = spyk(InventoryViewModel(db = db))
+    inventoryViewModel.updateInv(list)
+    inventoryViewModel.findTime(
+        listOf(item4),
+        { assert(it == Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)) })
   }
 
   @Test
