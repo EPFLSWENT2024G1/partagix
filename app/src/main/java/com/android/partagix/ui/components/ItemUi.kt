@@ -41,7 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.core.text.util.LocalePreferences.FirstDayOfWeek.Days
 import com.android.partagix.R
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
@@ -49,7 +48,6 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalUnit
 import java.util.Date
 
 /**
@@ -61,7 +59,6 @@ import java.util.Date
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-
 fun ItemUi(
     item: Item,
     user: User,
@@ -78,7 +75,7 @@ fun ItemUi(
         loan.startDate
       }
   var expandables by remember { mutableStateOf(false) }
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
   if (expandable) {
     Column(
@@ -94,10 +91,7 @@ fun ItemUi(
                     animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-                .clickable(
-                    onClick = {
-                      expandables = !expandables
-                    })) {
+                .clickable(onClick = { expandables = !expandables })) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
               modifier = Modifier.fillMaxWidth().height(61.dp)

@@ -74,7 +74,7 @@ fun ItemList(
                     },
                 loan =
                     if (loan.isEmpty()) {
-                      Loan("","", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                      Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                     } else {
                       loan[index]
                     },

@@ -24,7 +24,7 @@ fun ManageLoanRequest(
     modifier: Modifier = Modifier
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
-    println("*************************")
+  println("*************************")
   Scaffold(
       modifier = modifier,
       topBar = {

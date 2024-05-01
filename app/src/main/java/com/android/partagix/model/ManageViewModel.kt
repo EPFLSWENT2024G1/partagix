@@ -21,7 +21,7 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   val uiState: StateFlow<ManagerUIState> = _uiState
 
   init {
-     getLoanRequests()
+    getLoanRequests()
   }
 
   /**
@@ -30,52 +30,50 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
    */
   fun getLoanRequests() {
     val user = FirebaseAuth.getInstance().currentUser
-      var listed = mutableListOf<Item>()
+    var listed = mutableListOf<Item>()
     viewModelScope.launch {
       if (user != null) {
-          database.getItems { list -> listed = list.toMutableList()}
-              database.getLoans {
-                  // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
-                  // }.size)
-                  println(listed)
-                  it.filter { loan -> loan.state == LoanState.PENDING && loan.idOwner == user.uid}
-                      .forEach { loan ->
-                          println(loan.id)
-                          updateItems(listed.filter { it.id == loan.idItem }.first())
-                          database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                          updateExpandedReset()
-                          updateLoans(loan)
-                      }
+        database.getItems { list -> listed = list.toMutableList() }
+        database.getLoans {
+          // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
+          // }.size)
+          println(listed)
+          it.filter { loan -> loan.state == LoanState.PENDING && loan.idOwner == user.uid }
+              .forEach { loan ->
+                println(loan.id)
+                updateItems(listed.filter { it.id == loan.idItem }.first())
+                database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                updateExpandedReset()
+                updateLoans(loan)
               }
-
+        }
       } else {
         database.getItems { list ->
-            database.getLoans {
-                // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
-                // }.size)
-                it.filter { loan -> loan.state == LoanState.PENDING }
-                    .forEach { loan ->
-                        println(loan.id)
-                        updateItems(list.filter { it.id == loan.idItem }.first())
-                        database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                        updateExpandedReset()
-                        updateLoans(loan)
-                    }
-            }
+          database.getLoans {
+            // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
+            // }.size)
+            it.filter { loan -> loan.state == LoanState.PENDING }
+                .forEach { loan ->
+                  println(loan.id)
+                  updateItems(list.filter { it.id == loan.idItem }.first())
+                  database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                  updateExpandedReset()
+                  updateLoans(loan)
+                }
+          }
         }
       }
     }
   }
 
-   fun update(
+  fun update(
       items: List<Item>,
       users: List<User>,
       loan: List<Loan>,
       expanded: List<Boolean>,
   ) {
     _uiState.value =
-        _uiState.value.copy(
-            items = items, users = users, loans = loan, expanded = expanded)
+        _uiState.value.copy(items = items, users = users, loans = loan, expanded = expanded)
   }
 
   private fun updateItems(new: Item) {
@@ -107,8 +105,8 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   }*/
 
   fun acceptLoan(loan: Loan, index: Int) {
-      UiStateWithoutIndex(index)
-      database.setLoan(loan.copy(state = LoanState.ACCEPTED))
+    UiStateWithoutIndex(index)
+    database.setLoan(loan.copy(state = LoanState.ACCEPTED))
   }
 
   fun declineLoan(loan: Loan, index: Int) {
@@ -116,29 +114,29 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
     UiStateWithoutIndex(index)
   }
 
-    fun UiStateWithoutIndex(index : Int) {
-        var newLoans : MutableStateFlow<ManagerUIState> =
-            MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList()))
-        for (i in 0 until uiState.value.loans.size) {
-            if (i != index) {
-                newLoans.value = newLoans.value.copy(
-                    items = newLoans.value.items.plus(uiState.value.items[i]),
-                    loans = newLoans.value.loans.plus(uiState.value.loans[i]),
-                    users = newLoans.value.users.plus(uiState.value.users[i]),
-                    expanded = newLoans.value.expanded.plus(uiState.value.expanded[i])
-                        )
-            }
-        }
-        _uiState.value = _uiState.value.copy(
+  fun UiStateWithoutIndex(index: Int) {
+    var newLoans: MutableStateFlow<ManagerUIState> =
+        MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList()))
+    for (i in 0 until uiState.value.loans.size) {
+      if (i != index) {
+        newLoans.value =
+            newLoans.value.copy(
+                items = newLoans.value.items.plus(uiState.value.items[i]),
+                loans = newLoans.value.loans.plus(uiState.value.loans[i]),
+                users = newLoans.value.users.plus(uiState.value.users[i]),
+                expanded = newLoans.value.expanded.plus(uiState.value.expanded[i]))
+      }
+    }
+    _uiState.value =
+        _uiState.value.copy(
             items = newLoans.value.items,
             loans = newLoans.value.loans,
             users = newLoans.value.users,
-            expanded = newLoans.value.expanded
+            expanded = newLoans.value.expanded)
 
-        )
-        println(_uiState.value.items)
-        println(uiState.value.loans)
-    }
+    println(_uiState.value.items)
+    println(uiState.value.loans)
+  }
 }
 
 data class ManagerUIState(

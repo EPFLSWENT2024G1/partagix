@@ -238,7 +238,7 @@ class App(
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }
-        composable(
+      composable(
           Route.STAMP + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
             StampScreen(

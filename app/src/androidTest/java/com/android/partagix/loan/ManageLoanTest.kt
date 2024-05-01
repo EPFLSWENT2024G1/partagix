@@ -40,7 +40,13 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun testSetup() {
     mockNavActions = mockk<NavigationActions>()
     emptyMockUiState =
-        MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList(), ))
+        MutableStateFlow(
+            ManagerUIState(
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+            ))
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")

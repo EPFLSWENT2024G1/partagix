@@ -341,7 +341,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
             "loanstate" to newLoan.state.toString())
-      loan.document(newLoan.id).set(data5)
+    loan.document(newLoan.id).set(data5)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
