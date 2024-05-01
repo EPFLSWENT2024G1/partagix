@@ -176,7 +176,8 @@ fun InventoryViewItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // This should be displayed only if the user is the owner of the item
-                if (item.idUser == FirebaseAuth.getInstance().currentUser?.uid) {
+                if (viewModel.compareIDs(
+                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
                   Button(
                       onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                       content = { Text("Edit") },

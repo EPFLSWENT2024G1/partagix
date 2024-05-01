@@ -53,6 +53,7 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   fun testSetup() {
     mockItemViewModel = mockk()
     every { mockItemViewModel.uiState } returns mockUiState
+    every { mockItemViewModel.compareIDs(any(), any()) } returns true
 
     mockStampViewModel = mockk()
 
@@ -63,11 +64,6 @@ class ItemTests : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     composeTestRule.setContent {
       InventoryViewItem(mockNavActions, mockItemViewModel, mockStampViewModel)
     }
-  }
-
-  @Test
-  fun testTest() {
-    assert(true)
   }
 
   @Test
