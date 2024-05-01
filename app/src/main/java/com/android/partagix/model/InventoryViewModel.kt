@@ -88,7 +88,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
       } else {
         database.getItems {
           updateBor(it)
-            getUsers(it, ::updateUsersBor)
+          getUsers(it, ::updateUsersBor)
           findTime(it, ::updateLoanBor)
           updateInv(it)
           getUsers(it, ::updateUsers)
