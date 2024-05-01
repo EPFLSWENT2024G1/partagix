@@ -83,11 +83,25 @@ class ManageViewModelTest {
     fun testAcceptAndDecline() {
 
         val db = mockk<Database>()
+        every { db.getItems(any()) } answers
+                {
+                    val onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+                    onSuccess(listOf(item1,item1,item1))
+                }
+
+        every { db.getUser(any(), any(), any()) } answers
+                {
+                    val users = listOf(user, user, user)
+                    val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+                    onSuccessUs(user)
+                }
+        every { db.getLoans(any()) } answers
+                { invocation ->
+                    val onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+                    onSuccessLoan(listOf(loan1, loan2, loan3))
+                }
         val manageViewModel = spyk(ManageLoanViewModel(db = db))
         every { db.setLoan(any()) } just Runs
-        every { manageViewModel.getLoanRequests() } answers
-                {
-                }
         manageViewModel.update(
             listOf(item1, item1, item1), listOf(user, user, user),
             listOf(loan1, loan2, loan3), listOf(false, false, false)
@@ -110,7 +124,6 @@ class ManageViewModelTest {
     @Test
     fun testGetLoanRequests() {
         val db = mockk<Database>()
-        val manageViewModel = spyk(ManageLoanViewModel(db = db))
         fire = mockk()
 
         //val latch = CountDownLatch(1)
@@ -135,6 +148,7 @@ class ManageViewModelTest {
                     onSuccessLoan(listOf(loan1, loan2, loan3))
                 }
         every { db.setLoan(any()) } just Runs
+        val manageViewModel = spyk(ManageLoanViewModel(db = db))
         manageViewModel.getLoanRequests()
 
         //latch.await()
