@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
 
   private val database = db
-  private var fetchedList: List<Item> = emptyList()
 
   // UI state exposed to the UI
   private val _uiState =
@@ -31,36 +30,38 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
    */
   fun getLoanRequests() {
     val user = FirebaseAuth.getInstance().currentUser
+      var listed = mutableListOf<Item>()
     viewModelScope.launch {
       if (user != null) {
-        database.getItems { it.forEach { updateItems(it)} }
-        database.getLoans {
-          it.filter { loan -> /*loan.idOwner == user.uid &&*/
-                loan.state == LoanState.PENDING
+          database.getItems { list -> listed = list.toMutableList()}
+              database.getLoans {
+                  // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
+                  // }.size)
+                  println(listed)
+                  it.filter { loan -> loan.state == LoanState.PENDING && loan.idOwner == user.uid}
+                      .forEach { loan ->
+                          println(loan.id)
+                          updateItems(listed.filter { it.id == loan.idItem }.first())
+                          database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                          updateExpandedReset()
+                          updateLoans(loan)
+                      }
               }
-              .forEach { loan ->
-                fetchedList
-                    .filter { it.id == loan.idItem }
-                    .forEach { database.getUser(loan.idLoaner) { user -> updateUsers(user) } }
 
-                updateExpandedReset()
-                updateLoans(loan)
-              }
-        }
       } else {
         database.getItems { list ->
-          database.getLoans {
-            // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
-            // }.size)
-            it.filter { loan -> loan.state == LoanState.PENDING }
-                .forEach { loan ->
-                    println(loan.id)
-                    updateItems(list.filter { it.id == loan.idItem }.first())
-                    database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                  updateExpandedReset()
-                  updateLoans(loan)
-                }
-          }
+            database.getLoans {
+                // setupExpanded(list.filter { item -> it.map { loan -> loan.idItem }.contains(item.id)
+                // }.size)
+                it.filter { loan -> loan.state == LoanState.PENDING }
+                    .forEach { loan ->
+                        println(loan.id)
+                        updateItems(list.filter { it.id == loan.idItem }.first())
+                        database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                        updateExpandedReset()
+                        updateLoans(loan)
+                    }
+            }
         }
       }
     }

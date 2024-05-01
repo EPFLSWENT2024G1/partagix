@@ -22,11 +22,12 @@ import io.mockk.spyk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Test
 import java.util.Date
 
 class ManageViewModelTest {
-
+    val db = mockk<Database>()
     @RelaxedMockK lateinit var fire: FirebaseAuth
     val item1 =
         Item(
@@ -39,15 +40,15 @@ class ManageViewModelTest {
             Location(""),
             idUser = "8WuTkKJZLTAr6zs5L7rH")
 
-    val user = User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("", emptyList()))
+    val user = User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
     val loan1 = Loan(
         id = "1",
         commentLoaner = "commentLoaner",
         commentOwner = "commentOwner",
         endDate =  Date(),
-        idItem = "idItem",
-        idOwner = "idOwner",
-        idLoaner = "idLoaner",
+        idItem = "item1",
+        idOwner = "8WuTkKJZLTAr6zs5L7rH",
+        idLoaner = "8WuTkKJZLTAr6zs5L7rH",
         reviewLoaner = "reviewLoaner",
         reviewOwner = "reviewOwner",
         startDate = Date(),
@@ -58,9 +59,9 @@ class ManageViewModelTest {
         commentLoaner = "commentLoaner",
         commentOwner = "commentOwner",
         endDate =  Date(),
-        idItem = "idItem",
-        idOwner = "idOwner",
-        idLoaner = "idLoaner",
+        idItem = "item1",
+        idOwner = "8WuTkKJZLTAr6zs5L7rH",
+        idLoaner = "8WuTkKJZLTAr6zs5L7rH",
         reviewLoaner = "reviewLoaner",
         reviewOwner = "reviewOwner",
         startDate = Date(),
@@ -71,35 +72,27 @@ class ManageViewModelTest {
         commentLoaner = "commentLoaner",
         commentOwner = "commentOwner",
         endDate =  Date(),
-        idItem = "idItem",
-        idOwner = "idOwner",
-        idLoaner = "idLoaner",
+        idItem = "item1",
+        idOwner = "8WuTkKJZLTAr6zs5L7rH",
+        idLoaner = "8WuTkKJZLTAr6zs5L7rH",
         reviewLoaner = "reviewLoaner",
         reviewOwner = "reviewOwner",
         startDate = Date(),
         state = LoanState.PENDING
     )
+    @Before
+    fun setup() {
+        fire = mockk()
+        every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+        every { db.getItems(any()) } answers
+                { firstArg<(List<Item>) -> Unit>().invoke(listOf(item1,item1,item1)) }
+        every { db.getUser(any(), any(), any()) } answers
+                { thirdArg<(User) -> Unit>().invoke(user) }
+        every { db.getLoans(any()) } answers
+                { firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3)) }
+    }
     @Test
     fun testAcceptAndDecline() {
-
-        val db = mockk<Database>()
-        every { db.getItems(any()) } answers
-                {
-                    val onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
-                    onSuccess(listOf(item1,item1,item1))
-                }
-
-        every { db.getUser(any(), any(), any()) } answers
-                {
-                    val users = listOf(user, user, user)
-                    val onSuccessUs = it.invocation.args[2] as (User) -> Unit
-                    onSuccessUs(user)
-                }
-        every { db.getLoans(any()) } answers
-                { invocation ->
-                    val onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
-                    onSuccessLoan(listOf(loan1, loan2, loan3))
-                }
         val manageViewModel = spyk(ManageLoanViewModel(db = db))
         every { db.setLoan(any()) } just Runs
         manageViewModel.update(
@@ -125,31 +118,16 @@ class ManageViewModelTest {
     fun testGetLoanRequests() {
         val db = mockk<Database>()
         fire = mockk()
+        every { db.getItems(any()) } answers
+                { firstArg<(List<Item>) -> Unit>().invoke(listOf(item1,item1,item1)) }
+        every { db.getUser(any(), any(), any()) } answers
+                { thirdArg<(User) -> Unit>().invoke(user) }
+        every { db.getLoans(any()) } answers
+                { firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3)) }
 
         //val latch = CountDownLatch(1)
 
-        every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
-
-        every { db.getItems(any()) } answers
-                {
-                    val onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
-                    onSuccess(listOf(item1,item1,item1))
-                }
-
-        every { db.getUser(any(), any(), any()) } answers
-                {
-                    val users = listOf(user, user, user)
-                    val onSuccessUs = it.invocation.args[2] as (User) -> Unit
-                    onSuccessUs(user)
-                }
-        every { db.getLoans(any()) } answers
-                { invocation ->
-                    val onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
-                    onSuccessLoan(listOf(loan1, loan2, loan3))
-                }
-        every { db.setLoan(any()) } just Runs
         val manageViewModel = spyk(ManageLoanViewModel(db = db))
-        manageViewModel.getLoanRequests()
 
         //latch.await()
         runBlocking {
