@@ -8,6 +8,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
@@ -17,8 +18,8 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
 
   // UI state exposed to the UI
   private val _uiState =
-      MutableStateFlow(ManagerUIState(emptyList(), "", emptyList(), emptyList(), emptyList()))
-  val uiState: MutableStateFlow<ManagerUIState> = _uiState
+      MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList()))
+  val uiState: StateFlow<ManagerUIState> = _uiState
 
   init {
      getLoanRequests()
@@ -65,16 +66,15 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
     }
   }
 
-  private fun update(
+   fun update(
       items: List<Item>,
-      query: String,
       users: List<User>,
       loan: List<Loan>,
       expanded: List<Boolean>,
   ) {
     _uiState.value =
         _uiState.value.copy(
-            items = items, query = query, users = users, loans = loan, expanded = expanded)
+            items = items, users = users, loans = loan, expanded = expanded)
   }
 
   private fun updateItems(new: Item) {
@@ -106,21 +106,42 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   }*/
 
   fun acceptLoan(loan: Loan, index: Int) {
-    database.setLoan(loan.copy(state = LoanState.ACCEPTED))
-    update(emptyList(), "", emptyList(), emptyList(), emptyList())
-    getLoanRequests()
+      UiStateWithoutIndex(index)
+      database.setLoan(loan.copy(state = LoanState.ACCEPTED))
   }
 
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
-      update(emptyList(), "", emptyList(), emptyList(), emptyList())
-      getLoanRequests()
+    UiStateWithoutIndex(index)
   }
+
+    fun UiStateWithoutIndex(index : Int) {
+        var newLoans : MutableStateFlow<ManagerUIState> =
+            MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList()))
+        for (i in 0 until uiState.value.loans.size) {
+            if (i != index) {
+                newLoans.value = newLoans.value.copy(
+                    items = newLoans.value.items.plus(uiState.value.items[i]),
+                    loans = newLoans.value.loans.plus(uiState.value.loans[i]),
+                    users = newLoans.value.users.plus(uiState.value.users[i]),
+                    expanded = newLoans.value.expanded.plus(uiState.value.expanded[i])
+                        )
+            }
+        }
+        _uiState.value = _uiState.value.copy(
+            items = newLoans.value.items,
+            loans = newLoans.value.loans,
+            users = newLoans.value.users,
+            expanded = newLoans.value.expanded
+
+        )
+        println(_uiState.value.items)
+        println(uiState.value.loans)
+    }
 }
 
 data class ManagerUIState(
     val items: List<Item>,
-    val query: String,
     val users: List<User>,
     val loans: List<Loan>,
     val expanded: List<Boolean>,

@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -38,6 +39,7 @@ fun ItemList(
     expandable: Boolean,
     expanded: List<Boolean>,
     onClick: (Item) -> Unit,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -77,6 +79,7 @@ fun ItemList(
                       loan[index]
                     },
                 index = index,
+                manageLoanViewModel = manageLoanViewModel,
             )
           }
       Spacer(modifier = Modifier.height(8.dp))

@@ -24,6 +24,7 @@ fun ManageLoanRequest(
     modifier: Modifier = Modifier
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
+    println("*************************")
   Scaffold(
       modifier = modifier,
       topBar = {
@@ -55,6 +56,7 @@ fun ManageLoanRequest(
               expanded = uiState.expanded,
               onClick = { /* isnt usefull for this column */},
               onClickCorner = { /* isnt usefull for this column */},
+              manageLoanViewModel = manageLoanViewModel,
               modifier = Modifier.padding(innerPadding).testTag("manageLoanScreenItemListColumn"))
         }
       }

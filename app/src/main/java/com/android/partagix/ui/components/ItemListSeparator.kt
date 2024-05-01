@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
@@ -45,6 +46,7 @@ fun ItemListColumn(
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
     expanded: List<Boolean> = emptyList(),
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     expandable: Boolean,
 ) {
   Column(modifier = modifier) {
@@ -78,6 +80,7 @@ fun ItemListColumn(
         onClick = onClick,
         expandable = expandable,
         expanded = expanded,
+        manageLoanViewModel = manageLoanViewModel,
         modifier = Modifier.fillMaxSize())
   }
 }

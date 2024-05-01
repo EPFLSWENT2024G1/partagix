@@ -128,6 +128,7 @@ fun HomeScreen(
                   isCornerClickable = true,
                   expandable = true,
                   expanded = uiState.expanded,
+                    manageLoanViewModel = manageLoanViewModel,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }

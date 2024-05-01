@@ -40,7 +40,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun testSetup() {
     mockNavActions = mockk<NavigationActions>()
     emptyMockUiState =
-        MutableStateFlow(ManagerUIState(emptyList(), "", emptyList(), emptyList(), emptyList()))
+        MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList(), ))
     val cat1 = Category("1", "Category 1")
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
@@ -49,6 +49,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     val loan =
         listOf(
             Loan(
+                "4",
                 "2",
                 "3",
                 "1",
@@ -60,7 +61,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
                 "",
                 LoanState.PENDING))
     val boolean = listOf(true)
-    nonEmptyMockUiState = MutableStateFlow(ManagerUIState(items, "", users, loan, boolean))
+    nonEmptyMockUiState = MutableStateFlow(ManagerUIState(items, users, loan, boolean))
 
     mockManageViewModel = mockk()
 
