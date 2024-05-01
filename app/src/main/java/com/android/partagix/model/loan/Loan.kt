@@ -3,6 +3,7 @@ package com.android.partagix.model.loan
 import java.util.Date
 
 data class Loan(
+    val id: String,
     val idOwner: String,
     val idLoaner: String,
     val idItem: String,

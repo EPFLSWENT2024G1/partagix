@@ -151,6 +151,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
             val loan =
                 Loan(
+                    document.id,
                     document.data["id_owner"] as String,
                     document.data["id_loaner"] as String,
                     document.data["id_item"] as String,
@@ -326,14 +327,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
             "loanstate" to newLoan.state.toString())
-      itemLoan.get().addOnSuccessListener {
-          result ->
-          for (document in result) {
-              if (document.data["id_item"] as String == newLoan.idItem) {
-                  loan.document(document.id).set(data5)
-              }
-          }
-      }
+      loan.document(newLoan.id).set(data5)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {

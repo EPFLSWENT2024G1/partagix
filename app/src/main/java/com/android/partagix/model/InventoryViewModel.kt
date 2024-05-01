@@ -180,7 +180,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
                 .sortedBy { it.startDate }
         update(
             if (list.isEmpty()) {
-              Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+              Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
             } else {
               loan
                   .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }

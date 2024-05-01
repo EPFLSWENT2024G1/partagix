@@ -53,6 +53,7 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
             // }.size)
             it.filter { loan -> loan.state == LoanState.PENDING }
                 .forEach { loan ->
+                    println(loan.id)
                     updateItems(list.filter { it.id == loan.idItem }.first())
                     database.getUser(loan.idOwner) { user -> updateUsers(user) }
                   updateExpandedReset()
