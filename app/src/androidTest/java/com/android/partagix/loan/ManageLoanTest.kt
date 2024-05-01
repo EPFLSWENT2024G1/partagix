@@ -64,7 +64,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
 
     mockManageViewModel = mockk()
 
-    every { mockManageViewModel.getInventory() } just Runs
+    every { mockManageViewModel.getLoanRequests() } just Runs
     // every { mockManageViewModel.updateExpanded(any()) } just Runs
 
   }

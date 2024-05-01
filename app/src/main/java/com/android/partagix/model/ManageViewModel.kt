@@ -21,14 +21,14 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   val uiState: MutableStateFlow<ManagerUIState> = _uiState
 
   init {
-     getInventory()
+     getLoanRequests()
   }
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getInventory() {
+  fun getLoanRequests() {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user == null) {
@@ -107,16 +107,14 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
 
   fun acceptLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
-    val list = _uiState.value.loans.toMutableList()
-    list[index] = loan.copy(state = LoanState.ACCEPTED)
-    _uiState.value = _uiState.value.copy(loans = list)
+    update(emptyList(), "", emptyList(), emptyList(), emptyList())
+    getLoanRequests()
   }
 
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
-    val list = _uiState.value.loans.toMutableList()
-    list[index] = loan.copy(state = LoanState.CANCELLED)
-    _uiState.value = _uiState.value.copy(loans = list)
+      update(emptyList(), "", emptyList(), emptyList(), emptyList())
+      getLoanRequests()
   }
 }
 
