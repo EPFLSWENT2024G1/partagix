@@ -47,9 +47,7 @@ class UserViewModel(
   private fun setUserToCurrent() {
     val userID = FirebaseAuth.getInstance().currentUser?.uid
 
-    if (userID == null) {
-      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else if (userID != "") {
+    if (userID != null) {
       database.getUser(userID) { updateUIState(it) }
     } else {
       database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
