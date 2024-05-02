@@ -71,6 +71,7 @@ class EndToEndCreateEdit {
   val item3 = Item("1234", cat1, "Object 1 edited", "Description 1 edited", vis1, 3, loc1)
 
   val user = User("1234", "name", "email", "1234", Inventory("1234", emptyList()))
+
   @Before
   fun setup() {
     mockUiState =
@@ -87,9 +88,10 @@ class EndToEndCreateEdit {
 
     mockItemUiState =
         MutableStateFlow(
-            ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")), user))
-    mockItemUiState2 = MutableStateFlow(ItemUIState(item2,user))
-    mockItemUiState3 = MutableStateFlow(ItemUIState(item3,user))
+            ItemUIState(
+                Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")), user))
+    mockItemUiState2 = MutableStateFlow(ItemUIState(item2, user))
+    mockItemUiState3 = MutableStateFlow(ItemUIState(item3, user))
 
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
