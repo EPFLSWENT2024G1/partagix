@@ -47,10 +47,10 @@ class UserViewModel(
   fun setUserToCurrent() {
     val userID = FirebaseAuth.getInstance().currentUser?.uid
 
-    if (userID == null) {
-      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
-    } else {
+    if (userID != null) {
       database.getUser(userID) { updateUIState(it) }
+    } else {
+      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
     }
   }
 
@@ -66,6 +66,24 @@ class UserViewModel(
         _uiState.value.copy(
             location = location,
         )
+  }
+
+  /**
+   * Update the user in the database and update the UI state when done
+   *
+   * @param user the user to update (with the new values)
+   */
+  fun updateUser(user: User) {
+    database.updateUser(user) { updateUIState(it) }
+  }
+
+  /**
+   * Get the user id of the logged user
+   *
+   * @return the user id of the logged user
+   */
+  fun getLoggedUserId(): String? {
+    return FirebaseAuth.getInstance().currentUser?.uid
   }
 
   companion object {
