@@ -62,7 +62,7 @@ fun DropDown(label: String, list: List<String>): String {
 }
 
 val CategoryItems = // todo : get the list from the database. Current implementation is a hardcoded
-                    // list
+    // list
     listOf(
         "Sound Systems",
         "Lighting",
