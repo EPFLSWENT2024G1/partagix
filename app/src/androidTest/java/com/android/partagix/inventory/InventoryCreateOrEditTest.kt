@@ -66,7 +66,6 @@ class InventoryCreateOrEditTest :
     nonEmptyMockUiState = MutableStateFlow(ItemUIState(item))
     noCategoryMockUiState = MutableStateFlow(ItemUIState(noCategoryItem, emptyUser))
 
-
     mockViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
     every { mockViewModel.save(capture(savedItem)) } just Runs
