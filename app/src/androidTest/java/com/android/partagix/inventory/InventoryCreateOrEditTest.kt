@@ -139,6 +139,7 @@ class InventoryCreateOrEditTest :
       }
     }
   }
+
   @Test
   fun itemCreateTest() {
     every { mockViewModel.uiState } returns noCategoryMockUiState
@@ -157,4 +158,4 @@ class InventoryCreateOrEditTest :
       assert(savedItem.captured.visibility == Visibility.PUBLIC)
     }
   }
-
+}
