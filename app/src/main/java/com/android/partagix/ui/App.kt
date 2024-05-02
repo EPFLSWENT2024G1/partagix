@@ -188,6 +188,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
+        inventoryViewModel.getInventory()
         HomeScreen(
             homeViewModel = HomeViewModel(),
             inventoryViewModel = inventoryViewModel,
@@ -208,6 +209,7 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
+          inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(),
               inventoryViewModel = inventoryViewModel,
@@ -215,6 +217,7 @@ class App(
         }
       }
       composable(Route.INVENTORY) {
+        inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
@@ -229,9 +232,10 @@ class App(
         userViewModel.setUserToCurrent()
         ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
+
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel)
       }
 
       composable(Route.CREATE_ITEM) {
