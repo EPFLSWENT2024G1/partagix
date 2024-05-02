@@ -17,9 +17,9 @@
 package com.android.partagix.model
 
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -40,6 +40,8 @@ class InventoryViewModel(
   private val database = db
   private var fetchedList: List<Item> = emptyList()
   private var fetchedBorrowed: List<Item> = emptyList()
+
+  private val filtering = Filtering()
 
   // UI state exposed to the UI
   private val _uiState =
@@ -216,8 +218,8 @@ class InventoryViewModel(
    */
   fun filterItems(query: String) {
     val currentState = _uiState.value
-    val list = filter(fetchedList, query)
-    val listBorrowed = filter(fetchedBorrowed, query)
+    val list = filtering.filterItems(fetchedList, query)
+    val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
   }
 
@@ -233,7 +235,7 @@ class InventoryViewModel(
 
   fun filterItems(atLeastQuantity: Int) {
     val currentState = _uiState.value
-    val list = fetchedList.filter { it.quantity >= atLeastQuantity }
+    val list = filtering.filterItems(fetchedList, atLeastQuantity)
     _uiState.value = currentState.copy(items = list)
   }
 
@@ -245,12 +247,7 @@ class InventoryViewModel(
    */
   fun filterItems(currentPosition: Location, radius: Double) {
     val currentState = _uiState.value
-    fetchedList.forEach {
-      Log.d(
-          TAG,
-          "item: ${it.name}, distance: ${it.location.distanceTo(currentPosition)}, current: $currentPosition, item: ${it.location}")
-    }
-    val list = fetchedList.filter { it.location.distanceTo(currentPosition) <= (radius * 1000) }
+    val list = fetchedBorrowed.filter { it.location.distanceTo(currentPosition) <= (radius * 1000) }
     _uiState.value = currentState.copy(items = list)
   }
 
