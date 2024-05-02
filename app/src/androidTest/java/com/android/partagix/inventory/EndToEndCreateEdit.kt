@@ -22,6 +22,7 @@ import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
@@ -61,7 +62,7 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState2: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
 
-  val cat1 = Category("1", "Category 1")
+  val cat1 = Category("1", CategoryItems[1])
   val vis1 = Visibility.FRIENDS
   val loc1 = Location("")
   val items = emptyList<Item>()
@@ -180,7 +181,8 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithTag("visibility").performClick()
     composeTestRule.onNodeWithText("Friends only").performClick()
     composeTestRule.onNodeWithTag("category").performClick()
-    composeTestRule.onNodeWithText("Category 1").performClick()
+    composeTestRule.onNodeWithText(CategoryItems[1]).performScrollTo()
+    composeTestRule.onNodeWithText(CategoryItems[1]).performClick()
     composeTestRule.onNodeWithText("Create").performScrollTo()
     composeTestRule.onNodeWithText("Create").performClick()
 
@@ -221,7 +223,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Description 1").assertIsDisplayed()
     composeTestRule.onNodeWithText("2").assertIsDisplayed()
     composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Category 1").assertIsDisplayed()
+    composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithText("Edit").performScrollTo()
     composeTestRule.onNodeWithText("Edit").performClick()
 
@@ -264,7 +266,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Description 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("3").assertIsDisplayed()
     composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Category 1").assertIsDisplayed()
+    composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithTag("navigationIcon").performClick()
 
     coVerify(exactly = 1) { mockNavActions.goBack() }
