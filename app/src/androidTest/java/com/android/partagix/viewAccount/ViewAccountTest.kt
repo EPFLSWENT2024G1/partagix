@@ -265,7 +265,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
   //    editButton
   @Test
-  fun editButtonIsDisplayed() = run {
+  fun editAndFriendButtonIsDisplayed() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       ViewAccount(
@@ -274,11 +274,14 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           navigationActions = mockNavActions)
     }
 
-    onComposeScreen<ViewAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
+    onComposeScreen<ViewAccount>(composeTestRule) {
+      editButton { assertIsDisplayed() }
+      friendButton { assertIsDisplayed() }
+    }
   }
 
   @Test
-  fun editButtonWorks() = run {
+  fun editAndFriendButtonWorks() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       ViewAccount(
@@ -290,6 +293,8 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     onComposeScreen<ViewAccount>(composeTestRule) {
       editButton { assertIsDisplayed() }
       editButton { performClick() }
+      friendButton { assertIsDisplayed() }
+      friendButton { performClick() }
     }
   }
 }

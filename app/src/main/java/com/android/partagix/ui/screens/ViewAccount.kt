@@ -80,6 +80,16 @@ fun ViewAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
+                  horizontalArrangement = Arrangement.Absolute.Right) {
+                    Button(
+                        onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
+                        modifier = Modifier.testTag("editProfileButton")) {
+                          Text("Edit Profile")
+                        }
+                  }
+              Spacer(modifier = Modifier.height(8.dp))
               Image(
                   painter =
                       painterResource(
@@ -169,9 +179,9 @@ fun ViewAccount(
                         }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
-                        onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
-                        modifier = Modifier.weight(1f).testTag("editButton")) {
-                          Text("Edit Profile")
+                        onClick = { /*TODO: friends*/},
+                        modifier = Modifier.weight(1f).testTag("friendButton")) {
+                          Text("Add Friends [not yet implemented]")
                         }
                   }
             }
