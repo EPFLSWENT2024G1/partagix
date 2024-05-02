@@ -71,33 +71,44 @@ class InventoryCreateOrEditTest :
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.goBack() } just Runs
-
-    /*    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
-    }*/
   }
 
   @Test
-  fun testTest() = run {
-    every { mockViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
-    }
-
-    assert(true)
-  }
-
-  @Test
-  fun topBarIsDisplayed() = run {
+  fun topBarAndEmptyItemAreDisplayed() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
     }
 
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      // TopBar
       topBar { assertIsDisplayed() }
 
       navigationIcon { assertIsDisplayed() }
+
+      // Empty item
+      image { assertIsDisplayed() }
+
+      name {
+        assertIsDisplayed()
+        assertTextContains("Object name")
+      }
+
+      idUser {
+        assertIsDisplayed()
+        assertTextContains("Author")
+      }
+
+      description {
+        assertIsDisplayed()
+        assertTextContains("Description")
+      }
+
+      category { assertIsDisplayed() }
+
+      visibility { assertIsDisplayed() }
+
+      quantity { assertIsDisplayed() }
     }
   }
 
@@ -128,40 +139,6 @@ class InventoryCreateOrEditTest :
       }
     }
   }
-
-  @Test
-  fun emptyItemIsDisplayed() = run {
-    every { mockViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
-    }
-
-    onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-      image { assertIsDisplayed() }
-
-      name {
-        assertIsDisplayed()
-        assertTextContains("Object name")
-      }
-
-      idUser {
-        assertIsDisplayed()
-        assertTextContains("Author")
-      }
-
-      description {
-        assertIsDisplayed()
-        assertTextContains("Description")
-      }
-
-      category { assertIsDisplayed() }
-
-      visibility { assertIsDisplayed() }
-
-      quantity { assertIsDisplayed() }
-    }
-  }
-
   @Test
   fun itemCreateTest() {
     every { mockViewModel.uiState } returns noCategoryMockUiState
@@ -180,4 +157,4 @@ class InventoryCreateOrEditTest :
       assert(savedItem.captured.visibility == Visibility.PUBLIC)
     }
   }
-}
+
