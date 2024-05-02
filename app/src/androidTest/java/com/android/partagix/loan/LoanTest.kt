@@ -85,19 +85,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
 
-<<<<<<< HEAD
-    mockInventoryViewModel = mockk()
-    every { mockInventoryViewModel.getInventory() } just Runs
-    every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
-    every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
-    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
-    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
-=======
     mockLoanViewModel = mockk()
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
     every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
->>>>>>> origin
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs

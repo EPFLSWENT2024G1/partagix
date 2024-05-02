@@ -57,7 +57,6 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
-    every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
     every { mockInventoryViewModel.uiState } returns mockUiState
 
