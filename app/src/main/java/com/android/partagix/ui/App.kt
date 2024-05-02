@@ -28,6 +28,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -43,6 +44,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -64,6 +66,7 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
+  private val loanViewModel = LoanViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -200,7 +203,7 @@ class App(
           }
           LoanScreen(
               navigationActions = navigationActions,
-              inventoryViewModel = inventoryViewModel,
+              loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
               modifier = modifier)
@@ -217,6 +220,8 @@ class App(
             navigationActions = navigationActions,
             itemViewModel = itemViewModel)
       }
+
+      composable(Route.QR_SCAN) { QrScanScreen(navigationActions) }
 
       composable(
           Route.ACCOUNT,
