@@ -24,6 +24,7 @@ import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
