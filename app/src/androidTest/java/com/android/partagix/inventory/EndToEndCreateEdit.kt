@@ -20,7 +20,9 @@ import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -68,6 +70,7 @@ class EndToEndCreateEdit {
   val item2 = Item("1234", cat1, "Object 1", "Description 1", vis1, 2, loc1)
   val item3 = Item("1234", cat1, "Object 1 edited", "Description 1 edited", vis1, 3, loc1)
 
+  val user = User("1234", "name", "email", "1234", Inventory("1234", emptyList()))
   @Before
   fun setup() {
     mockUiState =
@@ -84,9 +87,9 @@ class EndToEndCreateEdit {
 
     mockItemUiState =
         MutableStateFlow(
-            ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))))
-    mockItemUiState2 = MutableStateFlow(ItemUIState(item2))
-    mockItemUiState3 = MutableStateFlow(ItemUIState(item3))
+            ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")), user))
+    mockItemUiState2 = MutableStateFlow(ItemUIState(item2,user))
+    mockItemUiState3 = MutableStateFlow(ItemUIState(item3,user))
 
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
@@ -101,7 +104,7 @@ class EndToEndCreateEdit {
     every { mockNavActions.goBack() } just Runs
     every { mockNavActions.navigateTo(TOP_LEVEL_DESTINATIONS[2]) } just Runs
 
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
 
     val mockMainActivity = mockk<MainActivity>()
     val mockDatabase = mockk<Database>()
@@ -166,7 +169,7 @@ class EndToEndCreateEdit {
   fun testC_CreateItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
@@ -232,7 +235,7 @@ class EndToEndCreateEdit {
   @Test
   fun testF_EditItem() {
     every { mockItemViewModel.uiState } returns mockItemUiState2
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
