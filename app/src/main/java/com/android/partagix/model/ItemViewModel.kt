@@ -44,9 +44,7 @@ class ItemViewModel(
     if (id != null) {
       database.getItem(id) { newItem -> updateUiState(newItem) }
     } else {
-      if (Authentication.getUser() != null) {
-        updateUiState(item)
-      }
+      updateUiState(item)
     }
     // TODO: set the author field as the User's name
   }
@@ -57,6 +55,11 @@ class ItemViewModel(
    * @param new the new item to update the UI state with
    */
   fun updateUiState(new: Item) {
+    var newUserId = ""
+    if (Authentication.getUser() != null) {
+      newUserId = FirebaseAuth.getInstance().currentUser!!.uid
+    }
+
     val newWithUserId =
         Item(
             new.id,
@@ -66,7 +69,7 @@ class ItemViewModel(
             new.visibility,
             new.quantity,
             new.location,
-            FirebaseAuth.getInstance().currentUser?.uid ?: "")
+            newUserId)
 
     _uiState.value =
         _uiState.value.copy(
