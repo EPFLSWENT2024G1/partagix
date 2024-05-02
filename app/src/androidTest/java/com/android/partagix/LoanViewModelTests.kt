@@ -6,6 +6,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -26,6 +27,12 @@ class LoanViewModelTests {
   private val db = mockk<Database>()
   private val loanViewModel = spyk(LoanViewModel(db = db))
 
+  private val currentPosition =
+      Location("").apply {
+        latitude = 46.5294513
+        longitude = 6.5864534
+      }
+
   private val item1 =
       Item(
           "1",
@@ -34,7 +41,11 @@ class LoanViewModelTests {
           "test1",
           Visibility.PUBLIC,
           1,
-          Location(""),
+          Location("").apply {
+            // Renens Aqua Park
+            latitude = 46.5297788
+            longitude = 6.5831585
+          },
           "user1",
       )
 
@@ -46,7 +57,11 @@ class LoanViewModelTests {
           "test2",
           Visibility.PUBLIC,
           1,
-          Location(""),
+          Location("").apply {
+            // Renens
+            latitude = 46.534633
+            longitude = 6.588432
+          },
           "user2",
       )
 
@@ -174,6 +189,45 @@ class LoanViewModelTests {
     Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
     assert(loanViewModel.uiState.value.availableItems.size == 1)
     assert(loanViewModel.uiState.value.availableItems.contains(item1))
+  }
+
+  // Verify that the filterItems method calls the filtering method
+  @Test
+  fun testFilterItemsByQuery() {
+    val spyFiltering = spyk(Filtering())
+    val loanViewModel = spyk(LoanViewModel(filtering = spyFiltering, db = db))
+
+    // all items
+    val query = "test"
+    loanViewModel.filterItems(query)
+
+    verify { spyFiltering.filterItems(any(), query) }
+  }
+
+  // Verify that the filterItems method calls the filtering method
+  @Test
+  fun testFilterItemsByAtLeastQuantity() {
+    val spyFiltering = spyk(Filtering())
+    val loanViewModel = spyk(LoanViewModel(filtering = spyFiltering, db = db))
+
+    // all items
+    val atLeastQuantity = 1
+    loanViewModel.filterItems(atLeastQuantity)
+
+    verify { spyFiltering.filterItems(any(), atLeastQuantity) }
+  }
+
+  // Verify that the filterItems method calls the filtering method
+  @Test
+  fun testFilterItemsByCurrentPosition() {
+    val spyFiltering = spyk(Filtering())
+    val loanViewModel = spyk(LoanViewModel(filtering = spyFiltering, db = db))
+
+    // all items
+    val radius = 1.0
+    loanViewModel.filterItems(currentPosition, radius)
+
+    verify { spyFiltering.filterItems(any(), currentPosition, radius) }
   }
 
   companion object {

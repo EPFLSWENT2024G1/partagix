@@ -14,10 +14,9 @@ import kotlinx.coroutines.launch
 
 class LoanViewModel(
     private val availableItems: List<Item> = emptyList(),
-    private val db: Database = Database()
+    private val db: Database = Database(),
+    private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
-  private val filtering = Filtering()
-
   private val _uiState = MutableStateFlow(LoanUIState(availableItems))
   val uiState: StateFlow<LoanUIState> = _uiState
 
