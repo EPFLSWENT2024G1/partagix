@@ -18,6 +18,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
 import io.mockk.verify
+import kotlinx.coroutines.delay
 import java.util.Date
 import org.junit.After
 import org.junit.Before
@@ -105,6 +106,7 @@ class LoanViewModelTests {
   private val mockLoans =
       listOf(
           Loan(
+              "fmdsaon",
               "user2",
               "user3",
               "2",
@@ -183,7 +185,6 @@ class LoanViewModelTests {
     every { mockUser.uid } returns "user5"
 
     loanViewModel.getAvailableLoans()
-
     verify { db.getLoans(any()) }
 
     Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
