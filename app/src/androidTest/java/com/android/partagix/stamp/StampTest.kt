@@ -3,7 +3,7 @@ package com.android.partagix.stamp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.screens.StampScreen
@@ -44,90 +44,40 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
     }
   }
 
-  @Test fun testTest() = run { assert(true) }
-
-  //    scaffold
   @Test
-  fun stampScreenIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { stampScreen { assertIsDisplayed() } }
-  }
-
-  //    topAppBar
-  @Test
-  fun topAppBarIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { topAppBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun topAppBarWorks() = run {
+  fun contentIsDisplayed() = run {
     onComposeScreen<StampScreen>(composeTestRule) {
+      stampScreen { assertIsDisplayed() }
+      topAppBar { assertIsDisplayed() }
+      mainContent { assertIsDisplayed() }
+      dimensionLabel { assertIsDisplayed() }
+      dimensionBox { assertIsDisplayed() }
+      labelLabel { assertIsDisplayed() }
+      labelTextField { assertIsDisplayed() }
+    }
+  }
+
+  @OptIn(ExperimentalTestApi::class)
+  @Test
+  fun componentsWorks() = run {
+    onComposeScreen<StampScreen>(composeTestRule) {
+      // top bar
       topAppBar { assertIsDisplayed() }
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
       backButton { performClick() }
-    }
-  }
+      downloadRow { assertIsDisplayed() }
+      downloadButton { assertIsDisplayed() }
 
-  //    mainContent
-  @Test
-  fun mainContentIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { mainContent { assertIsDisplayed() } }
-  }
-
-  //    dimensionLabel
-  @Test
-  fun dimensionLabelIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { dimensionLabel { assertIsDisplayed() } }
-  }
-
-  //    dimensionBox
-  @Test
-  fun dimensionBoxIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { dimensionBox { assertIsDisplayed() } }
-  }
-
-  //    labelLabel
-  @Test
-  fun labelLabelIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { labelLabel { assertIsDisplayed() } }
-  }
-
-  //    labelTextField
-  @Test
-  fun labelTextFieldIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { labelTextField { assertIsDisplayed() } }
-  }
-
-  @OptIn(ExperimentalTestApi::class)
-  fun labelTextFieldWorks() = run {
-    onComposeScreen<StampScreen>(composeTestRule) {
-      labelTextField {
-        assertIsDisplayed()
-        performTextInput(
-            "this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_this_is_a_long_text_")
-      }
-      performTextInputSelection(TextRange(0, 40))
-    }
-  }
-
-  //    downloadRow
-  @Test
-  fun downloadRowIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { downloadRow { assertIsDisplayed() } }
-  }
-
-  //    downloadButton
-  @Test
-  fun downloadButtonIsDisplayed() = run {
-    onComposeScreen<StampScreen>(composeTestRule) { downloadButton { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun downloadButtonWorks() = run {
-    onComposeScreen<StampScreen>(composeTestRule) {
+      // download button
       downloadButton { assertIsDisplayed() }
       downloadButton { performClick() }
       coVerify(exactly = 1) { mockStampViewModel.generateQRCodeAndSave("123456", "", any()) }
+
+      // label text field
+      labelTextField { assertIsDisplayed() }
+      labelTextField { performTextInput("label of QR code") }
+      composeTestRule.onNodeWithText("label of QR code").assertExists()
     }
   }
 }
