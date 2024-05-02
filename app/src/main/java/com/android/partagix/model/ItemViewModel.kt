@@ -18,6 +18,7 @@ package com.android.partagix.model
 
 import android.location.Location
 import androidx.lifecycle.ViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -57,9 +58,25 @@ class ItemViewModel(
    * @param new the new item to update the UI state with
    */
   fun updateUiState(new: Item) {
+    var newUserId = ""
+    if (Authentication.getUser() != null) {
+      newUserId = FirebaseAuth.getInstance().currentUser!!.uid
+    }
+
+    val newWithUserId =
+        Item(
+            new.id,
+            new.category,
+            new.name,
+            new.description,
+            new.visibility,
+            new.quantity,
+            new.location,
+            newUserId)
+
     _uiState.value =
         _uiState.value.copy(
-            item = new,
+            item = newWithUserId,
         )
   }
 
@@ -91,7 +108,7 @@ class ItemViewModel(
     }
   }
 
-  /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
+  /* Compare 2 given IDs, here the id of the item's user and the id of the current user */
   fun compareIDs(id: String, userId: String?): Boolean {
     return id == userId
   }
