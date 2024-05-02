@@ -121,40 +121,42 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       inventoryButton { assertIsDisplayed() }
       inventoryButton { performClick() }
 
-  //    editButton
-  @Test
-  fun editAndFriendButtonIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
-    }
+      //    editButton
+      @Test
+      fun editAndFriendButtonIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+          ViewAccount(
+              modifier = Modifier,
+              userViewModel = mockUserViewModel,
+              navigationActions = mockNavActions)
+        }
 
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      editButton { assertIsDisplayed() }
-      friendButton { assertIsDisplayed() }
-    }
-  }
+        onComposeScreen<ViewAccount>(composeTestRule) {
+          editButton { assertIsDisplayed() }
+          friendButton { assertIsDisplayed() }
+        }
+      }
 
-  @Test
-  fun editAndFriendButtonWorks() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
-    }
+      @Test
+      fun editAndFriendButtonWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+          ViewAccount(
+              modifier = Modifier,
+              userViewModel = mockUserViewModel,
+              navigationActions = mockNavActions)
+        }
 
-    onComposeScreen<ViewAccount>(composeTestRule) {
-      editButton { assertIsDisplayed() }
-      editButton { performClick() }
-     
-      // friend button
-      friendButton { assertIsDisplayed() }
-      friendButton { performClick() }
+        onComposeScreen<ViewAccount>(composeTestRule) {
+          editButton { assertIsDisplayed() }
+          editButton { performClick() }
+
+          // friend button
+          friendButton { assertIsDisplayed() }
+          friendButton { performClick() }
+        }
+      }
     }
   }
 }
