@@ -267,8 +267,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
    */
 
-  fun createItem(userId: String, newItem: Item) {
-
+  fun createItem(userId: String, newItem: Item, onSuccess: (Item) -> Unit = {}) {
     val idItem = getNewUid(items)
     val data =
         hashMapOf(
@@ -281,6 +280,17 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location))
     items.document(idItem).set(data)
+    val new =
+        Item(
+            idItem,
+            newItem.category,
+            newItem.name,
+            newItem.description,
+            newItem.visibility,
+            newItem.quantity,
+            newItem.location,
+            userId)
+    onSuccess(new)
   }
 
   fun setItem(newItem: Item) {

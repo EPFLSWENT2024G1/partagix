@@ -85,9 +85,9 @@ class ItemViewModel(
                 new.description,
                 new.visibility,
                 new.quantity,
-                new.location))
+                new.location),
+            onItemCreated)
       }
-      onItemCreated(new)
     } else {
       updateUiState(new)
       onItemSaved(new)
