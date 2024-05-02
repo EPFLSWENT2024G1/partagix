@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
@@ -62,6 +63,7 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState2: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
+  private lateinit var mockHomeUiState: MutableStateFlow<HomeUIState>
 
   val cat1 = Category("1", "Category 1")
   val vis1 = Visibility.FRIENDS
@@ -93,6 +95,7 @@ class EndToEndCreateEdit {
     mockItemUiState2 = MutableStateFlow(ItemUIState(item2, user))
     mockItemUiState3 = MutableStateFlow(ItemUIState(item3, user))
 
+    mockHomeUiState = MutableStateFlow(HomeUIState(user))
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
@@ -134,6 +137,7 @@ class EndToEndCreateEdit {
   fun testA_goFromHomeToInventory() {
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
+    every { mockHomeViewModel.uiState } returns mockHomeUiState
 
     composeTestRule.setContent {
       HomeScreen(
