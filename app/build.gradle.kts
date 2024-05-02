@@ -252,6 +252,12 @@ tasks.withType<Test> {
     }
 }
 
+// Tasks are run in parallel and create a new process every 75 tests
+tasks.withType<Test>().configureEach {
+  maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+  forkEvery = 75
+}
+
 tasks.register("jacocoTestReport", JacocoReport::class) {
     mustRunAfter("testDebugUnitTest", "connectedDebugAndroidTest")
 

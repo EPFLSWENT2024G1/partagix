@@ -97,19 +97,19 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.PersonSearch,
                         text = findItemButtonName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.LOAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.QR_SCAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
                         text = findItemIventoryName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               Text(
