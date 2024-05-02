@@ -63,7 +63,7 @@ class InventoryCreateOrEditTest :
     val loc2 = Location("2")
     val noCategoryItem = Item("2", emptyCat, "Name 2", "Description 2", vis2, 2, loc2)
 
-    nonEmptyMockUiState = MutableStateFlow(ItemUIState(item))
+    nonEmptyMockUiState = MutableStateFlow(ItemUIState(item, emptyUser))
     noCategoryMockUiState = MutableStateFlow(ItemUIState(noCategoryItem, emptyUser))
 
     mockViewModel = mockk()
