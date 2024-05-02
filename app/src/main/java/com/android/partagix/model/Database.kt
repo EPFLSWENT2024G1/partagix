@@ -348,6 +348,24 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     users.document(user.id).set(data)
   }
 
+  /**
+   * Update a user in the database
+   *
+   * @param user the user to update (with the new values)
+   * @param onSuccess the function to call when the user is updated
+   */
+  fun updateUser(user: User, onSuccess: (User) -> Unit) {
+    val data =
+        hashMapOf(
+            "id" to user.id,
+            "name" to user.name,
+            "addr" to user.address,
+            "rank" to user.rank,
+        )
+    users.document(user.id).set(data)
+    onSuccess(user)
+  }
+
   companion object {
     private const val TAG = "Database"
   }
