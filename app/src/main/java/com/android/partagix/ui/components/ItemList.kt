@@ -36,9 +36,9 @@ fun ItemList(
     onClick: (Item) -> Unit,
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
-    println(itemList.size)
-    println(users.size)
-    println(loan.size)
+  println(itemList.size)
+  println(users.size)
+  println(loan.size)
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
       stickyHeader { stickyHeader() }

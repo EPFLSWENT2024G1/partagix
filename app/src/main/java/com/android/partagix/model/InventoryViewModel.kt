@@ -16,7 +16,6 @@
 
 package com.android.partagix.model
 
-import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.filtering.Filtering
@@ -35,7 +34,7 @@ class InventoryViewModel(
     items: List<Item> = emptyList(),
     db: Database = Database(),
     firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
-    latch : CountDownLatch = CountDownLatch(1)
+    latch: CountDownLatch = CountDownLatch(1)
 ) : ViewModel() {
 
   private val database = db
@@ -71,7 +70,7 @@ class InventoryViewModel(
       firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
   ) {
     viewModelScope.launch {
-        var user = firebaseAuth.currentUser
+      var user = firebaseAuth.currentUser
       if (user != null) {
         /*database.getUserInventory(/*user.uid*/ "3eNGFi1PZTM50iiUZITCq1M37Wn1") {
           updateInv(it.items)
@@ -80,7 +79,7 @@ class InventoryViewModel(
         }*/
 
         database.getItems { items: List<Item> ->
-            println(items)
+          println(items)
           updateInv(items.filter { it.idUser.equals(user.uid) })
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
@@ -220,8 +219,8 @@ class InventoryViewModel(
    */
   fun filterItems(query: String) {
     val currentState = _uiState.value
-      println( "items" + fetchedList)
-      println( "borrow :" +fetchedBorrowed)
+    println("items" + fetchedList)
+    println("borrow :" + fetchedBorrowed)
     val list = filtering.filterItems(fetchedList, query)
     val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
@@ -249,7 +248,6 @@ class InventoryViewModel(
    * @param currentPosition the current position of the user
    * @param radius the radius to filter the items (in meters)
    */
-
   companion object {
     private const val TAG = "InventoryViewModel"
   }
