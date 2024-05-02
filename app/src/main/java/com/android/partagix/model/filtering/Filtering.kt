@@ -36,6 +36,7 @@ open class Filtering {
   /**
    * Filter items based on the current position and the radius.
    *
+   * @param list the list of items to filter
    * @param currentPosition the current position of the user
    * @param radius the radius to filter the items (in kms)
    * @return the list of items within the radius of the current position.
