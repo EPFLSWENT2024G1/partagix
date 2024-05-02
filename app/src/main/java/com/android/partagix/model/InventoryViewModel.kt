@@ -31,7 +31,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Database()) : ViewModel() {
+class InventoryViewModel(
+    items: List<Item> = emptyList(),
+    db: Database = Database(),
+    firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+) : ViewModel() {
 
   private val database = db
   private var fetchedList: List<Item> = emptyList()
@@ -52,32 +56,32 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    // getInventory()
+    getInventory(firebaseAuth = firebaseAuth)
   }
-
-  /*private fun getItems() {
-    viewModelScope.launch {
-      database.getItems { update(it, it, emptyList(), emptyList(), emptyList(), emptyList()) }
-    }
-  }*/
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getInventory(latch: CountDownLatch = CountDownLatch(1)) {
-    val user = FirebaseAuth.getInstance().currentUser
+  fun getInventory(
+      latch: CountDownLatch = CountDownLatch(1),
+      firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+  ) {
+    val user = firebaseAuth.currentUser
     viewModelScope.launch {
       if (user != null) {
-        database.getUserInventory(/*user.uid*/ "3eNGFi1PZTM50iiUZITCq1M37Wn1") {
+        /*database.getUserInventory(/*user.uid*/ "3eNGFi1PZTM50iiUZITCq1M37Wn1") {
           updateInv(it.items)
           getUsers(it.items, ::updateUsers)
           findTime(it.items, ::updateLoan)
-        }
+        }*/
 
         database.getItems { items: List<Item> ->
+          updateInv(items.filter { it.idUser.equals(user.uid) })
+          getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
+          findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
           database.getLoans {
-            it.filter { it.idLoaner.equals(user) }
+            it.filter { it.idLoaner.equals(user.uid) }
                 .forEach { loan ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
                   getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
@@ -136,8 +140,8 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
   }
 
   fun updateBor(new: List<Item>) {
-    _uiState.value = _uiState.value.copy(borrowedItems = new)
-    fetchedBorrowed = new
+    _uiState.value = _uiState.value.copy(borrowedItems = _uiState.value.borrowedItems.plus(new))
+    fetchedBorrowed = fetchedBorrowed.plus(new)
   }
 
   fun updateUsers(new: User) {

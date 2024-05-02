@@ -2,7 +2,6 @@ package com.android.partagix
 
 import android.location.Location
 import com.android.partagix.model.Database
-import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
@@ -18,14 +17,10 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.spyk
 import java.util.Date
-import java.util.concurrent.CountDownLatch
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class InventoryViewModelTests {
-  val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
   val item1 =
       Item(
           "item1",
@@ -113,18 +108,46 @@ class InventoryViewModelTests {
 
   @Test
   fun testGetInventory() {
-    val _uiState =
-        MutableStateFlow(
-            InventoryUIState(
-                emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
-    val mockUiState: StateFlow<InventoryUIState> = _uiState
     val db = mockk<Database>()
     fire = mockk()
+    every { db.getUserInventory(any(), any()) } answers
+        {
+          onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
+          onSuccessinv(Inventory("", list))
+        }
+
+    every { db.getItems(any()) } answers
+        {
+          onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(list)
+        }
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val users = listOf(user, user, user)
+          val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+          onSuccessUs(user)
+        }
+    every { db.getLoans(any()) } answers
+        { invocation ->
+          onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+          onSuccessLoan(listOf(loaned1, loaned2, loaned3))
+        }
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
+    runBlocking {
+      assert(inventoryViewModel.uiState.value.borrowedItems == list)
+      assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
+      assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+      assert(inventoryViewModel.uiState.value.items == list)
+      assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
+      assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
+    }
+  }
 
-    val latch = CountDownLatch(1)
-
-    every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+  @Test
+  fun testInventoryNotNull() {
+    val db = mockk<Database>()
+    fire = mockk()
     every { db.getUserInventory(any(), any()) } answers
         {
           onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
@@ -149,19 +172,17 @@ class InventoryViewModelTests {
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
 
-    inventoryViewModel.getInventory(latch)
-    latch.await()
-    runBlocking {
+    every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = fire))
 
-      // delay(12600)
-      println(inventoryViewModel.uiState.value.borrowedItems)
-      assert(inventoryViewModel.uiState.value.borrowedItems == list)
-      assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
-      assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+    runBlocking {
       assert(inventoryViewModel.uiState.value.items == list)
       assert(inventoryViewModel.uiState.value.users == listOf(user, user, user))
       assert(inventoryViewModel.uiState.value.loan == listOf(loaned1, loaned2, loaned3))
-    } //  delay(60)
+      assert(inventoryViewModel.uiState.value.borrowedItems == list)
+      assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
+      assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+    }
   }
 
   @Test
@@ -194,6 +215,29 @@ class InventoryViewModelTests {
   @Test
   fun testFilterItems() {
     val db = mockk<Database>()
+    every { db.getUserInventory(any(), any()) } answers
+        {
+          onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
+          onSuccessinv(Inventory("", list))
+        }
+
+    every { db.getItems(any()) } answers
+        {
+          onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(list)
+        }
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val users = listOf(user, user, user)
+          val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+          onSuccessUs(user)
+        }
+    every { db.getLoans(any()) } answers
+        { invocation ->
+          onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+          onSuccessLoan(listOf(loaned1, loaned2, loaned3))
+        }
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
     inventoryViewModel.updateInv(list)
     inventoryViewModel.updateBor(list)
@@ -213,6 +257,29 @@ class InventoryViewModelTests {
   @Test
   fun testFilterItemsQuantity() {
     val db = mockk<Database>()
+    every { db.getUserInventory(any(), any()) } answers
+        {
+          onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
+          onSuccessinv(Inventory("", list))
+        }
+
+    every { db.getItems(any()) } answers
+        {
+          onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(list)
+        }
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val users = listOf(user, user, user)
+          val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+          onSuccessUs(user)
+        }
+    every { db.getLoans(any()) } answers
+        { invocation ->
+          onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+          onSuccessLoan(listOf(loaned1, loaned2, loaned3))
+        }
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
     inventoryViewModel.updateInv(list)
     assert(inventoryViewModel.uiState.value.items == list)
@@ -223,6 +290,29 @@ class InventoryViewModelTests {
   @Test
   fun testFilterItemsPosition() {
     val db = mockk<Database>()
+    every { db.getUserInventory(any(), any()) } answers
+        {
+          onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
+          onSuccessinv(Inventory("", list))
+        }
+
+    every { db.getItems(any()) } answers
+        {
+          onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(list)
+        }
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val users = listOf(user, user, user)
+          val onSuccessUs = it.invocation.args[2] as (User) -> Unit
+          onSuccessUs(user)
+        }
+    every { db.getLoans(any()) } answers
+        { invocation ->
+          onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
+          onSuccessLoan(listOf(loaned1, loaned2, loaned3))
+        }
     val inventoryViewModel = spyk(InventoryViewModel(db = db))
     inventoryViewModel.updateInv(list)
     assert(inventoryViewModel.uiState.value.items == list)
