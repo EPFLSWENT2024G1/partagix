@@ -3,6 +3,7 @@ package com.android.partagix.inventory
 import android.content.Intent
 import android.location.Location
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -21,6 +22,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.navigation.NavigationActions
@@ -30,6 +32,7 @@ import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItemScreen
+import com.android.partagix.ui.screens.StampScreen
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.Runs
@@ -286,5 +289,25 @@ class EndToEndCreateEdit {
 
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("Object 1 edited").performClick()
+  }
+
+  // Generate a QR code for the edited item
+  @Test
+  fun testI_generateQRCode() {
+    every { mockStampViewModel.generateQRCodeAndSave(any(), any(), any()) } just Runs
+
+    composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, "1234", mockNavActions) }
+    composeTestRule.onNodeWithTag("labelTextField").performTextReplacement("label of QR code")
+
+    composeTestRule.onNodeWithTag("dimensionBox").assertIsDisplayed()
+    composeTestRule.onNodeWithTag("dimensionBox").performClick()
+    composeTestRule.onNodeWithText(StampDimension.MEDIUM.detailedDimension).performClick()
+
+    composeTestRule.onNodeWithText("Download stamps").performClick()
+
+    coVerify(exactly = 1) {
+      mockStampViewModel.generateQRCodeAndSave(
+          "1234", "label of QR code", StampDimension.MEDIUM.detailedDimension)
+    }
   }
 }
