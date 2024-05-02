@@ -14,11 +14,10 @@ import kotlinx.coroutines.launch
 
 class LoanViewModel(
     private val availableItems: List<Item> = emptyList(),
-    private val filteredItems: List<Item> = emptyList(),
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(LoanUIState(filteredItems))
+  private val _uiState = MutableStateFlow(LoanUIState(availableItems))
   val uiState: StateFlow<LoanUIState> = _uiState
 
   init {
@@ -68,16 +67,15 @@ class LoanViewModel(
   }
 
   private fun availableItems(items: List<Item>) {
-    availableItems = availableItems
-//    _uiState.value = _uiState.value.copy(filteredItems = items)
+    _uiState.value = _uiState.value.copy(availableItems = items)
   }
 
   /** Update the UI state with the given list of items and an optional query. */
   private fun update(items: List<Item>, query: String? = null) {
     if (query == null) {
-      _uiState.value = _uiState.value.copy(filteredItems = items)
+      _uiState.value = _uiState.value.copy(availableItems = items)
     } else {
-      _uiState.value = _uiState.value.copy(filteredItems = items, query = query)
+      _uiState.value = _uiState.value.copy(availableItems = items, query = query)
     }
   }
 
@@ -128,6 +126,6 @@ class LoanViewModel(
 }
 
 data class LoanUIState(
-  val filteredItems: List<Item>,
+  val availableItems: List<Item>,
   val query: String = "",
 )
