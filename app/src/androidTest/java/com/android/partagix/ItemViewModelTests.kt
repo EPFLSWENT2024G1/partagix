@@ -87,6 +87,8 @@ class ItemViewModelTests {
 
     every { mockCollection.document(any()) } returns mockDocument
 
+    every { mockCollection.document() } returns mockDocument
+
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
@@ -110,7 +112,7 @@ class ItemViewModelTests {
 
     val db = spyk(Database(mockDb), recordPrivateCalls = true)
 
-    every { db.getIdCategory(any(), any<(String) -> Unit>()) } answers
+    every { db.getIdCategory(any(), any()) } answers
         {
           val callback = args[1] as (String) -> Unit
           callback("0")
@@ -125,7 +127,7 @@ class ItemViewModelTests {
 
       coVerify(exactly = 1) { itemViewModel.save(itemNoID) }
       coVerify(exactly = 1) { db.getIdCategory(any(), any()) }
-      coVerify(exactly = 1) { db.createItem(any(), any()) }
+      coVerify(exactly = 1) { db.createItem(any(), any(), any()) }
     }
   }
 
