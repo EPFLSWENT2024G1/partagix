@@ -44,11 +44,8 @@ jobs:
       # this means that one would need to re-download and re-process gradle files for every run. Which is very time consuming.
       #
       # To avoid that, we cache the the gradle folder to reuse it later.
-      - name: Setup Gradle
+      - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: wrapper
-          cache-read-only: false
 
       # Cache the Emulator, if the cache does not hit, create the emulator
       - name: AVD cache
