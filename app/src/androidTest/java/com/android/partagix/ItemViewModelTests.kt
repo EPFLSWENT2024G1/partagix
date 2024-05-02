@@ -5,7 +5,9 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -15,8 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import junit.framework.TestCase.assertFalse
@@ -28,7 +32,7 @@ import org.junit.Test
 
 class ItemViewModelTests {
   val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))
-
+  val emptyUser = User("", "", "", "", Inventory("", emptyList()))
   val itemWithID =
       Item(
           "8WuTkKJZLTAr6zs5L7rH",
@@ -57,18 +61,13 @@ class ItemViewModelTests {
    */
   @Test
   fun testUpdateUiState() {
-    val _uiState = MutableStateFlow(ItemUIState(emptyItem))
-    val mockUiState: StateFlow<ItemUIState> = _uiState
     val db = mockk<Database>()
-    val itemViewModel = spyk(ItemViewModel(db = db))
-    every { itemViewModel.uiState } returns mockUiState
-    every { itemViewModel.updateUiState(itemWithID) } answers
-        {
-          _uiState.value = ItemUIState(itemWithID)
-        }
-    assert(mockUiState.value.item == emptyItem)
-    itemViewModel.updateUiState(itemWithID)
-    assert(mockUiState.value.item == itemWithID)
+    val itemViewModel = ItemViewModel(db = db)
+
+    itemViewModel.updateUiItem(itemWithID)
+    itemViewModel.updateUiUser(emptyUser)
+    assert(itemViewModel.uiState.value.item == itemWithID)
+    assert(itemViewModel.uiState.value.user == emptyUser)
   }
 
   /**
@@ -77,7 +76,7 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveNewItem() {
-    val _uiState = MutableStateFlow(ItemUIState(emptyItem))
+    val _uiState = MutableStateFlow(ItemUIState(emptyItem, emptyUser))
     val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
@@ -87,6 +86,8 @@ class ItemViewModelTests {
     val mockDocument = mockk<DocumentReference>()
 
     every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
 
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
@@ -111,6 +112,13 @@ class ItemViewModelTests {
 
     val db = spyk(Database(mockDb), recordPrivateCalls = true)
 
+    every { db.getIdCategory(any(), any()) } answers
+        {
+          val callback = args[1] as (String) -> Unit
+          callback("0")
+        }
+    every { db.createItem(any(), any()) } just Runs
+
     val itemViewModel = spyk(ItemViewModel(db = db))
 
     runBlocking {
@@ -118,6 +126,8 @@ class ItemViewModelTests {
       itemViewModel.save(itemNoID)
 
       coVerify(exactly = 1) { itemViewModel.save(itemNoID) }
+      coVerify(exactly = 1) { db.getIdCategory(any(), any()) }
+      coVerify(exactly = 1) { db.createItem(any(), any(), any()) }
     }
   }
 
@@ -127,7 +137,7 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveAnItem() {
-    val _uiState = MutableStateFlow(ItemUIState(itemWithID))
+    val _uiState = MutableStateFlow(ItemUIState(itemWithID, emptyUser))
     val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
@@ -165,14 +175,14 @@ class ItemViewModelTests {
 
     every { itemViewModel.uiState } returns mockUiState
 
-    every { itemViewModel.updateUiState(itemWithID) } answers
+    every { itemViewModel.updateUiItem(itemWithID) } answers
         {
-          _uiState.value = ItemUIState(itemWithID)
+          _uiState.value = ItemUIState(itemWithID, emptyUser)
         }
 
-    every { itemViewModel.updateUiState(itemWithIDmodified) } answers
+    every { itemViewModel.updateUiItem(itemWithIDmodified) } answers
         {
-          _uiState.value = ItemUIState(itemWithIDmodified)
+          _uiState.value = ItemUIState(itemWithIDmodified, emptyUser)
         }
 
     runBlocking {

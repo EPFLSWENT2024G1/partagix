@@ -76,7 +76,7 @@ fun InventoryScreen(
             modifier = modifier.testTag("inventoryScreenFab"),
             onClick = {
               val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
-              itemViewModel.updateUiState(i)
+              itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
               Icon(Icons.Default.Add, contentDescription = "Create")
@@ -104,7 +104,7 @@ fun InventoryScreen(
                 Title = "Borrowed items",
                 corner = uiState.borrowedItems.size.toString(),
                 onClick = {
-                  itemViewModel.updateUiState(it)
+                  itemViewModel.updateUiItem(it)
                   navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
@@ -117,7 +117,7 @@ fun InventoryScreen(
                 Title = "Inventory item",
                 corner = uiState.items.size.toString(),
                 onClick = {
-                  itemViewModel.updateUiState(it)
+                  itemViewModel.updateUiItem(it)
                   navigationActions.navigateTo(Route.VIEW_ITEM)
                 },
                 onClickCorner = { /*TODO*/},
