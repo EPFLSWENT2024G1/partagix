@@ -32,16 +32,17 @@ import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
 
+const val MAX_LABEL_LENGTH = 20
+
 /**  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StampScreen(
     modifier: Modifier = Modifier,
     stampViewModel: StampViewModel,
+    itemID: String,
     navigationActions: NavigationActions,
 ) {
-  val MAX_LABEL_LENGTH = 40
-
   Scaffold(
       modifier = modifier.fillMaxWidth().testTag("stampScreen"),
       topBar = {
@@ -94,11 +95,7 @@ fun StampScreen(
                 Button(
                     modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                     onClick = {
-                      stampViewModel.generateQRCodeAndSave(
-                          "ZQWESXRDCFTVGY42",
-                          uiLabel,
-                          uiDetailedDimension) // TODO: have a clean way for the viewmodel to get
-                      // the itemId, without relying on the ui to pass it.
+                      stampViewModel.generateQRCodeAndSave(itemID, uiLabel, uiDetailedDimension)
                       navigationActions.goBack()
                     },
                     content = { Text("Download stamps") })

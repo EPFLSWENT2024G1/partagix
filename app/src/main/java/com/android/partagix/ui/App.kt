@@ -13,7 +13,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,6 +28,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -41,9 +41,10 @@ import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
-import com.android.partagix.ui.screens.InventoryViewItem
+import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -65,6 +66,7 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
+  private val loanViewModel = LoanViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -72,7 +74,6 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val stampViewModel = StampViewModel(activity)
 
   @Composable
   fun Create() {
@@ -202,7 +203,7 @@ class App(
           }
           LoanScreen(
               navigationActions = navigationActions,
-              inventoryViewModel = inventoryViewModel,
+              loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
               modifier = modifier)
@@ -220,6 +221,8 @@ class App(
             itemViewModel = itemViewModel)
       }
 
+      composable(Route.QR_SCAN) { QrScanScreen(navigationActions) }
+
       composable(
           Route.ACCOUNT,
       ) {
@@ -230,6 +233,7 @@ class App(
         itemViewModel.getUser()
         InventoryViewItem(navigationActions, itemViewModel, stampViewModel)
       }
+
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
@@ -243,6 +247,7 @@ class App(
             StampScreen(
                 modifier = modifier,
                 stampViewModel = StampViewModel(activity),
+                itemID = it.arguments?.getString("itemId") ?: "",
                 navigationActions = navigationActions)
           }
     }

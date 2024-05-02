@@ -81,9 +81,9 @@ class ItemViewModel(
                 new.description,
                 new.visibility,
                 new.quantity,
-                new.location))
+                new.location),
+            onItemCreated)
       }
-      onItemCreated(new)
     } else {
       updateUiItem(new)
       onItemSaved(new)
@@ -93,6 +93,10 @@ class ItemViewModel(
 
   fun getUser() {
     database.getUser(uiState.value.item.idUser) { user -> updateUiUser(user) }
+  }
+  /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
+  fun compareIDs(id: String, userId: String?): Boolean {
+    return id == userId
   }
 
   companion object {

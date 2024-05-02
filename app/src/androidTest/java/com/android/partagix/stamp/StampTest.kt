@@ -14,6 +14,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -33,11 +34,14 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   fun testSetup() {
 
     mockStampViewModel = mockk()
+    every { mockStampViewModel.generateQRCodeAndSave(any(), any(), any()) } returns Unit
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.goBack() } just Runs
 
-    composeTestRule.setContent { StampScreen(Modifier, mockStampViewModel, mockNavActions) }
+    composeTestRule.setContent {
+      StampScreen(Modifier, mockStampViewModel, "123456", mockNavActions)
+    }
   }
 
   @Test fun testTest() = run { assert(true) }
@@ -116,5 +120,14 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
   @Test
   fun downloadButtonIsDisplayed() = run {
     onComposeScreen<StampScreen>(composeTestRule) { downloadButton { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun downloadButtonWorks() = run {
+    onComposeScreen<StampScreen>(composeTestRule) {
+      downloadButton { assertIsDisplayed() }
+      downloadButton { performClick() }
+      coVerify(exactly = 1) { mockStampViewModel.generateQRCodeAndSave("123456", "", any()) }
+    }
   }
 }

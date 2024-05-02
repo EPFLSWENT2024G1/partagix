@@ -90,17 +90,17 @@ class EndToEnd {
 
       visibility { performClick() }
       composeTestRule.waitUntil(timeWait + 5) {
-        composeTestRule.onNodeWithTag("Friends").isDisplayed()
+        composeTestRule.onNodeWithTag("Friends only").isDisplayed()
       }
-      composeTestRule.onNodeWithTag("Friends").performClick()
-      composeTestRule.onNodeWithText("Friends").assertExists()
+      composeTestRule.onNodeWithTag("Friends only").performClick()
+      composeTestRule.onNodeWithText("Friends only").assertExists()
 
       visibility { performClick() }
       composeTestRule.waitUntil(timeWait + 6) {
-        composeTestRule.onNodeWithTag("Private").isDisplayed()
+        composeTestRule.onNodeWithTag("No one").isDisplayed()
       }
-      composeTestRule.onNodeWithTag("Private").performClick()
-      composeTestRule.onNodeWithText("Private").assertExists()
+      composeTestRule.onNodeWithTag("No one").performClick()
+      composeTestRule.onNodeWithText("No one").assertExists()
 
       name { performTextInput("Grinch") }
 

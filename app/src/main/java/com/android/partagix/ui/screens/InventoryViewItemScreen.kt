@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.StampViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -55,25 +53,11 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem(
-    navigationActions: NavigationActions,
-    viewModel: ItemViewModel,
-    stampViewModel: StampViewModel
-) {
+fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: ItemViewModel) {
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
   val user = uiState.value.user
-
-  val color =
-      TextFieldDefaults.colors(
-          focusedIndicatorColor = Color.Transparent,
-          disabledIndicatorColor = Color.Transparent,
-          unfocusedIndicatorColor = Color.Transparent,
-          focusedContainerColor = Color.Transparent,
-          unfocusedContainerColor = Color.Transparent,
-          disabledContainerColor = Color.Transparent,
-      )
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -119,28 +103,28 @@ fun InventoryViewItem(
                   Column {
                     LabeledText(label = "Object Name", text = item.name)
 
-                    LabeledText("Author", user.name)
+                    LabeledText(label = "Author", text = user.name)
                   }
                 }
               }
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                LabeledText("Description", item.description)
+                LabeledText(label = "Description", text = item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Category", item.category.name)
+                LabeledText(label = "Category", text = item.category.name)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Visibility", item.visibility.name)
+                LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Quantity", item.quantity.toString())
+                LabeledText(label = "Quantity", text = item.quantity.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText("Where", item.location.toString())
+                LabeledText(label = "Where", text = item.location.toString())
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -188,7 +172,8 @@ fun InventoryViewItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // This should be displayed only if the user is the owner of the item
-                if (item.idUser == FirebaseAuth.getInstance().currentUser?.uid) {
+                if (viewModel.compareIDs(
+                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
                   Button(
                       onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                       content = { Text("Edit") },

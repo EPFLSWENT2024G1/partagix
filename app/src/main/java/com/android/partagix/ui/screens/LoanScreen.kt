@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
@@ -51,22 +51,17 @@ private const val TAG = "LoanScreen"
 @Composable
 fun LoanScreen(
     navigationActions: NavigationActions,
-    inventoryViewModel: InventoryViewModel,
+    loanViewModel: LoanViewModel,
     itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
 ) {
 
-  val inventoryUiState = inventoryViewModel.uiState.collectAsState()
-  var items = inventoryUiState.value.items
+  val loansUIState = loanViewModel.uiState.collectAsState()
+  var items = loansUIState.value.availableItems
 
   val userUiState = userViewModel.uiState.collectAsState()
   var currentLocation = userUiState.value.location
-
-  // Simulate a large list of items
-  for (i in 0..1) {
-    items = items.plus(items)
-  }
 
   var cameraPositionState by remember { mutableStateOf(CameraPositionState()) }
 
@@ -78,11 +73,8 @@ fun LoanScreen(
     }
   }
 
-  LaunchedEffect(key1 = inventoryUiState) { items = inventoryUiState.value.items }
-  LaunchedEffect(key1 = userUiState) {
-    currentLocation = userUiState.value.location
-    Log.d(TAG, "!!! currentLocation: $currentLocation")
-  }
+  LaunchedEffect(key1 = loansUIState) { items = loansUIState.value.availableItems }
+  LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
@@ -91,8 +83,8 @@ fun LoanScreen(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
         TopSearchBar(
-            filter = { inventoryViewModel.filterItems(it) },
-            query = inventoryUiState.value.query,
+            filter = { loanViewModel.filterItems(it) },
+            query = loansUIState.value.query,
             modifier = modifier.testTag("LoanScreenSearchBar"))
       },
       bottomBar = {
@@ -162,7 +154,7 @@ fun LoanScreen(
                                     title = "Distance",
                                     selectedValue = {
                                       if (currentLocation != null) {
-                                        inventoryViewModel.filterItems(
+                                        loanViewModel.filterItems(
                                             currentPosition = currentLocation!!,
                                             radius = it.toDouble())
                                       }
@@ -182,7 +174,7 @@ fun LoanScreen(
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
-                                      inventoryViewModel.filterItems(atLeastQuantity = it.toInt())
+                                      loanViewModel.filterItems(atLeastQuantity = it.toInt())
                                     },
                                     unit = "items",
                                     minUnit = "0",
