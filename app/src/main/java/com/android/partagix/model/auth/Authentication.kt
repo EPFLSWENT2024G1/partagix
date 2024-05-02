@@ -33,7 +33,7 @@ class Authentication(
   }
 
   fun isAlreadySignedIn(): Boolean {
-    return FirebaseAuth.getInstance().currentUser != null
+    return getUser() != null
   }
 
   fun signIn() {
@@ -54,7 +54,7 @@ class Authentication(
     val response = result.idpResponse
     if (result.resultCode == RESULT_OK) {
       // Successfully signed in
-      val user = FirebaseAuth.getInstance().currentUser
+      val user = getUser()
       signInResultListener.onSignInSuccess(user)
     } else {
       // Sign in failed. If response is null the user canceled the
@@ -67,6 +67,10 @@ class Authentication(
   }
 
   companion object {
+    fun getUser(): FirebaseUser? {
+      return FirebaseAuth.getInstance().currentUser
+    }
+
     private const val TAG = "Authentication"
   }
 }
