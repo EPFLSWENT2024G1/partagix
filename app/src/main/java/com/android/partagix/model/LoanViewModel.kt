@@ -66,10 +66,6 @@ class LoanViewModel(
     }
   }
 
-  private fun availableItems(items: List<Item>) {
-    _uiState.value = _uiState.value.copy(availableItems = items)
-  }
-
   /** Update the UI state with the given list of items and an optional query. */
   private fun update(items: List<Item>, query: String? = null) {
     if (query == null) {
@@ -126,6 +122,6 @@ class LoanViewModel(
 }
 
 data class LoanUIState(
-  val availableItems: List<Item>,
-  val query: String = "",
+    val availableItems: List<Item>,
+    val query: String = "",
 )

@@ -177,7 +177,11 @@ fun LoanScreen(
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
-                                      loanViewModel.filterItems(atLeastQuantity = it.toInt())
+                                      if (it.toInt() > 1) {
+                                        loanViewModel.filterItems(atLeastQuantity = it.toInt())
+                                      } else {
+                                        loanViewModel.releaseFilters()
+                                      }
                                     },
                                     unit = "items",
                                     minUnit = "1",
