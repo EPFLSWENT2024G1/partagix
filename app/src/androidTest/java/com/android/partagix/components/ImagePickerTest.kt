@@ -59,4 +59,5 @@ class ImagePickerTest {
     composeTestRule.onNodeWithTag("MainImagePickerClickable").assertIsDisplayed()
     composeTestRule.onNodeWithTag("MainImagePickerClickable").performClick()
   }
+  // TODO : Add tests for the image Layout View function
 }

@@ -142,7 +142,6 @@ dependencies {
   androidTestImplementation(platform(libs.compose.bom))
   androidTestImplementation(libs.compose.test.junit)
     androidTestImplementation("org.testng:testng:6.9.6")
-    globalTestImplementation(libs.androidx.junit)
     testImplementation(libs.mockito.kotlin)
     implementation(libs.play.services.location)
     globalTestImplementation(libs.androidx.junit)
