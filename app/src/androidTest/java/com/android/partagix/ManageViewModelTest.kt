@@ -18,13 +18,12 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
-import kotlinx.coroutines.delay
 import java.util.Date
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
 
 class ManageViewModelTest {
   val db = mockk<Database>()
@@ -84,7 +83,7 @@ class ManageViewModelTest {
 
   @Before
   fun setup() {
-      clearAllMocks()
+    clearAllMocks()
     fire = mockk()
     every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
     every { db.getItems(any()) } answers
@@ -96,17 +95,19 @@ class ManageViewModelTest {
         {
           firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
         }
-      every { db.setLoan(any()) } just Runs
+    every { db.setLoan(any()) } just Runs
   }
 
-    @After
-    fun tearDown() {
-        clearAllMocks()
-    }
+  @After
+  fun tearDown() {
+    clearAllMocks()
+  }
 
   @Test
   fun testAcceptAndDecline() {
-    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    val latch = CountDownLatch(1)
+    val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
+    latch.await()
     manageViewModel.update(
         listOf(item1, item1, item1),
         listOf(user, user, user),
@@ -126,11 +127,9 @@ class ManageViewModelTest {
 
   @Test
   fun testGetLoanRequests() {
-      //val latch = CountDownLatch(1)
-
-    val manageViewModel = spyk(ManageLoanViewModel(db = db))
-
-      //latch.await()
+    val latch = CountDownLatch(1)
+    val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
+    latch.await()
     runBlocking {
       println(manageViewModel.uiState.value.users)
       assert(manageViewModel.uiState.value.items == listOf(item1, item1, item1))
@@ -140,19 +139,17 @@ class ManageViewModelTest {
     }
   }
 
-    @Test
-    fun testGetLoanRequestsNotNull() {
-        //val latch = CountDownLatch(1)
-
-        val manageViewModel = spyk(ManageLoanViewModel(db = db, firebaseAuth = fire))
-
-        //latch.await()
-        runBlocking {
-            println(manageViewModel.uiState.value.users)
-            assert(manageViewModel.uiState.value.items == listOf(item1, item1, item1))
-            assert(manageViewModel.uiState.value.users == listOf(user, user, user))
-            assert(manageViewModel.uiState.value.loans == listOf(loan1, loan2, loan3))
-            assert(manageViewModel.uiState.value.expanded == listOf(false, false, false))
-        }
+  @Test
+  fun testGetLoanRequestsNotNull() {
+    val latch = CountDownLatch(1)
+    val manageViewModel = spyk(ManageLoanViewModel(db = db, firebaseAuth = fire, latch = latch))
+    latch.await()
+    runBlocking {
+      println(manageViewModel.uiState.value.users)
+      assert(manageViewModel.uiState.value.items == listOf(item1, item1, item1))
+      assert(manageViewModel.uiState.value.users == listOf(user, user, user))
+      assert(manageViewModel.uiState.value.loans == listOf(loan1, loan2, loan3))
+      assert(manageViewModel.uiState.value.expanded == listOf(false, false, false))
     }
+  }
 }

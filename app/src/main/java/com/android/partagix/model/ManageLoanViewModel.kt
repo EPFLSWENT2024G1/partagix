@@ -7,14 +7,16 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.CountDownLatch
 
-class ManageLoanViewModel(db: Database = Database(),
-                          firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
-                          latch: CountDownLatch = CountDownLatch(1)) : ViewModel() {
+class ManageLoanViewModel(
+    db: Database = Database(),
+    firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+    latch: CountDownLatch = CountDownLatch(1)
+) : ViewModel() {
 
   private val database = db
 
@@ -31,8 +33,10 @@ class ManageLoanViewModel(db: Database = Database(),
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getLoanRequests(firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
-                      latch: CountDownLatch = CountDownLatch(1)) {
+  fun getLoanRequests(
+      firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+      latch: CountDownLatch = CountDownLatch(1)
+  ) {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user != null) {
@@ -60,7 +64,7 @@ class ManageLoanViewModel(db: Database = Database(),
           }
         }
       }
-        latch.countDown()
+      latch.countDown()
     }
   }
 
