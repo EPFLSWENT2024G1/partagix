@@ -125,16 +125,13 @@ fun LoanScreen(
                       modifier
                           .fillMaxWidth()
                           .fillMaxHeight(.65f)
-                          // .offset(y = (-30).dp)
                           .background(
-                              Color.White, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                              Color.White, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                           .border(
                               width = 1.dp,
                               color = Color(0xFF464646),
-                              shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                          .padding(
-                              PaddingValues(
-                                  top = 30.dp, start = 20.dp, end = 20.dp, bottom = 30.dp))) {
+                              shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                          .padding(PaddingValues(top = 10.dp, bottom = 10.dp))) {
                     ItemList(
                         itemList = items,
                         onClick = {
@@ -145,11 +142,13 @@ fun LoanScreen(
                           FlowRow(
                               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
                               verticalArrangement =
-                                  Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                                  Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
                               modifier =
                                   modifier
                                       .background(Color.White)
-                                      .padding(PaddingValues(bottom = 10.dp))) {
+                                      .padding(
+                                          PaddingValues(
+                                              start = 10.dp, end = 10.dp, bottom = 10.dp))) {
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
