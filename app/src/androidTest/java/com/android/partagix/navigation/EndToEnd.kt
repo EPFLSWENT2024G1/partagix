@@ -15,6 +15,7 @@ import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.screens.NavigationBar
 import com.android.partagix.screens.ViewAccount
+import com.android.partagix.ui.components.CategoryItems
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +38,6 @@ class EndToEnd {
 
     // Wait for the activity to be in the resumed state
     scenario.moveToState(Lifecycle.State.RESUMED)
-    composeTestRule.waitUntil { composeTestRule.onNodeWithText("Home").isDisplayed() }
 
     composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithText("Home").isDisplayed() }
     // check that the bottom bar is well displayed
@@ -76,17 +76,17 @@ class EndToEnd {
       category { performClick() }
       category { performClick() }
       composeTestRule.waitUntil(timeWait + 3) {
-        composeTestRule.onNodeWithTag("Category 1").isDisplayed()
+        composeTestRule.onNodeWithTag(CategoryItems[1]).isDisplayed()
       }
-      composeTestRule.onNodeWithTag("Category 1").performClick()
-      composeTestRule.onNodeWithText("Category 1").assertExists()
+      composeTestRule.onNodeWithTag(CategoryItems[1]).performClick()
+      composeTestRule.onNodeWithText(CategoryItems[1]).assertExists()
 
       category { performClick() }
       composeTestRule.waitUntil(timeWait + 4) {
-        composeTestRule.onNodeWithTag("Category 3").isDisplayed()
+        composeTestRule.onNodeWithTag(CategoryItems[3]).isDisplayed()
       }
-      composeTestRule.onNodeWithTag("Category 3").performClick()
-      composeTestRule.onNodeWithText("Category 3").assertExists()
+      composeTestRule.onNodeWithTag(CategoryItems[3]).performClick()
+      composeTestRule.onNodeWithText(CategoryItems[3]).assertExists()
 
       visibility { performClick() }
       composeTestRule.waitUntil(timeWait + 5) {

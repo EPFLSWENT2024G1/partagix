@@ -8,6 +8,7 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -45,7 +46,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
             InventoryUIState(
                 emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
     val cat1 = Category("1", "Category 1")
-    val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
+    val vis1 = Visibility.PUBLIC
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
 
@@ -55,7 +56,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
 
     mockItemViewModel = mockk()
     mockInventoryViewModel = mockk()
-    // every { mockInventoryViewModel.uiState } returns emptyMockUiState
+
     every { mockInventoryViewModel.getInventory(any()) } just Runs
 
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
@@ -68,89 +69,23 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
-
-    /*    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
-    }*/
   }
 
   @Test
-  fun testTest() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
-    }
-
-    assert(true)
-  }
-
-  /*@Test
-  fun searchBarIsDisplayed() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent { InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel) }
-
-    onComposeScreen<InventoryScreen>(composeTestRule) { searchBar { assertIsDisplayed() } }
-  }*/
-
-  @Test
-  fun searchBarWorks() =
-      run {
-        // searchBar is now a separate component. It will need a separate test.
-      }
-
-  @Test
-  fun fabIsDisplayed() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
-    }
-
-    onComposeScreen<InventoryScreen>(composeTestRule) { fab { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun noItemBoxIsDisplayed() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
-    }
-
-    onComposeScreen<InventoryScreen>(composeTestRule) { noItemBox { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun noItemTextIsDisplayed() = run {
+  fun contentIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
+      fab { assertIsDisplayed() }
+      noItemBox { assertIsDisplayed() }
       noItemText {
         assertIsDisplayed()
         assertTextEquals("There is no items in the inventory.")
       }
-    }
-  }
-
-  @Test
-  fun bottomNavBarIsDisplayed() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
-    }
-
-    onComposeScreen<InventoryScreen>(composeTestRule) { bottomNavBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun bottomNavBarItemInventoryIsDisplayed() = run {
-    every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
-    }
-
-    onComposeScreen<InventoryScreen>(composeTestRule) {
+      bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
     }
   }
@@ -165,7 +100,6 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     onComposeScreen<InventoryScreen>(composeTestRule) {
       itemList { assertIsDisplayed() }
       borrowedItemList { assertIsDisplayed() }
-      // noItemBox { assertIsDisplayed()}
     }
   }
 }
