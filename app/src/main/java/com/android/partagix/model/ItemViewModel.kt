@@ -67,7 +67,7 @@ class ItemViewModel(
   fun save(new: Item) {
     var category = new.category
     if (category.name ==
-        "Category") { // todo : change so the when the users puts no category, the category is null
+        "Category") {
       // instead of "Category"
       category = Category(DEFAULT_CATEGORY_ID, DEFAULT_CATEGORY_NAME)
     }
