@@ -84,12 +84,11 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
-    
+
     mockLoanViewModel = mockk()
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
     every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
-
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs
