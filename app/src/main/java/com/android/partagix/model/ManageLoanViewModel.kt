@@ -10,8 +10,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.CountDownLatch
 
-class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
+class ManageLoanViewModel(db: Database = Database(),
+                          firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+                          latch: CountDownLatch = CountDownLatch(1)) : ViewModel() {
 
   private val database = db
 
@@ -21,14 +24,15 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
   val uiState: StateFlow<ManagerUIState> = _uiState
 
   init {
-    getLoanRequests()
+    getLoanRequests(firebaseAuth, latch)
   }
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getLoanRequests() {
+  fun getLoanRequests(firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+                      latch: CountDownLatch = CountDownLatch(1)) {
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user != null) {
@@ -56,6 +60,7 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
           }
         }
       }
+        latch.countDown()
     }
   }
 
@@ -107,7 +112,7 @@ class ManageLoanViewModel(db: Database = Database()) : ViewModel() {
     UiStateWithoutIndex(index)
   }
 
-  fun UiStateWithoutIndex(index: Int) {
+  private fun UiStateWithoutIndex(index: Int) {
     var newLoans: MutableStateFlow<ManagerUIState> =
         MutableStateFlow(ManagerUIState(emptyList(), emptyList(), emptyList(), emptyList()))
     for (i in 0 until uiState.value.loans.size) {
