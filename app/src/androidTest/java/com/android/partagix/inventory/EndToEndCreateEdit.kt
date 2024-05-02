@@ -19,6 +19,7 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
@@ -62,6 +63,7 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState2: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
+  private lateinit var mockManageUiState: MutableStateFlow<ManagerUIState>
 
   val cat1 = Category("1", "Category 1")
   val vis1 = Visibility.FRIENDS
@@ -84,6 +86,8 @@ class EndToEndCreateEdit {
             InventoryUIState(
                 listOf(item3), "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
+    mockManageUiState =
+        MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
     mockItemUiState =
         MutableStateFlow(
             ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))))
@@ -93,6 +97,7 @@ class EndToEndCreateEdit {
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
+    mockManageViewModel = mockk()
 
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
@@ -130,7 +135,7 @@ class EndToEndCreateEdit {
   // Navigate from Home screen to Inventory screen
   @Test
   fun testA_goFromHomeToInventory() {
-    every { mockInventoryViewModel.uiState } returns mockUiState
+    every { mockManageViewModel.uiState } returns mockManageUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
 
     composeTestRule.setContent {

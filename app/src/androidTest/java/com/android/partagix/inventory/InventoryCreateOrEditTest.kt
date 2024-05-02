@@ -57,33 +57,44 @@ class InventoryCreateOrEditTest :
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
-
-    /*    composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
-    }*/
   }
 
   @Test
-  fun testTest() = run {
-    every { mockViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
-    }
-
-    assert(true)
-  }
-
-  @Test
-  fun topBarIsDisplayed() = run {
+  fun topBarAndEmptyItemAreDisplayed() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
     }
 
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      // TopBar
       topBar { assertIsDisplayed() }
 
       navigationIcon { assertIsDisplayed() }
+
+      // Empty item
+      image { assertIsDisplayed() }
+
+      name {
+        assertIsDisplayed()
+        assertTextContains("Object name")
+      }
+
+      idUser {
+        assertIsDisplayed()
+        assertTextContains("Author")
+      }
+
+      description {
+        assertIsDisplayed()
+        assertTextContains("Description")
+      }
+
+      category { assertIsDisplayed() }
+
+      visibility { assertIsDisplayed() }
+
+      quantity { assertIsDisplayed() }
     }
   }
 
@@ -112,39 +123,6 @@ class InventoryCreateOrEditTest :
         assertIsDisplayed()
         assertTextEquals("Create a new item")
       }
-    }
-  }
-
-  @Test
-  fun emptyItemIsDisplayed() = run {
-    every { mockViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
-    }
-
-    onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-      image { assertIsDisplayed() }
-
-      name {
-        assertIsDisplayed()
-        assertTextContains("Object name")
-      }
-
-      idUser {
-        assertIsDisplayed()
-        assertTextContains("Author")
-      }
-
-      description {
-        assertIsDisplayed()
-        assertTextContains("Description")
-      }
-
-      category { assertIsDisplayed() }
-
-      visibility { assertIsDisplayed() }
-
-      quantity { assertIsDisplayed() }
     }
   }
 }

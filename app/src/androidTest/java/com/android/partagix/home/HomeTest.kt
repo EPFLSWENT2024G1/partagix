@@ -4,9 +4,9 @@ import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.HomeViewModel
-import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.screens.HomeScreen
@@ -37,7 +37,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
   @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
 
-  private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
+  private lateinit var mockUiState: MutableStateFlow<ManagerUIState>
 
   @Before
   fun testSetup() {
@@ -45,9 +45,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
-    mockUiState =
-        MutableStateFlow(
-            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+    mockUiState = MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
 
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
@@ -62,7 +60,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
-    every { mockInventoryViewModel.uiState } returns mockUiState
+    every { mockManageViewModel.uiState } returns mockUiState
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -80,68 +78,25 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun topBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun mainContentIsDisplayed() = run {
+  fun contentIsDisplayed() = run {
     ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      topBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBar { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarItemInventoryIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBarItemInventory { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun firstBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       firstBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun secondBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       secondBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun thirdBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       thirdBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun itemList() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
-      itemList {
-        assertIsDisplayed()
-        performClick()
-      }
+      performClick()
     }
   }
 }
