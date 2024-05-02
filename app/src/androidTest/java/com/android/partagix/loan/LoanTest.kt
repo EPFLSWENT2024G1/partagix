@@ -8,7 +8,6 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
@@ -177,66 +176,19 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun searchBarIsDisplayed() {
-    every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
-    }
-
-    onComposeScreen<LoanScreen>(composeTestRule) { searchBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun mapsIsDisplayed() {
-    every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
-    }
-
-    onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun distanceFilterIsDisplayed() {
-    every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
-    }
-
-    onComposeScreen<LoanScreen>(composeTestRule) { distanceFilter { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun quantityFilterIsDisplayed() {
-    every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
-    }
-
-    onComposeScreen<LoanScreen>(composeTestRule) { qtyFilter { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun itemsListIsDisplayed() {
+  fun contentIsDisplayed() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
+      searchBar { assertIsDisplayed() }
+      maps { assertIsDisplayed() }
+      distanceFilter { assertIsDisplayed() }
+      qtyFilter { assertIsDisplayed() }
       itemListView { assertIsDisplayed() }
       itemListViewItem { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomBarIsDisplayed() {
-    every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
-    }
-
-    onComposeScreen<LoanScreen>(composeTestRule) {
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
     }
@@ -310,7 +262,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun filtersAreClickable() {
+  fun filtersAndItemListAreClickable() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
@@ -326,10 +278,17 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         assertIsDisplayed()
         performClick()
       }
+      itemListViewItem {
+        assertIsDisplayed()
+        every { itemViewModel.updateUiState(any()) } just Runs
+        // click the first one
+        performClick()
+
+        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+      }
     }
   }
 
-  @OptIn(ExperimentalTestApi::class)
   @Test
   fun distanceFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
@@ -427,6 +386,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       }
     }
   }
+
 
   companion object {
     private const val TAG = "LoanTest"

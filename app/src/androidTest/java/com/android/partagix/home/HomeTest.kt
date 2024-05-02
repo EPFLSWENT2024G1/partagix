@@ -85,68 +85,25 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun topBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun mainContentIsDisplayed() = run {
+  fun contentIsDisplayed() = run {
     ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      topBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBar { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarItemInventoryIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBarItemInventory { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun firstBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       firstBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun secondBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       secondBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun thirdBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       thirdBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun itemList() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
-      itemList {
-        assertIsDisplayed()
-        performClick()
-      }
+      performClick()
     }
   }
 }
