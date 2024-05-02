@@ -66,8 +66,7 @@ class ItemViewModel(
   /** Save the item with the current UI state in the database */
   fun save(new: Item) {
     var category = new.category
-    if (category.name ==
-        "Category") {
+    if (category.name == "Category") {
       // instead of "Category"
       category = Category(DEFAULT_CATEGORY_ID, DEFAULT_CATEGORY_NAME)
     }
