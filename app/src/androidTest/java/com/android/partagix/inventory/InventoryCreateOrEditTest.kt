@@ -3,6 +3,8 @@ package com.android.partagix.inventory
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.DEFAULT_CATEGORY_ID
+import com.android.partagix.model.DEFAULT_CATEGORY_NAME
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
@@ -21,6 +23,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +40,9 @@ class InventoryCreateOrEditTest :
 
   private lateinit var emptyMockUiState: MutableStateFlow<ItemUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ItemUIState>
+  private lateinit var noCategoryMockUiState: MutableStateFlow<ItemUIState>
+
+  private var savedItem = slot<Item>()
 
   @Before
   fun testSetup() {
@@ -48,15 +54,23 @@ class InventoryCreateOrEditTest :
     val loc1 = Location("1")
     val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
 
+    val cat2 = Category(DEFAULT_CATEGORY_ID, DEFAULT_CATEGORY_NAME)
+    val emptyCat = Category("", "Category")
+    val vis2 = Visibility.PUBLIC
+    val loc2 = Location("2")
+    val noCategoryItem = Item("2", emptyCat, "Name 2", "Description 2", vis2, 2, loc2)
+
     nonEmptyMockUiState = MutableStateFlow(ItemUIState(item))
+    noCategoryMockUiState = MutableStateFlow(ItemUIState(noCategoryItem))
 
     mockViewModel = mockk()
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    every { mockViewModel.save(item) } just Runs
+    every { mockViewModel.save(capture(savedItem)) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.goBack() } just Runs
 
     /*    composeTestRule.setContent {
       InventoryScreen(mockInventoryViewModel, mockNavActions::navigateTo)
@@ -145,6 +159,25 @@ class InventoryCreateOrEditTest :
       visibility { assertIsDisplayed() }
 
       quantity { assertIsDisplayed() }
+    }
+  }
+
+  @Test
+  fun itemCreateTest() {
+    every { mockViewModel.uiState } returns noCategoryMockUiState
+
+    composeTestRule.setContent {
+      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+    }
+    onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      name { performTextReplacement("my object") }
+      description { performTextReplacement("what a nice object") }
+      button { performClick() }
+
+      assert(savedItem.captured.name == "my object")
+      assert(savedItem.captured.description == "what a nice object")
+      assert(savedItem.captured.category.name == "Category")
+      assert(savedItem.captured.visibility == Visibility.PUBLIC)
     }
   }
 }

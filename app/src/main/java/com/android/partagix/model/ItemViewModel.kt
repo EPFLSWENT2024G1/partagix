@@ -25,8 +25,8 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-private const val DEFAULT_CATEGORY_ID = "GpWpDVqb1ep8gm2rb1WL"
-private const val DEFAULT_CATEGORY_NAME = "Others"
+const val DEFAULT_CATEGORY_ID = "GpWpDVqb1ep8gm2rb1WL"
+const val DEFAULT_CATEGORY_NAME = "Others"
 
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
@@ -66,7 +66,9 @@ class ItemViewModel(
   /** Save the item with the current UI state in the database */
   fun save(new: Item) {
     var category = new.category
-    if (category.name == "Category") {
+    if (category.name ==
+        "Category") { // todo : change so the when the users puts no category, the category is null
+                      // instead of "Category"
       category = Category(DEFAULT_CATEGORY_ID, DEFAULT_CATEGORY_NAME)
     }
     if (new.id == "") {
