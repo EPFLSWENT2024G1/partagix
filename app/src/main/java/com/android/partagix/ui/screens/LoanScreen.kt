@@ -153,9 +153,13 @@ fun LoanScreen(
                                     title = "Distance",
                                     selectedValue = {
                                       if (currentLocation != null) {
-                                        loanViewModel.filterItems(
-                                            currentPosition = currentLocation!!,
-                                            radius = it.toDouble())
+                                        if (it.toDouble() > 0.0) {
+                                          loanViewModel.filterItems(
+                                              currentPosition = currentLocation!!,
+                                              radius = it.toDouble())
+                                        } else {
+                                          loanViewModel.releaseFilters()
+                                        }
                                       }
                                     },
                                     unit = "km",
@@ -176,9 +180,9 @@ fun LoanScreen(
                                       loanViewModel.filterItems(atLeastQuantity = it.toInt())
                                     },
                                     unit = "items",
-                                    minUnit = "0",
+                                    minUnit = "1",
                                     maxUnit = "100",
-                                    minValue = 0f,
+                                    minValue = 1f,
                                     maxValue = 100f,
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"

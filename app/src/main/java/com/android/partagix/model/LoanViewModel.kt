@@ -14,10 +14,11 @@ import kotlinx.coroutines.launch
 
 class LoanViewModel(
     private val availableItems: List<Item> = emptyList(),
+    private val filteredItems: List<Item> = emptyList(),
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(LoanUIState(availableItems))
+  private val _uiState = MutableStateFlow(LoanUIState(filteredItems))
   val uiState: StateFlow<LoanUIState> = _uiState
 
   init {
@@ -57,6 +58,7 @@ class LoanViewModel(
                       // friend of the item's owner
                       item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
                 }
+
             update(newItems)
             onSuccess(newItems)
           }
@@ -65,12 +67,17 @@ class LoanViewModel(
     }
   }
 
+  private fun availableItems(items: List<Item>) {
+    availableItems = availableItems
+//    _uiState.value = _uiState.value.copy(filteredItems = items)
+  }
+
   /** Update the UI state with the given list of items and an optional query. */
   private fun update(items: List<Item>, query: String? = null) {
     if (query == null) {
-      _uiState.value = _uiState.value.copy(availableItems = items)
+      _uiState.value = _uiState.value.copy(filteredItems = items)
     } else {
-      _uiState.value = _uiState.value.copy(availableItems = items, query = query)
+      _uiState.value = _uiState.value.copy(filteredItems = items, query = query)
     }
   }
 
@@ -108,12 +115,19 @@ class LoanViewModel(
     update(list)
   }
 
+  /**
+   * Release the filters applied to the available items and update the UI state with the UI state
+   */
+  fun releaseFilters() {
+    getAvailableLoans()
+  }
+
   companion object {
     private const val TAG = "InventoryViewModel"
   }
 }
 
 data class LoanUIState(
-    val availableItems: List<Item>,
-    val query: String = "",
+  val filteredItems: List<Item>,
+  val query: String = "",
 )
