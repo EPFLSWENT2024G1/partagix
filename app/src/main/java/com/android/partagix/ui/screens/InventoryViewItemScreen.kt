@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.StampViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -54,11 +53,7 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItem(
-    navigationActions: NavigationActions,
-    viewModel: ItemViewModel,
-    stampViewModel: StampViewModel
-) {
+fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: ItemViewModel) {
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
@@ -176,7 +171,8 @@ fun InventoryViewItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // This should be displayed only if the user is the owner of the item
-                if (item.idUser == FirebaseAuth.getInstance().currentUser?.uid) {
+                if (viewModel.compareIDs(
+                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
                   Button(
                       onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                       content = { Text("Edit") },
