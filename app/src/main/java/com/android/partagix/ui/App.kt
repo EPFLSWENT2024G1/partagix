@@ -233,7 +233,7 @@ class App(
         userViewModel.setUserToCurrent()
         ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
-      
+
       composable(
           Route.EDIT_ACCOUNT,
       ) {
@@ -244,7 +244,7 @@ class App(
         itemViewModel.getUser()
         InventoryViewItemScreen(navigationActions, itemViewModel)
       }
-      
+
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
