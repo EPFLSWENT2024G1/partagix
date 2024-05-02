@@ -61,28 +61,23 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   }
 
   @Test
-  fun topBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
-  }
+  fun contentIsDisplayed() = run {
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) {
+      topBar { assertIsDisplayed() }
+      bottomBar { assertIsDisplayed() }
 
-  @Test
-  fun bottomBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { bottomBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun itemNameUpdate() = run {
-    // Change the item name to trigger 'onValueChange' event to verify there is no erros
-    item1 =
-        Item(
-            id = "id",
-            category = Category("id", "category1"),
-            name = "item1_ALTNAME",
-            description = "description1",
-            visibility = Visibility.PUBLIC,
-            quantity = 1,
-            location = mockk(),
-            idUser = "id_user")
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { assertIsDisplayed() }
+      // Change the item name to trigger 'onValueChange' event to verify there is no erros
+      item1 =
+          Item(
+              id = "id",
+              category = Category("id", "category1"),
+              name = "item1_ALTNAME",
+              description = "description1",
+              visibility = Visibility.PUBLIC,
+              quantity = 1,
+              location = mockk(),
+              idUser = "id_user")
+      assertIsDisplayed()
+    }
   }
 }
