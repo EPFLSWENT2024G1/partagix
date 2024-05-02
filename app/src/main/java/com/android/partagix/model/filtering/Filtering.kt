@@ -8,6 +8,13 @@ open class Filtering {
   /**
    * Filter items based on the query.
    *
+   * The query is used to filter the items by
+   * - name
+   * - description
+   * - category
+   * - quantity
+   * - visibility
+   *
    * @param list the list of items to filter
    * @param query the query to filter the items
    * @return the list of items that match the query

@@ -65,6 +65,7 @@ class LoanViewModel(
     }
   }
 
+  /** Update the UI state with the given list of items and an optional query. */
   private fun update(items: List<Item>, query: String? = null) {
     if (query == null) {
       _uiState.value = _uiState.value.copy(availableItems = items)
@@ -73,16 +74,35 @@ class LoanViewModel(
     }
   }
 
+  /**
+   * Filter the available items for a loan based on the given query and update the UI state with the
+   * filtered items.
+   *
+   * The query is used to filter the items as described in [Filtering.filterItems].
+   */
   fun filterItems(query: String) {
     val list = filtering.filterItems(availableItems, query)
     update(list, query)
   }
 
+  /**
+   * Filter the available items for a loan based on the given quantity and update the UI state with
+   * the filtered items.
+   *
+   * The items are filtered based on the quantity as described in [Filtering.filterItems].
+   */
   fun filterItems(atLeastQuantity: Int) {
     val list = filtering.filterItems(availableItems, atLeastQuantity)
     update(list)
   }
 
+  /**
+   * Filter the available items for a loan based on the given current position and radius and update
+   * the UI state with the filtered items.
+   *
+   * The items are filtered based on the current position and radius as described in
+   * [Filtering.filterItems].
+   */
   fun filterItems(currentPosition: Location, radius: Double) {
     val list = filtering.filterItems(availableItems, currentPosition, radius)
     update(list)
