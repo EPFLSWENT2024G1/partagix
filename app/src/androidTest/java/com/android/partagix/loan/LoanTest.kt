@@ -387,7 +387,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
   }
 
-
   companion object {
     private const val TAG = "LoanTest"
   }
