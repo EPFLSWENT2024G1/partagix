@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +66,7 @@ fun ItemUi(
     loan: Loan,
     expanded: Boolean,
     expandable: Boolean,
+    expandables: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int,
 ) {
@@ -74,7 +76,7 @@ fun ItemUi(
       } else {
         loan.startDate
       }
-  var expandables by remember { mutableStateOf(false) }
+  var expandables by remember { mutableStateOf(expandables) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
   if (expandable) {
@@ -91,7 +93,8 @@ fun ItemUi(
                     animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-                .clickable(onClick = { expandables = !expandables })) {
+                .clickable(onClick = { expandables = !expandables })
+                .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
               modifier = Modifier.fillMaxWidth().height(61.dp)
@@ -169,7 +172,7 @@ fun ItemUi(
                 modifier = Modifier.fillMaxWidth())
             Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
-                modifier = Modifier.fillMaxWidth()) {
+                modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
                   Button(
                       onClick = { manageLoanViewModel.acceptLoan(loan, index) },
                       content = {

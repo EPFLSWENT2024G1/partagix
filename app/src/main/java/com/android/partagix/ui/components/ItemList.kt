@@ -37,6 +37,7 @@ fun ItemList(
     users: List<User>,
     loan: List<Loan>,
     expandable: Boolean,
+    expandables: Boolean = false,
     expanded: List<Boolean>,
     onClick: (Item) -> Unit,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
@@ -80,6 +81,7 @@ fun ItemList(
                     },
                 index = index,
                 manageLoanViewModel = manageLoanViewModel,
+                expandables = expandables,
             )
           }
       Spacer(modifier = Modifier.height(8.dp))

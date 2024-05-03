@@ -29,7 +29,8 @@ import com.android.partagix.ui.navigation.Route
 fun ManageLoanRequest(
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    expandables: Boolean = false,
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(
@@ -73,6 +74,7 @@ fun ManageLoanRequest(
                     corner = uiState.items.size.toString(),
                     isCornerClickable = false,
                     expandable = true,
+                    expandables = expandables,
                     expanded = uiState.expanded,
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},

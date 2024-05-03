@@ -152,4 +152,5 @@ class ManageViewModelTest {
       assert(manageViewModel.uiState.value.expanded == listOf(false, false, false))
     }
   }
+
 }
