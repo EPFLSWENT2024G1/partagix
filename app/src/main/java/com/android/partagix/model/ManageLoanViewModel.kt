@@ -1,22 +1,17 @@
 package com.android.partagix.model
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
-import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
-class ManageLoanViewModel(
-    db: Database = Database(),
-    firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
-    latch: CountDownLatch = CountDownLatch(1)
-) : ViewModel() {
+class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = CountDownLatch(1)) :
+    ViewModel() {
 
   private val database = db
 
@@ -26,45 +21,34 @@ class ManageLoanViewModel(
   val uiState: StateFlow<ManagerUIState> = _uiState
 
   init {
-    getLoanRequests(firebaseAuth, latch)
+    getLoanRequests(latch)
   }
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getLoanRequests(
-      firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
-      latch: CountDownLatch = CountDownLatch(1)
-  ) {
-    val user = FirebaseAuth.getInstance().currentUser
-    viewModelScope.launch {
-      if (user != null) {
-        database.getItems { list ->
-          database.getLoans {
-            it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
-                .forEach { loan ->
-                  updateItems(list.filter { it.id == loan.idItem }.first())
-                  database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                  updateExpandedReset()
-                  updateLoans(loan)
-                }
-          }
-        }
-      } else {
-        database.getItems { list ->
-          database.getLoans {
-            it.filter { loan -> loan.state == LoanState.PENDING }
-                .forEach { loan ->
-                  updateItems(list.filter { it.id == loan.idItem }.first())
-                  database.getUser(loan.idOwner) { user -> updateUsers(user) }
-                  updateExpandedReset()
-                  updateLoans(loan)
-                }
-          }
+  fun getLoanRequests(latch: CountDownLatch = CountDownLatch(1)) {
+    val user = Authentication.getUser()
+
+    if (user == null) {
+      // TODO: Handle error
+      latch.countDown()
+      return
+    } else {
+      database.getItems { list ->
+        database.getLoans {
+          it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
+              .forEach { loan ->
+                updateItems(list.first { it.id == loan.idItem })
+                database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                updateExpandedReset()
+                updateLoans(loan)
+              }
+
+          latch.countDown()
         }
       }
-      latch.countDown()
     }
   }
 
