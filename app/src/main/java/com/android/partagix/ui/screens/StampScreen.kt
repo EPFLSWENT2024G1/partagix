@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -67,31 +68,36 @@ fun StampScreen(
                 modifier
                     .padding(it)
                     .fillMaxWidth()
-                    .height(280.dp)
-                    .padding(horizontal = 8.dp)
+                    .height(330.dp)
+                    .padding(horizontal = 8.dp, vertical = 0.dp)
                     .testTag("mainContent"),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top) {
               Text(
                   text = "Dimension of stamps",
-                  modifier = modifier.fillMaxWidth().padding(top = 24.dp).testTag("dimensionLabel"))
-              Box(modifier = modifier.fillMaxWidth().testTag("dimensionBox")) {
-                uiDetailedDimension = DropDown("Dimensions", StampDimensions)
-              }
+                  modifier =
+                      modifier
+                          .fillMaxWidth()
+                          .padding(top = 8.dp)
+                          .requiredHeight(20.dp)
+                          .testTag("dimensionLabel"))
+              Box(
+                  modifier =
+                      modifier.fillMaxWidth().requiredHeight(40.dp).testTag("dimensionBox")) {
+                    uiDetailedDimension = DropDown("Dimensions", StampDimensions)
+                  }
 
               Text(
                   text = "Label on stamps",
-                  modifier = modifier.fillMaxWidth().padding(top = 16.dp).testTag("labelLabel"))
+                  modifier = modifier.fillMaxWidth().requiredHeight(20.dp).testTag("labelLabel"))
               OutlinedTextField(
-                  modifier = modifier.fillMaxWidth().testTag("labelTextField"),
+                  modifier = modifier.fillMaxWidth().fillMaxHeight().testTag("labelTextField"),
                   value = uiLabel,
                   onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
                   label = { Text("(optional) max. 40 characters") },
                   readOnly = false)
 
-              Spacer(modifier = modifier.height(24.dp))
-
-              Row(modifier = modifier.fillMaxWidth().testTag("downloadRow")) {
+              Row(modifier = modifier.fillMaxWidth().requiredHeight(40.dp).testTag("downloadRow")) {
                 Button(
                     modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                     onClick = {
