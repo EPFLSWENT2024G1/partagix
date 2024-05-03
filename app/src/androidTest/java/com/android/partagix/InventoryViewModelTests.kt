@@ -157,10 +157,10 @@ class InventoryViewModelTests {
   @Test
   fun testInventoryNotNull() {
 
-      val mockUser = mockk<FirebaseUser>()
-      mockkObject(Authentication)
-      every { Authentication.getUser() } returns mockUser
-      every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = fire, latch = latch))
     latch.await()

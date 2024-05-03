@@ -19,10 +19,10 @@ import io.mockk.mockkObject
 import io.mockk.spyk
 import io.mockk.verify
 import java.util.Date
+import java.util.concurrent.CountDownLatch
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
 
 class LoanViewModelTests {
   private val db = mockk<Database>()
@@ -167,9 +167,9 @@ class LoanViewModelTests {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user1"
 
-      val latch = CountDownLatch(1)
-      loanViewModel.getAvailableLoans(latch = latch)
-      latch.await()
+    val latch = CountDownLatch(1)
+    loanViewModel.getAvailableLoans(latch = latch)
+    latch.await()
 
     verify { db.getLoans(any()) }
 
@@ -186,7 +186,7 @@ class LoanViewModelTests {
     every { mockUser.uid } returns "user5"
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
-      latch.await()
+    latch.await()
 
     verify { db.getLoans(any()) }
 
