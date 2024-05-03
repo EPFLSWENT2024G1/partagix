@@ -51,9 +51,10 @@ fun Filter(
     unit: String = "",
     minUnit: String = "",
     maxUnit: String = "",
-    minValue: Float = 0f,
+    minValue: Float = 1f,
     maxValue: Float = 50f,
-    sliderTextValue: ((Float) -> String)? = null
+    sliderTextValue: ((Float) -> String)? = null,
+    onReset: () -> Unit = {},
 ) {
   var sliderPosition by remember { mutableFloatStateOf(0f) }
   var showDialog by remember { mutableStateOf(false) }
@@ -96,7 +97,7 @@ fun Filter(
             )
           }
 
-          if (sliderPosition > 0) {
+          if (sliderPosition >= minValue) {
             Text(
                 text = "${sliderPosition.toInt()} $unit",
                 style =
@@ -124,10 +125,16 @@ fun Filter(
             maxValue = maxValue,
             sliderPosition = sliderPosition,
             onSliderChange = {
+              if (it >= minValue) {
+                selectedValue(it)
+              } else {
+                onReset()
+              }
               sliderPosition = it
-              selectedValue(it)
             },
-            sliderTextValue = sliderTextValue ?: { it.toString() })
+            sliderTextValue = sliderTextValue ?: { it.toString() },
+            onReset = onReset,
+        )
       }
     }
   }
@@ -138,11 +145,12 @@ fun SliderFilter(
     modifier: Modifier = Modifier,
     minUnit: String,
     maxUnit: String,
-    minValue: Float = 0f,
+    minValue: Float = 1f,
     maxValue: Float = 50f,
     sliderPosition: Float,
     onSliderChange: (Float) -> Unit,
     sliderTextValue: (Float) -> String,
+    onReset: () -> Unit = {},
 ) {
   Column(modifier = modifier.padding(16.dp)) {
     Row() {
@@ -171,7 +179,7 @@ fun SliderFilter(
     }
     Slider(
         value = sliderPosition,
-        valueRange = minValue..maxValue,
+        valueRange = (minValue - 1)..maxValue,
         onValueChange = { onSliderChange(it) },
         colors =
             SliderDefaults.colors(
@@ -182,7 +190,7 @@ fun SliderFilter(
         modifier = Modifier.fillMaxWidth().testTag("SliderFilter"))
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
       Text(
-          text = sliderTextValue(sliderPosition),
+          text = if (sliderPosition >= minValue) sliderTextValue(sliderPosition) else "Off",
           modifier = Modifier.weight(1f),
           textAlign = TextAlign.Start,
           style =

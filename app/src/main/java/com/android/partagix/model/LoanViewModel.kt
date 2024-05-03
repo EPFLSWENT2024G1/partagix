@@ -14,12 +14,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoanViewModel(
-    private val availableItems: List<Item> = emptyList(),
+    private var availableItems: List<Item> = emptyList(),
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
   private val _uiState = MutableStateFlow(LoanUIState(availableItems))
   val uiState: StateFlow<LoanUIState> = _uiState
+
+  private var filterState = FilterState()
 
   init {
     getAvailableLoans()
@@ -61,6 +63,8 @@ class LoanViewModel(
                       // friend of the item's owner
                       item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
                 }
+
+            availableItems = newItems
             update(newItems)
             onSuccess(newItems)
             latch.countDown()
@@ -71,46 +75,45 @@ class LoanViewModel(
   }
 
   /** Update the UI state with the given list of items and an optional query. */
-  private fun update(items: List<Item>, query: String? = null) {
-    if (query == null) {
+  private fun update(items: List<Item>, filterState: FilterState? = null) {
+    if (filterState == null) {
       _uiState.value = _uiState.value.copy(availableItems = items)
     } else {
-      _uiState.value = _uiState.value.copy(availableItems = items, query = query)
+      _uiState.value = _uiState.value.copy(availableItems = items, filterState = filterState)
     }
   }
 
   /**
-   * Filter the available items for a loan based on the given query and update the UI state with the
-   * filtered items.
-   *
-   * The query is used to filter the items as described in [Filtering.filterItems].
+   * Apply all the filters to the available items and update the UI state with the filtered items.
    */
-  fun filterItems(query: String) {
-    val list = filtering.filterItems(availableItems, query)
-    update(list, query)
+  fun applyFilters(filterState: FilterState) {
+    this.filterState = filterState
+    var items = availableItems
+
+    filterState.query?.let { query ->
+      if (query.isNotEmpty()) {
+        items = filtering.filterItems(items, query)
+      }
+    }
+    filterState.atLeastQuantity?.let { quantity -> items = filtering.filterItems(items, quantity) }
+    if (filterState.location != null && filterState.radius != null) {
+      items = filtering.filterItems(items, filterState.location, filterState.radius)
+    }
+
+    update(items)
   }
 
   /**
-   * Filter the available items for a loan based on the given quantity and update the UI state with
-   * the filtered items.
-   *
-   * The items are filtered based on the quantity as described in [Filtering.filterItems].
+   * Reset the filter with the given [filterAction] and update the UI state with the filtered items.
    */
-  fun filterItems(atLeastQuantity: Int) {
-    val list = filtering.filterItems(availableItems, atLeastQuantity)
-    update(list)
-  }
-
-  /**
-   * Filter the available items for a loan based on the given current position and radius and update
-   * the UI state with the filtered items.
-   *
-   * The items are filtered based on the current position and radius as described in
-   * [Filtering.filterItems].
-   */
-  fun filterItems(currentPosition: Location, radius: Double) {
-    val list = filtering.filterItems(availableItems, currentPosition, radius)
-    update(list)
+  fun resetFilter(filterAction: FilterAction) {
+    filterState =
+        when (filterAction) {
+          is FilterAction.ResetQuery -> filterState.copy(query = null)
+          is FilterAction.ResetAtLeastQuantity -> filterState.copy(atLeastQuantity = null)
+          is FilterAction.ResetLocation -> filterState.copy(location = null, radius = null)
+        }
+    applyFilters(filterState)
   }
 
   companion object {
@@ -120,5 +123,20 @@ class LoanViewModel(
 
 data class LoanUIState(
     val availableItems: List<Item>,
-    val query: String = "",
+    val filterState: FilterState = FilterState()
+)
+
+sealed class FilterAction {
+  object ResetQuery : FilterAction()
+
+  object ResetAtLeastQuantity : FilterAction()
+
+  object ResetLocation : FilterAction()
+}
+
+data class FilterState(
+    val query: String? = null,
+    val atLeastQuantity: Int? = null,
+    val location: Location? = null,
+    val radius: Double? = null
 )
