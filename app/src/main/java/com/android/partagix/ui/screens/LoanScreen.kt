@@ -156,8 +156,9 @@ fun LoanScreen(
                                     selectedValue = {
                                       if (currentLocation != null) {
                                         loanViewModel.applyFilters(
-                                          FilterState(location = currentLocation!!, radius = it.toDouble())
-                                        )
+                                            FilterState(
+                                                location = currentLocation!!,
+                                                radius = it.toDouble()))
                                       }
                                     },
                                     unit = "km",
@@ -168,7 +169,9 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
                                     },
-                                    onReset = { loanViewModel.resetFilter(FilterAction.ResetLocation) },
+                                    onReset = {
+                                      loanViewModel.resetFilter(FilterAction.ResetLocation)
+                                    },
                                     modifier =
                                         modifier
                                             .fillMaxWidth(.3f)
@@ -177,7 +180,7 @@ fun LoanScreen(
                                     title = "Quantity",
                                     selectedValue = {
                                       loanViewModel.applyFilters(
-                                        FilterState(atLeastQuantity = it.toInt()))
+                                          FilterState(atLeastQuantity = it.toInt()))
                                     },
                                     unit = "items",
                                     minUnit = "1",
@@ -187,7 +190,9 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
                                     },
-                                    onReset = { loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity) },
+                                    onReset = {
+                                      loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity)
+                                    },
                                     modifier =
                                         modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }

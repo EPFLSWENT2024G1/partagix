@@ -87,9 +87,7 @@ class LoanViewModel(
         items = filtering.filterItems(items, query)
       }
     }
-    filterState.atLeastQuantity?.let { quantity ->
-      items = filtering.filterItems(items, quantity)
-    }
+    filterState.atLeastQuantity?.let { quantity -> items = filtering.filterItems(items, quantity) }
     if (filterState.location != null && filterState.radius != null) {
       items = filtering.filterItems(items, filterState.location, filterState.radius)
     }
@@ -98,11 +96,12 @@ class LoanViewModel(
   }
 
   fun resetFilter(filterAction: FilterAction) {
-    filterState = when (filterAction) {
-      is FilterAction.ResetQuery -> filterState.copy(query = null)
-      is FilterAction.ResetAtLeastQuantity -> filterState.copy(atLeastQuantity = null)
-      is FilterAction.ResetLocation -> filterState.copy(location = null, radius = null)
-    }
+    filterState =
+        when (filterAction) {
+          is FilterAction.ResetQuery -> filterState.copy(query = null)
+          is FilterAction.ResetAtLeastQuantity -> filterState.copy(atLeastQuantity = null)
+          is FilterAction.ResetLocation -> filterState.copy(location = null, radius = null)
+        }
     applyFilters(filterState)
   }
 
@@ -118,13 +117,15 @@ data class LoanUIState(
 
 sealed class FilterAction {
   object ResetQuery : FilterAction()
+
   object ResetAtLeastQuantity : FilterAction()
+
   object ResetLocation : FilterAction()
 }
 
 data class FilterState(
-  val query: String? = null,
-  val atLeastQuantity: Int? = null,
-  val location: Location? = null,
-  val radius: Double? = null
+    val query: String? = null,
+    val atLeastQuantity: Int? = null,
+    val location: Location? = null,
+    val radius: Double? = null
 )
