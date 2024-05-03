@@ -29,7 +29,16 @@ import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
+/**
+ *
+ * InventoryViewModel is a ViewModel that will handle the inventory of the user
+ *
+ * @param items the list of items to display
+ * @param db the database to get the items
+ * @param firebaseAuth the firebaseauth instance to get the current user
+ *  @param latch a countdownlatch to wait for the database to finish
+ *
+ **/
 class InventoryViewModel(
     items: List<Item> = emptyList(),
     db: Database = Database(),
