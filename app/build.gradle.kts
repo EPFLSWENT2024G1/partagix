@@ -141,7 +141,7 @@ dependencies {
     testImplementation(libs.junit)
   androidTestImplementation(platform(libs.compose.bom))
   androidTestImplementation(libs.compose.test.junit)
-  globalTestImplementation(libs.androidx.junit)
+    androidTestImplementation("org.testng:testng:6.9.6")
     testImplementation(libs.mockito.kotlin)
     implementation(libs.play.services.location)
     globalTestImplementation(libs.androidx.junit)
@@ -249,12 +249,6 @@ tasks.withType<Test> {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")
     }
-}
-
-// Tasks are run in parallel and create a new process every 75 tests
-tasks.withType<Test>().configureEach {
-  maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
-  forkEvery = 75
 }
 
 tasks.register("jacocoTestReport", JacocoReport::class) {

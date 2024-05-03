@@ -280,7 +280,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       }
       itemListViewItem {
         assertIsDisplayed()
-        every { itemViewModel.updateUiState(any()) } just Runs
+        every { itemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
 
@@ -366,6 +366,25 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val state = mockLoanViewModel.uiState.value
     assert(state.availableItems.size == 1)
     assert(state.availableItems[0].name == "dog")
+  }
+
+  @Test
+  fun itemsListIsClickable() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) {
+      itemListViewItem {
+        assertIsDisplayed()
+        every { itemViewModel.updateUiItem(any()) } just Runs
+        // click the first one
+        performClick()
+
+        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+      }
+    }
   }
 
   companion object {

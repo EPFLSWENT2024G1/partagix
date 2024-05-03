@@ -3,12 +3,15 @@ package com.android.partagix.home
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.screens.HomeScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -38,6 +41,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
 
   private lateinit var mockUiState: MutableStateFlow<ManagerUIState>
+  private lateinit var mockUiHomeState: MutableStateFlow<HomeUIState>
 
   @Before
   fun testSetup() {
@@ -51,7 +55,11 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockHomeViewModel = mockk()
     mockManageViewModel = mockk()
 
+    mockUiHomeState =
+        MutableStateFlow(HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
+
     every { mockInventoryViewModel.getInventory() } just Runs
+    every { mockHomeViewModel.uiState } returns mockUiHomeState
 
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
     every { mockInventoryViewModel.getUsers(any(), any()) } just Runs

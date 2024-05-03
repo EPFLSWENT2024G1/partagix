@@ -39,6 +39,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
@@ -192,6 +193,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
+        inventoryViewModel.getInventory()
         HomeScreen(
             homeViewModel = HomeViewModel(),
             manageLoanViewModel = manageViewModel,
@@ -212,6 +214,7 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
+          inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(),
               manageLoanViewModel = manageViewModel,
@@ -219,6 +222,7 @@ class App(
         }
       }
       composable(Route.INVENTORY) {
+        inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
@@ -230,10 +234,23 @@ class App(
       composable(
           Route.ACCOUNT,
       ) {
-        ViewAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+        userViewModel.setUserToCurrent()
+        ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
-      composable(Route.VIEW_ITEM) { InventoryViewItemScreen(navigationActions, itemViewModel) }
+
+      composable(
+          Route.EDIT_ACCOUNT,
+      ) {
+        EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+      }
+
+      composable(Route.VIEW_ITEM) {
+        itemViewModel.getUser()
+        InventoryViewItemScreen(navigationActions, itemViewModel)
+      }
+
       composable(Route.CREATE_ITEM) {
+        itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
       }
       composable(Route.EDIT_ITEM) {

@@ -61,18 +61,19 @@ fun DropDown(label: String, list: List<String>): String {
   return selectedValue.value
 }
 
-val CategoryItems =
+val CategoryItems = // todo : get the list from the database. Current implementation is a hardcoded
+    // list
     listOf(
-        "Category 1",
-        "Category 2",
-        "Category 3",
-        "Category 4",
-        "Category 5",
-        "Category 6",
-        "Category 7",
-        "Category 8",
-        "Category 9",
-        "Category 10",
+        "Sound Systems",
+        "Lighting",
+        "Kitchen Utilities",
+        "Textiles",
+        "Books",
+        "Furniture",
+        "Electronics",
+        "Tools",
+        "Gardening",
+        "Others",
     )
 
 val VisibilityItems = Visibility.values().map { it.visibilityLabel }

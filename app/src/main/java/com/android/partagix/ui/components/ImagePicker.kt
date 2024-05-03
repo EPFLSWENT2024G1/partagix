@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 
 // Functions commented as "imported" are from this webpage :
@@ -76,7 +78,11 @@ fun PhotoSelectorView(maxSelectionCount: Int = 1) {
   }
 
   Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-    Button(onClick = { launchPhotoPicker() }) { Text(buttonText) }
+    Button(
+        onClick = { launchPhotoPicker() },
+        modifier = Modifier.testTag("PhotoSelectorClickable $maxSelectionCount")) {
+          Text(buttonText)
+        }
 
     ImageLayoutView(selectedImages = selectedImages)
   }
@@ -102,6 +108,7 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
  * @return a clickable box, with default background color, that opens an imagePicker on click, the
  *   picked image is displayed in the box
  */
+@Preview
 @Composable
 fun MainImagePicker() {
   var selectedImages by remember { mutableStateOf<List<Uri?>>(emptyList()) }
@@ -125,21 +132,25 @@ fun MainImagePicker() {
   }
 
   Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-    Box(modifier = Modifier.fillMaxSize().clickable { launchPhotoPicker() }) {
-      Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        LazyColumn(
-            modifier =
-                Modifier.fillMaxSize()
-                    .background(color = androidx.compose.ui.graphics.Color.Blue)) {
-              items(selectedImages) { uri ->
-                AsyncImage(
-                    model = uri,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxHeight(),
-                    contentScale = ContentScale.Crop)
-              }
-            }
-      }
-    }
+    Box(
+        modifier =
+            Modifier.fillMaxSize()
+                .clickable { launchPhotoPicker() }
+                .testTag("MainImagePickerClickable")) {
+          Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            LazyColumn(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .background(color = androidx.compose.ui.graphics.Color.Gray)) {
+                  items(selectedImages) { uri ->
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxHeight().testTag("ImagePicked"),
+                        contentScale = ContentScale.Crop)
+                  }
+                }
+          }
+        }
   }
 }
