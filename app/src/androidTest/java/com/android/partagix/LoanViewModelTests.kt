@@ -138,7 +138,9 @@ class LoanViewModelTests {
   @Test
   fun testUpdate() {
     val update =
-        LoanViewModel::class.java.getDeclaredMethod("update", List::class.java, FilterState::class.java)
+        LoanViewModel::class
+            .java
+            .getDeclaredMethod("update", List::class.java, FilterState::class.java)
     update.isAccessible = true
 
     // update items only

@@ -47,7 +47,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -207,12 +206,14 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun searchBarWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.applyFilters(FilterState(query = any())) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val query = firstArg<String>()
+          val filterState = firstArg<FilterState>()
+          val query = filterState.query ?: ""
           val filteredItems = loanUIState.value.availableItems.filter { it.name.contains(query) }
           val filteredState = loanUIState.value.filterState.copy(query = query)
-          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems, filterState = filteredState)
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = filteredItems, filterState = filteredState)
         }
 
     composeTestRule.setContent {
@@ -293,15 +294,21 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun distanceFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.applyFilters(FilterState(location = any(), radius = any())) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val currentPosition = firstArg<Location>()
-          val radius = secondArg<Double>()
+          val filterState = firstArg<FilterState>()
+          val currentPosition = filterState.location ?: Location("")
+          val radius = filterState.radius ?: 0.0
           val filteredItems =
               loanUIState.value.availableItems.filter {
                 it.location.distanceTo(currentPosition) <= (radius * 1000)
               }
           loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+        }
+    every { mockLoanViewModel.resetFilter(any()) } answers
+        {
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
         }
 
     composeTestRule.setContent {
@@ -338,12 +345,18 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun quantityFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.applyFilters(FilterState(atLeastQuantity = any())) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val atLeastQuantity = firstArg<Int>()
+          val filterState = firstArg<FilterState>()
+          val atLeastQuantity = filterState.atLeastQuantity ?: 0
           val filteredItems =
               loanUIState.value.availableItems.filter { it.quantity >= atLeastQuantity }
           loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+        }
+    every { mockLoanViewModel.resetFilter(any()) } answers
+        {
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
         }
 
     composeTestRule.setContent {

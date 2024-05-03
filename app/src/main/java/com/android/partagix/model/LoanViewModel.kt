@@ -117,7 +117,7 @@ class LoanViewModel(
 
 data class LoanUIState(
     val availableItems: List<Item>,
-  val filterState: FilterState = FilterState()
+    val filterState: FilterState = FilterState()
 )
 
 sealed class FilterAction {
