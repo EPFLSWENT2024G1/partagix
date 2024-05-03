@@ -67,7 +67,6 @@ class App(
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-  // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel = ManageLoanViewModel(db = db)
 
@@ -85,9 +84,7 @@ class App(
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
-    // -----------------------a changer
-    // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -130,9 +127,6 @@ class App(
     navigationActions = remember(navController) { NavigationActions(navController) }
 
     navigationActionsInitialized = true
-    // val navBackStackEntry by navController.currentBackStackEntryAsState()
-    // val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-    // The 2 previous lines were causing the navigation issues.
     val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
@@ -194,6 +188,8 @@ class App(
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
         inventoryViewModel.getInventory()
+        loanViewModel.getAvailableLoans()
+
         HomeScreen(
             homeViewModel = HomeViewModel(),
             manageLoanViewModel = manageViewModel,
