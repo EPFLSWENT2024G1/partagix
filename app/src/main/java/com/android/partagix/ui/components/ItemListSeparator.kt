@@ -83,6 +83,7 @@ fun ItemListColumn(
         expanded = expanded,
         manageLoanViewModel = manageLoanViewModel,
         modifier = Modifier.fillMaxSize(),
-        expandables = expandables,)
+        expandables = expandables,
+    )
   }
 }
