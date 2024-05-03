@@ -128,10 +128,7 @@ fun InventoryCreateOrEditItem(
                     readOnly = false)
 
                 OutlinedTextField(
-                    value =
-                        uiState.item
-                            .idUser, // TODO: check with future implementation of Item if author is
-                    // correctly linked to user.name by default
+                    value = uiState.user.name,
                     onValueChange = {},
                     label = { Text("Author") },
                     modifier = modifier.testTag("idUser").fillMaxWidth(),
@@ -198,7 +195,9 @@ fun InventoryCreateOrEditItem(
                           uiDescription,
                           uiVisibility,
                           uiQuantity,
-                          uiLocation))
+                          uiLocation,
+                          i.idUser,
+                      ))
                   navigationActions.goBack()
                 },
                 content = {

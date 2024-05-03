@@ -65,6 +65,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
+    every { mockNavActions.navigateTo(Route.EDIT_ACCOUNT) } just Runs
     every { mockNavActions.goBack() } just Runs
   }
 
@@ -120,9 +121,42 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       inventoryButton { assertIsDisplayed() }
       inventoryButton { performClick() }
 
-      // friend button
-      friendButton { assertIsDisplayed() }
-      friendButton { performClick() }
+      //    editButton
+      @Test
+      fun editAndFriendButtonIsDisplayed() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+          ViewAccount(
+              modifier = Modifier,
+              userViewModel = mockUserViewModel,
+              navigationActions = mockNavActions)
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+          editButton { assertIsDisplayed() }
+          friendButton { assertIsDisplayed() }
+        }
+      }
+
+      @Test
+      fun editAndFriendButtonWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+          ViewAccount(
+              modifier = Modifier,
+              userViewModel = mockUserViewModel,
+              navigationActions = mockNavActions)
+        }
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+          editButton { assertIsDisplayed() }
+          editButton { performClick() }
+
+          // friend button
+          friendButton { assertIsDisplayed() }
+          friendButton { performClick() }
+        }
+      }
     }
   }
 }
