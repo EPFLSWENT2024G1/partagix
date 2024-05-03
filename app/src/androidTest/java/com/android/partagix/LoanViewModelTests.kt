@@ -136,18 +136,18 @@ class LoanViewModelTests {
   @Test
   fun testUpdate() {
     val update =
-        LoanViewModel::class.java.getDeclaredMethod("update", List::class.java, String::class.java)
+        LoanViewModel::class.java.getDeclaredMethod("update", List::class.java, FilterState::class.java)
     update.isAccessible = true
 
     // update items only
     update.invoke(loanViewModel, items, null)
     assert(loanViewModel.uiState.value.availableItems == items)
-    assert(loanViewModel.uiState.value.query == "")
+    assert(loanViewModel.uiState.value.filterState.query == null)
 
     // update query
     update.invoke(loanViewModel, items, "test")
     assert(loanViewModel.uiState.value.availableItems == items)
-    assert(loanViewModel.uiState.value.query == "test")
+    assert(loanViewModel.uiState.value.filterState.query == "test")
   }
 
   @Test

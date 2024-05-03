@@ -70,11 +70,11 @@ class LoanViewModel(
   }
 
   /** Update the UI state with the given list of items and an optional query. */
-  private fun update(items: List<Item>, query: String? = null) {
-    if (query == null) {
+  private fun update(items: List<Item>, filterState: FilterState? = null) {
+    if (filterState == null) {
       _uiState.value = _uiState.value.copy(availableItems = items)
     } else {
-      _uiState.value = _uiState.value.copy(availableItems = items, query = query)
+      _uiState.value = _uiState.value.copy(availableItems = items, filterState = filterState)
     }
   }
 
@@ -112,7 +112,7 @@ class LoanViewModel(
 
 data class LoanUIState(
     val availableItems: List<Item>,
-    val query: String = "",
+  val filterState: FilterState = FilterState()
 )
 
 sealed class FilterAction {

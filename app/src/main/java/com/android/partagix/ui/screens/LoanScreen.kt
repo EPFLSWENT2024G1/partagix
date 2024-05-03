@@ -86,7 +86,7 @@ fun LoanScreen(
       topBar = {
         TopSearchBar(
             filter = { loanViewModel.applyFilters(FilterState(query = it)) },
-            query = loansUIState.value.query,
+            query = loansUIState.value.filterState.query ?: "",
             modifier = modifier.testTag("LoanScreenSearchBar"))
       },
       bottomBar = {

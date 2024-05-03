@@ -47,6 +47,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -210,7 +211,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         {
           val query = firstArg<String>()
           val filteredItems = loanUIState.value.availableItems.filter { it.name.contains(query) }
-          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems, query = query)
+          val filteredState = loanUIState.value.filterState.copy(query = query)
+          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems, filterState = filteredState)
         }
 
     composeTestRule.setContent {
@@ -225,7 +227,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     node.performImeAction()
 
     val state = mockLoanViewModel.uiState.value
-    assert(state.query == "dog")
+    assert(state.filterState.query == "dog")
     assert(state.availableItems.size == 1)
   }
 
