@@ -70,7 +70,8 @@ fun InventoryScreen(
         FloatingActionButton(
             modifier = modifier.testTag("inventoryScreenFab"),
             onClick = {
-              val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
+              val i = Item("", Category("", ""), "",
+                  "", Visibility.PUBLIC, 1, Location(""), "")
               itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {

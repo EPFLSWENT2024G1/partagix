@@ -11,6 +11,7 @@ import com.android.partagix.model.visibility.Visibility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.CountDownLatch
 
 class LoanViewModel(
     private val availableItems: List<Item> = emptyList(),
@@ -37,7 +38,7 @@ class LoanViewModel(
    *
    * Returns the list of available items for a loan, and updates the UI state with it.
    */
-  fun getAvailableLoans(onSuccess: (List<Item>) -> Unit = {}) {
+  fun getAvailableLoans(onSuccess: (List<Item>) -> Unit = {}, latch: CountDownLatch = CountDownLatch(1)) {
     val user = Authentication.getUser()
 
     if (user == null) {
@@ -59,6 +60,7 @@ class LoanViewModel(
                 }
             update(newItems)
             onSuccess(newItems)
+            latch.countDown()
           }
         }
       }

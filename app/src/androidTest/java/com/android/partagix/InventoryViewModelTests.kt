@@ -3,6 +3,7 @@ package com.android.partagix
 import android.location.Location
 import com.android.partagix.model.Database
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -11,9 +12,11 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.spyk
 import java.util.Date
 import java.util.concurrent.CountDownLatch
@@ -153,6 +156,11 @@ class InventoryViewModelTests {
 
   @Test
   fun testInventoryNotNull() {
+
+      val mockUser = mockk<FirebaseUser>()
+      mockkObject(Authentication)
+      every { Authentication.getUser() } returns mockUser
+      every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = fire, latch = latch))
     latch.await()
