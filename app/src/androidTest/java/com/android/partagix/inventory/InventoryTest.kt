@@ -59,12 +59,13 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     // every { mockInventoryViewModel.uiState } returns emptyMockUiState
     every { mockInventoryViewModel.getInventory() } just Runs
 
-    every { mockInventoryViewModel.findtime(any(), any()) } just Runs
-    every { mockInventoryViewModel.getusers(any(), any()) } just Runs
+    every { mockInventoryViewModel.findTime(any(), any()) } just Runs
+    every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
     every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -87,6 +88,20 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
+    }
+  }
+
+  @Test
+  fun itemListIsDisplayed() = run {
+    every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
+    composeTestRule.setContent {
+      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
+    }
+
+    onComposeScreen<InventoryScreen>(composeTestRule) {
+      itemList { assertIsDisplayed() }
+      borrowedItemList { assertIsDisplayed() }
+      // noItemBox { assertIsDisplayed()}
     }
   }
 }

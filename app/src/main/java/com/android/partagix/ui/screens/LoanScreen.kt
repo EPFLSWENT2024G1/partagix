@@ -190,7 +190,10 @@ fun LoanScreen(
                         },
                         modifier = modifier.testTag("LoanScreenItemListView"),
                         users = emptyList(),
-                        loan = emptyList())
+                        loan = emptyList(),
+                        isExpandable = false,
+                        wasExpanded = emptyList(),
+                    )
                   }
             }
       }

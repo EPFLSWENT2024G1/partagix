@@ -20,6 +20,8 @@ import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
@@ -58,6 +60,7 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
+  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
 
@@ -67,6 +70,7 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState2: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
+  private lateinit var mockManageUiState: MutableStateFlow<ManagerUIState>
   private lateinit var mockHomeUiState: MutableStateFlow<HomeUIState>
 
   val cat1 = Category("1", CategoryItems[1])
@@ -92,6 +96,8 @@ class EndToEndCreateEdit {
             InventoryUIState(
                 listOf(item3), "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
+    mockManageUiState =
+        MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
     mockItemUiState =
         MutableStateFlow(
             ItemUIState(
@@ -103,6 +109,8 @@ class EndToEndCreateEdit {
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
+    mockManageViewModel = mockk()
+
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
 
@@ -139,14 +147,14 @@ class EndToEndCreateEdit {
   // Navigate from Home screen to Inventory screen
   @Test
   fun testA_goFromHomeToInventory() {
-    every { mockInventoryViewModel.uiState } returns mockUiState
+    every { mockManageViewModel.uiState } returns mockManageUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
     every { mockHomeViewModel.uiState } returns mockHomeUiState
 
     composeTestRule.setContent {
       HomeScreen(
           homeViewModel = mockHomeViewModel,
-          inventoryViewModel = mockInventoryViewModel,
+          manageLoanViewModel = mockManageViewModel,
           navigationActions = mockNavActions)
     }
 

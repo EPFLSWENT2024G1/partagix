@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
@@ -25,48 +25,65 @@ import com.android.partagix.model.user.User
  * function that will be called when we want to see a list of items.
  *
  * @param List a list of items.
- * @param Title a string that represents the title of the column.
+ * @param users a list of the users from the items
+ * @param loan a list of loans associated to the items
+ * @param title a string that represents the title of the column.
  * @param corner a string that represents the corner of the column.
+ * @param isCornerClickable is a boolean that makes the corner text clickable or not
  * @param onClick a function that takes an item and returns a Unit.
  * @param onClickCorner a function that returns a Unit.
  * @param modifier a Modifier.
  */
 @Composable
 fun ItemListColumn(
-    List: List<Item>,
+    modifier: Modifier = Modifier,
+    list: List<Item>,
     users: List<User>,
     loan: List<Loan>,
-    Title: String,
+    title: String,
     corner: String,
+    isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
-    modifier: Modifier = Modifier
+    wasExpanded: List<Boolean> = emptyList(),
+    expandState: Boolean = false,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
       Text(
-          text = Title,
+          text = title,
           style =
               TextStyle(
                   fontSize = 18.sp,
                   fontWeight = FontWeight(1000),
                   color = Color(0xFF000000),
               ),
-          modifier = Modifier.width(350.dp).padding(horizontal = 10.dp))
-
+          modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,
-          modifier = Modifier.clickable { onClickCorner() })
+          modifier =
+              if (isCornerClickable) {
+                Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() }
+              } else {
+                Modifier.fillMaxWidth().padding(end = 10.dp)
+              })
     }
 
     ItemList(
-        itemList = List,
+        itemList = list,
         users = users,
         loan = loan,
         onClick = onClick,
-        modifier = Modifier.fillMaxSize())
+        isExpandable = isExpandable,
+        wasExpanded = wasExpanded,
+        manageLoanViewModel = manageLoanViewModel,
+        modifier = Modifier.fillMaxSize(),
+        expandState = expandState,
+    )
   }
 }
