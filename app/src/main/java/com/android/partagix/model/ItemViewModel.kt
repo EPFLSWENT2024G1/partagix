@@ -60,8 +60,8 @@ class ItemViewModel(
    * @param new the new item to update the UI state with
    */
   fun updateUiItem(new: Item) {
-    var newUserId = ""
-    if (Authentication.getUser() != null) {
+    var newUserId = new.idUser
+    if (newUserId == "" && Authentication.getUser() != null) {
       newUserId = FirebaseAuth.getInstance().currentUser!!.uid
     }
 
