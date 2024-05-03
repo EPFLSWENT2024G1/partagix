@@ -23,6 +23,7 @@ import androidx.compose.ui.test.swipeRight
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanUIState
 import com.android.partagix.model.LoanViewModel
@@ -86,8 +87,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     mockLoanViewModel = mockk()
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
-    every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } just Runs
-    every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs
@@ -207,7 +206,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun searchBarWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(query = any()) } answers
+    every { mockLoanViewModel.applyFilters(FilterState(query = any())) } answers
         {
           val query = firstArg<String>()
           val filteredItems = loanUIState.value.availableItems.filter { it.name.contains(query) }
@@ -292,7 +291,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun distanceFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } answers
+    every { mockLoanViewModel.applyFilters(FilterState(location = any(), radius = any())) } answers
         {
           val currentPosition = firstArg<Location>()
           val radius = secondArg<Double>()
@@ -337,7 +336,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun quantityFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } answers
+    every { mockLoanViewModel.applyFilters(FilterState(atLeastQuantity = any())) } answers
         {
           val atLeastQuantity = firstArg<Int>()
           val filteredItems =
