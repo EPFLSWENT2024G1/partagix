@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.FilterAction
+import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.UserViewModel
@@ -83,7 +85,7 @@ fun LoanScreen(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
         TopSearchBar(
-            filter = { loanViewModel.filterItems(it) },
+            filter = { loanViewModel.applyFilters(FilterState(query = it)) },
             query = loansUIState.value.query,
             modifier = modifier.testTag("LoanScreenSearchBar"))
       },
@@ -153,9 +155,9 @@ fun LoanScreen(
                                     title = "Distance",
                                     selectedValue = {
                                       if (currentLocation != null) {
-                                        loanViewModel.filterItems(
-                                            currentPosition = currentLocation!!,
-                                            radius = it.toDouble())
+                                        loanViewModel.applyFilters(
+                                          FilterState(location = currentLocation!!, radius = it.toDouble())
+                                        )
                                       }
                                     },
                                     unit = "km",
@@ -166,7 +168,7 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
                                     },
-                                    onReset = { loanViewModel.releaseFilters() },
+                                    onReset = { loanViewModel.resetFilter(FilterAction.ResetLocation) },
                                     modifier =
                                         modifier
                                             .fillMaxWidth(.3f)
@@ -174,7 +176,8 @@ fun LoanScreen(
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
-                                      loanViewModel.filterItems(atLeastQuantity = it.toInt())
+                                      loanViewModel.applyFilters(
+                                        FilterState(atLeastQuantity = it.toInt()))
                                     },
                                     unit = "items",
                                     minUnit = "1",
@@ -184,7 +187,7 @@ fun LoanScreen(
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
                                     },
-                                    onReset = { loanViewModel.releaseFilters() },
+                                    onReset = { loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity) },
                                     modifier =
                                         modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }

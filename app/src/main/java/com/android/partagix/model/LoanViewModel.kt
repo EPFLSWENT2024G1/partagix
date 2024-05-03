@@ -20,6 +20,8 @@ class LoanViewModel(
   private val _uiState = MutableStateFlow(LoanUIState(availableItems))
   val uiState: StateFlow<LoanUIState> = _uiState
 
+  private var filterState = FilterState()
+
   init {
     getAvailableLoans()
   }
@@ -76,45 +78,32 @@ class LoanViewModel(
     }
   }
 
-  /**
-   * Filter the available items for a loan based on the given query and update the UI state with the
-   * filtered items.
-   *
-   * The query is used to filter the items as described in [Filtering.filterItems].
-   */
-  fun filterItems(query: String) {
-    val list = filtering.filterItems(availableItems, query)
-    update(list, query)
+  fun applyFilters(filterState: FilterState) {
+    this.filterState = filterState
+    var items = availableItems
+
+    filterState.query?.let { query ->
+      if (query.isNotEmpty()) {
+        items = filtering.filterItems(items, query)
+      }
+    }
+    filterState.atLeastQuantity?.let { quantity ->
+      items = filtering.filterItems(items, quantity)
+    }
+    if (filterState.location != null && filterState.radius != null) {
+      items = filtering.filterItems(items, filterState.location, filterState.radius)
+    }
+
+    update(items)
   }
 
-  /**
-   * Filter the available items for a loan based on the given quantity and update the UI state with
-   * the filtered items.
-   *
-   * The items are filtered based on the quantity as described in [Filtering.filterItems].
-   */
-  fun filterItems(atLeastQuantity: Int) {
-    val list = filtering.filterItems(availableItems, atLeastQuantity)
-    update(list)
-  }
-
-  /**
-   * Filter the available items for a loan based on the given current position and radius and update
-   * the UI state with the filtered items.
-   *
-   * The items are filtered based on the current position and radius as described in
-   * [Filtering.filterItems].
-   */
-  fun filterItems(currentPosition: Location, radius: Double) {
-    val list = filtering.filterItems(availableItems, currentPosition, radius)
-    update(list)
-  }
-
-  /**
-   * Release the filters applied to the available items and update the UI state with the UI state
-   */
-  fun releaseFilters() {
-    update(availableItems)
+  fun resetFilter(filterAction: FilterAction) {
+    filterState = when (filterAction) {
+      is FilterAction.ResetQuery -> filterState.copy(query = null)
+      is FilterAction.ResetAtLeastQuantity -> filterState.copy(atLeastQuantity = null)
+      is FilterAction.ResetLocation -> filterState.copy(location = null, radius = null)
+    }
+    applyFilters(filterState)
   }
 
   companion object {
@@ -125,4 +114,17 @@ class LoanViewModel(
 data class LoanUIState(
     val availableItems: List<Item>,
     val query: String = "",
+)
+
+sealed class FilterAction {
+  object ResetQuery : FilterAction()
+  object ResetAtLeastQuantity : FilterAction()
+  object ResetLocation : FilterAction()
+}
+
+data class FilterState(
+  val query: String? = null,
+  val atLeastQuantity: Int? = null,
+  val location: Location? = null,
+  val radius: Double? = null
 )
