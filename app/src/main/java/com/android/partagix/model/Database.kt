@@ -134,24 +134,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           for (document in result) {
             val start_date: Timestamp = document.data["start_date"] as Timestamp
             val end_date: Timestamp = document.data["end_date"] as Timestamp
-            val loan_state: LoanState =
-                if (document.data["loanstate"] == "PENDING") {
-                  LoanState.PENDING
-                } else {
-                  if (document.data["loanstate"] == "ACCEPTED") {
-                    LoanState.ACCEPTED
-                  } else {
-                    if (document.data["loanstate"] == "FINISHED") {
-                      LoanState.FINISHED
-                    } else {
-                      if (document.data["loanstate"] == "REFUSED") {
-                        LoanState.REFUSED
-                      } else {
-                        LoanState.CANCELLED
-                      }
-                    }
-                  }
-                }
+              val loan_state: LoanState = LoanState.valueOf(document.data["loanstate"] as String)
 
             val loan =
                 Loan(

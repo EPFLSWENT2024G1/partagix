@@ -45,10 +45,10 @@ fun ItemListColumn(
     isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
     onClickCorner: () -> Unit,
-    expanded: List<Boolean> = emptyList(),
-    expandables: Boolean = false,
+    wasExpanded: List<Boolean> = emptyList(),
+    expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    expandable: Boolean,
+    isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
     Row(
@@ -79,11 +79,11 @@ fun ItemListColumn(
         users = users,
         loan = loan,
         onClick = onClick,
-        expandable = expandable,
-        expanded = expanded,
+        isExpandable = isExpandable,
+        wasExpanded = wasExpanded,
         manageLoanViewModel = manageLoanViewModel,
         modifier = Modifier.fillMaxSize(),
-        expandables = expandables,
+        expandState = expandState,
     )
   }
 }

@@ -127,8 +127,8 @@ fun HomeScreen(
                   onClick = { /* useless on this list */},
                   onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
                   isCornerClickable = true,
-                  expandable = true,
-                  expanded = uiState.expanded,
+                  isExpandable = true,
+                  wasExpanded = uiState.expanded,
                   manageLoanViewModel = manageLoanViewModel,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }

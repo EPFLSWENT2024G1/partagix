@@ -36,9 +36,9 @@ fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
-    expandable: Boolean,
-    expandables: Boolean = false,
-    expanded: List<Boolean>,
+    isExpandable: Boolean,
+    expandState: Boolean = false,
+    wasExpanded: List<Boolean>,
     onClick: (Item) -> Unit,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     stickyHeader: @Composable() (() -> Unit)? = null,
@@ -53,18 +53,18 @@ fun ItemList(
           modifier =
               Modifier.fillMaxSize()
                   .clickable {
-                    if (!expandable) {
+                    if (!isExpandable) {
                       onClick(item)
                     }
                   }
                   .testTag("ItemListItem")) {
             ItemUi(
-                expandable = expandable,
-                expanded =
-                    if (expanded.isEmpty()) {
+                isExpandable = isExpandable,
+                wasExpanded =
+                    if (wasExpanded.isEmpty()) {
                       false
                     } else {
-                      expanded[index]
+                      wasExpanded[index]
                     },
                 item = item,
                 user =
@@ -81,7 +81,7 @@ fun ItemList(
                     },
                 index = index,
                 manageLoanViewModel = manageLoanViewModel,
-                expandables = expandables,
+                expandState = expandState,
             )
           }
       Spacer(modifier = Modifier.height(8.dp))

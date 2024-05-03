@@ -64,9 +64,9 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    expanded: Boolean,
-    expandable: Boolean,
-    expandables: Boolean = false,
+    wasExpanded: Boolean,
+    isExpandable: Boolean,
+    expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int,
 ) {
@@ -76,10 +76,10 @@ fun ItemUi(
       } else {
         loan.startDate
       }
-  var expandables by remember { mutableStateOf(expandables) }
+  var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
-  if (expandable) {
+  if (isExpandable) {
     Column(
         // horizontalAlignment = Alignment.CenterHorizontally,
         horizontalAlignment = Alignment.Start,
