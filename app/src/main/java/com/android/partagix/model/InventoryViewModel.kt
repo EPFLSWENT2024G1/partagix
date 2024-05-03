@@ -56,11 +56,11 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
     getInventory()
   }
 
-  private fun getItems() {
+  /*private fun getItems() {
     viewModelScope.launch {
       database.getItems { update(it, it, emptyList(), emptyList(), emptyList(), emptyList()) }
     }
-  }
+  }*/
 
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
@@ -70,29 +70,29 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
     val user = FirebaseAuth.getInstance().currentUser
     viewModelScope.launch {
       if (user == null) {
-        database.getUserInventory(/*user.uid*/ " sdfasdf") {
+        database.getUserInventory(/*user.uid*/ "8WuTkKJZLTAr6zs5L7rH") {
           updateInv(it.items)
-          getusers(it.items, ::updateUsers)
-          findtime(it.items, ::updateLoan)
+          getUsers(it.items, ::updateUsers)
+          findTime(it.items, ::updateLoan)
         }
         database.getLoans {
           it.filter { it.idLoaner.equals(user) }
               .forEach { loan ->
                 database.getItems { items: List<Item> ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
-                  getusers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
-                  findtime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
+                  getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
+                  findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
               }
         }
       } else {
         database.getItems {
           updateBor(it)
-          getusers(it, ::updateUsersBor)
-          findtime(it, ::updateLoanBor)
+          getUsers(it, ::updateUsersBor)
+          findTime(it, ::updateLoanBor)
           updateInv(it)
-          getusers(it, ::updateUsers)
-          findtime(it, ::updateLoan)
+          getUsers(it, ::updateUsers)
+          findTime(it, ::updateLoan)
         }
         println("----- error user unknown")
       }
@@ -109,7 +109,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
    * @param newLoanBor the new loans borrowed to update the inventory
    * @param newloan the new loans to update the inventory
    */
-  private fun update(
+  /*private fun update(
       newInv: List<Item>,
       newBor: List<Item>,
       user: List<User>,
@@ -127,31 +127,31 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
             loan = newloan)
     fetchedBorrowed = newBor
     fetchedList = newInv
-  }
+  }*/
 
-  private fun updateInv(new: List<Item>) {
+  fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
   }
 
-  private fun updateBor(new: List<Item>) {
+  fun updateBor(new: List<Item>) {
     _uiState.value = _uiState.value.copy(borrowedItems = new)
     fetchedBorrowed = new
   }
 
-  private fun updateUsers(new: User) {
+  fun updateUsers(new: User) {
     _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
   }
 
-  private fun updateUsersBor(new: User) {
+  fun updateUsersBor(new: User) {
     _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
   }
 
-  private fun updateLoanBor(new: Loan) {
+  fun updateLoanBor(new: Loan) {
     _uiState.value = _uiState.value.copy(loanBor = uiState.value.loanBor.plus(new))
   }
 
-  private fun updateLoan(new: Loan) {
+  fun updateLoan(new: Loan) {
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
 
@@ -174,8 +174,7 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
    * @param list the list of items to find the users
    * @param update a function to update the user list
    */
-  fun getusers(list: List<Item>, update: (User) -> Unit) {
-    val users = mutableListOf<User>()
+  fun getUsers(list: List<Item>, update: (User) -> Unit) {
     list.forEach { database.getUser(it.idUser) { user -> update(user) } }
   }
 
@@ -185,19 +184,19 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
    * @param items the list of items to find the loans
    * @param update a function to update the loan list
    */
-  fun findtime(items: List<Item>, update: (Loan) -> Unit) {
+  fun findTime(items: List<Item>, update: (Loan) -> Unit) {
     database.getLoans { loan ->
       items.forEach { item ->
         val list =
             loan
-                .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
                 .sortedBy { it.startDate }
         update(
             if (list.isEmpty()) {
-              Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+              Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
             } else {
               loan
-                  .filter { it.idItem.equals(item.id) && it.state.equals(LoanState.ACCEPTED) }
+                  .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
                   .sortedBy { it.startDate }
                   .first()
             })
@@ -214,7 +213,18 @@ class InventoryViewModel(items: List<Item> = emptyList(), db: Database = Databas
     val currentState = _uiState.value
     val list = filtering.filterItems(fetchedList, query)
     val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
+
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
+  }
+
+  fun filter(list: List<Item>, query: String): List<Item> {
+    return list.filter {
+      it.name.contains(query, ignoreCase = true) ||
+          it.description.contains(query, ignoreCase = true) ||
+          it.category.name.contains(query, ignoreCase = true) ||
+          it.visibility.toString().contains(query, ignoreCase = true) ||
+          it.quantity.toString().contains(query, ignoreCase = true)
+    }
   }
 
   fun filterItems(atLeastQuantity: Int) {

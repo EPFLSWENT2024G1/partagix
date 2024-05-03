@@ -29,6 +29,7 @@ import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -45,6 +46,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
@@ -65,8 +67,9 @@ class App(
   private lateinit var navigationActions: NavigationActions
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-  // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
+  private val manageViewModel = ManageLoanViewModel(db = db)
+
   private val loanViewModel = LoanViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
@@ -81,9 +84,7 @@ class App(
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
-    // -----------------------a changer
-    // Initially, navigate to the boot screen
-    // navigationActions.navigateTo(Route.VIEW_ITEM + "/4MsBEw8bkLagBkWYy3nc")
+
     navigationActions.navigateTo(Route.BOOT)
   }
 
@@ -126,9 +127,6 @@ class App(
     navigationActions = remember(navController) { NavigationActions(navController) }
 
     navigationActionsInitialized = true
-    // val navBackStackEntry by navController.currentBackStackEntryAsState()
-    // val selectedDestination = navBackStackEntry?.destination?.route ?: Route.INVENTORY
-    // The 2 previous lines were causing the navigation issues.
     val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
@@ -190,9 +188,11 @@ class App(
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
         inventoryViewModel.getInventory()
+        loanViewModel.getAvailableLoans()
+
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = inventoryViewModel,
+            manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -213,7 +213,7 @@ class App(
           inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = inventoryViewModel,
+              manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
       }
@@ -251,6 +251,10 @@ class App(
       }
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+      }
+      composable(Route.MANAGE_LOAN_REQUEST) {
+        ManageLoanRequest(
+            manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }
       composable(
           Route.STAMP + "/{itemId}",
