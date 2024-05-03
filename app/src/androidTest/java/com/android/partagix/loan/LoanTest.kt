@@ -23,6 +23,7 @@ import androidx.compose.ui.test.swipeRight
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanUIState
 import com.android.partagix.model.LoanViewModel
@@ -86,8 +87,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     mockLoanViewModel = mockk()
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
-    every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } just Runs
-    every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
     mockUserViewModel = mockk()
     every { mockUserViewModel.updateLocation(any()) } just Runs
@@ -207,11 +206,14 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun searchBarWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(query = any()) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val query = firstArg<String>()
+          val filterState = firstArg<FilterState>()
+          val query = filterState.query ?: ""
           val filteredItems = loanUIState.value.availableItems.filter { it.name.contains(query) }
-          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems, query = query)
+          val filteredState = loanUIState.value.filterState.copy(query = query)
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = filteredItems, filterState = filteredState)
         }
 
     composeTestRule.setContent {
@@ -226,7 +228,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     node.performImeAction()
 
     val state = mockLoanViewModel.uiState.value
-    assert(state.query == "dog")
+    assert(state.filterState.query == "dog")
     assert(state.availableItems.size == 1)
   }
 
@@ -292,15 +294,21 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun distanceFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(currentPosition = any(), radius = any()) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val currentPosition = firstArg<Location>()
-          val radius = secondArg<Double>()
+          val filterState = firstArg<FilterState>()
+          val currentPosition = filterState.location ?: Location("")
+          val radius = filterState.radius ?: 0.0
           val filteredItems =
               loanUIState.value.availableItems.filter {
                 it.location.distanceTo(currentPosition) <= (radius * 1000)
               }
           loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+        }
+    every { mockLoanViewModel.resetFilter(any()) } answers
+        {
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
         }
 
     composeTestRule.setContent {
@@ -337,12 +345,18 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @Test
   fun quantityFilterWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
-    every { mockLoanViewModel.filterItems(atLeastQuantity = any()) } answers
+    every { mockLoanViewModel.applyFilters(any()) } answers
         {
-          val atLeastQuantity = firstArg<Int>()
+          val filterState = firstArg<FilterState>()
+          val atLeastQuantity = filterState.atLeastQuantity ?: 0
           val filteredItems =
               loanUIState.value.availableItems.filter { it.quantity >= atLeastQuantity }
           loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+        }
+    every { mockLoanViewModel.resetFilter(any()) } answers
+        {
+          loanUIState.value =
+              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
         }
 
     composeTestRule.setContent {

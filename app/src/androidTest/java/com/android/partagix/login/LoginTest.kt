@@ -73,6 +73,7 @@ class LoginTest {
     every {
       mockMainActivity.registerForActivityResult(any<FirebaseAuthUIActivityResultContract>(), any())
     } returns mockActivityResultLauncher
+
     every { mockDatabase.getItems(any()) } just Runs
     every { mockDatabase.getUserInventory(any(), any()) } just Runs
     every { mockDatabase.getLoans(any()) } just Runs

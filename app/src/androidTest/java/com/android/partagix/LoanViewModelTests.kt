@@ -3,6 +3,7 @@ package com.android.partagix
 import android.location.Location
 import android.util.Log
 import com.android.partagix.model.Database
+import com.android.partagix.model.FilterState
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
@@ -137,18 +138,20 @@ class LoanViewModelTests {
   @Test
   fun testUpdate() {
     val update =
-        LoanViewModel::class.java.getDeclaredMethod("update", List::class.java, String::class.java)
+        LoanViewModel::class
+            .java
+            .getDeclaredMethod("update", List::class.java, FilterState::class.java)
     update.isAccessible = true
 
     // update items only
     update.invoke(loanViewModel, items, null)
     assert(loanViewModel.uiState.value.availableItems == items)
-    assert(loanViewModel.uiState.value.query == "")
+    assert(loanViewModel.uiState.value.filterState.query == null)
 
     // update query
-    update.invoke(loanViewModel, items, "test")
+    update.invoke(loanViewModel, items, FilterState(query = "test"))
     assert(loanViewModel.uiState.value.availableItems == items)
-    assert(loanViewModel.uiState.value.query == "test")
+    assert(loanViewModel.uiState.value.filterState.query == "test")
   }
 
   @Test
@@ -167,6 +170,7 @@ class LoanViewModelTests {
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user1"
+
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
@@ -187,6 +191,7 @@ class LoanViewModelTests {
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
+
     verify { db.getLoans(any()) }
 
     Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
@@ -202,7 +207,7 @@ class LoanViewModelTests {
 
     // all items
     val query = "test"
-    loanViewModel.filterItems(query)
+    loanViewModel.applyFilters(FilterState(query = query))
 
     verify { spyFiltering.filterItems(any(), query) }
   }
@@ -215,7 +220,7 @@ class LoanViewModelTests {
 
     // all items
     val atLeastQuantity = 1
-    loanViewModel.filterItems(atLeastQuantity)
+    loanViewModel.applyFilters(FilterState(atLeastQuantity = atLeastQuantity))
 
     verify { spyFiltering.filterItems(any(), atLeastQuantity) }
   }
@@ -228,7 +233,7 @@ class LoanViewModelTests {
 
     // all items
     val radius = 1.0
-    loanViewModel.filterItems(currentPosition, radius)
+    loanViewModel.applyFilters(FilterState(location = currentPosition, radius = radius))
 
     verify { spyFiltering.filterItems(any(), currentPosition, radius) }
   }

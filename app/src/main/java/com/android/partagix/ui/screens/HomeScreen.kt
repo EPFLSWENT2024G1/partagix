@@ -130,6 +130,7 @@ fun HomeScreen(
                   isExpandable = true,
                   wasExpanded = uiState.expanded,
                   manageLoanViewModel = manageLoanViewModel,
+                  isClickable = true,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }
@@ -140,13 +141,12 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
   Box(
       modifier =
           modifier
-              // .weight(1f) // Répartit l'espace horizontal disponible équitablement
-              .aspectRatio(1f) // Garde le bouton carré
-              .size(70.dp) // Vous pouvez ajuster la taille en fonction de vos besoins
+              .aspectRatio(1f)
+              .size(70.dp)
               .border(
                   width = 1.dp,
                   color = Color.Black,
-                  shape = RoundedCornerShape(8.dp)) // Add a rounded borer the button
+                  shape = RoundedCornerShape(8.dp)) // Add a rounded border to the button
               .clickable(onClick = onClick),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -155,7 +155,7 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           Text(
               text = text,
               style = MaterialTheme.typography.bodyMedium,
-              color = Color.Black, // Vous pouvez ajuster la couleur en fonction de vos besoins
+              color = Color.Black,
               textAlign = TextAlign.Center)
         }
       }

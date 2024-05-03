@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.FilterAction
+import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.UserViewModel
@@ -83,8 +85,8 @@ fun LoanScreen(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
         TopSearchBar(
-            filter = { loanViewModel.filterItems(it) },
-            query = loansUIState.value.query,
+            filter = { loanViewModel.applyFilters(FilterState(query = it)) },
+            query = loansUIState.value.filterState.query ?: "",
             modifier = modifier.testTag("LoanScreenSearchBar"))
       },
       bottomBar = {
@@ -125,16 +127,13 @@ fun LoanScreen(
                       modifier
                           .fillMaxWidth()
                           .fillMaxHeight(.65f)
-                          // .offset(y = (-30).dp)
                           .background(
-                              Color.White, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                              Color.White, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                           .border(
                               width = 1.dp,
                               color = Color(0xFF464646),
-                              shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                          .padding(
-                              PaddingValues(
-                                  top = 30.dp, start = 20.dp, end = 20.dp, bottom = 30.dp))) {
+                              shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                          .padding(PaddingValues(top = 10.dp, bottom = 10.dp))) {
                     ItemList(
                         itemList = items,
                         onClick = {
@@ -145,27 +144,33 @@ fun LoanScreen(
                           FlowRow(
                               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
                               verticalArrangement =
-                                  Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                                  Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
                               modifier =
                                   modifier
                                       .background(Color.White)
-                                      .padding(PaddingValues(bottom = 10.dp))) {
+                                      .padding(
+                                          PaddingValues(
+                                              start = 10.dp, end = 10.dp, bottom = 10.dp))) {
                                 Filter(
                                     title = "Distance",
                                     selectedValue = {
                                       if (currentLocation != null) {
-                                        loanViewModel.filterItems(
-                                            currentPosition = currentLocation!!,
-                                            radius = it.toDouble())
+                                        loanViewModel.applyFilters(
+                                            FilterState(
+                                                location = currentLocation!!,
+                                                radius = it.toDouble()))
                                       }
                                     },
                                     unit = "km",
-                                    minUnit = "0",
+                                    minUnit = "1",
                                     maxUnit = "50",
                                     minValue = 0f,
                                     maxValue = 50f,
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
+                                    },
+                                    onReset = {
+                                      loanViewModel.resetFilter(FilterAction.ResetLocation)
                                     },
                                     modifier =
                                         modifier
@@ -174,15 +179,19 @@ fun LoanScreen(
                                 Filter(
                                     title = "Quantity",
                                     selectedValue = {
-                                      loanViewModel.filterItems(atLeastQuantity = it.toInt())
+                                      loanViewModel.applyFilters(
+                                          FilterState(atLeastQuantity = it.toInt()))
                                     },
                                     unit = "items",
-                                    minUnit = "0",
+                                    minUnit = "1",
                                     maxUnit = "100",
-                                    minValue = 0f,
+                                    minValue = 1f,
                                     maxValue = 100f,
                                     sliderTextValue = {
                                       "At least ${String.format("%02d", it.toInt())} items"
+                                    },
+                                    onReset = {
+                                      loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity)
                                     },
                                     modifier =
                                         modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))

@@ -110,6 +110,7 @@ fun InventoryScreen(
                     onClickCorner = {},
                     isCornerClickable = false,
                     isExpandable = false,
+                    isClickable = true,
                     modifier = Modifier.height(190.dp).testTag("inventoryScreenBorrowedItemList"))
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -126,6 +127,7 @@ fun InventoryScreen(
                     onClickCorner = {},
                     isCornerClickable = false,
                     isExpandable = false,
+                    isClickable = true,
                     modifier = Modifier.testTag("inventoryScreenItemList"))
               }
         }

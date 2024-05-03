@@ -291,29 +291,3 @@ fun ItemUi(
         }
   }
 }
-/*
-@Composable
-fun Horizontalfullwidth(modifier: Modifier = Modifier) {
-  Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxWidth()) {
-    HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
-  }
-}
-
-@Composable
-fun BuildingBlocksstatelayer1Enabled(modifier: Modifier = Modifier) {
-  Box(modifier = modifier.fillMaxSize().padding(bottom = 0.0000152587890625.dp))
-}
-
-@Preview
-@Composable
-fun ItemUiPreview() {
-  ItemUi(
-      ItemViewModel(Item)(
-          "1",
-          Category("1", "name"),
-          "name",
-          "description",
-          Visibility.PUBLIC,
-          1,
-          android.location.Location("")))
-}*/
