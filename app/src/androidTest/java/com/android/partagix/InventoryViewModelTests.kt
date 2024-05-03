@@ -11,7 +11,6 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuth.*
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
@@ -126,7 +125,6 @@ class InventoryViewModelTests {
 
     every { db.getUser(any(), any(), any()) } answers
         {
-          val users = listOf(user, user, user)
           val onSuccessUs = it.invocation.args[2] as (User) -> Unit
           onSuccessUs(user)
         }

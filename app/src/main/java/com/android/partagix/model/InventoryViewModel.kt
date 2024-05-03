@@ -105,6 +105,7 @@ class InventoryViewModel(
 
   /**
    * updateInv is a function that will update the uiState's inventory with the new items
+   *
    * @param new the new items to update the inventory
    */
   fun updateInv(new: List<Item>) {
@@ -114,6 +115,7 @@ class InventoryViewModel(
 
   /**
    * updateBor is a function that will update the uiState's borrowed items with the new items
+   *
    * @param new the new items to update the borrowed items
    */
   fun updateBor(new: List<Item>) {
@@ -123,6 +125,7 @@ class InventoryViewModel(
 
   /**
    * updateUsers is a function that will update the uiState's user list
+   *
    * @param new the new user to update the user list
    */
   fun updateUsers(new: User) {
@@ -131,6 +134,7 @@ class InventoryViewModel(
 
   /**
    * updateUsersBor is a function that will update the uiState's user borrowed list
+   *
    * @param new the new user to update the user borrowed list
    */
   fun updateUsersBor(new: User) {
@@ -139,6 +143,7 @@ class InventoryViewModel(
 
   /**
    * updateLoanBor is a function that will update the uiState's loan borrowed list
+   *
    * @param new the new loan to update the loan borrowed list
    */
   fun updateLoanBor(new: Loan) {
@@ -147,6 +152,7 @@ class InventoryViewModel(
 
   /**
    * updateLoan is a function that will update the uiState's loan list
+   *
    * @param new the new loan to update the loan list
    */
   fun updateLoan(new: Loan) {
@@ -155,6 +161,7 @@ class InventoryViewModel(
 
   /**
    * updateItem is a function that will update the item's uiState with the new item
+   *
    * @param new the new item to update the item list
    */
   fun updateItem(new: Item) {
@@ -166,6 +173,7 @@ class InventoryViewModel(
 
   /**
    * createItem is a function that will update the item list with the new item
+   *
    * @param new the new item to update the item list
    */
   fun createItem(new: Item) {
@@ -227,6 +235,7 @@ class InventoryViewModel(
 
   /**
    * Filter items based on the query
+   *
    * @param list the list of items to filter
    * @param query the query to filter the items
    * @return the list of items that match the query
