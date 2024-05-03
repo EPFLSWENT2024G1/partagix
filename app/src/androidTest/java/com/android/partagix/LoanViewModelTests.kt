@@ -145,7 +145,7 @@ class LoanViewModelTests {
     assert(loanViewModel.uiState.value.filterState.query == null)
 
     // update query
-    update.invoke(loanViewModel, items, "test")
+    update.invoke(loanViewModel, items, FilterState(query = "test"))
     assert(loanViewModel.uiState.value.availableItems == items)
     assert(loanViewModel.uiState.value.filterState.query == "test")
   }
