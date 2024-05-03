@@ -49,14 +49,20 @@ fun ItemList(
                 if (users.isEmpty()) {
                   User("", "noname", "", "norank", Inventory("", emptyList()))
                 } else {
+                    if (users.size <= index) {
+                        User("", "noname", "", "norank", Inventory("", emptyList()))
+                    } else {
                   users[index]
-                },
+                }
+                       },
             loan =
                 if (loan.isEmpty()) {
                   Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                 } else {
                   // Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                  loan[index]
+                  if (loan.size <= index) {
+                      Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                  } else {  loan[index]}
                 })
       }
       Spacer(modifier = Modifier.height(8.dp))
