@@ -1,5 +1,6 @@
 package com.android.partagix.components
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,11 +11,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.ui.components.ImageLayoutView
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.PhotoSelectorView
 import org.junit.Rule
@@ -24,18 +27,19 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ImagePickerTest {
   @get:Rule val composeTestRule = createComposeRule()
+  val UI_TIMEOUT: Long = 100000
 
   @Composable
   fun ImagePickerTestingScreen(testedComponent: @Composable () -> Unit) {
 
-    Row(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-      Spacer(modifier = Modifier.width(16.dp))
+    Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+      Spacer(modifier = Modifier.width(40.dp))
       Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         testedComponent()
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(40.dp))
       }
-      Spacer(modifier = Modifier.width(16.dp))
+      Spacer(modifier = Modifier.width(40.dp))
     }
   }
 
@@ -59,5 +63,26 @@ class ImagePickerTest {
     composeTestRule.onNodeWithTag("MainImagePickerClickable").assertIsDisplayed()
     composeTestRule.onNodeWithTag("MainImagePickerClickable").performClick()
   }
-  // TODO : Add tests for the image Layout View function
+
+  @Test
+  fun testImageLayoutView() {
+    val uri1 =
+        Uri.parse(
+            "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+    val uri2 =
+        Uri.parse(
+            "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
+    val uriList = listOf(uri1, uri2)
+
+    composeTestRule.setContent { ImagePickerTestingScreen { ImageLayoutView(uriList) } }
+
+    composeTestRule.waitUntil(UI_TIMEOUT) {
+      composeTestRule.onNodeWithTag("ImagePicked $uri1").isDisplayed()
+    }
+    composeTestRule.waitUntil(UI_TIMEOUT) {
+      composeTestRule.onNodeWithTag("ImagePicked $uri2").isDisplayed()
+    }
+    composeTestRule.onNodeWithTag("ImagePicked $uri1").assertIsDisplayed()
+    composeTestRule.onNodeWithTag("ImagePicked $uri2").assertIsDisplayed()
+  }
 }
