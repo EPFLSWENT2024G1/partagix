@@ -167,6 +167,7 @@ class LoanViewModelTests {
     mockkObject(Authentication.Companion)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user1"
+
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
@@ -187,6 +188,7 @@ class LoanViewModelTests {
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
+
     verify { db.getLoans(any()) }
 
     Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())

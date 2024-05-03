@@ -58,7 +58,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockUiHomeState =
         MutableStateFlow(HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
 
-    every { mockInventoryViewModel.getInventory() } just Runs
+    every { mockInventoryViewModel.getInventory(any()) } just Runs
     every { mockHomeViewModel.uiState } returns mockUiHomeState
 
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
@@ -66,7 +66,6 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
-    every { mockInventoryViewModel.filterItems(currentPosition = any(), radius = any()) } just Runs
 
     every { mockManageViewModel.uiState } returns mockUiState
 
