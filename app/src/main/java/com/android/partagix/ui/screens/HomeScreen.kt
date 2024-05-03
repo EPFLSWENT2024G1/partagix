@@ -39,7 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.HomeViewModel
-import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.navigation.NavigationActions
@@ -59,11 +59,11 @@ private const val newBorrowingRequestsText = "New borrowing requests"
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    inventoryViewModel: InventoryViewModel,
+    manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier
 ) {
-  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
   val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
@@ -118,17 +118,18 @@ fun HomeScreen(
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               ItemListColumn(
-                  list =
-                      uiState.borrowedItems, // TODO replace this with the actual list of borrowing
+                  list = uiState.items, // TODO replace this with the actual list of borrowing
                   // requests
-                  users = uiState.usersBor,
-                  loan = uiState.loanBor,
+                  users = uiState.users,
+                  loan = uiState.loans,
                   title = "",
-                  corner = "", // TODO this should be a button to the full borrowing screen
-                  onClick = { /* TODO navigate to borrow request */},
-                  onClickCorner = {},
-                  isCornerClickable = false,
-                  isClickable = true,
+                  corner = "see all",
+                  onClick = { /* useless on this list */},
+                  onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
+                  isCornerClickable = true,
+                  isExpandable = true,
+                  wasExpanded = uiState.expanded,
+                  manageLoanViewModel = manageLoanViewModel,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }
       }

@@ -29,6 +29,7 @@ import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -45,6 +46,7 @@ import com.android.partagix.ui.screens.InventoryScreen
 import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
+import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
@@ -67,6 +69,8 @@ class App(
 
   // private val inventoryViewModel: InventoryViewModel by viewModels()
   private val inventoryViewModel = InventoryViewModel(db = db)
+  private val manageViewModel = ManageLoanViewModel(db = db)
+
   private val loanViewModel = LoanViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
@@ -192,7 +196,7 @@ class App(
         inventoryViewModel.getInventory()
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            inventoryViewModel = inventoryViewModel,
+            manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -213,7 +217,7 @@ class App(
           inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              inventoryViewModel = inventoryViewModel,
+              manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
       }
@@ -251,6 +255,10 @@ class App(
       }
       composable(Route.EDIT_ITEM) {
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+      }
+      composable(Route.MANAGE_LOAN_REQUEST) {
+        ManageLoanRequest(
+            manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }
       composable(
           Route.STAMP + "/{itemId}",

@@ -106,6 +106,7 @@ class LoanViewModelTests {
   private val mockLoans =
       listOf(
           Loan(
+              "fmdsaon",
               "user2",
               "user3",
               "2",

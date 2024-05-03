@@ -75,6 +75,18 @@ jobs:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA | base64 -di > app/google-services.json
 
+      # Load the keystore file from the secrets
+      - name: Load Keystore file
+        env:
+         DATA: ${{ secrets.KEYSTORE_JKS}}
+        run: echo $DATA | base64 -di > app/upload-keystore.jks
+
+      # Load the keystore.properties file from the secrets
+      - name: Load Keystore properties file
+        env:
+          DATA: ${{ secrets.KEYSTORE}}
+        run: echo $DATA | base64 -di > keystore.properties
+
       # Load the MAPS API key from the secrets
       - name: Load MAPS API key
         env:

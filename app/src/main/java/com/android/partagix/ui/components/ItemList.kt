@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -33,7 +36,11 @@ fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
+    isExpandable: Boolean,
+    expandState: Boolean = false,
+    wasExpanded: List<Boolean>,
     onClick: (Item) -> Unit,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -42,31 +49,49 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(modifier = Modifier.fillMaxSize().clickable { onClick(item) }.testTag("ItemListItem")) {
-        ItemUi(
-            item = item,
-            user =
-                if (users.isEmpty()) {
-                  User("", "noname", "", "norank", Inventory("", emptyList()))
-                } else {
-                  if (users.size <= index) {
+      Box(
+          modifier =
+              Modifier.fillMaxSize()
+                  .clickable {
+                    if (!isExpandable) {
+                      onClick(item)
+                    }
+                  }
+                  .testTag("ItemListItem")) {
+            ItemUi(
+                isExpandable = isExpandable,
+                wasExpanded =
+                    if (wasExpanded.isEmpty()) {
+                      false
+                    } else {
+                      wasExpanded[index]
+                    },
+                item = item,
+                user =
+                    if (users.isEmpty()) {
+                      User("", "noname", "", "norank", Inventory("", emptyList()))
+                    } else {
+                       if (users.size <= index) {
                     User("", "noname", "", "norank", Inventory("", emptyList()))
                   } else {
                     users[index]
                   }
-                },
-            loan =
-                if (loan.isEmpty()) {
-                  Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                } else {
-                  // Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                  if (loan.size <= index) {
+                    },
+                loan =
+                    if (loan.isEmpty()) {
+                      Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                    } else {
+                      if (loan.size <= index) {
                     Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                   } else {
                     loan[index]
                   }
-                })
-      }
+                    },
+                index = index,
+                manageLoanViewModel = manageLoanViewModel,
+                expandState = expandState,
+            )
+          }
       Spacer(modifier = Modifier.height(8.dp))
     }
   }

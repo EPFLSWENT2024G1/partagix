@@ -134,9 +134,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           for (document in result) {
             val start_date: Timestamp = document.data["start_date"] as Timestamp
             val end_date: Timestamp = document.data["end_date"] as Timestamp
+            val loan_state: LoanState = LoanState.valueOf(document.data["loanstate"] as String)
 
             val loan =
                 Loan(
+                    document.id,
                     document.data["id_owner"] as String,
                     document.data["id_loaner"] as String,
                     document.data["id_item"] as String,
@@ -146,7 +148,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                     document.data["review_loaner"] as String,
                     document.data["comment_owner"] as String,
                     document.data["comment_loaner"] as String,
-                    LoanState.FINISHED)
+                    loan_state,
+                )
             ret.add(loan)
           }
           onSuccess(ret)
@@ -306,6 +309,22 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "location" to locationToMap(newItem.location),
         )
     items.document(newItem.id).set(data)
+  }
+
+  fun setLoan(newLoan: Loan) {
+    val data5 =
+        hashMapOf(
+            "id_owner" to newLoan.idOwner,
+            "id_loaner" to newLoan.idLoaner,
+            "id_item" to newLoan.idItem,
+            "start_date" to newLoan.startDate,
+            "end_date" to newLoan.endDate,
+            "review_owner" to newLoan.reviewOwner,
+            "review_loaner" to newLoan.reviewLoaner,
+            "comment_owner" to newLoan.commentOwner,
+            "comment_loaner" to newLoan.commentLoaner,
+            "loanstate" to newLoan.state.toString())
+    loan.document(newLoan.id).set(data5)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {

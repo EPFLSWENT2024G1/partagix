@@ -58,12 +58,12 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockInventoryViewModel = mockk()
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
-
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
     every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
 
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
+
     every { mockItemViewModel.updateUiItem(any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
@@ -100,6 +100,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     onComposeScreen<InventoryScreen>(composeTestRule) {
       itemList { assertIsDisplayed() }
       borrowedItemList { assertIsDisplayed() }
+
     }
   }
 }

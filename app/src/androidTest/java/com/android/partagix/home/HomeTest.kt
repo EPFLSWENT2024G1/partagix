@@ -5,8 +5,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
-import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
+import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -37,8 +38,9 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
+  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
 
-  private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
+  private lateinit var mockUiState: MutableStateFlow<ManagerUIState>
   private lateinit var mockUiHomeState: MutableStateFlow<HomeUIState>
 
   @Before
@@ -47,12 +49,11 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
-    mockUiState =
-        MutableStateFlow(
-            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+    mockUiState = MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
 
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
+    mockManageViewModel = mockk()
 
     mockUiHomeState =
         MutableStateFlow(HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
@@ -66,7 +67,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockInventoryViewModel.filterItems(query = any()) } just Runs
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
 
-    every { mockInventoryViewModel.uiState } returns mockUiState
+    every { mockManageViewModel.uiState } returns mockUiState
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -78,7 +79,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     composeTestRule.setContent {
       HomeScreen(
           homeViewModel = mockHomeViewModel,
-          inventoryViewModel = mockInventoryViewModel,
+          manageLoanViewModel = mockManageViewModel,
           navigationActions = mockNavActions)
     }
   }

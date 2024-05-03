@@ -13,3 +13,4 @@ local.properties
 local.defaults.properties
 google-services.json
 secrets.properties
+keystore.properties
