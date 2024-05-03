@@ -61,7 +61,6 @@ class InventoryViewModel(
     getInventory(firebaseAuth = firebaseAuth, latch = latch)
   }
 
-
   /**
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
@@ -109,7 +108,6 @@ class InventoryViewModel(
    *
    * @param new the new items to update the inventory
    */
-
   fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
@@ -130,7 +128,6 @@ class InventoryViewModel(
    *
    * @param new the new user to update the user list
    */
-
   fun updateUsers(new: User) {
     _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
   }
@@ -140,7 +137,6 @@ class InventoryViewModel(
    *
    * @param new the new user to update the user borrowed list
    */
-
   fun updateUsersBor(new: User) {
     _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
   }
@@ -150,18 +146,15 @@ class InventoryViewModel(
    *
    * @param new the new loan to update the loan borrowed list
    */
-
   fun updateLoanBor(new: Loan) {
     _uiState.value = _uiState.value.copy(loanBor = uiState.value.loanBor.plus(new))
   }
-
 
   /**
    * updateLoan is a function that will update the uiState's loan list
    *
    * @param new the new loan to update the loan list
    */
-
   fun updateLoan(new: Loan) {
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
   }
@@ -241,7 +234,6 @@ class InventoryViewModel(
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
   }
 
-
   /**
    * Filter items based on the query
    *
@@ -249,7 +241,6 @@ class InventoryViewModel(
    * @param query the query to filter the items
    * @return the list of items that match the query
    */
-
   fun filter(list: List<Item>, query: String): List<Item> {
     return list.filter {
       it.name.contains(query, ignoreCase = true) ||
@@ -258,7 +249,6 @@ class InventoryViewModel(
           it.visibility.toString().contains(query, ignoreCase = true) ||
           it.quantity.toString().contains(query, ignoreCase = true)
     }
-
   }
 
   /**

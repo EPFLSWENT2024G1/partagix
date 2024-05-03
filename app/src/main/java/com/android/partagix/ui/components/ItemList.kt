@@ -71,21 +71,21 @@ fun ItemList(
                     if (users.isEmpty()) {
                       User("", "noname", "", "norank", Inventory("", emptyList()))
                     } else {
-                       if (users.size <= index) {
-                    User("", "noname", "", "norank", Inventory("", emptyList()))
-                  } else {
-                    users[index]
-                  }
+                      if (users.size <= index) {
+                        User("", "noname", "", "norank", Inventory("", emptyList()))
+                      } else {
+                        users[index]
+                      }
                     },
                 loan =
                     if (loan.isEmpty()) {
                       Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
                     } else {
                       if (loan.size <= index) {
-                    Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                  } else {
-                    loan[index]
-                  }
+                        Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                      } else {
+                        loan[index]
+                      }
                     },
                 index = index,
                 manageLoanViewModel = manageLoanViewModel,

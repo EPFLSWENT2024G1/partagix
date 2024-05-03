@@ -72,6 +72,7 @@ class InventoryViewModelTests {
   val user = User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("", emptyList()))
   val loaned1 =
       Loan(
+          "",
           "8WuTkKJZLTAr6zs5L7rH",
           "8WuTkKJZLTAr6zs5L7rH",
           "item1",
@@ -84,6 +85,7 @@ class InventoryViewModelTests {
           LoanState.ACCEPTED)
   val loaned2 =
       Loan(
+          "",
           "8WuTkKJZLTAr6zs5L7rH",
           "8WuTkKJZLTAr6zs5L7rH",
           "item2",
@@ -96,6 +98,7 @@ class InventoryViewModelTests {
           LoanState.ACCEPTED)
   val loaned3 =
       Loan(
+          "",
           "8WuTkKJZLTAr6zs5L7rH",
           "8WuTkKJZLTAr6zs5L7rH",
           "item3",
@@ -190,7 +193,7 @@ class InventoryViewModelTests {
     inventoryViewModel.updateInv(list)
     inventoryViewModel.findTime(
         listOf(item4),
-        { assert(it == Loan("", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)) })
+        { assert(it == Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)) })
   }
 
   @Test

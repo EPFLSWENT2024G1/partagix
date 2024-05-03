@@ -144,7 +144,6 @@ fun ItemUi(
                               color = Color(0xFF000000),
                               textAlign = TextAlign.Right,
                           ),
-
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
                   Text(

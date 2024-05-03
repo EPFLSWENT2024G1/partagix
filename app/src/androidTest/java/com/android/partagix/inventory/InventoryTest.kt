@@ -100,7 +100,6 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     onComposeScreen<InventoryScreen>(composeTestRule) {
       itemList { assertIsDisplayed() }
       borrowedItemList { assertIsDisplayed() }
-
     }
   }
 }
