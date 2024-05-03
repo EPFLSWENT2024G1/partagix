@@ -45,7 +45,6 @@ import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 
 /**
  * Screen to create a new item in user's inventory.
@@ -129,10 +128,7 @@ fun InventoryCreateOrEditItem(
                     readOnly = false)
 
                 OutlinedTextField(
-                    value =
-                        uiState.item
-                            .idUser, // TODO: check with future implementation of Item if author is
-                    // correctly linked to user.name by default
+                    value = uiState.user.name,
                     onValueChange = {},
                     label = { Text("Author") },
                     modifier = modifier.testTag("idUser").fillMaxWidth(),
@@ -185,17 +181,6 @@ fun InventoryCreateOrEditItem(
                 modifier = modifier.fillMaxWidth(),
                 readOnly = false)
 
-            Spacer(modifier = modifier.height(8.dp))
-
-            Row(modifier = modifier.fillMaxWidth()) {
-              Button(
-                  onClick = { navigationActions.navigateTo(Route.STAMP + uiName) },
-                  content = { Text("Download QR code") },
-                  modifier = modifier.fillMaxWidth())
-            }
-
-            Spacer(modifier = modifier.width(8.dp))
-
             Button(
                 onClick = {
                   var id = ""
@@ -210,7 +195,9 @@ fun InventoryCreateOrEditItem(
                           uiDescription,
                           uiVisibility,
                           uiQuantity,
-                          uiLocation))
+                          uiLocation,
+                          i.idUser,
+                      ))
                   navigationActions.goBack()
                 },
                 content = {
@@ -220,7 +207,7 @@ fun InventoryCreateOrEditItem(
                     Text("Create")
                   }
                 },
-                modifier = modifier.fillMaxWidth().testTag("button"))
+                modifier = modifier.fillMaxWidth().testTag("button").padding(top = 8.dp))
           }
         }
   }

@@ -57,6 +57,7 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
   val uiState = viewModel.uiState.collectAsState()
 
   var item = uiState.value.item
+  val user = uiState.value.user
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -102,7 +103,7 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
                   Column {
                     LabeledText(label = "Object Name", text = item.name)
 
-                    LabeledText(label = "Author", text = item.idUser)
+                    LabeledText(label = "Author", text = user.name)
                   }
                 }
               }

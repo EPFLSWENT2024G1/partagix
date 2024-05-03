@@ -64,12 +64,13 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
-            title = { Text(text = "Welcome back, ${"User" /* TODO get actual user name */}") },
+            title = { Text(text = "Welcome back, ${homeUiState.user.name}") },
             actions = {
               IconButton(onClick = { /* TODO go to notification screen */}) {
                 Icon(Icons.Default.Notifications, contentDescription = "Notifications")
@@ -97,19 +98,19 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.PersonSearch,
                         text = findItemButtonName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.LOAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.QR_SCAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
                         text = findItemIventoryName,
-                        onClick = {},
+                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               Text(

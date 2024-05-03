@@ -3,11 +3,14 @@ package com.android.partagix.home
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.screens.HomeScreen
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -36,6 +39,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
+  private lateinit var mockUiHomeState: MutableStateFlow<HomeUIState>
 
   @Before
   fun testSetup() {
@@ -50,7 +54,11 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
 
+    mockUiHomeState =
+        MutableStateFlow(HomeUIState(User("1", "Name 1", "email", "phone", Inventory("1", items))))
+
     every { mockInventoryViewModel.getInventory() } just Runs
+    every { mockHomeViewModel.uiState } returns mockUiHomeState
 
     every { mockInventoryViewModel.findtime(any(), any()) } just Runs
     every { mockInventoryViewModel.getusers(any(), any()) } just Runs
@@ -64,6 +72,9 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
+    every { mockNavActions.navigateTo(Route.QR_SCAN) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
 
     composeTestRule.setContent {
       HomeScreen(
@@ -74,68 +85,25 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun topBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun mainContentIsDisplayed() = run {
+  fun contentIsDisplayed() = run {
     ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
+      topBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBar { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun bottomNavBarItemInventoryIsDisplayed() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       bottomNavBarItemInventory { assertIsDisplayed() }
-    }
-  }
-
-  @Test
-  fun firstBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       firstBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun secondBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       secondBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun thirdBigButton() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
       thirdBigButton {
         assertIsDisplayed()
         performClick()
       }
-    }
-  }
-
-  @Test
-  fun itemList() = run {
-    ComposeScreen.onComposeScreen<HomeScreen>(composeTestRule) {
-      itemList {
-        assertIsDisplayed()
-        performClick()
-      }
+      performClick()
     }
   }
 }

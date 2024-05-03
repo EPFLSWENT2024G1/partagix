@@ -5,7 +5,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryViewItemScreen
 import com.android.partagix.ui.navigation.NavigationActions
@@ -44,7 +46,9 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
           quantity = 1,
           location = mockk(),
           idUser = "id_user")
-  private var _uiState = MutableStateFlow(ItemUIState(item1))
+  val emptyUser = User("", "", "", "", Inventory("", emptyList()))
+
+  private var _uiState = MutableStateFlow(ItemUIState(item1, emptyUser))
   private var mockUiState: StateFlow<ItemUIState> = _uiState
 
   @Before
@@ -61,28 +65,23 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   }
 
   @Test
-  fun topBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { topBar { assertIsDisplayed() } }
-  }
+  fun contentIsDisplayed() = run {
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) {
+      topBar { assertIsDisplayed() }
+      bottomBar { assertIsDisplayed() }
 
-  @Test
-  fun bottomBarIsDisplayed() = run {
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { bottomBar { assertIsDisplayed() } }
-  }
-
-  @Test
-  fun itemNameUpdate() = run {
-    // Change the item name to trigger 'onValueChange' event to verify there is no erros
-    item1 =
-        Item(
-            id = "id",
-            category = Category("id", "category1"),
-            name = "item1_ALTNAME",
-            description = "description1",
-            visibility = Visibility.PUBLIC,
-            quantity = 1,
-            location = mockk(),
-            idUser = "id_user")
-    onComposeScreen<InventoryViewItemScreen>(composeTestRule) { assertIsDisplayed() }
+      // Change the item name to trigger 'onValueChange' event to verify there is no erros
+      item1 =
+          Item(
+              id = "id",
+              category = Category("id", "category1"),
+              name = "item1_ALTNAME",
+              description = "description1",
+              visibility = Visibility.PUBLIC,
+              quantity = 1,
+              location = mockk(),
+              idUser = "id_user")
+      assertIsDisplayed()
+    }
   }
 }

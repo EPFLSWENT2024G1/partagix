@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
@@ -20,8 +21,11 @@ import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
@@ -60,13 +64,16 @@ class EndToEndCreateEdit {
   private lateinit var mockItemUiState: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState2: MutableStateFlow<ItemUIState>
   private lateinit var mockItemUiState3: MutableStateFlow<ItemUIState>
+  private lateinit var mockHomeUiState: MutableStateFlow<HomeUIState>
 
-  val cat1 = Category("1", "Category 1")
+  val cat1 = Category("1", CategoryItems[1])
   val vis1 = Visibility.FRIENDS
   val loc1 = Location("")
   val items = emptyList<Item>()
   val item2 = Item("1234", cat1, "Object 1", "Description 1", vis1, 2, loc1)
   val item3 = Item("1234", cat1, "Object 1 edited", "Description 1 edited", vis1, 3, loc1)
+
+  val user = User("1234", "name", "email", "1234", Inventory("1234", emptyList()))
 
   @Before
   fun setup() {
@@ -84,10 +91,12 @@ class EndToEndCreateEdit {
 
     mockItemUiState =
         MutableStateFlow(
-            ItemUIState(Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""))))
-    mockItemUiState2 = MutableStateFlow(ItemUIState(item2))
-    mockItemUiState3 = MutableStateFlow(ItemUIState(item3))
+            ItemUIState(
+                Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")), user))
+    mockItemUiState2 = MutableStateFlow(ItemUIState(item2, user))
+    mockItemUiState3 = MutableStateFlow(ItemUIState(item3, user))
 
+    mockHomeUiState = MutableStateFlow(HomeUIState(user))
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
@@ -101,7 +110,7 @@ class EndToEndCreateEdit {
     every { mockNavActions.goBack() } just Runs
     every { mockNavActions.navigateTo(TOP_LEVEL_DESTINATIONS[2]) } just Runs
 
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
 
     val mockMainActivity = mockk<MainActivity>()
     val mockDatabase = mockk<Database>()
@@ -129,6 +138,7 @@ class EndToEndCreateEdit {
   fun testA_goFromHomeToInventory() {
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
+    every { mockHomeViewModel.uiState } returns mockHomeUiState
 
     composeTestRule.setContent {
       HomeScreen(
@@ -166,7 +176,7 @@ class EndToEndCreateEdit {
   fun testC_CreateItem() {
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
@@ -180,7 +190,8 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithTag("visibility").performClick()
     composeTestRule.onNodeWithText("Friends only").performClick()
     composeTestRule.onNodeWithTag("category").performClick()
-    composeTestRule.onNodeWithText("Category 1").performClick()
+    composeTestRule.onNodeWithText(CategoryItems[1]).performScrollTo()
+    composeTestRule.onNodeWithText(CategoryItems[1]).performClick()
     composeTestRule.onNodeWithText("Create").performScrollTo()
     composeTestRule.onNodeWithText("Create").performClick()
 
@@ -221,7 +232,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Description 1").assertIsDisplayed()
     composeTestRule.onNodeWithText("2").assertIsDisplayed()
     composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Category 1").assertIsDisplayed()
+    composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithText("Edit").performScrollTo()
     composeTestRule.onNodeWithText("Edit").performClick()
 
@@ -232,7 +243,7 @@ class EndToEndCreateEdit {
   @Test
   fun testF_EditItem() {
     every { mockItemViewModel.uiState } returns mockItemUiState2
-    every { mockItemViewModel.updateUiState(any()) } just Runs
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
@@ -264,7 +275,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Description 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("3").assertIsDisplayed()
     composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Category 1").assertIsDisplayed()
+    composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithTag("navigationIcon").performClick()
 
     coVerify(exactly = 1) { mockNavActions.goBack() }

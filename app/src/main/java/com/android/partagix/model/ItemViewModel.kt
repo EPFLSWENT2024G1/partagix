@@ -18,34 +18,40 @@ package com.android.partagix.model
 
 import android.location.Location
 import androidx.lifecycle.ViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
+const val DEFAULT_CATEGORY_ID = "GpWpDVqb1ep8gm2rb1WL"
+const val DEFAULT_CATEGORY_NAME = "Others"
 
 class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
     db: Database = Database(),
     private val onItemSaved: (Item) -> Unit = {},
-    private val onItemCreated: (Item) -> Unit = {}
+    private val onItemCreated: (Item) -> Unit = {},
+    user: User = User("", "", "", "", Inventory("", emptyList()))
 ) : ViewModel() {
 
   private val database = db
 
   // UI state exposed to the UI
-  private val _uiState = MutableStateFlow(ItemUIState(item))
+  private val _uiState = MutableStateFlow(ItemUIState(item, user))
   val uiState: StateFlow<ItemUIState> = _uiState
 
   init {
     if (id != null) {
-      database.getItem(id) { newItem -> updateUiState(newItem) }
+      database.getItem(id) { newItem -> updateUiItem(newItem) }
     } else {
-      updateUiState(item)
+      updateUiItem(item)
     }
-    // TODO: set the author field as the User's name
   }
 
   /**
@@ -53,19 +59,46 @@ class ItemViewModel(
    *
    * @param new the new item to update the UI state with
    */
-  fun updateUiState(new: Item) {
+  fun updateUiItem(new: Item) {
+    var newUserId = ""
+    if (Authentication.getUser() != null) {
+      newUserId = FirebaseAuth.getInstance().currentUser!!.uid
+    }
+
+    val newWithUserId =
+        Item(
+            new.id,
+            new.category,
+            new.name,
+            new.description,
+            new.visibility,
+            new.quantity,
+            new.location,
+            newUserId)
     _uiState.value =
         _uiState.value.copy(
-            item = new,
+            item = newWithUserId,
+        )
+  }
+
+  fun updateUiUser(new: User) {
+    _uiState.value =
+        _uiState.value.copy(
+            user = new,
         )
   }
 
   /** Save the item with the current UI state in the database */
   fun save(new: Item) {
+    var category = new.category
+    if (category.name == "Category") {
+      // instead of "Category"
+      category = Category(DEFAULT_CATEGORY_ID, DEFAULT_CATEGORY_NAME)
+    }
     if (new.id == "") {
-      database.getIdCategory(new.category.name) {
+      database.getIdCategory(category.name) {
         database.createItem(
-            FirebaseAuth.getInstance().currentUser!!.uid,
+            new.id,
             Item(
                 new.id,
                 Category(it, new.category.name),
@@ -77,12 +110,15 @@ class ItemViewModel(
             onItemCreated)
       }
     } else {
-      updateUiState(new)
+      updateUiItem(new)
       onItemSaved(new)
       database.setItem(new)
     }
   }
 
+  fun getUser() {
+    database.getUser(uiState.value.item.idUser) { user -> updateUiUser(user) }
+  }
   /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
   fun compareIDs(id: String, userId: String?): Boolean {
     return id == userId
@@ -93,4 +129,4 @@ class ItemViewModel(
   }
 }
 
-data class ItemUIState(val item: Item)
+data class ItemUIState(val item: Item, val user: User)
