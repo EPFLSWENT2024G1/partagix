@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoanViewModel(
-    private val availableItems: List<Item> = emptyList(),
+    private var availableItems: List<Item> = emptyList(),
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
@@ -58,6 +58,7 @@ class LoanViewModel(
                       item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
                 }
 
+            availableItems = newItems
             update(newItems)
             onSuccess(newItems)
           }
@@ -113,7 +114,7 @@ class LoanViewModel(
    * Release the filters applied to the available items and update the UI state with the UI state
    */
   fun releaseFilters() {
-    getAvailableLoans()
+    update(availableItems)
   }
 
   companion object {
