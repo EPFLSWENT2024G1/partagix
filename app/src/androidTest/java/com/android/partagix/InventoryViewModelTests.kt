@@ -13,6 +13,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
@@ -21,6 +22,7 @@ import io.mockk.spyk
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -139,6 +141,10 @@ class InventoryViewModelTests {
     every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
   }
 
+    @After
+    fun tearDown() {
+        clearAllMocks()
+    }
   @Test
   fun testGetInventory() {
     val latch = CountDownLatch(1)
