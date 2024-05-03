@@ -141,10 +141,11 @@ class InventoryViewModelTests {
     every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
   }
 
-    @After
-    fun tearDown() {
-        clearAllMocks()
-    }
+  @After
+  fun tearDown() {
+    clearAllMocks()
+  }
+
   @Test
   fun testGetInventory() {
     val latch = CountDownLatch(1)
