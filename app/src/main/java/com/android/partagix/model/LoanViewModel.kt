@@ -83,6 +83,9 @@ class LoanViewModel(
     }
   }
 
+  /**
+   * Apply all the filters to the available items and update the UI state with the filtered items.
+   */
   fun applyFilters(filterState: FilterState) {
     this.filterState = filterState
     var items = availableItems
@@ -100,6 +103,9 @@ class LoanViewModel(
     update(items)
   }
 
+  /**
+   * Reset the filter with the given [filterAction] and update the UI state with the filtered items.
+   */
   fun resetFilter(filterAction: FilterAction) {
     filterState =
         when (filterAction) {
