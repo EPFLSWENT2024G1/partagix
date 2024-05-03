@@ -28,6 +28,18 @@ jobs:
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA | base64 -di > app/google-services.json
+
+      # Load the keystore file from the secrets
+      - name: Load Keystore file
+        env:
+          DATA: ${{ secrets.KEYSTORE_JKS}}
+        run: echo $DATA | base64 -di > app/upload-keystore.jks
+
+      # Load the keystore.properties file from the secrets
+      - name: Load Keystore properties file
+        env:
+          DATA: ${{ secrets.KEYSTORE}}
+        run: echo $DATA | base64 -di > keystore.properties
       
       # Load the MAPS API key from the secrets
       - name: Load MAPS API key
@@ -41,20 +53,20 @@ jobs:
         run: chmod +x ./gradlew
   
       - name: Build APK
-        run: ./gradlew build
+        run: ./gradlew assembleRelease
 
       - name: Generate release tag
         id: tag
         run: echo "::set-output name=release_tag::partagix_$(date +"%Y.%m.%d_%H-%M")"
       
       - name: Rename APK
-        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
+        run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/${{ steps.tag.outputs.release_tag }}.apk
 
       - name: Upload APK in artifacts
         uses: actions/upload-artifact@v4
         with:
           name: partagix
-          path: app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
+          path: app/build/outputs/apk/release/${{ steps.tag.outputs.release_tag }}.apk
           if-no-files-found: error
           retention-days: 90
           
@@ -64,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: app/build/outputs/apk/debug/${{ steps.tag.outputs.release_tag }}.apk
+          files: app/build/outputs/apk/release/${{ steps.tag.outputs.release_tag }}.apk
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
         
