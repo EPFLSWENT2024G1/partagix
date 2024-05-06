@@ -80,6 +80,7 @@ fun LoanScreen(
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
+  var mapLoaded by remember { mutableStateOf(false) }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
@@ -102,19 +103,22 @@ fun LoanScreen(
                   contentPadding = PaddingValues(bottom = mapPadding),
                   cameraPositionState = cameraPositionState,
                   properties = MapProperties(isMyLocationEnabled = true, isIndoorEnabled = true),
-                  modifier = modifier.testTag("LoanScreenMaps")) {
-                    items.forEach { item ->
-                      Marker(
-                          state =
-                              MarkerState(
-                                  position =
-                                      LatLng(item.location.latitude, item.location.longitude)),
-                          title = item.name,
-                          snippet = item.description,
-                          onClick = {
-                            // do nothing for now on click
-                            true
-                          })
+                  modifier = modifier.testTag("LoanScreenMaps"),
+                  onMapLoaded = { mapLoaded = true }) {
+                    if (mapLoaded) {
+                      items.forEach { item ->
+                        Marker(
+                            state =
+                                MarkerState(
+                                    position =
+                                        LatLng(item.location.latitude, item.location.longitude)),
+                            title = item.name,
+                            snippet = item.description,
+                            onClick = {
+                              // do nothing for now on click
+                              true
+                            })
+                      }
                     }
                   }
             }
@@ -197,7 +201,7 @@ fun LoanScreen(
                                         modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                               }
                         },
-                        modifier = modifier.testTag("LoanScreenItemListView"),
+                        modifier = modifier.testTag("LoanScreenItemListView").padding(10.dp, 0.dp),
                         users = emptyList(),
                         loan = emptyList(),
                         isExpandable = false,
