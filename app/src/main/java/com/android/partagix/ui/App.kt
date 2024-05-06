@@ -191,7 +191,7 @@ class App(
         loanViewModel.getAvailableLoans()
 
         HomeScreen(
-            homeViewModel = HomeViewModel(),
+            homeViewModel = HomeViewModel(Database(), activity),
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
@@ -212,7 +212,7 @@ class App(
         } else {
           inventoryViewModel.getInventory()
           HomeScreen(
-              homeViewModel = HomeViewModel(),
+              homeViewModel = HomeViewModel(Database(), activity),
               manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
