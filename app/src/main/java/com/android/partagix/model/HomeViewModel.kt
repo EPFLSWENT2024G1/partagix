@@ -3,7 +3,6 @@ package com.android.partagix.model
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.provider.MediaStore
-import androidx.compose.material3.contentColorFor
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import com.android.partagix.MainActivity
@@ -14,7 +13,10 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class HomeViewModel(private val db: Database = Database(), @SuppressLint("StaticFieldLeak") private val context: MainActivity) : ViewModel() {
+class HomeViewModel(
+    private val db: Database = Database(),
+    @SuppressLint("StaticFieldLeak") private val context: MainActivity
+) : ViewModel() {
 
   private val _uiState =
       MutableStateFlow(HomeUIState(User("", "", "", "", Inventory("", emptyList()))))
