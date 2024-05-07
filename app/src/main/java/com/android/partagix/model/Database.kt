@@ -60,8 +60,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     val user = Firebase.auth.currentUser
     if (user != null) {
       getUser(user.uid, onSuccess = onSuccess)
-    } else
-      Log.e(TAG, "No user logged in")
+    } else Log.e(TAG, "No user logged in")
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
