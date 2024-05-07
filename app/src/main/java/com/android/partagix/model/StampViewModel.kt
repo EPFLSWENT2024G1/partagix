@@ -85,7 +85,7 @@ class StampViewModel(@SuppressLint("StaticFieldLeak") private val context: MainA
   fun generateQRCodeAndSave(itemId: String, label: String, detailedDimension: String) {
     val dim = getStampDimension(detailedDimension)
     setSize(qrCodeBuilder, dim)
-    val customUriScheme = "partagix://"
+    val customUriScheme = "partagix://item?itemId="
     val qrCode = qrCodeBuilder.build(customUriScheme + itemId).renderToBytes()
     val qrCodeWithLabel =
         if (label != "") {

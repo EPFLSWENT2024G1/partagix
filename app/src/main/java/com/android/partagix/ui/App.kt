@@ -52,6 +52,7 @@ import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -80,12 +81,20 @@ class App(
   private val userViewModel = UserViewModel(db = db)
 
   @Composable
-  fun Create() {
+  fun Create(idItem: String? = null) {
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
-    navigationActions.navigateTo(Route.BOOT)
+    if (idItem != null && FirebaseAuth.getInstance().currentUser != null) {
+      itemViewModel.getUser()
+      db.getItem(idItem) { itemViewModel.updateUiItem(it) }
+      navigationActions.navigateTo(Route.VIEW_ITEM)
+    } else {
+      navigationActions.navigateTo(Route.BOOT)
+    }
+    /*
+     */
   }
 
   fun navigateForTest(route: String) {

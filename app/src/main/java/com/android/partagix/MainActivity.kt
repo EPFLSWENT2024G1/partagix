@@ -26,30 +26,27 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    var itemId: String? = null
     if (intent.action == Intent.ACTION_VIEW) {
-      setContent {
-        PartagixAppTheme {
-          // A surface container using the 'background' color from the theme
-          Surface(
-              modifier = Modifier.fillMaxSize().semantics {},
-              color = MaterialTheme.colorScheme.background) {
-                Create()
-              }
-        }
+      val uri: Uri? = intent.data
+      if (uri != null) {
+        // Handle the URI, extract additional data if needed
+        itemId = uri.getQueryParameter("itemId")
+        println("----- itemId: $itemId")
+        // Perform actions based on the itemId or other parameters
+
       }
-    } else {
+    }
+    app = App(this)
 
-      app = App(this)
-
-      setContent {
-        PartagixAppTheme {
-          // A surface container using the 'background' color from the theme
-          Surface(
-              modifier = Modifier.fillMaxSize().semantics {},
-              color = MaterialTheme.colorScheme.background) {
-                app.Create()
-              }
-        }
+    setContent {
+      PartagixAppTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize().semantics {},
+            color = MaterialTheme.colorScheme.background) {
+              app.Create(itemId)
+            }
       }
     }
   }
@@ -95,7 +92,7 @@ class MainActivity : ComponentActivity() {
   }
 
   @Composable
-  fun Create() {
-    Column { Text("Hello, World!") }
+  fun Create(id: String?) {
+    Column { Text("Hello, World! $id") }
   }
 }
