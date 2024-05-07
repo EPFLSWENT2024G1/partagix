@@ -168,7 +168,7 @@ fun LoanScreen(
                                     unit = "km",
                                     minUnit = "1",
                                     maxUnit = "50",
-                                    minValue = 0f,
+                                    minValue = 1f,
                                     maxValue = 50f,
                                     sliderTextValue = {
                                       "Up to ${String.format("%02d", it.toInt())} km"
