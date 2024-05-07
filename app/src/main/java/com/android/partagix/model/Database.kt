@@ -11,6 +11,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -53,6 +54,14 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+  }
+
+  fun getCurrentUser(onSuccess: (User) -> Unit) {
+    val user = Firebase.auth.currentUser
+    if (user != null) {
+      getUser(user.uid, onSuccess = onSuccess)
+    } else
+      Log.e(TAG, "No user logged in")
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
