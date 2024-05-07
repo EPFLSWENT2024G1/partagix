@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import com.android.partagix.model.CREATE_PNG_FILE
@@ -23,16 +26,31 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    app = App(this)
-
-    setContent {
-      PartagixAppTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
+    if (intent.action == Intent.ACTION_VIEW) {
+      setContent {
+        PartagixAppTheme {
+          // A surface container using the 'background' color from the theme
+          Surface(
             modifier = Modifier.fillMaxSize().semantics {},
-            color = MaterialTheme.colorScheme.background) {
-              app.Create()
-            }
+            color = MaterialTheme.colorScheme.background
+          ) {
+            Create()
+          }
+        }
+      }
+    }else{
+
+      app = App(this)
+
+      setContent {
+        PartagixAppTheme {
+          // A surface container using the 'background' color from the theme
+          Surface(
+              modifier = Modifier.fillMaxSize().semantics {},
+              color = MaterialTheme.colorScheme.background) {
+                app.Create()
+              }
+        }
       }
     }
   }
@@ -75,5 +93,12 @@ class MainActivity : ComponentActivity() {
 
   companion object {
     private const val TAG = "Main"
+  }
+
+  @Composable
+  fun Create() {
+    Column {
+      Text("Hello, World!")
+    }
   }
 }
