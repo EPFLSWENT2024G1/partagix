@@ -327,6 +327,43 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     loan.document(newLoan.id).set(data5)
   }
 
+  /**
+   * Create a loan in the database
+   *
+   * @param newLoan the loan to create
+   * @param onSuccess the function to call when the loan is created
+   */
+  fun createLoan(newLoan: Loan, onSuccess: (Loan) -> Unit = {}) {
+    val idLoan = getNewUid(loan)
+    val data5 =
+        hashMapOf(
+            "id_owner" to newLoan.idOwner,
+            "id_loaner" to newLoan.idLoaner,
+            "id_item" to newLoan.idItem,
+            "start_date" to newLoan.startDate,
+            "end_date" to newLoan.endDate,
+            "review_owner" to newLoan.reviewOwner,
+            "review_loaner" to newLoan.reviewLoaner,
+            "comment_owner" to newLoan.commentOwner,
+            "comment_loaner" to newLoan.commentLoaner,
+            "loanstate" to newLoan.state.toString())
+    loan.document(idLoan).set(data5)
+    val new =
+        Loan(
+            idLoan,
+            newLoan.idOwner,
+            newLoan.idLoaner,
+            newLoan.idItem,
+            newLoan.startDate,
+            newLoan.endDate,
+            newLoan.reviewOwner,
+            newLoan.reviewLoaner,
+            newLoan.commentOwner,
+            newLoan.commentLoaner,
+            newLoan.state)
+    onSuccess(new)
+  }
+
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
     getItems { items ->
       for (item in items) {
