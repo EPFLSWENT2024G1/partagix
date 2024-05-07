@@ -31,14 +31,13 @@ class MainActivity : ComponentActivity() {
         PartagixAppTheme {
           // A surface container using the 'background' color from the theme
           Surface(
-            modifier = Modifier.fillMaxSize().semantics {},
-            color = MaterialTheme.colorScheme.background
-          ) {
-            Create()
-          }
+              modifier = Modifier.fillMaxSize().semantics {},
+              color = MaterialTheme.colorScheme.background) {
+                Create()
+              }
         }
       }
-    }else{
+    } else {
 
       app = App(this)
 
@@ -97,8 +96,6 @@ class MainActivity : ComponentActivity() {
 
   @Composable
   fun Create() {
-    Column {
-      Text("Hello, World!")
-    }
+    Column { Text("Hello, World!") }
   }
 }
