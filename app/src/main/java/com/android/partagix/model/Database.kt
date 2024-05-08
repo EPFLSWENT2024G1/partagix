@@ -24,7 +24,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val items = db.collection("items")
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
-  private val itemLoan = db.collection("item_loan")
 
   init {
     // createExampleForDb()
@@ -392,43 +391,50 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     onSuccess(user)
   }
 
-  // todo new :
+  // todo test
   /**
    * Retrieve all comments that a user has received, both as a owner than as an loaner
    * @param userId the user's id
-   * @param onSuccess the function to return the list of comments
+   * @param onSuccess the function to return a List containing pairs (comment's author name, comment)
    */
-  fun getComments(userId: String, onSuccess: (List<String>) -> Unit){
+  fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit){
     loan
       .get()
       .addOnSuccessListener { result ->
-        val ret = mutableListOf<String>()
+        val ret = mutableListOf<Pair<String, String>>()
         for (document in result) {
 
           if (document.data["id_owner"] as String == userId // if the user is the owner,
               && document.data["review_owner"] as Double != 0.0 // that has been reviewed,
               && document.data["comment_owner"] as String != "") { // and received a comment
 
-              ret.add(document.data["comment_owner"] as String)
+            var authorName = "" // name of the author of the comment, i.e. the loaner
+            getUser(document.data["id_loaner"] as String) { user -> authorName = user.name }
+
+            ret.add(Pair(authorName, document.data["comment_owner"] as String))
 
           } else if (document.data["id_loaner"] as String == userId // if the user is the loaner,
             && document.data["review_loaner"] as Double != 0.0 // that has been reviewed
             && document.data["comment_loaner"] as String != "") { // and received a comment
 
-            ret.add(document.data["comment_loaner"] as String)
+            var authorName = "" // name of the author of the comment, i.e. the owner
+            getUser(document.data["id_owner"] as String) { user -> authorName = user.name }
+
+            ret.add(Pair(authorName, document.data["comment_loaner"] as String))
           }
 
         }
-        onSuccess(ret) //todo add userId in map
+        onSuccess(ret)
       }
       .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
 
-  // todo new :
+  // todo test
   /**
    * Retrieve all ranks that a user has received, both as a owner than as an loaner,
    *  compute the average rank,
    *  and store it in the user's rank
+   * @param idUser the user's id
    */
   fun newAverageRank(idUser: String) {
     loan
@@ -469,7 +475,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
 
-    // todo new :
+  // todo test
   /**
    * Set a review for a loan, i.e a rank and an optional comment
    * @param loanId the loan's id
@@ -491,13 +497,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           if (document.data["id"] as String == loanId
             && document.data["id_owner"] as String == userId) {
 
-            document.data["review_owner"] = rank as String
+            document.data["review_owner"] = rank.toString()
             if (comment != "") document.data["comment_owner"] = comment
 
           } else if (document.data["id"] as String == loanId
             && document.data["id_loaner"] as String == userId) {
 
-            document.data["review_loaner"] = rank as String
+            document.data["review_loaner"] = rank.toString()
             if (comment != "") document.data["comment_loaner"] = comment
           }
         }
