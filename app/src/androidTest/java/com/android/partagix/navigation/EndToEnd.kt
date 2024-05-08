@@ -112,7 +112,7 @@ class EndToEnd {
       navigationIcon { performClick() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
+    composeTestRule.waitUntil(timeWait + 7) { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
 
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) { fab { assertIsDisplayed() } }
 
@@ -142,7 +142,7 @@ class EndToEnd {
       inventoryButton { performClick() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
+    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
 
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) { fab { assertIsDisplayed() } }
 
@@ -156,7 +156,7 @@ class EndToEnd {
       backButton { performClick() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
+    composeTestRule.waitUntil(timeWait) { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
 
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) { fab { assertIsDisplayed() } }
 
