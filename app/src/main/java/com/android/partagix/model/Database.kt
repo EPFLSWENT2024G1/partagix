@@ -2,6 +2,8 @@ package com.android.partagix.model
 
 import android.location.Location
 import android.util.Log
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -388,6 +390,119 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         )
     users.document(user.id).set(data)
     onSuccess(user)
+  }
+
+  // todo new :
+  /**
+   * Retrieve all comments that a user has received, both as a owner than as an loaner
+   * @param userId the user's id
+   * @param onSuccess the function to return the list of comments
+   */
+  fun getComments(userId: String, onSuccess: (List<String>) -> Unit){
+    loan
+      .get()
+      .addOnSuccessListener { result ->
+        val ret = mutableListOf<String>()
+        for (document in result) {
+
+          if (document.data["id_owner"] as String == userId // if the user is the owner,
+              && document.data["review_owner"] as Double != 0.0 // that has been reviewed,
+              && document.data["comment_owner"] as String != "") { // and received a comment
+
+              ret.add(document.data["comment_owner"] as String)
+
+          } else if (document.data["id_loaner"] as String == userId // if the user is the loaner,
+            && document.data["review_loaner"] as Double != 0.0 // that has been reviewed
+            && document.data["comment_loaner"] as String != "") { // and received a comment
+
+            ret.add(document.data["comment_loaner"] as String)
+          }
+
+        }
+        onSuccess(ret) //todo add userId in map
+      }
+      .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+  }
+
+  // todo new :
+  /**
+   * Retrieve all ranks that a user has received, both as a owner than as an loaner,
+   *  compute the average rank,
+   *  and store it in the user's rank
+   */
+  fun newAverageRank(idUser: String) {
+    loan
+      .get()
+      .addOnSuccessListener { result ->
+        val rankSum = mutableDoubleStateOf(0.0)
+        val rankCount = mutableLongStateOf(0)
+        for (document in result) {
+
+          if (document.data["id_owner"] as String == idUser // if the user is the owner,
+            && document.data["review_owner"] as Double != 0.0) { // that has been reviewed
+
+            rankSum.doubleValue += document.data["review_owner"] as Double
+            rankCount.longValue++
+
+          } else if (document.data["id_loaner"] as String == idUser // if the user is the loaner,
+            && document.data["review_loaner"] as Double != 0.0){ // that has been reviewed
+
+            rankSum.doubleValue += document.data["review_loaner"] as Double
+            rankCount.longValue++
+          }
+
+        }
+
+        val averageRank = rankSum.doubleValue / rankCount.longValue
+        users
+          .get()
+          .addOnSuccessListener { result ->
+            for (document in result) {
+              if (document.data["id"] as String == idUser) {
+                // stores the new average rank in the user's rank
+                document.data["rank"] = averageRank.toString()
+              }
+            }
+          }
+          .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+      }
+      .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+  }
+
+    // todo new :
+  /**
+   * Set a review for a loan, i.e a rank and an optional comment
+   * @param loanId the loan's id
+   * @param userId the reviewed user's id
+   * @param rank the rank to be set, must be between 0.5 and 5
+   * @param comment an optional comment to be set
+   * @param onInvalidRank the function to call when the rank is invalid
+   */
+  fun setReview(loanId: String, userId: String, rank: Double, comment: String, onInvalidRank: () -> Unit) {
+    if (rank < 0.0 || rank > 5) {
+      Log.e(TAG, "Error setting review: rank must be between 0.5 and 5")
+      onInvalidRank()
+    }
+
+    loan
+      .get()
+      .addOnSuccessListener { result ->
+        for (document in result) {
+          if (document.data["id"] as String == loanId
+            && document.data["id_owner"] as String == userId) {
+
+            document.data["review_owner"] = rank as String
+            if (comment != "") document.data["comment_owner"] = comment
+
+          } else if (document.data["id"] as String == loanId
+            && document.data["id_loaner"] as String == userId) {
+
+            document.data["review_loaner"] = rank as String
+            if (comment != "") document.data["comment_loaner"] = comment
+          }
+        }
+      }
+      .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
 
   companion object {
