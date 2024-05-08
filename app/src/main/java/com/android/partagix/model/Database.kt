@@ -356,6 +356,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
 
+  /**
+   * Create a user in the database
+   *
+   * @param user the user to create
+   */
   fun createUser(user: User) {
     val data =
         hashMapOf(
