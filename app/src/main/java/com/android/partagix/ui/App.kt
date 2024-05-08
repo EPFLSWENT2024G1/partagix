@@ -35,6 +35,7 @@ import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -62,6 +63,7 @@ class App(
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
+  private val notificationManager: FirebaseMessagingService = FirebaseMessagingService()
 
   private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
@@ -81,10 +83,11 @@ class App(
 
   @Composable
   fun Create() {
-
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
+    notificationManager.setContext(activity)
+    notificationManager.getToken()
     navigationActions.navigateTo(Route.BOOT)
   }
 

@@ -224,6 +224,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-messaging-directboot:20.2.0")
 
     // ----------       Mockk     ------------
     testImplementation("io.mockk:mockk:${mockkVersion}")
