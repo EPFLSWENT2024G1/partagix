@@ -33,14 +33,12 @@ import com.android.partagix.ui.components.ItemUi
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartLoanScreen(
-  startOrEndLoanViewModel: StartOrEndLoanViewModel,
-  navigationActions: NavigationActions,
-  modifier: Modifier = Modifier
-
+    startOrEndLoanViewModel: StartOrEndLoanViewModel,
+    navigationActions: NavigationActions,
+    modifier: Modifier = Modifier
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -50,61 +48,54 @@ fun StartLoanScreen(
   val lender = uiState.lender
 
   Scaffold(
-    modifier = Modifier
-      .fillMaxSize(),
-    topBar = {
-      TopAppBar(
-        modifier = Modifier
-          .fillMaxWidth()
-          .testTag("topBar"),
-        title = { Text("Start Loan", modifier = Modifier
-          .fillMaxWidth()
-          .testTag("title")) },
-        navigationIcon = {
-          IconButton(
-            modifier = Modifier.testTag("backButton"),
-            onClick = { navigationActions.goBack() }) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = null,
-              modifier = Modifier.width(48.dp)
-            )
-          }
-        })
-    },
-    bottomBar = {
-      BottomNavigationBar(
-        selectedDestination = Route.HOME,
-        navigateToTopLevelDestination = navigationActions::navigateTo,
-      )
-    }) {
-      Column(
-        modifier = Modifier
-          .fillMaxHeight()
-          .padding(it) // Adjust padding as needed
-          .fillMaxWidth(), // Make the column fill the entire width
-        verticalArrangement = Arrangement.Center, // Center items vertically
-        horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
-
-      ) {
-        ItemUi(item,borrower,loan)
-        Row {
-          Button(
-            onClick = { startOrEndLoanViewModel.onStart() },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-            modifier = Modifier.weight(1f) // Expand to fill available space
-          ) {
-            Text(text = "start Loan", color = Color.Black)
-          }
-          Spacer(modifier = Modifier.width(8.dp))
-          Button(
-            onClick = { startOrEndLoanViewModel.onCancel() },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-            modifier = Modifier.weight(1f) // Expand to fill available space
-          ) {
-            Text(text = "cancel Loan", color = Color.Black)
-          }
-        }
+      modifier = Modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth().testTag("topBar"),
+            title = { Text("Start Loan", modifier = Modifier.fillMaxWidth().testTag("title")) },
+            navigationIcon = {
+              IconButton(
+                  modifier = Modifier.testTag("backButton"),
+                  onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.width(48.dp))
+                  }
+            })
+      },
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = Route.HOME,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+        )
+      }) {
+        Column(
+            modifier =
+                Modifier.fillMaxHeight()
+                    .padding(it) // Adjust padding as needed
+                    .fillMaxWidth(), // Make the column fill the entire width
+            verticalArrangement = Arrangement.Center, // Center items vertically
+            horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
+            ) {
+              ItemUi(item, borrower, loan)
+              Row {
+                Button(
+                    onClick = { startOrEndLoanViewModel.onStart() },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
+                    modifier = Modifier.weight(1f) // Expand to fill available space
+                    ) {
+                      Text(text = "start Loan", color = Color.Black)
+                    }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { startOrEndLoanViewModel.onCancel() },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                    modifier = Modifier.weight(1f) // Expand to fill available space
+                    ) {
+                      Text(text = "cancel Loan", color = Color.Black)
+                    }
+              }
+            }
       }
-    }
-  }
+}

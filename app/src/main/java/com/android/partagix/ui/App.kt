@@ -98,7 +98,7 @@ class App(
       onQrScanned(idItem, idUser)
     } else {
       onQrScanned(id, idUser)
-      //navigationActions.navigateTo(Route.BOOT)
+      // navigationActions.navigateTo(Route.BOOT)
     }
     /*
      */
@@ -108,40 +108,34 @@ class App(
 
     db.getItem(idItem) { itemViewModel.updateUiItem(it) }
     db.getLoans { loans ->
-      val loan = loans.find {
-        it.idItem == idItem &&
-        it.state == LoanState.ACCEPTED &&
-        it.idBorrower == idUser
-      }
+      val loan =
+          loans.find {
+            it.idItem == idItem && it.state == LoanState.ACCEPTED && it.idBorrower == idUser
+          }
 
-      val loan2 = loans.find {
-        it.idItem == idItem &&
-        it.state == LoanState.ONGOING &&
-        it.idLender == idUser
-      }
+      val loan2 =
+          loans.find {
+            it.idItem == idItem && it.state == LoanState.ONGOING && it.idLender == idUser
+          }
       if (loan != null) {
         db.getItem(idItem) { item ->
           db.getUser(loan.idBorrower) { borrower ->
             db.getUser(loan.idLender) { lender ->
-              startOrEndLoanViewModel.update(
-                  StartLoanUIState(loan, item, borrower, lender))
+              startOrEndLoanViewModel.update(StartLoanUIState(loan, item, borrower, lender))
               navigationActions.navigateTo(Route.STARTLOAN)
             }
           }
         }
-      }
-      else if (loan2 != null) {
+      } else if (loan2 != null) {
         db.getItem(idItem) { item ->
           db.getUser(loan2.idBorrower) { borrower ->
             db.getUser(loan2.idLender) { lender ->
-              startOrEndLoanViewModel.update(
-                  StartLoanUIState(loan2, item, borrower, lender))
+              startOrEndLoanViewModel.update(StartLoanUIState(loan2, item, borrower, lender))
               navigationActions.navigateTo(Route.ENDLOAN)
             }
           }
         }
-      }
-      else {
+      } else {
         db.getItem(idItem) { item ->
           itemViewModel.updateUiItem(item)
           navigationActions.navigateTo(Route.VIEW_ITEM)
@@ -149,6 +143,7 @@ class App(
       }
     }
   }
+
   fun navigateForTest(route: String) {
     navigationActions.navigateTo(route)
   }
@@ -331,7 +326,7 @@ class App(
             navigationActions = navigationActions,
             modifier = modifier)
       }
-      composable(Route.ENDLOAN){
+      composable(Route.ENDLOAN) {
         EndLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,

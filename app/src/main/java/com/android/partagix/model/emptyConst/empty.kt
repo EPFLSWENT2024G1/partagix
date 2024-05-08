@@ -10,35 +10,18 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import java.util.Date
 
-//Fill with default fields
-val emptyItem = Item(
-  "",
-  Category("", ""),
-  "",
-  "",
-  Visibility.PUBLIC,
-  0,
-  Location(""),
-)
+// Fill with default fields
+val emptyItem =
+    Item(
+        "",
+        Category("", ""),
+        "",
+        "",
+        Visibility.PUBLIC,
+        0,
+        Location(""),
+    )
 
-val emptyLoan = Loan(
-  "",
-  "",
-  "",
-  "",
-  Date(),
-  Date(),
-  "",
-  "",
-  "",
-  "",
-  LoanState.PENDING
-)
+val emptyLoan = Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.PENDING)
 
-val emptyUser = User(
-  "",
-  "",
-  "",
-  "",
-  Inventory("",emptyList())
-)
+val emptyUser = User("", "", "", "", Inventory("", emptyList()))
