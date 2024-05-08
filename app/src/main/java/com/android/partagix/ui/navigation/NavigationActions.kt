@@ -25,6 +25,7 @@ object Route {
   const val MANAGE_LOAN_REQUEST = "ManageLoanRequest"
   const val STAMP = "Stamp"
   const val STARTLOAN = "StartLoan"
+  const val ENDLOAN = "EndLoan"
 }
 
 data class TopLevelDestination(

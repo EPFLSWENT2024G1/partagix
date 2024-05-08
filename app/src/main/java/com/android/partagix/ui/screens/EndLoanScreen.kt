@@ -36,7 +36,7 @@ import com.android.partagix.ui.navigation.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartLoanScreen(
+fun EndLoanScreen(
   startOrEndLoanViewModel: StartOrEndLoanViewModel,
   navigationActions: NavigationActions,
   modifier: Modifier = Modifier
@@ -90,19 +90,11 @@ fun StartLoanScreen(
         ItemUi(item,borrower,loan)
         Row {
           Button(
-            onClick = { startOrEndLoanViewModel.onStart() },
+            onClick = { startOrEndLoanViewModel.onFinish() },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
             modifier = Modifier.weight(1f) // Expand to fill available space
           ) {
-            Text(text = "start Loan", color = Color.Black)
-          }
-          Spacer(modifier = Modifier.width(8.dp))
-          Button(
-            onClick = { startOrEndLoanViewModel.onCancel() },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-            modifier = Modifier.weight(1f) // Expand to fill available space
-          ) {
-            Text(text = "cancel Loan", color = Color.Black)
+            Text(text = "End Loan", color = Color.Black)
           }
         }
       }

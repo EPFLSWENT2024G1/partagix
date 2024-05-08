@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
 
-class StartLoanViewModel(private val db: Database) : ViewModel() {
+class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
 
   private val _uiState = MutableStateFlow(StartLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
   val uiState: StateFlow<StartLoanUIState> = _uiState
@@ -43,16 +43,37 @@ class StartLoanViewModel(private val db: Database) : ViewModel() {
   }
 
   fun onStart(){
-
+    val loan = _uiState.value.loan
+    val item = _uiState.value.item
+    val borrower = _uiState.value.borrower
+    val lender = _uiState.value.lender
+    val newLoan = loan.copy(
+      state = LoanState.ONGOING,
+      startDate = Date(),
+      endDate = Date(),
+    )
+    db.setLoan(newLoan)
+    //db.setItem(item.copy(state = ItemState.BORROWED))
+    //db.updateUser(borrower.copy(loanId = newLoan.id))
+    //db.updateUser(lender.copy(loanId = newLoan.id))
   }
 
   fun onCancel(){
 
   }
 
-  fun getInfos(itemId: String, userId: String){
+  fun onFinish(){
+    val loan = _uiState.value.loan
+    val newLoan = loan.copy(
+      state = LoanState.FINISHED,
+      endDate = Date(),
+    )
+    db.setLoan(newLoan)
+  }
+
+  fun getInfos(itemId: String, userId: String, state: LoanState){
     db.getLoans { loans ->
-      val loan = loans.find { it.idItem == itemId && it.state == LoanState.ACCEPTED }
+      val loan = loans.find { it.idItem == itemId && it.state == state }
       println("---- loan $loan")
       if (loan != null) {
         db.getItem(itemId) { item ->

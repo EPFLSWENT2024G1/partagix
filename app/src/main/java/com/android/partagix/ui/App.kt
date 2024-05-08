@@ -31,16 +31,18 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
-import com.android.partagix.model.StartLoanViewModel
+import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
 import com.android.partagix.ui.screens.EditAccount
+import com.android.partagix.ui.screens.EndLoanScreen
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
 import com.android.partagix.ui.screens.InventoryScreen
@@ -81,7 +83,7 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val startLoanViewModel = StartLoanViewModel(db = db)
+  private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
 
   @Composable
   fun Create(idItem: String? = null) {
@@ -104,8 +106,8 @@ class App(
   private fun onQrScanned(idItem: String, idUser: String) {
 
     db.getItem(idItem) { itemViewModel.updateUiItem(it) }
-    startLoanViewModel.getInfos(idItem, idUser)
-    navigationActions.navigateTo(Route.STARTLOAN)
+    startOrEndLoanViewModel.getInfos(idItem, idUser, LoanState.ONGOING)
+    navigationActions.navigateTo(Route.ENDLOAN)
   }
   fun navigateForTest(route: String) {
     navigationActions.navigateTo(route)
@@ -284,9 +286,14 @@ class App(
                 navigationActions = navigationActions)
           }
       composable(Route.STARTLOAN) {
-
         StartLoanScreen(
-            startLoanViewModel = startLoanViewModel,
+            startOrEndLoanViewModel = startOrEndLoanViewModel,
+            navigationActions = navigationActions,
+            modifier = modifier)
+      }
+      composable(Route.ENDLOAN){
+        EndLoanScreen(
+            startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
             modifier = modifier)
       }
