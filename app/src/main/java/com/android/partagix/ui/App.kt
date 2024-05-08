@@ -31,6 +31,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
+import com.android.partagix.model.StartLoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -49,6 +50,7 @@ import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
+import com.android.partagix.ui.screens.StartLoanScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -79,6 +81,7 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
+  private val startLoanViewModel = StartLoanViewModel(db = db)
 
   @Composable
   fun Create(idItem: String? = null) {
@@ -86,17 +89,24 @@ class App(
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
+    val id = "MHlgRWlehFcHRweZaeGZ"
+    val idUser = "3eNGFi1PZTM50iiUZITCq1M37Wn1"
     if (idItem != null && FirebaseAuth.getInstance().currentUser != null) {
-      itemViewModel.getUser()
-      db.getItem(idItem) { itemViewModel.updateUiItem(it) }
-      navigationActions.navigateTo(Route.VIEW_ITEM)
+      onQrScanned(idItem, idUser)
     } else {
-      navigationActions.navigateTo(Route.BOOT)
+      onQrScanned(id, idUser)
+      //navigationActions.navigateTo(Route.BOOT)
     }
     /*
      */
   }
 
+  private fun onQrScanned(idItem: String, idUser: String) {
+
+    db.getItem(idItem) { itemViewModel.updateUiItem(it) }
+    startLoanViewModel.getInfos(idItem, idUser)
+    navigationActions.navigateTo(Route.STARTLOAN)
+  }
   fun navigateForTest(route: String) {
     navigationActions.navigateTo(route)
   }
@@ -233,7 +243,6 @@ class App(
             navigationActions = navigationActions,
             itemViewModel = itemViewModel)
       }
-
       composable(Route.QR_SCAN) { QrScanScreen(navigationActions) }
 
       composable(
@@ -274,6 +283,13 @@ class App(
                 itemID = it.arguments?.getString("itemId") ?: "",
                 navigationActions = navigationActions)
           }
+      composable(Route.STARTLOAN) {
+
+        StartLoanScreen(
+            startLoanViewModel = startLoanViewModel,
+            navigationActions = navigationActions,
+            modifier = modifier)
+      }
     }
   }
 

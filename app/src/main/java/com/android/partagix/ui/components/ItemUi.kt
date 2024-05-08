@@ -64,11 +64,11 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    wasExpanded: Boolean,
-    isExpandable: Boolean,
+    wasExpanded: Boolean = false,
+    isExpandable: Boolean = false,
     expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    index: Int,
+    index: Int = 0,
 ) {
   val date: Date =
       if (loan.startDate.before(Date())) {
