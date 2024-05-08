@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +39,7 @@ import androidx.compose.ui.window.DialogProperties
  * EvaluationPopUp is a composable function that displays a dialog to rate and comment on a loan.
  */
 @Composable
-fun EvaluationPopUp(modifier: Modifier) {
+fun EvaluationPopUp(modifier: Modifier = Modifier) {
   val openDialog = remember { mutableStateOf(true) }
   val haveRated = remember { mutableStateOf(false) }
   val haveCommented = remember { mutableStateOf(false) }
@@ -51,12 +52,16 @@ fun EvaluationPopUp(modifier: Modifier) {
                   modifier
                       .fillMaxWidth()
                       .padding(16.dp)
-                      .background(MaterialTheme.colorScheme.background)) {
+                      .background(MaterialTheme.colorScheme.background)
+                      .testTag("evaluationPopUp")) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp)) {
-                      Text(text = "Rate your loan :", fontSize = 25.sp)
+                      Text(
+                          text = "Rate your loan :",
+                          fontSize = 25.sp,
+                          modifier = modifier.testTag("rateText"))
                       IconButton(onClick = { openDialog.value = false }) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "")
                       }
@@ -68,7 +73,7 @@ fun EvaluationPopUp(modifier: Modifier) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
-                    modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp)) {
+                    modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).testTag("rateStars")) {
                       repeat(5) { index ->
                         val isSelected = index + 1 <= rating
                         val isHalfSelected = index + 0.5f == rating
@@ -92,7 +97,8 @@ fun EvaluationPopUp(modifier: Modifier) {
                                             else -> index.toFloat() + 1f
                                           }
                                     }
-                                    .size(50.dp))
+                                    .size(50.dp)
+                                    .testTag("star$index"))
                       }
                     }
 
@@ -104,7 +110,10 @@ fun EvaluationPopUp(modifier: Modifier) {
                       /*TODO: maybe put rating to DB*/
                     },
                     enabled = rating > 0f && !haveRated.value,
-                    modifier = Modifier.fillMaxWidth(0.6f).align(Alignment.CenterHorizontally)) {
+                    modifier =
+                        Modifier.fillMaxWidth(0.6f)
+                            .align(Alignment.CenterHorizontally)
+                            .testTag("validateButton")) {
                       Text(text = "Validate", fontSize = 18.sp)
                     }
 
@@ -113,7 +122,7 @@ fun EvaluationPopUp(modifier: Modifier) {
                 Text(
                     text = "Leave a comment :",
                     fontSize = 25.sp,
-                    modifier = modifier.padding(10.dp, 0.dp))
+                    modifier = modifier.padding(10.dp, 0.dp).testTag("commentText"))
 
                 Spacer(modifier.height(16.dp))
 
@@ -121,7 +130,7 @@ fun EvaluationPopUp(modifier: Modifier) {
                 OutlinedTextField(
                     value = comment,
                     onValueChange = { comment = it },
-                    modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
+                    modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).testTag("commentField"),
                     minLines = 8,
                     textStyle = TextStyle(fontSize = 16.sp),
                     enabled = !haveCommented.value)
@@ -131,7 +140,10 @@ fun EvaluationPopUp(modifier: Modifier) {
                 Button(
                     onClick = { haveCommented.value = true /*TODO: maybe put comment to DB*/ },
                     enabled = comment.isNotEmpty() && !haveCommented.value,
-                    modifier = Modifier.fillMaxWidth(0.6f).align(Alignment.CenterHorizontally)) {
+                    modifier =
+                        Modifier.fillMaxWidth(0.6f)
+                            .align(Alignment.CenterHorizontally)
+                            .testTag("commentButton")) {
                       Text(text = "Comment", fontSize = 18.sp)
                     }
 
