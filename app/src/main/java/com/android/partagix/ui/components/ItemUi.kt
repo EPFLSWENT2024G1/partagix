@@ -96,8 +96,7 @@ fun ItemUi(
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
@@ -172,18 +171,18 @@ fun ItemUi(
                 horizontalArrangement = Arrangement.Absolute.Right,
                 modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
                   if (!isOutgoing) {
-                      Button(
-                      onClick = { manageLoanViewModel.acceptLoan(loan, index) },
-                      content = {
-                        Icon(
-                            Icons.Default.Check,
-                            contentDescription = "validate",
-                            modifier = Modifier,
-                            Color.Green)
-                        Text(text = "validate")
-                      },
-                      border = BorderStroke(1.dp, Color.Green),
-                      modifier = Modifier.fillMaxWidth(0.35f))
+                    Button(
+                        onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                        content = {
+                          Icon(
+                              Icons.Default.Check,
+                              contentDescription = "validate",
+                              modifier = Modifier,
+                              Color.Green)
+                          Text(text = "validate")
+                        },
+                        border = BorderStroke(1.dp, Color.Green),
+                        modifier = Modifier.fillMaxWidth(0.35f))
                   }
                   Button(
                       onClick = { manageLoanViewModel.declineLoan(loan, index) },
@@ -213,8 +212,7 @@ fun ItemUi(
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.1f))

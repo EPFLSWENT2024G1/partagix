@@ -42,7 +42,7 @@ class DatabaseTests {
       mutableMapOf<String, Any>(
           "Id" to documentId,
           "Name" to "905 Maple Drive",
-          "CreatedDt" to Timestamp.now(),
+          "CreatedDt" to now(),
           "OwnerName" to "Jim Smith")
 
   /**

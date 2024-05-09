@@ -19,7 +19,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
-import kotlinx.coroutines.delay
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.runBlocking
@@ -41,24 +40,29 @@ class ManageViewModelTest {
           Location(""),
           idUser = "8WuTkKJZLTAr6zs5L7rH")
 
-    private val itemz =
-        Item(
-            "item1",
-            Category("0", "Category 1"),
-            "test",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            Location(""),
-            idUser = "zB8N1tJRmKcNI6AvawMWIRp66wA")
+  private val itemz =
+      Item(
+          "item1",
+          Category("0", "Category 1"),
+          "test",
+          "description",
+          Visibility.PUBLIC,
+          1,
+          Location(""),
+          idUser = "zB8N1tJRmKcNI6AvawMWIRp66wA")
 
   private val user =
       User("8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
 
-    private val userz =
-        User("zB8N1tJRmKcNI6AvawMWIRp66wA", "user1", "", "", Inventory("zB8N1tJRmKcNI6AvawMWIRp66wA", emptyList()))
+  private val userz =
+      User(
+          "zB8N1tJRmKcNI6AvawMWIRp66wA",
+          "user1",
+          "",
+          "",
+          Inventory("zB8N1tJRmKcNI6AvawMWIRp66wA", emptyList()))
 
-    private val loan1 =
+  private val loan1 =
       Loan(
           id = "1",
           commentLoaner = "commentLoaner",
@@ -186,27 +190,24 @@ class ManageViewModelTest {
     }
   }
 
-    @Test
-    fun testGetOutgoingLoanRequests() {
-        val mockUser = mockk<FirebaseUser>()
-        mockkObject(Authentication)
-        every { Authentication.getUser() } returns mockUser
-        every { mockUser.uid } returns "zB8N1tJRmKcNI6AvawMWIRp66wA"
-        every { db.getUser(any(), any(), any()) } answers { thirdArg<(User) -> Unit>().invoke(userz) }
+  @Test
+  fun testGetOutgoingLoanRequests() {
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "zB8N1tJRmKcNI6AvawMWIRp66wA"
+    every { db.getUser(any(), any(), any()) } answers { thirdArg<(User) -> Unit>().invoke(userz) }
 
+    val latch = CountDownLatch(1)
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.getLoanRequests(latch = latch, isOutgoing = true)
+    latch.await()
 
-        val latch = CountDownLatch(1)
-        val manageViewModel = spyk(ManageLoanViewModel(db = db))
-        manageViewModel.getLoanRequests(latch = latch, isOutgoing = true)
-        latch.await()
-
-        runBlocking {
-            assert(manageViewModel.uiState.value.items == listOf(item1, item1))
-            assert(manageViewModel.uiState.value.users == listOf(userz, userz))
-            assert(manageViewModel.uiState.value.loans == listOf(loan2, loan3))
-            assert(manageViewModel.uiState.value.expanded == listOf(false, false))
-        }
+    runBlocking {
+      assert(manageViewModel.uiState.value.items == listOf(item1, item1))
+      assert(manageViewModel.uiState.value.users == listOf(userz, userz))
+      assert(manageViewModel.uiState.value.loans == listOf(loan2, loan3))
+      assert(manageViewModel.uiState.value.expanded == listOf(false, false))
     }
-
-
+  }
 }

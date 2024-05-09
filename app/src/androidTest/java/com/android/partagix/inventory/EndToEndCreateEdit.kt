@@ -303,7 +303,7 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-            manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModel = mockManageViewModel,
           itemViewModel = mockItemViewModel)
     }
 

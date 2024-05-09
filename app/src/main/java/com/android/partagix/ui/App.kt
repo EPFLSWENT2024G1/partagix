@@ -189,7 +189,7 @@ class App(
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
         inventoryViewModel.getInventory()
-          manageViewModel.getLoanRequests()
+        manageViewModel.getLoanRequests()
         loanViewModel.getAvailableLoans()
 
         HomeScreen(
@@ -259,10 +259,12 @@ class App(
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }
-        composable(Route.MANAGE_OUTGOING_LOAN) {
-          ManageOutgoingLoan(
-              manageLoanViewModel = manageViewModel, navigationActions = navigationActions,)
-        }
+      composable(Route.MANAGE_OUTGOING_LOAN) {
+        ManageOutgoingLoan(
+            manageLoanViewModel = manageViewModel,
+            navigationActions = navigationActions,
+        )
+      }
       composable(
           Route.STAMP + "/{itemId}",
           arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {

@@ -93,54 +93,68 @@ fun InventoryScreen(
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
-              modifier
-                  .padding(innerPadding)
-                  .fillMaxSize()
-                  .testTag("inventoryScreenNoItemBox")) {
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text = "There is no items in the inventory.",
                     modifier =
-                    modifier
-                        .align(Alignment.Center)
-                        .testTag("inventoryScreenNoItemText"))
+                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
         } else {
-          Column(modifier = modifier
-              .padding(innerPadding)
-              .fillMaxSize()) {
-              
-              Text(text = "Loan requests",
-                  style =
-                      TextStyle(
-                      fontSize = 18.sp,
-                          fontWeight = FontWeight(1000),
-                  color = Color(0xFF000000),
-                          ),
-              modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
-            Row (modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize(0.12f)){
-                Button(modifier = modifier.fillMaxWidth(0.5f), onClick = {
-                    manageLoanViewModel.getLoanRequests( isOutgoing = false,
-                    onSuccess = {navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST)})
-                }) {
-                    Column (modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center){
-                        Icon(Icons.Filled.Download, contentDescription = "incoming requests", modifier = Modifier.align(Alignment.CenterHorizontally))
-                        Text(text = "Incoming Requests", modifier = Modifier.align(Alignment.CenterHorizontally))
-                    }
-                }
-                Button(modifier = modifier.fillMaxWidth(), onClick = {
-                    manageLoanViewModel.getLoanRequests( isOutgoing = true,
-                        onSuccess = {navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN)})
-                }) {
-                    Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                        Icon(Icons.Filled.Upload, contentDescription = "outgoing requests", modifier = Modifier.align(Alignment.CenterHorizontally))
-                        Text(text = "Outgoing Requests", modifier = Modifier.align(Alignment.CenterHorizontally))
-                    }
-                }
+          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+            Text(
+                text = "Loan requests",
+                style =
+                    TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(1000),
+                        color = Color(0xFF000000),
+                    ),
+                modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
+            Row(modifier = Modifier.fillMaxWidth().fillMaxSize(0.12f)) {
+              Button(
+                  modifier = modifier.fillMaxWidth(0.5f),
+                  onClick = {
+                    manageLoanViewModel.getLoanRequests(
+                        isOutgoing = false,
+                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) })
+                  }) {
+                    Column(
+                        modifier = modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center) {
+                          Icon(
+                              Icons.Filled.Download,
+                              contentDescription = "incoming requests",
+                              modifier = Modifier.align(Alignment.CenterHorizontally))
+                          Text(
+                              text = "Incoming Requests",
+                              modifier = Modifier.align(Alignment.CenterHorizontally))
+                        }
+                  }
+              Button(
+                  modifier = modifier.fillMaxWidth(),
+                  onClick = {
+                    manageLoanViewModel.getLoanRequests(
+                        isOutgoing = true,
+                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN) })
+                  }) {
+                    Column(
+                        modifier = modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center) {
+                          Icon(
+                              Icons.Filled.Upload,
+                              contentDescription = "outgoing requests",
+                              modifier = Modifier.align(Alignment.CenterHorizontally))
+                          Text(
+                              text = "Outgoing Requests",
+                              modifier = Modifier.align(Alignment.CenterHorizontally))
+                        }
+                  }
             }
 
-              Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             ItemListColumn(
                 list = uiState.borrowedItems,
                 users = uiState.usersBor,
@@ -156,9 +170,7 @@ fun InventoryScreen(
                 isClickable = false,
                 isOutgoing = false,
                 isExpandable = false,
-                modifier = Modifier
-                    .height(220.dp)
-                    .testTag("inventoryScreenBorrowedItemList"))
+                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(

@@ -32,39 +32,42 @@ fun ManageOutgoingLoan(
     modifier: Modifier = Modifier,
     expandables: Boolean = false,
 ) {
-    val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
+  val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.testTag("homeScreenTopAppBar"),
-                title = { Text(text = "Partagix") },
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(
-                selectedDestination = Route.INVENTORY,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
-                modifier = modifier.testTag("manageScreenBottomNavBar"))
-        }) { innerPadding ->
+  Scaffold(
+      modifier = modifier,
+      topBar = {
+        TopAppBar(
+            modifier = Modifier.testTag("homeScreenTopAppBar"),
+            title = { Text(text = "Partagix") },
+        )
+      },
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = Route.INVENTORY,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = modifier.testTag("manageScreenBottomNavBar"))
+      }) { innerPadding ->
         if (uiState.items.isEmpty()) {
-            Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
-                HorizontalDivider(modifier = Modifier.fillMaxWidth())
+          Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
-                Box(
-                    modifier =
-                    modifier.padding(innerPadding).fillMaxSize().testTag("manageOutgoingScreenNoItemBox")) {
-                    Text(
-                        text = "There is no outgoing loan request.",
-                        modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
-                }
-            }
-        } else {
-            Column(
-                verticalArrangement = Arrangement.Center,
+            Box(
                 modifier =
-                modifier.fillMaxSize().padding(innerPadding).testTag("manageScreenMainContent")) {
+                    modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .testTag("manageOutgoingScreenNoItemBox")) {
+                  Text(
+                      text = "There is no outgoing loan request.",
+                      modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
+                }
+          }
+        } else {
+          Column(
+              verticalArrangement = Arrangement.Center,
+              modifier =
+                  modifier.fillMaxSize().padding(innerPadding).testTag("manageScreenMainContent")) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
 
                 ItemListColumn(
@@ -83,7 +86,7 @@ fun ManageOutgoingLoan(
                     onClickCorner = { /* isnt usefull for this column */},
                     manageLoanViewModel = manageLoanViewModel,
                     modifier = Modifier.testTag("manageLoanScreenItemListColumn"))
-            }
+              }
         }
-    }
+      }
 }

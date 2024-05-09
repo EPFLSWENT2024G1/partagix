@@ -57,6 +57,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
             InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
     mockItemViewModel = mockk()
+    mockManageLoanViewModel = mockk()
     mockInventoryViewModel = mockk()
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
@@ -77,7 +78,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   fun contentIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions,mockManageLoanViewModel, mockItemViewModel)
+      InventoryScreen(
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
@@ -96,7 +98,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   fun itemListIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions,mockManageLoanViewModel, mockItemViewModel)
+      InventoryScreen(
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
