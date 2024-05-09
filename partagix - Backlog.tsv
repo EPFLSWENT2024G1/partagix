@@ -1,0 +1,117 @@
+Title	URL	Assignees	Status	Priority	Time Estimate	Sprints	TaskType	Nature	Epic
+As a user when we want to see an item, we don't want to see text that looks like the editable text part			Done in "Sprint #5"			Sprints #5		User Story	
+StampScreen, missing tests	https://github.com/EPFLSWENT2024G1/partagix/issues/100	Mass-14	Done in "Sprint #5"	TOP	11	Sprints #5	Complete UI/VM/Test	Sprint Task	Loaner & Inventory
+LoanRequest	https://github.com/EPFLSWENT2024G1/partagix/issues/97	Patrick-Pataky	Done in "Sprint #5"	MID	12	Sprints #5	Backend	Sprint Task	Borrower
+Fix the Build APK workflow (CI)	https://github.com/EPFLSWENT2024G1/partagix/issues/103	Patrick-Pataky	Done in "Sprint #5"	TOP	2	Sprints #5	Tools setup and maintenance	Sprint Task	
+Finish the end to end test	https://github.com/EPFLSWENT2024G1/partagix/issues/95	LozanoCyrielle	Done in "Sprint #5"	TOP	10	Sprint #4	Testing	Sprint Task	
+Create Item: No categories = CRASH	https://github.com/EPFLSWENT2024G1/partagix/issues/157	AntoineBut	Done in "Sprint #6"	TOP	4	Sprints #6	Frontend	Milestone	Loaner & Inventory
+Tests: ImagePicker	https://github.com/EPFLSWENT2024G1/partagix/issues/138	AntoineBut	Done in "Sprint #6"	MID	6	Sprints #6	Testing	Sprint Task	
+Tests: Inventory Screen	https://github.com/EPFLSWENT2024G1/partagix/issues/134	skyrag	Done in "Sprint #6"	TOP	4	Sprints #6	Testing	Sprint Task	Loaner & Inventory
+Loans not loaded at first launch	https://github.com/EPFLSWENT2024G1/partagix/issues/193	Mass-14	Done in "Sprint #6"	TOP	1	Sprints #6	Backend	Sprint Task	Login & Account
+ManageLoanRequest	https://github.com/EPFLSWENT2024G1/partagix/issues/98	skyrag	Done in "Sprint #6"	TOP	30	Sprints #6	Complete UI/VM/Test	Sprint Task	Loaner & Inventory
+Fix google login in APK	https://github.com/EPFLSWENT2024G1/partagix/issues/184	LozanoCyrielle, Patrick-Pataky	Done in "Sprint #6"	TOP	2	Sprints #6	Backend	Sprint Task	Login & Account
+Database/UI Link: User	https://github.com/EPFLSWENT2024G1/partagix/issues/146	Valentin889	Done in "Sprint #6"	TOP	2	Sprints #6	Frontend	User Story	Login & Account
+Figma: EPIC 2	https://github.com/EPFLSWENT2024G1/partagix/issues/123	LozanoCyrielle	Done in "Sprint #6"	TOP	8	Sprints #6	Figma design	Milestone	Socials
+Optimizing the CI	https://github.com/EPFLSWENT2024G1/partagix/issues/136	KassFlute, LozanoCyrielle	Done in "Sprint #6"	TOP	4	Sprints #6	Tools setup and maintenance	Sprint Task	
+Fix inventory test	https://github.com/EPFLSWENT2024G1/partagix/issues/92	skyrag	Done in "Sprint #6"	TOP	5	Sprint #4	Tools setup and maintenance	Sprint Task	Loaner & Inventory
+StampViewModel	https://github.com/EPFLSWENT2024G1/partagix/issues/105	AntoineBut	Done in "Sprint #5"	TOP	4	Sprints #5	Backend	Sprint Task	Loaner & Inventory
+other tests	https://github.com/EPFLSWENT2024G1/partagix/issues/90	LozanoCyrielle, Valentin889	Done in "Sprint #5"	TOP	7	Sprint #4	Tools setup and maintenance	Sprint Task	
+Link google users to DB users	https://github.com/EPFLSWENT2024G1/partagix/issues/104	Valentin889	Done in "Sprint #5"	TOP	4	Sprints #5	Backend	Sprint Task	Login & Account
+HomeScreen	https://github.com/EPFLSWENT2024G1/partagix/issues/101	KassFlute	Done in "Sprint #5"	TOP	10	Sprints #5	Complete UI/VM/Test	Sprint Task	Login & Account
+Figma of ManageLoanRequest call from Inventory	https://github.com/EPFLSWENT2024G1/partagix/issues/99	Patrick-Pataky	Done in "Sprint #5"	TOP	4	Sprints #5	Figma design	Sprint Task	Loaner & Inventory
+finish the tests for the login screen	https://github.com/EPFLSWENT2024G1/partagix/issues/86	Valentin889	Done in "Sprint #4"	TOP	4	Sprint #4	Tools setup and maintenance	Sprint Task	Login & Account
+make tests for the database	https://github.com/EPFLSWENT2024G1/partagix/issues/87	Valentin889	Done in "Sprint #4"	TOP	4	Sprint #4	Tools setup and maintenance	Sprint Task	
+fix the bugs in navigation	https://github.com/EPFLSWENT2024G1/partagix/issues/85	AntoineBut	Done in "Sprint #5"	TOP	5	Sprints #5	Frontend	Sprint Task	
+Both as a borrower and a loaner, I want to be able to chat with other user			Product Backlog					User Story	Socials
+As a user, I want to be able to go on the Home page after I logged in			Done in "Sprint #5"			Sprint #4		User Story	Login & Account
+Setup sonarCloud full analysis (not automatic)	https://github.com/EPFLSWENT2024G1/partagix/issues/62	KassFlute	Done in "Sprint #3"	MID	2	Sprint #2	Tools setup and maintenance	Organization and Planning	
+Design an end-to-end test	https://github.com/EPFLSWENT2024G1/partagix/issues/64	LozanoCyrielle	Done in "Sprint #3"	TOP	4	Sprint #3	Testing	Sprint Task	
+Change the database structure		Valentin889	Done in "Sprint #3"	TOP	2	Sprint #3	Tools setup and maintenance	Sprint Task	
+Update extensive tests for the "inventory" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/58	KassFlute	Done in "Sprint #3"	MID	4	Sprint #3	Testing	Sprint Task	
+Complete README		LozanoCyrielle	Done in "Sprint #3"	TOP	4	Sprint #3	Tools setup and maintenance	Milestone	
+M1 Figma		LozanoCyrielle	Done in "Sprint #3"	TOP	15	Sprint #3	Figma design	Milestone	
+Updated Item attributes in database	https://github.com/EPFLSWENT2024G1/partagix/pull/47	Mass-14	Done in “Sprint #2”	TOP	8	Sprint #2	Complete UI/VM/Test	Sprint Task	Loaner & Inventory
+Design extensive tests for the Home Screen	https://github.com/EPFLSWENT2024G1/partagix/issues/44	KassFlute	Done in "Sprint #3"	LOW	7	Sprint #3	Testing	Sprint Task	
+Implement the Home Screen UI part and its tests	https://github.com/EPFLSWENT2024G1/partagix/issues/42	KassFlute	Done in "Sprint #5"	TOP	8	Sprint #4	Complete UI/VM/Test	Sprint Task	Login & Account
+Implement the Request a Loan Screen UI part	https://github.com/EPFLSWENT2024G1/partagix/issues/38	Patrick-Pataky	Done in "Sprint #3"	LOW	3	Sprint #3	Frontend	Sprint Task	
+Set up a way to store images in the database	https://github.com/EPFLSWENT2024G1/partagix/issues/28	Valentin889	Done in "Sprint #3"	TOP	7	Sprint #3	Tools setup and maintenance	Sprint Task	
+Design extensive tests for the Inventory Edit Screen	https://github.com/EPFLSWENT2024G1/partagix/issues/36	Valentin889	Done in "Sprint #3"	LOW	8	Sprint #3	Testing	Sprint Task	
+Implement Inventory Edit Screen Backend part	https://github.com/EPFLSWENT2024G1/partagix/issues/30	LozanoCyrielle	Done in "Sprint #3"	TOP	2	Sprint #3	Backend	Sprint Task	
+Implement the Inventory Edit Screen UI part	https://github.com/EPFLSWENT2024G1/partagix/issues/29	LozanoCyrielle	Done in "Sprint #3"	TOP	3	Sprint #3	Frontend	Sprint Task	
+As an inventory owner, I would like to be able to edit my items so i can change the information easily			Done in "Sprint #3"			Sprint #3		User Story	
+MB - ItemViewModel.kt implementation	https://github.com/EPFLSWENT2024G1/partagix/pull/23	Mass-14	Done in “Sprint #1”	TOP	16	Sprint #1	Backend	Sprint Task	Loaner & Inventory
+Add figma interactions		KassFlute	Done in “Sprint #2”	LOW	0	Sprint #3	Figma design	Sprint Task	
+Fix project naming	https://github.com/EPFLSWENT2024G1/partagix/issues/18	KassFlute, Patrick-Pataky	Done in “Sprint #2”	TOP	1	Sprint #2	Tools setup and maintenance	Organization and Planning	
+Implement model for database and it's functions	https://github.com/EPFLSWENT2024G1/partagix/issues/17	Valentin889	Done in “Sprint #2”	MID	6	Sprint #2	Backend	Sprint Task	
+Design extensive tests for the "View Account" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/16	Mass-14	Done in "Sprint #3"	LOW	12	Sprint #2	Testing	Sprint Task	Login & Account
+Implement a "View Account" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/15	AntoineBut	Done in "Sprint #3"	TOP	6	Sprint #3	Backend	Sprint Task	Login & Account
+Tests: Implement a second End-to-End test	https://github.com/EPFLSWENT2024G1/partagix/issues/125	LozanoCyrielle	Done in "Sprint #6"	MID	12	Sprints #6	Testing	Sprint Task	
+Visibility Refactor	https://github.com/EPFLSWENT2024G1/partagix/issues/127	Mass-14	Done in "Sprint #6"	TOP	4	Sprints #6	Frontend	Sprint Task	Loaner & Inventory
+Optimizations: Add a loading screen for Loan Requests	https://github.com/EPFLSWENT2024G1/partagix/issues/172	LozanoCyrielle	In Development	LOW	4	Sprint #7	Tools setup and maintenance	Sprint Task	Borrower
+Add badges to the README.md to display coverage (and more)	https://github.com/EPFLSWENT2024G1/partagix/issues/119	KassFlute	Done in "Sprint #6"	TOP	1	Sprints #6	Tools setup and maintenance	Milestone	
+Create/Edit Item Screen: Input handling	https://github.com/EPFLSWENT2024G1/partagix/issues/141	Valentin889	Done in "Sprint #6"	TOP	2	Sprints #6	Frontend	Milestone	Loaner & Inventory
+The borrowed items should not be editable	https://github.com/EPFLSWENT2024G1/partagix/issues/130	Valentin889	Done in "Sprint #6"	TOP	4	Sprints #6	Frontend	Sprint Task	Loaner & Inventory
+Edit/Create Item: UI: Better input handling	https://github.com/EPFLSWENT2024G1/partagix/issues/147	Valentin889	Done in "Sprint #6"	TOP	2	Sprints #6	Frontend	User Story	Loaner & Inventory
+Tests: Filter	https://github.com/EPFLSWENT2024G1/partagix/issues/137	Patrick-Pataky	Done in "Sprint #6"	MID	4	Sprints #6	Testing	Sprint Task	
+Tests: LabeledText	https://github.com/EPFLSWENT2024G1/partagix/issues/133	Mass-14	Done in "Sprint #6"	MID	2	Sprints #6	Testing	Sprint Task	
+Figma: Adding filters to the inventory screen	https://github.com/EPFLSWENT2024G1/partagix/issues/135	Patrick-Pataky	Done in "Sprint #6"	TOP	4	Sprints #6	Figma design	Sprint Task	Loaner & Inventory
+Loan Screen Backend	https://github.com/EPFLSWENT2024G1/partagix/issues/154	Patrick-Pataky	Done in "Sprint #6"	TOP	4	Sprints #6	Backend	Sprint Task	Borrower
+Link images (database / ui)	https://github.com/EPFLSWENT2024G1/partagix/issues/128	Valentin889	In Development	LOW	10	Sprint #7	Backend	Sprint Task	Loaner & Inventory
+Add filters in inventory	https://github.com/EPFLSWENT2024G1/partagix/issues/174	skyrag	In Development	LOW	6	Sprint #7	Frontend	Sprint Task	Loaner & Inventory
+Screen to create out going resquests	https://github.com/EPFLSWENT2024G1/partagix/issues/187	KassFlute	In Development	TOP	5	Sprint #7	Frontend	Sprint Task	Borrower
+create out going backend	https://github.com/EPFLSWENT2024G1/partagix/issues/186	KassFlute	In Development	TOP	4	Sprint #7	Backend	Sprint Task	Borrower
+Add friends	https://github.com/EPFLSWENT2024G1/partagix/issues/180	skyrag	In Development	LOW	4	Sprint #7	Backend	Sprint Task	Socials
+Evaluate users	https://github.com/EPFLSWENT2024G1/partagix/issues/179	LozanoCyrielle	In Development	LOW	4	Sprint #7	Frontend	Sprint Task	Socials
+Update account screen for evaluations	https://github.com/EPFLSWENT2024G1/partagix/issues/178	Mass-14	In Development	LOW	4	Sprint #7	Frontend	Sprint Task	Socials
+db: Evaluations	https://github.com/EPFLSWENT2024G1/partagix/issues/177	Mass-14	In Development	LOW	5	Sprint #7	Backend	Sprint Task	Socials
+Inventory: Add incoming/outgoing requests button	https://github.com/EPFLSWENT2024G1/partagix/issues/201	skyrag	In Development	MID	2	Sprint #7	Frontend	Sprint Task	Loaner & Inventory
+Figma: Reviews		LozanoCyrielle	In Development	MID	3	Sprint #7	Figma design	Sprint Task	Socials
+Update qr codes to contain deep links	https://github.com/EPFLSWENT2024G1/partagix/issues/176	AntoineBut	In Development	TOP	10	Sprint #7	Backend	Sprint Task	Loaner & Inventory
+Scanning QR code flow	https://github.com/EPFLSWENT2024G1/partagix/issues/199	Valentin889	In Development	TOP	12	Sprint #7	Backend	Sprint Task	Borrower
+Notifications	https://github.com/EPFLSWENT2024G1/partagix/issues/198	Patrick-Pataky	In Development	MID	12	Sprint #7	Backend	Sprint Task	Socials
+Report bugs	https://github.com/EPFLSWENT2024G1/partagix/issues/197	Mass-14	In Development	TOP	1	Sprint #7	Complete UI/VM/Test	Sprint Task	
+LoanScreen UI adjustements and Adding a filter reset	https://github.com/EPFLSWENT2024G1/partagix/issues/167	Mass-14, Patrick-Pataky	Done in "Sprint #6"	TOP	2	Sprints #6	Frontend	User Story	Borrower
+Stamp screen unreadable textField	https://github.com/EPFLSWENT2024G1/partagix/issues/189	Mass-14	Done in "Sprint #6"	TOP	1	Sprints #6	Frontend	Sprint Task	Loaner & Inventory
+Inventory ViewModel Test	https://github.com/EPFLSWENT2024G1/partagix/issues/109	skyrag	Done in "Sprint #6"	TOP	6	Sprints #5	Testing	Sprint Task	Loaner & Inventory
+'quick scan' opens camera	https://github.com/EPFLSWENT2024G1/partagix/issues/175	KassFlute	In Development	MID	3	Sprint #7	Backend	Sprint Task	Loaner & Inventory
+Edit Item Screen: Generate QR Code crashes	https://github.com/EPFLSWENT2024G1/partagix/issues/132	Mass-14	Done in "Sprint #6"	TOP	2	Sprints #6	Frontend	Sprint Task	Loaner & Inventory
+Update the homeScreen	https://github.com/EPFLSWENT2024G1/partagix/issues/117	KassFlute	Done in "Sprint #6"	MID	4	Sprints #6	Frontend	Sprint Task	Loaner & Inventory
+Design extensive tests for the "inventory create item "screen	https://github.com/EPFLSWENT2024G1/partagix/issues/14	Valentin889	Done in "Sprint #3"	LOW	6	Sprint #2	Testing	Sprint Task	
+Design extensive tests for the "inventory view item" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/13	KassFlute	Done in "Sprint #3"	LOW	5	Sprint #2	Testing	Sprint Task	
+Design extensive tests for the "inventory" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/12	KassFlute	Done in “Sprint #2”	LOW	5	Sprint #2	Testing	Sprint Task	
+Set-up the testing suite	https://github.com/EPFLSWENT2024G1/partagix/issues/11	KassFlute, Patrick-Pataky	Done in “Sprint #2”	MID	6	Sprint #2	Tools setup and maintenance	Sprint Task	
+As a user, I want everything I do on the app to be synchronized on the cloud with my account			Done in "Sprint #6"			Sprint #4		User Story	
+Implement the "Inventory" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/10	skyrag	Done in "Sprint #3"	MID	6	Sprint #2	Frontend	Sprint Task	
+As an inventory owner, I want to be able to generate QR code for all my items track them easily.			Done in "Sprint #5"			Sprint #4		User Story	Loaner & Inventory
+Set up Database on Firebase		Valentin889	Done in “Sprint #2”	TOP	6	Sprint #2	Backend	Sprint Task	
+Implement the "Inventory Create Item" screen	https://github.com/EPFLSWENT2024G1/partagix/issues/8	Mass-14	Done in “Sprint #2”	MID	8	Sprint #2	Frontend	Sprint Task	Loaner & Inventory
+Implement the "Inventory view Item" Screen	https://github.com/EPFLSWENT2024G1/partagix/issues/9	LozanoCyrielle	Done in “Sprint #2”	MID	6	Sprint #2	Frontend	Sprint Task	
+As a lender, I would like to create an item for listing, and add various information about it			Done in "Sprint #3"			Sprint #2		User Story	
+As a user, I'd like to create an account to view and manage all my listings			Done in "Sprint #6"			Sprint #4		User Story	Login & Account
+Both as a borrower and a loaner, I want to use the application without any issues and smoothly			Sprint Backlog					User Story	
+Both as a borrower and a loaner, I want to be able to leave comment on an other user			Sprint Backlog					User Story	Socials
+Both as a borrower and a loaner, I want to receive notifications regarding the application events even when the application is on the background			Sprint Backlog					User Story	
+As an inventory's owner, I want to filter items in my inventory			Sprint Backlog					User Story	Loaner & Inventory
+As a lender, I want to see a list of people that marked themselves as "interested in my item" so that I can choose who to lend to			Sprint Backlog			Sprint #7		User Story	Loaner & Inventory
+As an inventory's owner, I want to scan a QR code that navigates on its corresponding Partagix screen.			Sprint Backlog					User Story	Loaner & Inventory
+Both as a borrower and a loaner, I want to be able to evaluate an other user			Sprint Backlog					User Story	Socials
+As a lender, I want to be able to add friends so I can lend things to people I know			Sprint Backlog					User Story	Socials
+Figma views		LozanoCyrielle, Patrick-Pataky	Done in “Sprint #2”	TOP	5	Sprint #1	Figma design	Sprint Task	
+Setup Firebase for google authentification		Patrick-Pataky	Done in “Sprint #1”	MID	1	Sprint #1	Backend	Sprint Task	
+Add simple authentication on the app using Google.		Patrick-Pataky	Done in “Sprint #1”	MID	1	Sprint #1	Frontend	Sprint Task	
+set up CI	https://github.com/EPFLSWENT2024G1/partagix/issues/7	skyrag, Valentin889	Done in “Sprint #1”	LOW	2	Sprint #1	Tools setup and maintenance	Sprint Task	
+add Android app template		KassFlute	Done in “Sprint #1”	LOW	2	Sprint #1	Team Management	Organization and Planning	
+Set up scrumboard		AntoineBut	Done in “Sprint #1”	MID	2	Sprint #1	Tools setup and maintenance	Organization and Planning	
+Set up according to md			Done in “Sprint #1”			Sprint #1			
+Fix the performance issues we had on the milestone #1 apk	https://github.com/EPFLSWENT2024G1/partagix/issues/183	AntoineBut, Valentin889	Done in "Sprint #5"	TOP	5	Sprints #5	Frontend	Sprint Task	Loaner & Inventory
+Add labels to QR code generation	https://github.com/EPFLSWENT2024G1/partagix/issues/120	AntoineBut	Done in "Sprint #6"	MID	8	Sprints #6	Backend	Sprint Task	Loaner & Inventory
+Clean project	https://github.com/EPFLSWENT2024G1/partagix/issues/131	Mass-14	Done in "Sprint #6"	TOP	1	Sprints #6	Tools setup and maintenance	Sprint Task	
+Ability to Edit profile	https://github.com/EPFLSWENT2024G1/partagix/issues/139	KassFlute	Done in "Sprint #6"	MID	6	Sprints #6	Frontend	Sprint Task	Login & Account
+Implement the homeScreen buttons functionality	https://github.com/EPFLSWENT2024G1/partagix/issues/118	KassFlute	Done in "Sprint #6"	TOP	2	Sprints #6	Backend	Sprint Task	
+ViewAccountTest: clean code	https://github.com/EPFLSWENT2024G1/partagix/issues/126	Mass-14	Done in "Sprint #6"	TOP	2	Sprints #6	Testing	Milestone	Login & Account
+View items: Fix the edit button	https://github.com/EPFLSWENT2024G1/partagix/issues/156	Mass-14	Done in "Sprint #6"	TOP	2	Sprints #6	Backend	Milestone	Loaner & Inventory
+Refactor InventoryViewItem signature (remove StampViewModel)	https://github.com/EPFLSWENT2024G1/partagix/issues/160	Mass-14	Done in "Sprint #6"	LOW	1	Sprints #6	Backend	Sprint Task	Loaner & Inventory
+Implement a way to export the QR codes	https://github.com/EPFLSWENT2024G1/partagix/issues/35	AntoineBut	Done in "Sprint #5"	MID	3	Sprints #5	Backend	Sprint Task	Loaner & Inventory
+Implement the generation of a QR code	https://github.com/EPFLSWENT2024G1/partagix/issues/34	AntoineBut	Done in "Sprint #5"	MID	3	Sprints #5	Backend	Sprint Task	Loaner & Inventory
+StampScreen UI, StampDimension enum	https://github.com/EPFLSWENT2024G1/partagix/issues/196	Mass-14	Done in "Sprint #4"	MID	14	Sprint #4	Frontend	Sprint Task	Loaner & Inventory
+Inventory Screen: better UI	https://github.com/EPFLSWENT2024G1/partagix/pull/200	Patrick-Pataky	In Development						

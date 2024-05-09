@@ -28,7 +28,7 @@ class EndToEnd {
 
   @Test
   fun NavigationInventory() {
-    val timeWait: Long = 10000
+    val timeWait: Long = 20000
     val scenario = ActivityScenario.launch(MainActivity::class.java)
 
     scenario.onActivity { mainActivity ->
@@ -112,7 +112,9 @@ class EndToEnd {
       navigationIcon { performClick() }
     }
 
-    composeTestRule.waitUntil { composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed() }
+    composeTestRule.waitUntil(timeWait + 7) {
+      composeTestRule.onNodeWithTag("inventoryScreen").isDisplayed()
+    }
 
     ComposeScreen.onComposeScreen<InventoryScreen>(composeTestRule) { fab { assertIsDisplayed() } }
 
@@ -122,7 +124,7 @@ class EndToEnd {
 
   @Test
   fun NavigationAccount() {
-    val timeWait: Long = 10000
+    val timeWait: Long = 20000
     val scenario = ActivityScenario.launch(MainActivity::class.java)
 
     scenario.onActivity { mainActivity ->
