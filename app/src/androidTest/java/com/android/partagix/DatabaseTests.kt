@@ -5,6 +5,8 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.android.gms.tasks.OnSuccessListener
@@ -393,9 +395,319 @@ class DatabaseTests {
     unmockkStatic(::now)
   }
 
-  @Test fun testGetComments() {}
+  @Test
+  fun testGetComments() {
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
 
-  @Test fun testNewAverageRank() {}
+    val taskCompletionSource = TaskCompletionSource<Void>()
 
-  @Test fun testSetReview() {}
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val user1 =
+        User(
+            "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
+    val user2 =
+        User(
+            "2WuTkKJZLTAr6zs5L7rH", "user2", "", "", Inventory("2WuTkKJZLTAr6zs5L7rH", emptyList()))
+
+    val idLoan1 = "1"
+    val idLoan2 = "2"
+    val idLoan3 = "3"
+
+    val loan1 =
+        Loan(
+            id = idLoan1,
+            commentLoaner = "just ok",
+            commentOwner = "banger",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "4",
+            reviewOwner = "2",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+    val loan2 =
+        Loan(
+            id = idLoan2,
+            commentLoaner = "sympathetic",
+            commentOwner = "ungrateful owner",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user2.id,
+            idLoaner = user1.id,
+            reviewLoaner = "1",
+            reviewOwner = "3",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+
+    val loan3 =
+        Loan(
+            id = idLoan3,
+            commentLoaner = "hello world",
+            commentOwner = "unefficient",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "5",
+            reviewOwner = "4",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
+
+    every { database.getUser(user1.id, any(), any()) } answers
+        {
+          thirdArg<(User) -> Unit>().invoke(user1)
+        }
+
+    every { database.getUser(user2.id, any(), any()) } answers
+        {
+          thirdArg<(User) -> Unit>().invoke(user2)
+        }
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    runBlocking {
+      var commentsOnUser1: List<Pair<String, String>> = emptyList()
+      database.getComments(user1.id) { commentsOnUser1 = it }
+      assertEquals(
+          commentsOnUser1,
+          listOf(
+              Pair(user2.name, "banger"),
+              Pair(user2.name, "sympathetic"),
+              Pair(user2.name, "unefficient")))
+    }
+
+    //  Don't forget to unmock.
+    unmockkStatic(::now)
+  }
+
+  @Test
+  fun testNewAverageRank() {
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val taskCompletionSource = TaskCompletionSource<Void>()
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val user1 =
+        User(
+            "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
+    val user2 =
+        User(
+            "2WuTkKJZLTAr6zs5L7rH", "user2", "", "", Inventory("2WuTkKJZLTAr6zs5L7rH", emptyList()))
+
+    val idLoan1 = "1"
+    val idLoan2 = "2"
+    val idLoan3 = "3"
+
+    val loan1 =
+        Loan(
+            id = idLoan1,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "4",
+            reviewOwner = "2",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+    val loan2 =
+        Loan(
+            id = idLoan2,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user2.id,
+            idLoaner = user1.id,
+            reviewLoaner = "1",
+            reviewOwner = "3",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+
+    val loan3 =
+        Loan(
+            id = idLoan3,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "5",
+            reviewOwner = "4",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
+
+    every {
+      mockDb.collection("users").document(user1.id).update("rank", (7.0 / 3.0).toString())
+    } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    every { mockDb.collection(any()) } returns mockCollection // case other call than the one tested
+
+    runBlocking {
+      database.newAverageRank(user1.id)
+
+      coVerify(exactly = 1) { database.newAverageRank(user1.id) }
+    }
+
+    //  Don't forget to unmock.
+    unmockkStatic(::now)
+  }
+
+  @Test
+  fun testSetReview() {
+
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val taskCompletionSource = TaskCompletionSource<Void>()
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val user1 =
+        User(
+            "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
+    val user2 =
+        User(
+            "2WuTkKJZLTAr6zs5L7rH", "user2", "", "", Inventory("2WuTkKJZLTAr6zs5L7rH", emptyList()))
+
+    val idLoan1 = "1"
+    val idLoan2 = "2"
+    val idLoan3 = "3"
+
+    val loan1 =
+        Loan(
+            id = idLoan1,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "",
+            reviewOwner = "",
+            startDate = java.util.Date(),
+            state = LoanState.FINISHED)
+
+    val loan2 =
+        Loan(
+            id = idLoan2,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "",
+            reviewOwner = "",
+            startDate = java.util.Date(),
+            state = LoanState.PENDING)
+
+    val loan3 =
+        Loan(
+            id = idLoan3,
+            commentLoaner = "",
+            commentOwner = "",
+            endDate = java.util.Date(),
+            idItem = "item1",
+            idOwner = user1.id,
+            idLoaner = user2.id,
+            reviewLoaner = "",
+            reviewOwner = "",
+            startDate = java.util.Date(),
+            state = LoanState.PENDING)
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
+
+    every {
+      mockDb.collection("loan").document(idLoan1).update("comment_owner", "ok, nothing more")
+    } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    every { mockDb.collection("loan").document(idLoan1).update("comment_loaner", "awful") } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    every { mockDb.collection(any()) } returns mockCollection // case other call than the one tested
+
+    runBlocking {
+      database.setReview(idLoan1, user1.id, 3.5, "ok, nothing more")
+      database.setReview(idLoan1, user2.id, 1.5, "awful")
+
+      coVerify(exactly = 2) {
+        database.setReview("1", user1.id, 3.5, "ok, nothing more")
+        database.setReview(idLoan1, user2.id, 1.5, "awful")
+      }
+    }
+
+    //  Don't forget to unmock.
+    unmockkStatic(::now)
+  }
 }
