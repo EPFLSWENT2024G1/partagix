@@ -418,7 +418,9 @@ class DatabaseTests {
 
     val mockDb: FirebaseFirestore = mockk {}
 
-    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+    every { mockDb.collection(any()) } returns mockCollection
+
+    val database = spyk(Database(mockDb))
 
     val user1 =
         User(
@@ -487,8 +489,6 @@ class DatabaseTests {
           thirdArg<(User) -> Unit>().invoke(user2)
         }
 
-    every { mockDb.collection(any()) } returns mockCollection
-
     runBlocking {
       var commentsOnUser1: List<Pair<String, String>> = emptyList()
       database.getComments(user1.id) { commentsOnUser1 = it }
@@ -525,10 +525,6 @@ class DatabaseTests {
     every { mockDocument.set(any()) } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
-    val mockDb: FirebaseFirestore = mockk {}
-
-    val database = spyk(Database(mockDb), recordPrivateCalls = true)
-
     val user1 =
         User(
             "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
@@ -550,7 +546,7 @@ class DatabaseTests {
             idOwner = user1.id,
             idLoaner = user2.id,
             reviewLoaner = "4",
-            reviewOwner = "2",
+            reviewOwner = "3",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
     val loan2 =
@@ -562,7 +558,7 @@ class DatabaseTests {
             idItem = "item1",
             idOwner = user2.id,
             idLoaner = user1.id,
-            reviewLoaner = "1",
+            reviewLoaner = "2",
             reviewOwner = "3",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
@@ -581,17 +577,21 @@ class DatabaseTests {
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
-    every { database.getLoans(any()) } answers
-        {
-          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
-        }
+    val mockDb: FirebaseFirestore = mockk {}
 
     every {
-      mockDb.collection("users").document(user1.id).update("rank", (7.0 / 3.0).toString())
+      mockDb.collection("users").document(user1.id).update("rank", (9.0 / 3.0).toString())
     } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
     every { mockDb.collection(any()) } returns mockCollection // case other call than the one tested
+
+    val database = spyk(Database(mockDb))
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
 
     runBlocking {
       database.newAverageRank(user1.id)
@@ -625,10 +625,6 @@ class DatabaseTests {
     every { mockDocument.set(any()) } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
-    val mockDb: FirebaseFirestore = mockk {}
-
-    val database = spyk(Database(mockDb), recordPrivateCalls = true)
-
     val user1 =
         User(
             "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
@@ -682,10 +678,7 @@ class DatabaseTests {
             startDate = java.util.Date(),
             state = LoanState.PENDING)
 
-    every { database.getLoans(any()) } answers
-        {
-          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
-        }
+    val mockDb: FirebaseFirestore = mockk {}
 
     every {
       mockDb.collection("loan").document(idLoan1).update("comment_owner", "ok, nothing more")
@@ -696,6 +689,13 @@ class DatabaseTests {
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
     every { mockDb.collection(any()) } returns mockCollection // case other call than the one tested
+
+    val database = spyk(Database(mockDb))
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
 
     runBlocking {
       database.setReview(idLoan1, user1.id, 3.5, "ok, nothing more")
