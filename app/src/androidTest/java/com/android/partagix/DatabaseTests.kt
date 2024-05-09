@@ -392,4 +392,10 @@ class DatabaseTests {
     //  Don't forget to unmock.
     unmockkStatic(::now)
   }
+
+  @Test fun testGetComments() {}
+
+  @Test fun testNewAverageRank() {}
+
+  @Test fun testSetReview() {}
 }
