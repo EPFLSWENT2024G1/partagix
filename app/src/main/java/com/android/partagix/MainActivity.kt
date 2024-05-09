@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import com.android.partagix.model.CREATE_PNG_FILE
@@ -23,6 +26,17 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    var itemId: String? = null
+    if (intent.action == Intent.ACTION_VIEW) {
+      val uri: Uri? = intent.data
+      if (uri != null) {
+        // Handle the URI, extract additional data if needed
+        itemId = uri.getQueryParameter("itemId")
+        println("----- itemId: $itemId")
+        // Perform actions based on the itemId or other parameters
+
+      }
+    }
     app = App(this)
 
     setContent {
@@ -31,7 +45,7 @@ class MainActivity : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize().semantics {},
             color = MaterialTheme.colorScheme.background) {
-              app.Create()
+              app.Create(itemId)
             }
       }
     }
@@ -75,5 +89,10 @@ class MainActivity : ComponentActivity() {
 
   companion object {
     private const val TAG = "Main"
+  }
+
+  @Composable
+  fun Create(id: String?) {
+    Column { Text("Hello, World! $id") }
   }
 }
