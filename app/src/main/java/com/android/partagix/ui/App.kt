@@ -31,7 +31,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
-import com.android.partagix.model.StartLoanUIState
+import com.android.partagix.model.StartOrEndLoanUIState
 import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
@@ -121,7 +121,7 @@ class App(
         db.getItem(idItem) { item ->
           db.getUser(loan.idBorrower) { borrower ->
             db.getUser(loan.idLender) { lender ->
-              startOrEndLoanViewModel.update(StartLoanUIState(loan, item, borrower, lender))
+              startOrEndLoanViewModel.update(StartOrEndLoanUIState(loan, item, borrower, lender))
               navigationActions.navigateTo(Route.STARTLOAN)
             }
           }
@@ -130,7 +130,7 @@ class App(
         db.getItem(idItem) { item ->
           db.getUser(loan2.idBorrower) { borrower ->
             db.getUser(loan2.idLender) { lender ->
-              startOrEndLoanViewModel.update(StartLoanUIState(loan2, item, borrower, lender))
+              startOrEndLoanViewModel.update(StartOrEndLoanUIState(loan2, item, borrower, lender))
               navigationActions.navigateTo(Route.ENDLOAN)
             }
           }

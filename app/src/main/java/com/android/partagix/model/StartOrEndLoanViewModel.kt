@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.StateFlow
 class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
 
   private val _uiState =
-      MutableStateFlow(StartLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
-  val uiState: StateFlow<StartLoanUIState> = _uiState
+      MutableStateFlow(StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
+  val uiState: StateFlow<StartOrEndLoanUIState> = _uiState
 
-  fun update(new: StartLoanUIState) {
+  fun update(new: StartOrEndLoanUIState) {
     _uiState.value = new
   }
 
@@ -52,4 +52,4 @@ class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
   }
 }
 
-data class StartLoanUIState(val loan: Loan, val item: Item, val borrower: User, val lender: User)
+data class StartOrEndLoanUIState(val loan: Loan, val item: Item, val borrower: User, val lender: User)
