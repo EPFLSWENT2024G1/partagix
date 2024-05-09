@@ -7,6 +7,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.screens.EvaluationPopUp
 import com.android.partagix.ui.components.EvaluationPopUp
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.coVerify

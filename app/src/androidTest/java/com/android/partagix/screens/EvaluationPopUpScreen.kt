@@ -1,4 +1,4 @@
-package com.android.partagix.components
+package com.android.partagix.screens
 
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import io.github.kakaocup.compose.node.element.ComposeScreen

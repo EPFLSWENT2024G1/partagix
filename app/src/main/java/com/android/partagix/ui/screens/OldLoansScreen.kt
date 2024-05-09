@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -68,7 +70,7 @@ fun OldLoansScreen(
   val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
 
   Scaffold(
-      modifier = modifier,
+      modifier = modifier.testTag("oldLoansScreen"),
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
@@ -90,7 +92,7 @@ fun OldLoansScreen(
             modifier = modifier)
       }) { innerPadding ->
         if (uiState.loans.isEmpty()) {
-          Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
+          Column(modifier = modifier.fillMaxSize().padding(innerPadding).testTag("emptyOldLoans")) {
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
             Box(modifier = modifier.padding(innerPadding).fillMaxSize()) {
@@ -98,16 +100,24 @@ fun OldLoansScreen(
             }
           }
         } else {
-          for (loan in uiState.loans) {
-            finishedLoansViewModel.getItem(loan.idItem)
-            ExpandableCard(
-                modifier = modifier,
-                loan = loan,
-                item = item,
-                navigationActions = navigationActions,
-                itemViewModel = itemViewModel,
-                evaluationViewModel = evaluationViewModel)
-          }
+          Column(
+              modifier =
+                  modifier
+                      .fillMaxWidth()
+                      .fillMaxWidth()
+                      .padding(innerPadding)
+                      .verticalScroll(rememberScrollState())) {
+                for (loan in uiState.loans) {
+                  finishedLoansViewModel.getItem(loan.idItem)
+                  ExpandableCard(
+                      modifier = modifier.testTag("expandableCard"),
+                      loan = loan,
+                      item = item,
+                      navigationActions = navigationActions,
+                      itemViewModel = itemViewModel,
+                      evaluationViewModel = evaluationViewModel)
+                }
+              }
         }
       }
 }
@@ -136,30 +146,34 @@ fun ExpandableCard(
   OutlinedCard(
       modifier =
           modifier.fillMaxWidth().padding(16.dp).animateContentSize().clickable {
-            expanded = !expanded
+            expanded = true
           }, // This enables the expansion animation
       colors = CardDefaults.outlinedCardColors()) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth().testTag("card")) {
           Row(
-              modifier = modifier.fillMaxWidth(),
+              modifier = modifier.fillMaxWidth().testTag("nameAndDate"),
               horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
+                Column(modifier) {
                   Text(text = item.name, fontSize = 20.sp)
                   Spacer(modifier.height(8.dp))
-                  Text(text = "Loan Date : ${loan.startDate}", fontSize = 15.sp)
+                  Text(
+                      text =
+                          "Loan Date : ${loan.startDate.date}/${loan.startDate.month}/${loan.startDate.year}",
+                      fontSize = 15.sp)
                 }
                 Image(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.scrim))
+                    modifier =
+                        Modifier.border(1.dp, MaterialTheme.colorScheme.scrim).testTag("image"))
               }
 
           if (expanded) {
             Spacer(modifier = modifier.height(8.dp))
             Row(modifier = modifier.fillMaxWidth(0.70f), horizontalArrangement = Arrangement.End) {
               IconButton(
-                  modifier = modifier.fillMaxWidth(0.43f),
+                  modifier = modifier.fillMaxWidth(0.43f).testTag("infoButton"),
                   colors =
                       IconButtonColors(
                           containerColor = MaterialTheme.colorScheme.secondary,
