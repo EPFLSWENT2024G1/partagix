@@ -64,11 +64,11 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    wasExpanded: Boolean,
-    isExpandable: Boolean,
+    wasExpanded: Boolean = false,
+    isExpandable: Boolean = false,
     expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    index: Int,
+    index: Int = 0,
 ) {
   val date: Date =
       if (loan.startDate.before(Date())) {
@@ -211,7 +211,8 @@ fun ItemUi(
                     color = Color(0xFF939393),
                     shape = RoundedCornerShape(size = 4.dp))
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
-                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+                .testTag("ItemUiNotExpanded")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
               modifier = Modifier.fillMaxWidth().height(61.dp)
