@@ -2,8 +2,6 @@ package com.android.partagix.model
 
 import android.location.Location
 import android.util.Log
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -411,38 +409,30 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       ret.add(Pair(authorName, comment))
     }
 
-    loan
-        .get()
-        .addOnSuccessListener { result ->
-          for (document in result) {
+    getLoans { loans ->
+      for (loan in loans) {
 
-            if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
+        if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idOwner == userId // if the user is the owner,
             &&
-                document.data["id_owner"] as String == userId // if the user is the owner,
-                &&
-                document.data["review_owner"] as Double != 0.0 // that has been reviewed,
-                &&
-                document.data["comment_owner"] as String != "") { // and received a comment
-
-              addComment(
-                  document.data["id_loaner"] as String, document.data["comment_owner"] as String)
-            } else if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
+            loan.reviewOwner.toDouble() != 0.0 // that has been reviewed,
             &&
-                document.data["id_loaner"] as String == userId // if the user is the loaner,
-                &&
-                (document.data["review_loaner"] as String).toDouble() !=
-                    0.0 // that has been reviewed
-                &&
-                document.data["comment_loaner"] as String != "") { // and received a comment
+            loan.commentOwner != "") { // and received a comment
 
-              addComment(
-                  document.data["id_owner"] as String, document.data["comment_loaner"] as String)
-            }
-          }
+          addComment(loan.idLoaner, loan.commentOwner)
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idLoaner == userId // if the user is the loaner,
+            &&
+            loan.reviewLoaner.toDouble() != 0.0 // that has been reviewed
+            &&
+            loan.commentLoaner != "") { // and received a comment
+
+          addComment(loan.idOwner, loan.commentLoaner)
         }
-        .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+      }
+    }
 
     onSuccess(ret)
   }
@@ -454,40 +444,34 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param idUser the user's id
    */
   fun newAverageRank(idUser: String) {
-    loan
-        .get()
-        .addOnSuccessListener { result ->
-          val rankSum = mutableDoubleStateOf(0.0)
-          val rankCount = mutableLongStateOf(0)
-          for (document in result) {
 
-            if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
+    var rankSum = 0.0
+    var rankCount = 0L
+
+    getLoans { loans ->
+      for (loan in loans) {
+
+        if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idOwner == idUser // if the user is the owner,
             &&
-                document.data["id_owner"] as String == idUser // if the user is the owner,
-                &&
-                (document.data["review_owner"] as String).toDouble() !=
-                    0.0) { // that has been reviewed
+            loan.reviewOwner.toDouble() != 0.0) { // that has been reviewed
 
-              rankSum.doubleValue += (document.data["review_owner"] as String).toDouble()
-              rankCount.longValue++
-            } else if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
+          rankSum += loan.reviewOwner.toDouble()
+          rankCount++
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idLoaner == idUser // if the user is the loaner,
             &&
-                document.data["id_loaner"] as String == idUser // if the user is the loaner,
-                &&
-                (document.data["review_loaner"] as String).toDouble() !=
-                    0.0) { // that has been reviewed
+            loan.reviewLoaner.toDouble() != 0.0) { // that has been reviewed
 
-              rankSum.doubleValue += (document.data["review_loaner"] as String).toDouble()
-              rankCount.longValue++
-            }
-          }
-
-          val averageRank = rankSum.doubleValue / rankCount.longValue
-          users.document(idUser).update("rank", averageRank.toString())
+          rankSum += loan.reviewLoaner.toDouble()
+          rankCount++
         }
-        .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+      }
+      val averageRank = rankSum / rankCount.toDouble()
+      users.document(idUser).update("rank", averageRank.toString())
+    }
   }
 
   /**
@@ -497,40 +481,29 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param userId the reviewed user's id
    * @param rank the rank to be set, must be between 0.5 and 5
    * @param comment an optional comment to be set
-   * @param onInvalidRank the function to call when the rank is invalid
    */
   fun setReview(
       loanId: String,
       userId: String,
       rank: Double,
       comment: String,
-      onInvalidRank: () -> Unit
   ) {
-    if (rank < 0.0 || rank > 5) {
-      Log.e(TAG, "Error setting review: rank must be between 0.5 and 5")
-      onInvalidRank()
-    }
+    getLoans { loans ->
+      for (loan in loans) {
 
-    loan
-        .get()
-        .addOnSuccessListener { result ->
-          for (document in result) {
-            if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
-            && document.id == loanId && document.data["id_owner"] as String == userId) {
+        if (loan.state == LoanState.FINISHED // only finished loans
+        && loan.id == loanId && loan.idOwner == userId) {
 
-              loan.document(loanId).update("review_owner", rank.toString())
-              if (comment != "") loan.document(loanId).update("comment_owner", comment)
-            } else if (document.data["loan_state"] as String ==
-                LoanState.FINISHED.toString() // only finished loans
-            && document.id == loanId && document.data["id_loaner"] as String == userId) {
+          this.loan.document(loanId).update("review_owner", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_owner", comment)
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        && loan.id == loanId && loan.idLoaner == userId) {
 
-              loan.document(loanId).update("review_loaner", rank.toString())
-              if (comment != "") loan.document(loanId).update("comment_loaner", comment)
-            }
-          }
+          this.loan.document(loanId).update("review_loaner", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_loaner", comment)
         }
-        .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+      }
+    }
   }
 
   companion object {
