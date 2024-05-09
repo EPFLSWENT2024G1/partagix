@@ -97,6 +97,7 @@ fun ManageOutgoingLoan(
                     expandState = expandables,
                     wasExpanded = uiState.expanded,
                     isOutgoing = true,
+                    canSeeOld = true,
                     isClickable = false,
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},

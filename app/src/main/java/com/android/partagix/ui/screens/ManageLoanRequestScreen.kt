@@ -90,6 +90,7 @@ fun ManageLoanRequest(
                     corner = uiState.items.size.toString(),
                     isCornerClickable = false,
                     isExpandable = true,
+                    canSeeOld = true,
                     expandState = expandables,
                     wasExpanded = uiState.expanded,
                     onClick = { /* isnt usefull for this column */},
