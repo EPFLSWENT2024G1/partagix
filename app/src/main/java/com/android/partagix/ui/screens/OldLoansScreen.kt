@@ -142,7 +142,6 @@ fun ExpandableCard(
   var expanded by remember { mutableStateOf(false) }
   var open by remember { mutableStateOf(false) }
 
-  /*TODO: get the item of the loan*/
   OutlinedCard(
       modifier =
           modifier.fillMaxWidth().padding(16.dp).animateContentSize().clickable {
