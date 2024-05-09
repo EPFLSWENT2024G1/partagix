@@ -60,12 +60,6 @@ fun ItemList(
                   .testTag("ItemListItem")) {
             ItemUi(
                 isExpandable = isExpandable,
-                wasExpanded =
-                    if (wasExpanded.isEmpty()) {
-                      false
-                    } else {
-                      wasExpanded[index]
-                    },
                 item = item,
                 user =
                     if (users.isEmpty()) {

@@ -25,6 +25,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.LoanDetails
 import com.android.partagix.model.LoanUIState
 import com.android.partagix.model.LoanViewModel
 import com.android.partagix.model.ManageLoanViewModel
@@ -127,6 +128,9 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     val user = User("id_user", "name", "addr", "rank", mockk())
 
+    val user1 = User("id_user1", "name1", "addr1", "rank1", mockk())
+    val user2 = User("id_user2", "name2", "addr2", "rank2", mockk())
+
     // Position link: https://maps.app.goo.gl/kXxVHqw8NQ63jczBA
     val location =
         Location("").apply {
@@ -134,7 +138,9 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           longitude = 6.566109
         }
 
-    loanUIState = MutableStateFlow(LoanUIState(listOf(item1, item2)))
+    val listLoanDetails = listOf(LoanDetails(item1, user1), LoanDetails(item2, user2))
+
+    loanUIState = MutableStateFlow(LoanUIState(listLoanDetails))
     userUIStateWithLocation = MutableStateFlow(UserUIState(user, location))
     userUIStateWithoutLocation = MutableStateFlow(UserUIState(user))
 
@@ -214,10 +220,11 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         {
           val filterState = firstArg<FilterState>()
           val query = filterState.query ?: ""
-          val filteredItems = loanUIState.value.availableItems.filter { it.name.contains(query) }
+          val filteredItems =
+              loanUIState.value.availableLoans.filter { it.item.name.contains(query) }
           val filteredState = loanUIState.value.filterState.copy(query = query)
           loanUIState.value =
-              loanUIState.value.copy(availableItems = filteredItems, filterState = filteredState)
+              loanUIState.value.copy(availableLoans = filteredItems, filterState = filteredState)
         }
 
     composeTestRule.setContent {
@@ -234,7 +241,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     val state = mockLoanViewModel.uiState.value
     assert(state.filterState.query == "dog")
-    assert(state.availableItems.size == 1)
+    assert(state.availableLoans.size == 1)
   }
 
   @Test
@@ -306,15 +313,15 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           val currentPosition = filterState.location ?: Location("")
           val radius = filterState.radius ?: 0.0
           val filteredItems =
-              loanUIState.value.availableItems.filter {
-                it.location.distanceTo(currentPosition) <= (radius * 1000)
+              loanUIState.value.availableLoans.filter {
+                it.item.location.distanceTo(currentPosition) <= (radius * 1000)
               }
-          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+          loanUIState.value = loanUIState.value.copy(availableLoans = filteredItems)
         }
     every { mockLoanViewModel.resetFilter(any()) } answers
         {
           loanUIState.value =
-              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
+              loanUIState.value.copy(availableLoans = loanUIState.value.availableLoans)
         }
 
     composeTestRule.setContent {
@@ -329,8 +336,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       }
     }
 
-    for (item in mockLoanViewModel.uiState.value.availableItems) {
-      Log.d(TAG, "before: item: ${item.location.distanceTo(currentPosition)}")
+    for (item in mockLoanViewModel.uiState.value.availableLoans) {
+      Log.d(TAG, "before: item: ${item.item.location.distanceTo(currentPosition)}")
     }
 
     val slider = composeTestRule.onNodeWithTag("SliderFilter")
@@ -340,13 +347,13 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           swipeRight()
         })
 
-    for (item in mockLoanViewModel.uiState.value.availableItems) {
-      Log.d(TAG, "after: item: ${item.location.distanceTo(currentPosition)}")
+    for (item in mockLoanViewModel.uiState.value.availableLoans) {
+      Log.d(TAG, "after: item: ${item.item.location.distanceTo(currentPosition)}")
     }
 
     val state = mockLoanViewModel.uiState.value
-    assert(state.availableItems.size == 1)
-    assert(state.availableItems[0].name == "cat")
+    assert(state.availableLoans.size == 1)
+    assert(state.availableLoans[0].item.name == "cat")
   }
 
   @Test
@@ -357,13 +364,13 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           val filterState = firstArg<FilterState>()
           val atLeastQuantity = filterState.atLeastQuantity ?: 0
           val filteredItems =
-              loanUIState.value.availableItems.filter { it.quantity >= atLeastQuantity }
-          loanUIState.value = loanUIState.value.copy(availableItems = filteredItems)
+              loanUIState.value.availableLoans.filter { it.item.quantity >= atLeastQuantity }
+          loanUIState.value = loanUIState.value.copy(availableLoans = filteredItems)
         }
     every { mockLoanViewModel.resetFilter(any()) } answers
         {
           loanUIState.value =
-              loanUIState.value.copy(availableItems = loanUIState.value.availableItems)
+              loanUIState.value.copy(availableLoans = loanUIState.value.availableLoans)
         }
 
     composeTestRule.setContent {
@@ -386,8 +393,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         })
 
     val state = mockLoanViewModel.uiState.value
-    assert(state.availableItems.size == 1)
-    assert(state.availableItems[0].name == "dog")
+    assert(state.availableLoans.size == 1)
+    assert(state.availableLoans[0].item.name == "dog")
   }
 
   @Test

@@ -62,7 +62,8 @@ fun LoanScreen(
 ) {
 
   val loansUIState = loanViewModel.uiState.collectAsState()
-  var items = loansUIState.value.availableItems
+  var loans = loansUIState.value.availableLoans
+  Log.d(TAG, "loans: $loans")
 
   val userUiState = userViewModel.uiState.collectAsState()
   var currentLocation = userUiState.value.location
@@ -77,7 +78,10 @@ fun LoanScreen(
     }
   }
 
-  LaunchedEffect(key1 = loansUIState) { items = loansUIState.value.availableItems }
+  LaunchedEffect(key1 = loansUIState) {
+    loans = loansUIState.value.availableLoans
+    Log.d(TAG, "loans2: $loans")
+  }
   LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -108,7 +112,8 @@ fun LoanScreen(
                   modifier = modifier.testTag("LoanScreenMaps"),
                   onMapLoaded = { mapLoaded = true }) {
                     if (mapLoaded) {
-                      items.forEach { item ->
+                      loans.forEach { loan ->
+                        val item = loan.item
                         Marker(
                             state =
                                 MarkerState(
@@ -142,7 +147,9 @@ fun LoanScreen(
                           .padding(PaddingValues(top = 10.dp, bottom = 10.dp))) {
                     if (mapLoaded) {
                       ItemList(
-                          itemList = items,
+                          itemList = loans.map { it.item },
+                          users = loans.map { it.user },
+                          loan = emptyList(),
                           onClick = {
                             itemViewModel.updateUiItem(it)
                             navigationActions.navigateTo(Route.VIEW_ITEM)
@@ -155,9 +162,7 @@ fun LoanScreen(
                                 modifier =
                                     modifier
                                         .background(Color.White)
-                                        .padding(
-                                            PaddingValues(
-                                                start = 10.dp, end = 10.dp, bottom = 10.dp))) {
+                                        .padding(PaddingValues(bottom = 10.dp))) {
                                   Filter(
                                       title = "Distance",
                                       selectedValue = {
@@ -206,8 +211,6 @@ fun LoanScreen(
                           },
                           modifier =
                               modifier.testTag("LoanScreenItemListView").padding(10.dp, 0.dp),
-                          users = emptyList(),
-                          loan = emptyList(),
                           isExpandable = false,
                           wasExpanded = emptyList(),
                           manageLoanViewModel = manageLoanViewModel,
