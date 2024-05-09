@@ -24,9 +24,6 @@ class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
 
   fun onStart() {
     val loan = _uiState.value.loan
-    val item = _uiState.value.item
-    val borrower = _uiState.value.borrower
-    val lender = _uiState.value.lender
     val newLoan =
         loan.copy(
             state = LoanState.ONGOING,
