@@ -48,7 +48,7 @@ fun ItemListColumn(
     onClickCorner: () -> Unit,
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
-    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    manageLoanViewModel: ManageLoanViewModel,
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {

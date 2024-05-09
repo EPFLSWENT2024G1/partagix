@@ -73,7 +73,7 @@ class App(
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val manageViewModel = ManageLoanViewModel(db = db)
+  private val manageLoanViewModel = ManageLoanViewModel(db = db)
 
   private val loanViewModel = LoanViewModel(db = db)
   private val itemViewModel =
@@ -253,7 +253,7 @@ class App(
 
         HomeScreen(
             homeViewModel = HomeViewModel(),
-            manageLoanViewModel = manageViewModel,
+            manageLoanViewModel = manageLoanViewModel,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -269,12 +269,13 @@ class App(
               loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
+              manageLoanViewModel = manageLoanViewModel,
               modifier = modifier)
         } else {
           inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(),
-              manageLoanViewModel = manageViewModel,
+              manageLoanViewModel = manageLoanViewModel,
               navigationActions = navigationActions)
         }
       }
@@ -283,7 +284,8 @@ class App(
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
-            itemViewModel = itemViewModel)
+            itemViewModel = itemViewModel,
+            manageLoanViewModel = manageLoanViewModel)
       }
       composable(Route.QR_SCAN) { QrScanScreen(navigationActions) }
 
@@ -314,7 +316,7 @@ class App(
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
         ManageLoanRequest(
-            manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
+            manageLoanViewModel = manageLoanViewModel, navigationActions = navigationActions)
       }
       composable(
           Route.STAMP + "/{itemId}",
@@ -329,12 +331,14 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
+            manageLoanViewModel,
             modifier = modifier)
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
+            manageLoanViewModel,
             modifier = modifier)
       }
     }

@@ -31,6 +31,7 @@ import com.android.partagix.model.FilterAction
 import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
@@ -56,6 +57,7 @@ fun LoanScreen(
     loanViewModel: LoanViewModel,
     itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
+    manageLoanViewModel: ManageLoanViewModel,
     modifier: Modifier = Modifier,
 ) {
 
@@ -208,6 +210,7 @@ fun LoanScreen(
                           loan = emptyList(),
                           isExpandable = false,
                           wasExpanded = emptyList(),
+                          manageLoanViewModel = manageLoanViewModel,
                       )
                     }
                   }

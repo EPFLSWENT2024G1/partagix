@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -35,6 +36,7 @@ import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.google.maps.android.compose.clustering.rememberClusterManager
 
 /**
  * InventoryScreen is a composable that displays the inventory screen of the user.
@@ -48,6 +50,7 @@ fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
+    manageLoanViewModel: ManageLoanViewModel,
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
@@ -81,10 +84,10 @@ fun InventoryScreen(
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
-                  modifier
-                      .padding(innerPadding)
-                      .fillMaxSize()
-                      .testTag("inventoryScreenNoItemBox")) {
+              modifier
+                  .padding(innerPadding)
+                  .fillMaxSize()
+                  .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text = "There is no items in the inventory.",
                     modifier =
@@ -106,7 +109,8 @@ fun InventoryScreen(
                 isCornerClickable = false,
                 isClickable = false,
                 isExpandable = false,
-                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
+                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"),
+                manageLoanViewModel = manageLoanViewModel,)
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
@@ -123,6 +127,7 @@ fun InventoryScreen(
                 isCornerClickable = false,
                 isClickable = true,
                 isExpandable = false,
+                manageLoanViewModel = manageLoanViewModel,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }

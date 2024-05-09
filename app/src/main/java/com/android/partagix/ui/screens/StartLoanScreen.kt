@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemUi
@@ -38,6 +39,7 @@ import com.android.partagix.ui.navigation.Route
 fun StartLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
+    manageLoanViewModel: ManageLoanViewModel,
     modifier: Modifier = Modifier
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
@@ -79,7 +81,7 @@ fun StartLoanScreen(
             verticalArrangement = Arrangement.Center, // Center items vertically
             horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
             ) {
-              ItemUi(item, borrower, loan)
+              ItemUi(item, borrower, loan, manageLoanViewModel = manageLoanViewModel)
               Row {
                 Button(
                     onClick = { startOrEndLoanViewModel.onStart() },

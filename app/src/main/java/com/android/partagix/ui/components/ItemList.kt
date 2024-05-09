@@ -40,7 +40,7 @@ fun ItemList(
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onClick: (Item) -> Unit,
-    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    manageLoanViewModel: ManageLoanViewModel,
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {

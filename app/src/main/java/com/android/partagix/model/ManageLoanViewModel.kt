@@ -36,7 +36,7 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
       latch.countDown()
       return
     } else {
-      database.getItems { list ->
+        database.getItems { list ->
         database.getLoans {
           it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
               .forEach { loan ->

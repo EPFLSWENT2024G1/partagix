@@ -67,7 +67,7 @@ fun ItemUi(
     wasExpanded: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
-    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    manageLoanViewModel: ManageLoanViewModel,
     index: Int = 0,
 ) {
   val date: Date =

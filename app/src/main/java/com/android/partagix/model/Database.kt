@@ -114,7 +114,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
-    getItems { items ->
+      getItems { items ->
       val listItems = mutableListOf<Item>()
       for (item in items) {
         if (item.idUser == userId) {
@@ -139,15 +139,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
               val loan =
                   Loan(
                       document.id,
-                      document.data["id_owner"] as String,
-                      document.data["id_loaner"] as String,
+                      document.data["id_lender"] as String,
+                      document.data["id_borrower"] as String,
                       document.data["id_item"] as String,
                       startDate.toDate(),
                       endDate.toDate(),
-                      document.data["review_owner"] as String,
-                      document.data["review_loaner"] as String,
-                      document.data["comment_owner"] as String,
-                      document.data["comment_loaner"] as String,
+                      document.data["review_lender"] as String,
+                      document.data["review_borrower"] as String,
+                      document.data["comment_lender"] as String,
+                      document.data["comment_borrower"] as String,
                       loanState,
                   )
               ret.add(loan)
