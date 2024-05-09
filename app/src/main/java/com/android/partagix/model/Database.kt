@@ -137,15 +137,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
               val loan =
                   Loan(
                       document.id,
-                      document.data["id_owner"] as String,
-                      document.data["id_loaner"] as String,
+                      document.data["id_lender"] as String,
+                      document.data["id_borrower"] as String,
                       document.data["id_item"] as String,
                       startDate.toDate(),
                       endDate.toDate(),
-                      document.data["review_owner"] as String,
-                      document.data["review_loaner"] as String,
-                      document.data["comment_owner"] as String,
-                      document.data["comment_loaner"] as String,
+                      document.data["review_lender"] as String,
+                      document.data["review_borrower"] as String,
+                      document.data["comment_lender"] as String,
+                      document.data["comment_borrower"] as String,
                       loanState,
                   )
               ret.add(loan)
@@ -224,15 +224,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     val idLoan = getNewUid(loan)
     val data5 =
         hashMapOf(
-            "id_owner" to idUser,
-            "id_loaner" to idUser,
+            "id_lender" to idUser,
+            "id_borrower" to idUser,
             "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
-            "review_owner" to "Review",
-            "review_loaner" to "Review",
-            "comment_owner" to "Comment",
-            "comment_loaner" to "Comment",
+            "review_lender" to "Review",
+            "review_borrower" to "Review",
+            "comment_lender" to "Comment",
+            "comment_borrower" to "Comment",
             "state" to LoanState.FINISHED.toString())
     loan.document(idLoan).set(data5)
 
@@ -315,15 +315,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun setLoan(newLoan: Loan) {
     val data5 =
         hashMapOf(
-            "id_owner" to newLoan.idLender,
-            "id_loaner" to newLoan.idBorrower,
+            "id_lender" to newLoan.idLender,
+            "id_borrower" to newLoan.idBorrower,
             "id_item" to newLoan.idItem,
             "start_date" to newLoan.startDate,
             "end_date" to newLoan.endDate,
-            "review_owner" to newLoan.reviewLender,
-            "review_loaner" to newLoan.reviewBorrower,
-            "comment_owner" to newLoan.commentLender,
-            "comment_loaner" to newLoan.commentBorrower,
+            "review_lender" to newLoan.reviewLender,
+            "review_borrower" to newLoan.reviewBorrower,
+            "comment_lender" to newLoan.commentLender,
+            "comment_borrower" to newLoan.commentBorrower,
             "loan_state" to newLoan.state.toString())
 
     loan.document(newLoan.id).set(data5)
@@ -393,7 +393,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Retrieve all comments that a user has received, both as a owner than as an loaner
+   * Retrieve all comments that a user has received, both as a lender than as an borrower
    *
    * @param userId the user's id
    * @param onSuccess the function to return a List containing pairs (comment's author name,
@@ -407,25 +407,25 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
         if (loan.state == LoanState.FINISHED // only finished loans
         &&
-            loan.idOwner == userId // if the user is the owner,
+            loan.idLender == userId // if the user is the lender,
             &&
-            loan.reviewOwner.toDouble() != 0.0 // that has been reviewed,
+            loan.reviewLender.toDouble() != 0.0 // that has been reviewed,
             &&
-            loan.commentOwner != "") { // and received a comment
+            loan.commentLender != "") { // and received a comment
 
-          getUser(loan.idLoaner, onNoUser = {}) { user ->
-            ret.add(Pair(user.name, loan.commentOwner))
+          getUser(loan.idBorrower, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentLender))
           }
         } else if (loan.state == LoanState.FINISHED // only finished loans
         &&
-            loan.idLoaner == userId // if the user is the loaner,
+            loan.idBorrower == userId // if the user is the borrower,
             &&
-            loan.reviewLoaner.toDouble() != 0.0 // that has been reviewed
+            loan.reviewBorrower.toDouble() != 0.0 // that has been reviewed
             &&
-            loan.commentLoaner != "") { // and received a comment
+            loan.commentBorrower != "") { // and received a comment
 
-          getUser(loan.idOwner, onNoUser = {}) { user ->
-            ret.add(Pair(user.name, loan.commentLoaner))
+          getUser(loan.idLender, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentBorrower))
           }
         }
       }
@@ -435,7 +435,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Retrieve all ranks that a user has received, both as a owner than as an loaner, compute the
+   * Retrieve all ranks that a user has received, both as a lender than as an borrower, compute the
    * average rank, and store it in the user's rank
    *
    * @param idUser the user's id
@@ -450,19 +450,19 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
         if (loan.state == LoanState.FINISHED // only finished loans
         &&
-            loan.idOwner == idUser // if the user is the owner,
+            loan.idLender == idUser // if the user is the lender,
             &&
-            loan.reviewOwner.toDouble() != 0.0) { // that has been reviewed
+            loan.reviewLender.toDouble() != 0.0) { // that has been reviewed
 
-          rankSum += loan.reviewOwner.toDouble()
+          rankSum += loan.reviewLender.toDouble()
           rankCount++
         } else if (loan.state == LoanState.FINISHED // only finished loans
         &&
-            loan.idLoaner == idUser // if the user is the loaner,
+            loan.idBorrower == idUser // if the user is the borrower,
             &&
-            loan.reviewLoaner.toDouble() != 0.0) { // that has been reviewed
+            loan.reviewBorrower.toDouble() != 0.0) { // that has been reviewed
 
-          rankSum += loan.reviewLoaner.toDouble()
+          rankSum += loan.reviewBorrower.toDouble()
           rankCount++
         }
       }
@@ -489,15 +489,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       for (loan in loans) {
 
         if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idOwner == userId) {
+        && loan.id == loanId && loan.idLender == userId) {
 
-          this.loan.document(loanId).update("review_owner", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_owner", comment)
+          this.loan.document(loanId).update("review_lender", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
         } else if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idLoaner == userId) {
+        && loan.id == loanId && loan.idBorrower == userId) {
 
-          this.loan.document(loanId).update("review_loaner", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_loaner", comment)
+          this.loan.document(loanId).update("review_borrower", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
         }
       }
     }

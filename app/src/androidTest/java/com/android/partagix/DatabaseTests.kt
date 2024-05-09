@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.Timestamp
 import com.google.firebase.Timestamp.now
-import com.google.firebase.database.Query
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -26,7 +25,6 @@ import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util.voidErrorTransformer
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.spyk
@@ -45,12 +43,12 @@ class DatabaseTests {
       mutableMapOf<String, Any>(
           "Id" to documentId,
           "Name" to "905 Maple Drive",
-          "CreatedDt" to Timestamp.now(),
+          "CreatedDt" to now(),
           "OwnerName" to "Jim Smith")
 
   /**
    * Mocks the simplest behaviour of a task so .await() can return task or throw exception See more
-   * on [await] and inside of that on awaitImpl
+   * on _await_ and inside of that on awaitImpl
    */
   inline fun <reified T> mockTask(result: T?, exception: Exception? = null): Task<T> {
     val task: Task<T> = mockk(relaxed = true)
@@ -237,8 +235,6 @@ class DatabaseTests {
     val mockUsersCollection = mockk<CollectionReference>()
     val mockLoanCollection = mockk<CollectionReference>()
     val mockItemLoanCollection = mockk<CollectionReference>()
-    val mockItemsQuery = mockk<Query>()
-    val mockCategoriesQuery = mockk<Query>()
     val mockItemsTask = mockk<Task<QuerySnapshot>>()
     val mockCategoriesTask = mockk<Task<QuerySnapshot>>()
 
@@ -259,8 +255,6 @@ class DatabaseTests {
         )
 
     every { mockDb.collection(any()) } returns mockItemsCollection
-    // Create Database instance
-    val databaseUsedOnlyOnce = Database(mockDb)
 
     // Define behavior for Firestore mocks
     every { mockDb.collection("items") } returns mockItemsCollection
@@ -437,41 +431,41 @@ class DatabaseTests {
     val loan1 =
         Loan(
             id = idLoan1,
-            commentLoaner = "just ok",
-            commentOwner = "banger",
+            commentBorrower = "just ok",
+            commentLender = "banger",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "4",
-            reviewOwner = "2",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "4",
+            reviewLender = "2",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
     val loan2 =
         Loan(
             id = idLoan2,
-            commentLoaner = "sympathetic",
-            commentOwner = "ungrateful owner",
+            commentBorrower = "sympathetic",
+            commentLender = "ungrateful lender",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user2.id,
-            idLoaner = user1.id,
-            reviewLoaner = "1",
-            reviewOwner = "3",
+            idLender = user2.id,
+            idBorrower = user1.id,
+            reviewBorrower = "1",
+            reviewLender = "3",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
     val loan3 =
         Loan(
             id = idLoan3,
-            commentLoaner = "hello world",
-            commentOwner = "unefficient",
+            commentBorrower = "hello world",
+            commentLender = "unefficient",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "5",
-            reviewOwner = "4",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "5",
+            reviewLender = "4",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
@@ -543,41 +537,41 @@ class DatabaseTests {
     val loan1 =
         Loan(
             id = idLoan1,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "4",
-            reviewOwner = "3",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "4",
+            reviewLender = "3",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
     val loan2 =
         Loan(
             id = idLoan2,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user2.id,
-            idLoaner = user1.id,
-            reviewLoaner = "2",
-            reviewOwner = "3",
+            idLender = user2.id,
+            idBorrower = user1.id,
+            reviewBorrower = "2",
+            reviewLender = "3",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
     val loan3 =
         Loan(
             id = idLoan3,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "5",
-            reviewOwner = "4",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "5",
+            reviewLender = "4",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
@@ -646,42 +640,42 @@ class DatabaseTests {
     val loan1 =
         Loan(
             id = idLoan1,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "",
-            reviewOwner = "",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "",
+            reviewLender = "",
             startDate = java.util.Date(),
             state = LoanState.FINISHED)
 
     val loan2 =
         Loan(
             id = idLoan2,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "",
-            reviewOwner = "",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "",
+            reviewLender = "",
             startDate = java.util.Date(),
             state = LoanState.PENDING)
 
     val loan3 =
         Loan(
             id = idLoan3,
-            commentLoaner = "",
-            commentOwner = "",
+            commentBorrower = "",
+            commentLender = "",
             endDate = java.util.Date(),
             idItem = "item1",
-            idOwner = user1.id,
-            idLoaner = user2.id,
-            reviewLoaner = "",
-            reviewOwner = "",
+            idLender = user1.id,
+            idBorrower = user2.id,
+            reviewBorrower = "",
+            reviewLender = "",
             startDate = java.util.Date(),
             state = LoanState.PENDING)
 
