@@ -157,6 +157,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
+
   /*
    fun getCategories(onSuccess: (List<Category>) -> Unit) {
      categories
@@ -389,89 +390,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         )
     users.document(user.id).set(data)
     onSuccess(user)
-  }
-
-  /**
-   * Retrieve all comments that a user has received, both as a owner than as an loaner
-   *
-   * @param userId the user's id
-   * @param onSuccess the function to return a List containing pairs (comment's author name,
-   *   comment)
-   */
-  fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
-    val ret = mutableListOf<Pair<String, String>>()
-
-    // Function to add a comment with the author's name to the list
-    fun addComment(userId: String, comment: String) {
-      var authorName = "" // name of the author of the comment, i.e. the owner
-      getUser(userId) { user -> authorName = user.name }
-
-      ret.add(Pair(authorName, comment))
-    }
-
-    getLoans { loans ->
-      for (loan in loans) {
-
-        if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idOwner == userId // if the user is the owner,
-            &&
-            loan.reviewOwner.toDouble() != 0.0 // that has been reviewed,
-            &&
-            loan.commentOwner != "") { // and received a comment
-
-          addComment(loan.idLoaner, loan.commentOwner)
-        } else if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idLoaner == userId // if the user is the loaner,
-            &&
-            loan.reviewLoaner.toDouble() != 0.0 // that has been reviewed
-            &&
-            loan.commentLoaner != "") { // and received a comment
-
-          addComment(loan.idOwner, loan.commentLoaner)
-        }
-      }
-    }
-
-    onSuccess(ret)
-  }
-
-  /**
-   * Retrieve all ranks that a user has received, both as a owner than as an loaner, compute the
-   * average rank, and store it in the user's rank
-   *
-   * @param idUser the user's id
-   */
-  fun newAverageRank(idUser: String) {
-
-    var rankSum = 0.0
-    var rankCount = 0L
-
-    getLoans { loans ->
-      for (loan in loans) {
-
-        if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idOwner == idUser // if the user is the owner,
-            &&
-            loan.reviewOwner.toDouble() != 0.0) { // that has been reviewed
-
-          rankSum += loan.reviewOwner.toDouble()
-          rankCount++
-        } else if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idLoaner == idUser // if the user is the loaner,
-            &&
-            loan.reviewLoaner.toDouble() != 0.0) { // that has been reviewed
-
-          rankSum += loan.reviewLoaner.toDouble()
-          rankCount++
-        }
-      }
-      val averageRank = rankSum / rankCount.toDouble()
-      users.document(idUser).update("rank", averageRank.toString())
-    }
   }
 
   /**

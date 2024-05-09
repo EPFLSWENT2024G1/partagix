@@ -1,12 +1,16 @@
 package com.android.partagix
 
+import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.auth.Authentication
+import com.android.partagix.model.category.Category
+import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.every
 import io.mockk.mockk
@@ -91,6 +95,15 @@ class FinishedLoansViewModelTests {
           "commented",
           "commented",
           LoanState.ACCEPTED)
+  val item =
+      Item(
+          "item1",
+          Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+          "",
+          "",
+          Visibility.PRIVATE,
+          0,
+          Location(""))
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
@@ -124,5 +137,18 @@ class FinishedLoansViewModelTests {
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
     finishedLoansViewModel.getFinishedLoan()
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
+  }
+
+  @Test
+  fun getItemTests() {
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "Cedric"
+    every { db.getItem("item1", any()) } answers
+        { invocation ->
+          val onSuccessItem = invocation.invocation.args[1] as (Item) -> Unit
+          onSuccessItem(item)
+        }
+    finishedLoansViewModel.getItem("item1")
+    assert(finishedLoansViewModel.uiItem.value == item)
   }
 }
