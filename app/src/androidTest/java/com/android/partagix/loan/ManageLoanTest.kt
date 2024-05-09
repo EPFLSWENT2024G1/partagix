@@ -31,7 +31,7 @@ import org.junit.Test
 class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
-  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
+  private var mockManageViewModel = ManageLoanViewModel()
 
   private lateinit var emptyMockUiState: MutableStateFlow<ManagerUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ManagerUIState>

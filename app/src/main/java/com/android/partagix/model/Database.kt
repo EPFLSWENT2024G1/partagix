@@ -114,7 +114,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
-      getItems { items ->
+    getItems { items ->
       val listItems = mutableListOf<Item>()
       for (item in items) {
         if (item.idUser == userId) {

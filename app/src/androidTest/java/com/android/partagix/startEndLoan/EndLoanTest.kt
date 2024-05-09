@@ -2,6 +2,7 @@ package com.android.partagix.startEndLoan
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StartOrEndLoanUIState
 import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.model.emptyConst.emptyItem
@@ -32,6 +33,7 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockStartOrEndLoanViewModel: StartOrEndLoanViewModel
   @RelaxedMockK lateinit var mockStartOrEndLoanUiState: MutableStateFlow<StartOrEndLoanUIState>
+  private var mockManageViewModel = ManageLoanViewModel()
 
   @Before
   fun testSetup() {
@@ -45,7 +47,11 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.goBack() } just Runs
 
-    composeTestRule.setContent { EndLoanScreen(mockStartOrEndLoanViewModel, mockNavActions) }
+    mockManageViewModel = mockk()
+
+    composeTestRule.setContent {
+      EndLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockManageViewModel)
+    }
   }
 
   @Test

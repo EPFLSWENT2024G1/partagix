@@ -27,6 +27,7 @@ import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanUIState
 import com.android.partagix.model.LoanViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.UserUIState
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.category.Category
@@ -68,6 +69,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   @RelaxedMockK lateinit var mockLoanViewModel: LoanViewModel
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
   @RelaxedMockK lateinit var itemViewModel: ItemViewModel
+  private var mockManageViewModel = ManageLoanViewModel()
 
   private lateinit var loanUIState: MutableStateFlow<LoanUIState>
   private lateinit var userUIStateWithLocation: MutableStateFlow<UserUIState>
@@ -178,7 +180,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun contentIsDisplayed() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -197,7 +200,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun userWithoutLocationWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithoutLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
@@ -217,7 +221,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     val node = composeTestRule.onNodeWithTag("LoanScreenSearchBar").onChild()
@@ -267,7 +272,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun filtersAndItemListAreClickable() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -312,7 +318,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -360,7 +367,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -386,7 +394,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun itemsListIsClickable() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel, mockManageViewModel)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {

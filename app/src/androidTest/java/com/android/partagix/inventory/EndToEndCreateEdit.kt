@@ -60,7 +60,7 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
-  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
+  private var mockManageViewModel = ManageLoanViewModel()
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
 
@@ -173,7 +173,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          itemViewModel = mockItemViewModel)
+          itemViewModel = mockItemViewModel,
+          manageLoanViewModel = mockManageViewModel)
     }
 
     composeTestRule.onNodeWithText("There is no items in the inventory.").assertIsDisplayed()
@@ -220,7 +221,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          itemViewModel = mockItemViewModel)
+          itemViewModel = mockItemViewModel,
+          manageLoanViewModel = mockManageViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
@@ -301,7 +303,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          itemViewModel = mockItemViewModel)
+          itemViewModel = mockItemViewModel,
+          manageLoanViewModel = mockManageViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()

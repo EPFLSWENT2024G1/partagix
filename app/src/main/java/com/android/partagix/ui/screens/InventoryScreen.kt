@@ -36,7 +36,6 @@ import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.google.maps.android.compose.clustering.rememberClusterManager
 
 /**
  * InventoryScreen is a composable that displays the inventory screen of the user.
@@ -84,10 +83,10 @@ fun InventoryScreen(
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
-              modifier
-                  .padding(innerPadding)
-                  .fillMaxSize()
-                  .testTag("inventoryScreenNoItemBox")) {
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text = "There is no items in the inventory.",
                     modifier =
@@ -110,7 +109,8 @@ fun InventoryScreen(
                 isClickable = false,
                 isExpandable = false,
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"),
-                manageLoanViewModel = manageLoanViewModel,)
+                manageLoanViewModel = manageLoanViewModel,
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
