@@ -4,6 +4,7 @@ enum class LoanState {
   PENDING,
   ACCEPTED,
   REFUSED,
+  ONGOING,
   CANCELLED,
   FINISHED
 }

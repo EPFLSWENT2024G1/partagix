@@ -41,7 +41,7 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
           it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
               .forEach { loan ->
                 updateItems(list.first { it.id == loan.idItem })
-                database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                database.getUser(loan.idLender) { user -> updateUsers(user) }
                 updateExpandedReset()
                 updateLoans(loan)
               }
