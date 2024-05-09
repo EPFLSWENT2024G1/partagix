@@ -91,40 +91,45 @@ fun InventoryScreen(
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
         } else {
-          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            ItemListColumn(
-                list = uiState.borrowedItems,
-                users = uiState.usersBor,
-                loan = uiState.loanBor,
-                title = "Borrowed items",
-                corner = uiState.borrowedItems.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = false,
-                isExpandable = false,
-                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
+          Column(
+              modifier =
+                  modifier
+                      .padding(innerPadding)
+                      .padding(start = 10.dp, end = 10.dp)
+                      .fillMaxSize()) {
+                ItemListColumn(
+                    list = uiState.borrowedItems,
+                    users = uiState.usersBor,
+                    loan = uiState.loanBor,
+                    title = "Borrowed items",
+                    corner = uiState.borrowedItems.size.toString(),
+                    onClick = {
+                      itemViewModel.updateUiItem(it)
+                      navigationActions.navigateTo(Route.VIEW_ITEM)
+                    },
+                    onClickCorner = {},
+                    isCornerClickable = false,
+                    isExpandable = false,
+                    isClickable = true,
+                    modifier = Modifier.height(190.dp).testTag("inventoryScreenBorrowedItemList"))
 
-            Spacer(modifier = Modifier.height(8.dp))
-            ItemListColumn(
-                list = uiState.items,
-                users = uiState.users,
-                loan = uiState.loan,
-                title = "Inventory item",
-                corner = uiState.items.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = true,
-                isExpandable = false,
-                modifier = Modifier.testTag("inventoryScreenItemList"))
-          }
+                Spacer(modifier = Modifier.height(14.dp))
+                ItemListColumn(
+                    list = uiState.items,
+                    users = uiState.users,
+                    loan = uiState.loan,
+                    title = "Inventory item",
+                    corner = uiState.items.size.toString(),
+                    onClick = {
+                      itemViewModel.updateUiItem(it)
+                      navigationActions.navigateTo(Route.VIEW_ITEM)
+                    },
+                    onClickCorner = {},
+                    isCornerClickable = false,
+                    isExpandable = false,
+                    isClickable = true,
+                    modifier = Modifier.testTag("inventoryScreenItemList"))
+              }
         }
       }
 }
