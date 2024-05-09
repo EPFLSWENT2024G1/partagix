@@ -44,6 +44,7 @@ fun ItemListColumn(
     corner: String,
     isCornerClickable: Boolean,
     onClick: (Item) -> Unit,
+    isClickable: Boolean,
     onClickCorner: () -> Unit,
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
@@ -78,7 +79,12 @@ fun ItemListColumn(
         itemList = list,
         users = users,
         loan = loan,
-        onClick = onClick,
+        onClick =
+            if (isClickable) {
+              onClick
+            } else {
+              {}
+            },
         isExpandable = isExpandable,
         wasExpanded = wasExpanded,
         manageLoanViewModel = manageLoanViewModel,

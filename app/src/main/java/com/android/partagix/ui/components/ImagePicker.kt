@@ -96,7 +96,7 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
       AsyncImage(
           model = uri,
           contentDescription = null,
-          modifier = Modifier.fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth().testTag("ImagePicked $uri"),
           contentScale = ContentScale.Fit)
     }
   }
