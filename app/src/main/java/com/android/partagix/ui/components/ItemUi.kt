@@ -1,6 +1,8 @@
 package com.android.partagix.ui.components
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -42,6 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.R
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
@@ -275,8 +279,16 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
+                var imgBitmap: Bitmap? = null
+              val imgFile = item.imageId
+              if (imgFile.exists()) {
+                // on below line we are creating an image bitmap variable
+                // and adding a bitmap to it from image file.
+                imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+              }
+
+              Image(
+                    painter = rememberAsyncImagePainter(model = imgBitmap),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
