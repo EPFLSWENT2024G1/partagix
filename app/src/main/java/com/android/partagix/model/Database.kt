@@ -393,11 +393,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Retrieve all comments that a user has received, both as a lender than as an borrower
+   * Retrieve all comments that a user has received, both as a lender and as a borrower
    *
    * @param userId the user's id
-   * @param onSuccess the function to return a List containing pairs (comment's author name,
-   *   comment)
+   * @param onSuccess the function that will be called with the resulting list containing pairs
+   *   (comment's author name, comment)
    */
   fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
     val ret = mutableListOf<Pair<String, String>>()
@@ -435,7 +435,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Retrieve all ranks that a user has received, both as a lender than as an borrower, compute the
+   * Retrieve all ranks that a user has received, both as a lender and as a borrower, compute the
    * average rank, and store it in the user's rank
    *
    * @param idUser the user's id
@@ -466,8 +466,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           rankCount++
         }
       }
-      val averageRank = rankSum / rankCount.toDouble()
-      users.document(idUser).update("rank", averageRank.toString())
+
+      if (rankCount != 0L) {
+        val averageRank = rankSum / rankCount.toDouble()
+        users.document(idUser).update("rank", averageRank.toString())
+      }
     }
   }
 
@@ -483,7 +486,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       loanId: String,
       userId: String,
       rank: Double,
-      comment: String,
+      comment: String = "",
   ) {
     getLoans { loans ->
       for (loan in loans) {
