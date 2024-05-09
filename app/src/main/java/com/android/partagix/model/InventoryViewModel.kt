@@ -89,7 +89,7 @@ class InventoryViewModel(
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
           database.getLoans {
-            it.filter { it.idLoaner.equals(user.uid) && it.state == LoanState.ACCEPTED }
+            it.filter { it.idBorrower.equals(user.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
                   getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)

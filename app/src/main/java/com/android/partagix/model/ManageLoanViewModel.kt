@@ -46,9 +46,9 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
           it.filter { loan ->
                 val id =
                     if (isOutgoing) {
-                      loan.idLoaner
+                      loan.idBorrower
                     } else {
-                      loan.idOwner
+                      loan.idLender
                     }
                 loan.state == LoanState.PENDING && id == user.uid
               }

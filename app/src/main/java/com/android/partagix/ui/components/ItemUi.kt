@@ -64,7 +64,7 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    isOutgoing: Boolean,
+    isOutgoing: Boolean = false,
     wasExpanded: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
