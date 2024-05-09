@@ -398,35 +398,40 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to return a List containing pairs (comment's author name, comment)
    */
   fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit){
+    val ret = mutableListOf<Pair<String, String>>()
+
+    // Function to add a comment with the author's name to the list
+    fun addComment(userId: String, comment: String) {
+      var authorName = "" // name of the author of the comment, i.e. the owner
+      getUser(userId) { user -> authorName = user.name }
+
+      ret.add(Pair(authorName, comment))
+    }
+
     loan
       .get()
       .addOnSuccessListener { result ->
-        val ret = mutableListOf<Pair<String, String>>()
         for (document in result) {
 
-          if (document.data["id_owner"] as String == userId // if the user is the owner,
-              && document.data["review_owner"] as Double != 0.0 // that has been reviewed,
-              && document.data["comment_owner"] as String != "") { // and received a comment
+          if (document.data["loan_state"] as String == LoanState.FINISHED.toString() // only finished loans
+            && document.data["id_owner"] as String == userId // if the user is the owner,
+            && document.data["review_owner"] as Double != 0.0 // that has been reviewed,
+            && document.data["comment_owner"] as String != "") { // and received a comment
 
-            var authorName = "" // name of the author of the comment, i.e. the loaner
-            getUser(document.data["id_loaner"] as String) { user -> authorName = user.name }
-
-            ret.add(Pair(authorName, document.data["comment_owner"] as String))
-
-          } else if (document.data["id_loaner"] as String == userId // if the user is the loaner,
+            addComment(document.data["id_loaner"] as String, document.data["comment_owner"] as String)
+          } else if (document.data["loan_state"] as String == LoanState.FINISHED.toString() // only finished loans
+            && document.data["id_loaner"] as String == userId // if the user is the loaner,
             && document.data["review_loaner"] as Double != 0.0 // that has been reviewed
             && document.data["comment_loaner"] as String != "") { // and received a comment
 
-            var authorName = "" // name of the author of the comment, i.e. the owner
-            getUser(document.data["id_owner"] as String) { user -> authorName = user.name }
-
-            ret.add(Pair(authorName, document.data["comment_loaner"] as String))
+            addComment(document.data["id_owner"] as String, document.data["comment_loaner"] as String)
           }
 
         }
-        onSuccess(ret)
       }
       .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
+
+    onSuccess(ret)
   }
 
   // todo test
