@@ -23,9 +23,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
 
-  init {
-    // createExampleForDb()
-  }
+  init {} // kept for easier testing purposes
 
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
@@ -139,15 +137,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
               val loan =
                   Loan(
                       document.id,
-                      document.data["id_owner"] as String,
-                      document.data["id_loaner"] as String,
+                      document.data["id_lender"] as String,
+                      document.data["id_borrower"] as String,
                       document.data["id_item"] as String,
                       startDate.toDate(),
                       endDate.toDate(),
-                      document.data["review_owner"] as String,
-                      document.data["review_loaner"] as String,
-                      document.data["comment_owner"] as String,
-                      document.data["comment_loaner"] as String,
+                      document.data["review_lender"] as String,
+                      document.data["review_borrower"] as String,
+                      document.data["comment_lender"] as String,
+                      document.data["comment_borrower"] as String,
                       loanState,
                   )
               ret.add(loan)
@@ -226,15 +224,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     val idLoan = getNewUid(loan)
     val data5 =
         hashMapOf(
-            "id_owner" to idUser,
-            "id_loaner" to idUser,
+            "id_lender" to idUser,
+            "id_borrower" to idUser,
             "id_item" to idItem,
             "start_date" to Date(),
             "end_date" to Date(),
-            "review_owner" to "Review",
-            "review_loaner" to "Review",
-            "comment_owner" to "Comment",
-            "comment_loaner" to "Comment",
+            "review_lender" to "Review",
+            "review_borrower" to "Review",
+            "comment_lender" to "Comment",
+            "comment_borrower" to "Comment",
             "state" to LoanState.FINISHED.toString())
     loan.document(idLoan).set(data5)
 
@@ -317,15 +315,15 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun setLoan(newLoan: Loan) {
     val data5 =
         hashMapOf(
-            "id_owner" to newLoan.idLender,
-            "id_loaner" to newLoan.idBorrower,
+            "id_lender" to newLoan.idLender,
+            "id_borrower" to newLoan.idBorrower,
             "id_item" to newLoan.idItem,
             "start_date" to newLoan.startDate,
             "end_date" to newLoan.endDate,
-            "review_owner" to newLoan.reviewLender,
-            "review_loaner" to newLoan.reviewBorrower,
-            "comment_owner" to newLoan.commentLender,
-            "comment_loaner" to newLoan.commentBorrower,
+            "review_lender" to newLoan.reviewLender,
+            "review_borrower" to newLoan.reviewBorrower,
+            "comment_lender" to newLoan.commentLender,
+            "comment_borrower" to newLoan.commentBorrower,
             "loan_state" to newLoan.state.toString())
 
     loan.document(newLoan.id).set(data5)
@@ -360,6 +358,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
 
+  /**
+   * Create a user in the database
+   *
+   * @param user the user to create
+   */
   fun createUser(user: User) {
     val data =
         hashMapOf(
@@ -387,6 +390,120 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         )
     users.document(user.id).set(data)
     onSuccess(user)
+  }
+
+  /**
+   * Retrieve all comments that a user has received, both as a lender and as a borrower
+   *
+   * @param userId the user's id
+   * @param onSuccess the function that will be called with the resulting list containing pairs
+   *   (comment's author name, comment)
+   */
+  fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
+    val ret = mutableListOf<Pair<String, String>>()
+
+    getLoans { loans ->
+      for (loan in loans) {
+
+        if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idLender == userId // if the user is the lender,
+            &&
+            loan.reviewLender.toDouble() != 0.0 // that has been reviewed,
+            &&
+            loan.commentLender != "") { // and received a comment
+
+          getUser(loan.idBorrower, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentLender))
+          }
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idBorrower == userId // if the user is the borrower,
+            &&
+            loan.reviewBorrower.toDouble() != 0.0 // that has been reviewed
+            &&
+            loan.commentBorrower != "") { // and received a comment
+
+          getUser(loan.idLender, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentBorrower))
+          }
+        }
+      }
+    }
+
+    onSuccess(ret)
+  }
+
+  /**
+   * Retrieve all ranks that a user has received, both as a lender and as a borrower, compute the
+   * average rank, and store it in the user's rank
+   *
+   * @param idUser the user's id
+   */
+  fun newAverageRank(idUser: String) {
+
+    var rankSum = 0.0
+    var rankCount = 0L
+
+    getLoans { loans ->
+      for (loan in loans) {
+
+        if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idLender == idUser // if the user is the lender,
+            &&
+            loan.reviewLender.toDouble() != 0.0) { // that has been reviewed
+
+          rankSum += loan.reviewLender.toDouble()
+          rankCount++
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        &&
+            loan.idBorrower == idUser // if the user is the borrower,
+            &&
+            loan.reviewBorrower.toDouble() != 0.0) { // that has been reviewed
+
+          rankSum += loan.reviewBorrower.toDouble()
+          rankCount++
+        }
+      }
+
+      if (rankCount != 0L) {
+        val averageRank = rankSum / rankCount.toDouble()
+        users.document(idUser).update("rank", averageRank.toString())
+      }
+    }
+  }
+
+  /**
+   * Set a review for a loan, i.e a rank and an optional comment
+   *
+   * @param loanId the loan's id
+   * @param userId the reviewed user's id
+   * @param rank the rank to be set, must be between 0.5 and 5
+   * @param comment an optional comment to be set
+   */
+  fun setReview(
+      loanId: String,
+      userId: String,
+      rank: Double,
+      comment: String = "",
+  ) {
+    getLoans { loans ->
+      for (loan in loans) {
+
+        if (loan.state == LoanState.FINISHED // only finished loans
+        && loan.id == loanId && loan.idLender == userId) {
+
+          this.loan.document(loanId).update("review_lender", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
+        } else if (loan.state == LoanState.FINISHED // only finished loans
+        && loan.id == loanId && loan.idBorrower == userId) {
+
+          this.loan.document(loanId).update("review_borrower", rank.toString())
+          if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
+        }
+      }
+    }
   }
 
   companion object {
