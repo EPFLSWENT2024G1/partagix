@@ -65,41 +65,41 @@ class ManageViewModelTest {
   private val loan1 =
       Loan(
           id = "1",
-          commentLoaner = "commentLoaner",
-          commentOwner = "commentOwner",
+          commentBorrower = "commentLoaner",
+          commentLender = "commentOwner",
           endDate = Date(),
           idItem = "item1",
-          idOwner = "8WuTkKJZLTAr6zs5L7rH",
-          idLoaner = "8WuTkKJZLTAr6zs5L7rH",
-          reviewLoaner = "reviewLoaner",
-          reviewOwner = "reviewOwner",
+          idLender = "8WuTkKJZLTAr6zs5L7rH",
+          idBorrower = "8WuTkKJZLTAr6zs5L7rH",
+          reviewBorrower = "reviewLoaner",
+          reviewLender = "reviewOwner",
           startDate = Date(),
           state = LoanState.PENDING)
   private val loan2 =
       Loan(
           id = "2",
-          commentLoaner = "commentLoaner",
-          commentOwner = "commentOwner",
+          commentBorrower = "commentLoaner",
+          commentLender = "commentOwner",
           endDate = Date(),
           idItem = "item1",
-          idOwner = "8WuTkKJZLTAr6zs5L7rH",
-          idLoaner = "zB8N1tJRmKcNI6AvawMWIRp66wA",
-          reviewLoaner = "reviewLoaner",
-          reviewOwner = "reviewOwner",
+          idLender = "8WuTkKJZLTAr6zs5L7rH",
+          idBorrower = "8WuTkKJZLTAr6zs5L7rH",
+          reviewBorrower = "reviewLoaner",
+          reviewLender = "reviewOwner",
           startDate = Date(),
           state = LoanState.PENDING)
 
   private val loan3 =
       Loan(
           id = "3",
-          commentLoaner = "commentLoaner",
-          commentOwner = "commentOwner",
+          commentBorrower = "commentLoaner",
+          commentLender = "commentOwner",
           endDate = Date(),
           idItem = "item1",
-          idOwner = "8WuTkKJZLTAr6zs5L7rH",
-          idLoaner = "zB8N1tJRmKcNI6AvawMWIRp66wA",
-          reviewLoaner = "reviewLoaner",
-          reviewOwner = "reviewOwner",
+          idLender = "8WuTkKJZLTAr6zs5L7rH",
+          idBorrower = "8WuTkKJZLTAr6zs5L7rH",
+          reviewBorrower = "reviewLoaner",
+          reviewLender = "reviewOwner",
           startDate = Date(),
           state = LoanState.PENDING)
 

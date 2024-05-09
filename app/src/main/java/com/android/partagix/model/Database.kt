@@ -317,16 +317,17 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun setLoan(newLoan: Loan) {
     val data5 =
         hashMapOf(
-            "id_owner" to newLoan.idOwner,
-            "id_loaner" to newLoan.idLoaner,
+            "id_owner" to newLoan.idLender,
+            "id_loaner" to newLoan.idBorrower,
             "id_item" to newLoan.idItem,
             "start_date" to newLoan.startDate,
             "end_date" to newLoan.endDate,
-            "review_owner" to newLoan.reviewOwner,
-            "review_loaner" to newLoan.reviewLoaner,
-            "comment_owner" to newLoan.commentOwner,
-            "comment_loaner" to newLoan.commentLoaner,
+            "review_owner" to newLoan.reviewLender,
+            "review_loaner" to newLoan.reviewBorrower,
+            "comment_owner" to newLoan.commentLender,
+            "comment_loaner" to newLoan.commentBorrower,
             "loan_state" to newLoan.state.toString())
+
     loan.document(newLoan.id).set(data5)
   }
 
