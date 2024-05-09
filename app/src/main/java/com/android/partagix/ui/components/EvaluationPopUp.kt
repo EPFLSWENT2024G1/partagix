@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,18 +35,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.loan.Loan
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * EvaluationPopUp is a composable function that displays a dialog to rate and comment on a loan.
+ *
+ * @param modifier Modifier to be applied to the layout.
+ * @param loan Loan to be evaluated.
+ * @param viewModel EvaluationViewModel to handle the evaluation.
  */
 @Composable
-fun EvaluationPopUp(modifier: Modifier = Modifier) {
+fun EvaluationPopUp(modifier: Modifier = Modifier, loan: Loan, viewModel: EvaluationViewModel) {
+  val userId = FirebaseAuth.getInstance().currentUser!!.uid
   val openDialog = remember { mutableStateOf(true) }
   val haveRated = remember { mutableStateOf(false) }
   val haveCommented = remember { mutableStateOf(false) }
+  var comment by remember { mutableStateOf("") }
+  var rating by remember { mutableDoubleStateOf(0.0) }
+
+  if (userId == loan.idOwner && loan.reviewLoaner != "") {
+    haveRated.value = true
+  }
+  if (userId == loan.idLoaner && loan.reviewOwner != "") {
+    haveRated.value = true
+  }
+  if (userId == loan.idOwner && loan.commentOwner != "") {
+    haveCommented.value = true
+  }
+  if (userId == loan.idLoaner && loan.commentLoaner != "") {
+    haveCommented.value = true
+  }
+
   if (openDialog.value) {
     Dialog(
-        onDismissRequest = { openDialog.value = false },
+        onDismissRequest = {
+          if (haveRated.value) {
+            viewModel.reviewLoan(loan, rating, comment, userId)
+          }
+          openDialog.value = false
+        },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
           Column(
               modifier =
@@ -54,6 +85,18 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                       .padding(16.dp)
                       .background(MaterialTheme.colorScheme.background)
                       .testTag("evaluationPopUp")) {
+                if (haveRated.value && haveCommented.value) {
+                  Text(
+                      text = "You have already evaluate this loan",
+                      fontSize = 25.sp,
+                      modifier =
+                          modifier
+                              .padding(10.dp, 0.dp)
+                              .fillMaxWidth()
+                              .align(Alignment.CenterHorizontally)
+                              .testTag("alreadyRated"))
+                }
+                Spacer(modifier.height(16.dp))
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -62,21 +105,26 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                           text = "Rate your loan :",
                           fontSize = 25.sp,
                           modifier = modifier.testTag("rateText"))
-                      IconButton(onClick = { openDialog.value = false }) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "")
-                      }
+                      IconButton(
+                          onClick = {
+                            if (haveRated.value) {
+                              // viewModel.reviewLoan(loan, rating, comment, userId)
+                            }
+                            openDialog.value = false
+                          }) {
+                            Icon(imageVector = Icons.Default.Close, contentDescription = "")
+                          }
                     }
 
                 Spacer(modifier.height(16.dp))
 
-                var rating by remember { mutableStateOf(0f) }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).testTag("rateStars")) {
                       repeat(5) { index ->
                         val isSelected = index + 1 <= rating
-                        val isHalfSelected = index + 0.5f == rating
+                        val isHalfSelected = index + 0.5 == rating
 
                         Icon(
                             imageVector =
@@ -92,9 +140,9 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                                       rating =
                                           when {
                                             isSelected ->
-                                                if (isHalfSelected) index.toFloat()
-                                                else index.toFloat() + 0.5f
-                                            else -> index.toFloat() + 1f
+                                                if (isHalfSelected) index.toDouble()
+                                                else index.toFloat() + 0.5
+                                            else -> index.toDouble() + 1
                                           }
                                     }
                                     .size(50.dp)
@@ -105,10 +153,7 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                 Spacer(modifier.height(20.dp))
 
                 Button(
-                    onClick = {
-                      haveRated.value = true
-                      /*TODO: maybe put rating to DB*/
-                    },
+                    onClick = { haveRated.value = true },
                     enabled = rating > 0f && !haveRated.value,
                     modifier =
                         Modifier.fillMaxWidth(0.6f)
@@ -126,7 +171,6 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
 
                 Spacer(modifier.height(16.dp))
 
-                var comment by remember { mutableStateOf("") }
                 OutlinedTextField(
                     value = comment,
                     onValueChange = { comment = it },
@@ -138,7 +182,7 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                 Spacer(modifier.height(16.dp))
 
                 Button(
-                    onClick = { haveCommented.value = true /*TODO: maybe put comment to DB*/ },
+                    onClick = { haveCommented.value = true },
                     enabled = comment.isNotEmpty() && !haveCommented.value,
                     modifier =
                         Modifier.fillMaxWidth(0.6f)
@@ -150,9 +194,5 @@ fun EvaluationPopUp(modifier: Modifier = Modifier) {
                 Spacer(modifier.height(8.dp))
               }
         }
-  }
-
-  if (haveRated.value && haveCommented.value) {
-    openDialog.value = false
   }
 }
