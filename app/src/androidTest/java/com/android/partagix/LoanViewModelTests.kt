@@ -11,6 +11,7 @@ import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.clearAllMocks
@@ -103,6 +104,16 @@ class LoanViewModelTests {
           "user5",
       )
 
+  val user1 = User("user1", "U1", "addr1", "0", mockk())
+
+  val user2 = User("user2", "U2", "addr2", "0", mockk())
+
+  val user3 = User("user3", "U3", "addr3", "0", mockk())
+
+  val user4 = User("user4", "U4", "addr4", "0", mockk())
+
+  val user5 = User("user5", "U5", "addr5", "0", mockk())
+
   // Single loan, item 2 is loaned to user 3
   private val mockLoans =
       listOf(
@@ -121,6 +132,7 @@ class LoanViewModelTests {
       )
 
   private val items = listOf(item1, item2, item3, item4, item5)
+  private val users = listOf(user1, user2, user3, user4, user5)
 
   @Before
   fun setUp() {
@@ -128,6 +140,11 @@ class LoanViewModelTests {
 
     every { db.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
     every { db.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val userId = firstArg<String>()
+          thirdArg<(User) -> Unit>().invoke(users.first { it.id == userId })
+        }
   }
 
   @After
@@ -145,12 +162,12 @@ class LoanViewModelTests {
 
     // update items only
     update.invoke(loanViewModel, items, null)
-    assert(loanViewModel.uiState.value.availableItems == items)
+    assert(loanViewModel.uiState.value.availableLoans == items)
     assert(loanViewModel.uiState.value.filterState.query == null)
 
     // update query
     update.invoke(loanViewModel, items, FilterState(query = "test"))
-    assert(loanViewModel.uiState.value.availableItems == items)
+    assert(loanViewModel.uiState.value.availableLoans == items)
     assert(loanViewModel.uiState.value.filterState.query == "test")
   }
 
@@ -160,7 +177,7 @@ class LoanViewModelTests {
     every { Authentication.getUser() } returns null
 
     // nothing should be updated, may throw an error in the future
-    assert(loanViewModel.uiState.value.availableItems.isEmpty())
+    assert(loanViewModel.uiState.value.availableLoans.isEmpty())
   }
 
   @Test
@@ -177,8 +194,8 @@ class LoanViewModelTests {
 
     verify { db.getLoans(any()) }
 
-    assert(loanViewModel.uiState.value.availableItems.size == 1)
-    assert(loanViewModel.uiState.value.availableItems.contains(item5))
+    assert(loanViewModel.uiState.value.availableLoans.size == 1)
+    assert(loanViewModel.uiState.value.availableLoans.any { it.item == item5 })
   }
 
   @Test
@@ -194,9 +211,9 @@ class LoanViewModelTests {
 
     verify { db.getLoans(any()) }
 
-    Log.d(TAG, loanViewModel.uiState.value.availableItems.toString())
-    assert(loanViewModel.uiState.value.availableItems.size == 1)
-    assert(loanViewModel.uiState.value.availableItems.contains(item1))
+    Log.d(TAG, loanViewModel.uiState.value.availableLoans.toString())
+    assert(loanViewModel.uiState.value.availableLoans.size == 1)
+    assert(loanViewModel.uiState.value.availableLoans.any { it.item == item1 })
   }
 
   // Verify that the filterItems method calls the filtering method
