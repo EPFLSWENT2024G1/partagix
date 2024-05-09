@@ -26,63 +26,64 @@ import com.android.partagix.ui.navigation.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManageLoanRequest(
+fun ManageOutgoingLoan(
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
     expandables: Boolean = false,
 ) {
-  val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
-  Scaffold(
-      modifier = modifier,
-      topBar = {
-        TopAppBar(
-            modifier = Modifier.testTag("homeScreenTopAppBar"),
-            title = { Text(text = "Partagix") },
-        )
-      },
-      bottomBar = {
-        BottomNavigationBar(
-            selectedDestination = Route.HOME,
-            navigateToTopLevelDestination = navigationActions::navigateTo,
-            modifier = modifier.testTag("manageScreenBottomNavBar"))
-      }) { innerPadding ->
-        if (uiState.items.isEmpty()) {
-          Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
-            HorizontalDivider(modifier = Modifier.fillMaxWidth())
+    val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
 
-            Box(
-                modifier =
-                    modifier.padding(innerPadding).fillMaxSize().testTag("manageScreenNoItemBox")) {
-                  Text(
-                      text = "There is no loan request.",
-                      modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.testTag("homeScreenTopAppBar"),
+                title = { Text(text = "Partagix") },
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar(
+                selectedDestination = Route.INVENTORY,
+                navigateToTopLevelDestination = navigationActions::navigateTo,
+                modifier = modifier.testTag("manageScreenBottomNavBar"))
+        }) { innerPadding ->
+        if (uiState.items.isEmpty()) {
+            Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
+                HorizontalDivider(modifier = Modifier.fillMaxWidth())
+
+                Box(
+                    modifier =
+                    modifier.padding(innerPadding).fillMaxSize().testTag("manageOutgoingScreenNoItemBox")) {
+                    Text(
+                        text = "There is no outgoing loan request.",
+                        modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
-          }
+            }
         } else {
-          Column(
-              verticalArrangement = Arrangement.Center,
-              modifier =
-                  modifier.fillMaxSize().padding(innerPadding).testTag("manageScreenMainContent")) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier =
+                modifier.fillMaxSize().padding(innerPadding).testTag("manageScreenMainContent")) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
 
                 ItemListColumn(
                     list = uiState.items,
                     users = uiState.users,
                     loan = uiState.loans,
-                    title = "Borrowing requests",
+                    title = "Outgoing requests",
                     corner = uiState.items.size.toString(),
                     isCornerClickable = false,
                     isExpandable = true,
                     expandState = expandables,
                     wasExpanded = uiState.expanded,
+                    isOutgoing = true,
+                    isClickable = false,
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},
                     manageLoanViewModel = manageLoanViewModel,
-                    isClickable = true,
-                    isOutgoing = false,
                     modifier = Modifier.testTag("manageLoanScreenItemListColumn"))
-              }
+            }
         }
-      }
+    }
 }

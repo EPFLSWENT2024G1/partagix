@@ -207,6 +207,7 @@ fun LoanScreen(
                           users = emptyList(),
                           loan = emptyList(),
                           isExpandable = false,
+                          isOutgoing = false,
                           wasExpanded = emptyList(),
                       )
                     }

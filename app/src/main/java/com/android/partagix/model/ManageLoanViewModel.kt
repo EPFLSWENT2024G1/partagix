@@ -28,25 +28,33 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getLoanRequests(latch: CountDownLatch = CountDownLatch(1)) {
-    val user = Authentication.getUser()
+  fun getLoanRequests(latch: CountDownLatch = CountDownLatch(1), isOutgoing: Boolean = false,
+                      onSuccess : () -> Unit = {}) {
+      val user = Authentication.getUser()
+      update(emptyList(), emptyList(), emptyList(), emptyList())
 
-    if (user == null) {
+      if (user == null) {
       // TODO: Handle error
       latch.countDown()
       return
     } else {
       database.getItems { list ->
         database.getLoans {
-          it.filter { loan -> loan.state == LoanState.PENDING /*&& loan.idOwner == user.uid*/ }
+          it.filter { loan ->
+              if (isOutgoing){
+                loan.state == LoanState.PENDING && loan.idLoaner == user.uid
+              } else {
+                  loan.state == LoanState.PENDING && loan.idOwner == user.uid
+              }
+          }
               .forEach { loan ->
                 updateItems(list.first { it.id == loan.idItem })
-                database.getUser(loan.idOwner) { user -> updateUsers(user) }
+                database.getUser(loan.idOwner) { user -> updateUsers(user)}
                 updateExpandedReset()
                 updateLoans(loan)
               }
-
           latch.countDown()
+            onSuccess()
         }
       }
     }

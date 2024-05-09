@@ -48,10 +48,11 @@ fun ItemListColumn(
     onClickCorner: () -> Unit,
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
+    isOutgoing: Boolean ,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isExpandable: Boolean,
 ) {
-  Column(modifier = modifier) {
+    Column(modifier = modifier) {
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -87,6 +88,7 @@ fun ItemListColumn(
             },
         isExpandable = isExpandable,
         wasExpanded = wasExpanded,
+        isOutgoing = isOutgoing,
         manageLoanViewModel = manageLoanViewModel,
         modifier = Modifier.fillMaxSize(),
         expandState = expandState,

@@ -5,14 +5,20 @@ package com.android.partagix.ui.screens
 import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -22,11 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -47,6 +58,7 @@ import com.android.partagix.ui.navigation.Route
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigationActions: NavigationActions,
+    manageLoanViewModel: ManageLoanViewModel,
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -81,17 +93,54 @@ fun InventoryScreen(
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
-                  modifier
-                      .padding(innerPadding)
-                      .fillMaxSize()
-                      .testTag("inventoryScreenNoItemBox")) {
+              modifier
+                  .padding(innerPadding)
+                  .fillMaxSize()
+                  .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text = "There is no items in the inventory.",
                     modifier =
-                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
+                    modifier
+                        .align(Alignment.Center)
+                        .testTag("inventoryScreenNoItemText"))
               }
         } else {
-          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
+          Column(modifier = modifier
+              .padding(innerPadding)
+              .fillMaxSize()) {
+              
+              Text(text = "Loan requests",
+                  style =
+                      TextStyle(
+                      fontSize = 18.sp,
+                          fontWeight = FontWeight(1000),
+                  color = Color(0xFF000000),
+                          ),
+              modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize(0.12f)){
+                Button(modifier = modifier.fillMaxWidth(0.5f), onClick = {
+                    manageLoanViewModel.getLoanRequests( isOutgoing = false,
+                    onSuccess = {navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST)})
+                }) {
+                    Column (modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center){
+                        Icon(Icons.Filled.Download, contentDescription = "incoming requests", modifier = Modifier.align(Alignment.CenterHorizontally))
+                        Text(text = "Incoming Requests", modifier = Modifier.align(Alignment.CenterHorizontally))
+                    }
+                }
+                Button(modifier = modifier.fillMaxWidth(), onClick = {
+                    manageLoanViewModel.getLoanRequests( isOutgoing = true,
+                        onSuccess = {navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN)})
+                }) {
+                    Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        Icon(Icons.Filled.Upload, contentDescription = "outgoing requests", modifier = Modifier.align(Alignment.CenterHorizontally))
+                        Text(text = "Outgoing Requests", modifier = Modifier.align(Alignment.CenterHorizontally))
+                    }
+                }
+            }
+
+              Spacer(modifier = Modifier.height(10.dp))
             ItemListColumn(
                 list = uiState.borrowedItems,
                 users = uiState.usersBor,
@@ -105,8 +154,11 @@ fun InventoryScreen(
                 onClickCorner = {},
                 isCornerClickable = false,
                 isClickable = false,
+                isOutgoing = false,
                 isExpandable = false,
-                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
+                modifier = Modifier
+                    .height(220.dp)
+                    .testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
@@ -123,6 +175,7 @@ fun InventoryScreen(
                 isCornerClickable = false,
                 isClickable = true,
                 isExpandable = false,
+                isOutgoing = false,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }

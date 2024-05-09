@@ -37,6 +37,7 @@ fun ItemList(
     users: List<User>,
     loan: List<Loan>,
     isExpandable: Boolean,
+    isOutgoing: Boolean,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onClick: (Item) -> Unit,
@@ -88,6 +89,7 @@ fun ItemList(
                       }
                     },
                 index = index,
+                isOutgoing = isOutgoing,
                 manageLoanViewModel = manageLoanViewModel,
                 expandState = expandState,
             )
