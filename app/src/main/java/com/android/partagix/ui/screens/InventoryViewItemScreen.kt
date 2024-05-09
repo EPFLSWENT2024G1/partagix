@@ -164,7 +164,7 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Button(
-                      onClick = { /*TODO: go to loan requests page*/},
+                      onClick = { navigationActions.navigateTo(Route.BORROW)},
                       content = { Text("Loan requests") },
                       modifier = Modifier.fillMaxWidth())
                 }

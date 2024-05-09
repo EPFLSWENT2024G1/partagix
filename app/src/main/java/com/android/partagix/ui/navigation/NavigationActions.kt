@@ -18,6 +18,7 @@ object Route {
   const val QR_SCAN = "QrScan"
   const val VIEW_ITEM = "ViewItem"
   const val LOAN = "Loan"
+  const val BORROW = "Borrow"
   const val ACCOUNT = "Account"
   const val EDIT_ACCOUNT = "EditAccount"
   const val CREATE_ITEM = "CreateItem"

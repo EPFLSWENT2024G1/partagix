@@ -39,6 +39,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.BorrowScreen
 import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.HomeScreen
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
@@ -146,7 +147,9 @@ class App(
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
+          Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -216,6 +219,9 @@ class App(
               manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
+      }
+      composable(Route.BORROW) {
+        BorrowScreen(navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
