@@ -92,13 +92,10 @@ class App(
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
-    val id = "MHlgRWlehFcHRweZaeGZ"
-    val idUser = "3eNGFi1PZTM50iiUZITCq1M37Wn1"
     if (idItem != null && FirebaseAuth.getInstance().currentUser != null) {
-      onQrScanned(idItem, idUser)
+      onQrScanned(idItem, FirebaseAuth.getInstance().currentUser!!.uid)
     } else {
-      onQrScanned(id, idUser)
-      // navigationActions.navigateTo(Route.BOOT)
+      navigationActions.navigateTo(Route.BOOT)
     }
     /*
      */
