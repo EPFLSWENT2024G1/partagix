@@ -50,7 +50,6 @@ import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -65,7 +64,7 @@ class App(
 
   private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
-  private lateinit var fusedLocationClient: FusedLocationProviderClient
+  private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
 
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel = ManageLoanViewModel(db = db)
@@ -81,8 +80,6 @@ class App(
 
   @Composable
   fun Create() {
-
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
     navigationActions.navigateTo(Route.BOOT)

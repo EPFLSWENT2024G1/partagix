@@ -67,7 +67,6 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    wasExpanded: Boolean,
     isExpandable: Boolean,
     expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
@@ -81,10 +80,8 @@ fun ItemUi(
       }
   var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-  // val time = Duration.between(Date().toInstant(), date.toInstant())
   if (isExpandable) {
     Column(
-        // horizontalAlignment = Alignment.CenterHorizontally,
         horizontalAlignment = Alignment.Start,
         modifier =
             Modifier.fillMaxWidth()
@@ -100,9 +97,7 @@ fun ItemUi(
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
@@ -209,7 +204,6 @@ fun ItemUi(
         }
   } else {
     Column(
-        // horizontalAlignment = Alignment.CenterHorizontally,
         horizontalAlignment = Alignment.Start,
         modifier =
             Modifier.fillMaxWidth()
@@ -221,9 +215,7 @@ fun ItemUi(
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(
                       modifier = Modifier.fillMaxHeight(0.5f),

@@ -95,7 +95,7 @@ fun InventoryScreen(
               modifier =
                   modifier
                       .padding(innerPadding)
-                      .padding(start = 18.dp, end = 18.dp)
+                      .padding(start = 10.dp, end = 10.dp)
                       .fillMaxSize()) {
                 ItemListColumn(
                     list = uiState.borrowedItems,
