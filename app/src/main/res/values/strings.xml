@@ -6,5 +6,14 @@
     <string name="default_web_client_id" translatable="false">webClientId.apps.googleusercontent.com</string>
     <string name="title_activity_test_upload">testUpload</string>
 
-    <string name="msg_token_fmt">Your FCM token is: %s</string>
+    <!-- Notifications -->
+    <string name="incoming_name">Incoming messages</string>
+    <string name="incoming_description">Notification channel for incoming messages</string>
+
+    <string name="outgoing_name">Outgoing messages</string>
+    <string name="outgoing_description">Notification channel for outgoing messages</string>
+
+    <string name="social_name">Social messages</string>
+    <string name="social_description">Notification channel for social messages, like new friends or new comments.</string>
+    <!-- End of Notifications -->
 </resources>

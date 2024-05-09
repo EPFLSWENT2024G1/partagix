@@ -63,6 +63,7 @@ class App(
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
+
   private val notificationManager: FirebaseMessagingService = FirebaseMessagingService()
 
   private var navigationActionsInitialized = false
@@ -81,12 +82,17 @@ class App(
       )
   private val userViewModel = UserViewModel(db = db)
 
+  init {
+    notificationManager.setContext(activity)
+    notificationManager.askNotificationPermission()
+  }
+
   @Composable
   fun Create() {
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     ComposeNavigationSetup()
 
-    notificationManager.setContext(activity)
+    //notificationManager.setContext(activity)
     notificationManager.getToken()
     navigationActions.navigateTo(Route.BOOT)
   }
