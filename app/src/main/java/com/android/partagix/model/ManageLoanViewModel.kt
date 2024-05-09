@@ -44,11 +44,13 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
       database.getItems { list ->
         database.getLoans {
           it.filter { loan ->
-                if (isOutgoing) {
-                  loan.state == LoanState.PENDING && loan.idLoaner == user.uid
-                } else {
-                  loan.state == LoanState.PENDING && loan.idOwner == user.uid
-                }
+                val id =
+                    if (isOutgoing) {
+                      loan.idLoaner
+                    } else {
+                      loan.idOwner
+                    }
+                loan.state == LoanState.PENDING && id == user.uid
               }
               .forEach { loan ->
                 updateItems(list.first { it.id == loan.idItem })

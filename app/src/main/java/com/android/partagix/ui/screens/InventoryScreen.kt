@@ -5,6 +5,7 @@ package com.android.partagix.ui.screens
 import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +20,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -113,9 +116,16 @@ fun InventoryScreen(
                         color = Color(0xFF000000),
                     ),
                 modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
-            Row(modifier = Modifier.fillMaxWidth().fillMaxSize(0.12f)) {
+            Row(
+                modifier =
+                    Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).fillMaxSize(0.1f),
+                horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
+            ) {
               Button(
-                  modifier = modifier.fillMaxWidth(0.5f),
+                  modifier = modifier.fillMaxWidth(0.49f),
+                  colors = buttonColors(Color.White),
+                  border = BorderStroke(width = 1.dp, color = Color.Black),
+                  shape = MaterialTheme.shapes.small,
                   onClick = {
                     manageLoanViewModel.getLoanRequests(
                         isOutgoing = false,
@@ -126,15 +136,21 @@ fun InventoryScreen(
                         verticalArrangement = Arrangement.Center) {
                           Icon(
                               Icons.Filled.Download,
+                              tint = Color.Black,
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Incoming Requests",
+                              color = Color.Black,
+                              style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
                   }
               Button(
                   modifier = modifier.fillMaxWidth(),
+                  colors = buttonColors(Color.White),
+                  border = BorderStroke(width = 1.dp, color = Color.Black),
+                  shape = MaterialTheme.shapes.small,
                   onClick = {
                     manageLoanViewModel.getLoanRequests(
                         isOutgoing = true,
@@ -145,10 +161,13 @@ fun InventoryScreen(
                         verticalArrangement = Arrangement.Center) {
                           Icon(
                               Icons.Filled.Upload,
+                              tint = Color.Black,
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Outgoing Requests",
+                              color = Color.Black,
+                              style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
                   }
