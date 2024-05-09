@@ -28,7 +28,6 @@ class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
         loan.copy(
             state = LoanState.ONGOING,
             startDate = Date(),
-            endDate = Date(),
         )
     db.setLoan(newLoan)
   }
