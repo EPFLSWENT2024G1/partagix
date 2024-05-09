@@ -22,7 +22,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val items = db.collection("items")
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
-  private val itemLoan = db.collection("item_loan")
 
   init {
     // createExampleForDb()
@@ -135,7 +134,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             try {
               val startDate: Timestamp = document.data["start_date"] as Timestamp
               val endDate: Timestamp = document.data["end_date"] as Timestamp
-              val loanState: LoanState = LoanState.valueOf(document.data["loanstate"] as String)
+              val loanState: LoanState = LoanState.valueOf(document.data["loan_state"] as String)
 
               val loan =
                   Loan(
@@ -327,7 +326,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "review_loaner" to newLoan.reviewLoaner,
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
-            "loanstate" to newLoan.state.toString())
+            "loan_state" to newLoan.state.toString())
     loan.document(newLoan.id).set(data5)
   }
 
