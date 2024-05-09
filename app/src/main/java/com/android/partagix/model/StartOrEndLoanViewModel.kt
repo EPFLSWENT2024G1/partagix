@@ -52,4 +52,9 @@ class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
   }
 }
 
-data class StartOrEndLoanUIState(val loan: Loan, val item: Item, val borrower: User, val lender: User)
+data class StartOrEndLoanUIState(
+    val loan: Loan,
+    val item: Item,
+    val borrower: User,
+    val lender: User
+)

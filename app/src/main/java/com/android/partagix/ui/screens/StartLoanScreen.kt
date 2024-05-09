@@ -75,17 +75,17 @@ fun StartLoanScreen(
                 Modifier.fillMaxHeight()
                     .padding(it) // Adjust padding as needed
                     .fillMaxWidth() // Make the column fill the entire width
-                  .testTag("StartLoanScreen"),
+                    .testTag("StartLoanScreen"),
             verticalArrangement = Arrangement.Center, // Center items vertically
             horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
             ) {
               ItemUi(item, borrower, loan)
               Row {
-
                 Button(
                     onClick = { startOrEndLoanViewModel.onStart() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                    modifier = Modifier.weight(1f).testTag("startButton") // Expand to fill available space
+                    modifier =
+                        Modifier.weight(1f).testTag("startButton") // Expand to fill available space
                     ) {
                       Text(text = "start Loan", color = Color.Black)
                     }
@@ -93,7 +93,9 @@ fun StartLoanScreen(
                 Button(
                     onClick = { startOrEndLoanViewModel.onCancel() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                    modifier = Modifier.weight(1f).testTag("cancelButton") // Expand to fill available space
+                    modifier =
+                        Modifier.weight(1f)
+                            .testTag("cancelButton") // Expand to fill available space
                     ) {
                       Text(text = "cancel Loan", color = Color.Black)
                     }

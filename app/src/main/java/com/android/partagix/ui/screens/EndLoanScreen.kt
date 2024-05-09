@@ -82,7 +82,9 @@ fun EndLoanScreen(
                 Button(
                     onClick = { startOrEndLoanViewModel.onFinish() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                    modifier = Modifier.weight(1f).testTag("endLoanButton") // Expand to fill available space
+                    modifier =
+                        Modifier.weight(1f)
+                            .testTag("endLoanButton") // Expand to fill available space
                     ) {
                       Text(text = "End Loan", color = Color.Black)
                     }
