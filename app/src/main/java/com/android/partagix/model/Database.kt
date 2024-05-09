@@ -23,7 +23,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val items = db.collection("items")
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
-  private val itemLoan = db.collection("item_loan")
 
   init {
     // createExampleForDb()
@@ -140,25 +139,29 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnSuccessListener { result ->
           val ret = mutableListOf<Loan>()
           for (document in result) {
-            val start_date: Timestamp = document.data["start_date"] as Timestamp
-            val end_date: Timestamp = document.data["end_date"] as Timestamp
-            val loan_state: LoanState = LoanState.valueOf(document.data["loanstate"] as String)
+            try {
+              val startDate: Timestamp = document.data["start_date"] as Timestamp
+              val endDate: Timestamp = document.data["end_date"] as Timestamp
+              val loanState: LoanState = LoanState.valueOf(document.data["loan_state"] as String)
 
-            val loan =
-                Loan(
-                    document.id,
-                    document.data["id_owner"] as String,
-                    document.data["id_loaner"] as String,
-                    document.data["id_item"] as String,
-                    start_date.toDate(),
-                    end_date.toDate(),
-                    document.data["review_owner"] as String,
-                    document.data["review_loaner"] as String,
-                    document.data["comment_owner"] as String,
-                    document.data["comment_loaner"] as String,
-                    loan_state,
-                )
-            ret.add(loan)
+              val loan =
+                  Loan(
+                      document.id,
+                      document.data["id_owner"] as String,
+                      document.data["id_loaner"] as String,
+                      document.data["id_item"] as String,
+                      startDate.toDate(),
+                      endDate.toDate(),
+                      document.data["review_owner"] as String,
+                      document.data["review_loaner"] as String,
+                      document.data["comment_owner"] as String,
+                      document.data["comment_loaner"] as String,
+                      loanState,
+                  )
+              ret.add(loan)
+            } catch (e: Exception) {
+              Log.e(TAG, "Error parsing loan data", e)
+            }
           }
           onSuccess(ret)
         }
@@ -331,7 +334,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "review_loaner" to newLoan.reviewLoaner,
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
-            "loanstate" to newLoan.state.toString())
+            "loan_state" to newLoan.state.toString())
     loan.document(newLoan.id).set(data5)
   }
 
