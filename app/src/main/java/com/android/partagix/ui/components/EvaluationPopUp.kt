@@ -38,7 +38,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.loan.Loan
-import com.google.firebase.auth.FirebaseAuth
 
 /**
  * EvaluationPopUp is a composable function that displays a dialog to rate and comment on a loan.
@@ -48,24 +47,33 @@ import com.google.firebase.auth.FirebaseAuth
  * @param viewModel EvaluationViewModel to handle the evaluation.
  */
 @Composable
-fun EvaluationPopUp(modifier: Modifier = Modifier, loan: Loan, viewModel: EvaluationViewModel) {
-  val userId = FirebaseAuth.getInstance().currentUser!!.uid
+fun EvaluationPopUp(
+    modifier: Modifier = Modifier,
+    loan: Loan,
+    userId: String,
+    viewModel: EvaluationViewModel
+) {
   val openDialog = remember { mutableStateOf(true) }
   val haveRated = remember { mutableStateOf(false) }
   val haveCommented = remember { mutableStateOf(false) }
   var comment by remember { mutableStateOf("") }
   var rating by remember { mutableDoubleStateOf(0.0) }
+  viewModel.updateUIState(loan)
 
-  if (userId == loan.idOwner && loan.reviewLoaner != "") {
+  if (userId == loan.idOwner && loan.reviewOwner.isNotEmpty()) {
+    rating = loan.reviewOwner.toDouble()
     haveRated.value = true
   }
-  if (userId == loan.idLoaner && loan.reviewOwner != "") {
+  if (userId == loan.idLoaner && loan.reviewLoaner.isNotEmpty()) {
+    rating = loan.reviewLoaner.toDouble()
     haveRated.value = true
   }
-  if (userId == loan.idOwner && loan.commentOwner != "") {
+  if (userId == loan.idOwner && loan.commentOwner.isNotEmpty()) {
+    comment = loan.commentOwner
     haveCommented.value = true
   }
-  if (userId == loan.idLoaner && loan.commentLoaner != "") {
+  if (userId == loan.idLoaner && loan.commentLoaner.isNotEmpty()) {
+    comment = loan.commentLoaner
     haveCommented.value = true
   }
 
@@ -106,9 +114,10 @@ fun EvaluationPopUp(modifier: Modifier = Modifier, loan: Loan, viewModel: Evalua
                           fontSize = 25.sp,
                           modifier = modifier.testTag("rateText"))
                       IconButton(
+                          modifier = modifier.testTag("closeButton"),
                           onClick = {
                             if (haveRated.value) {
-                              // viewModel.reviewLoan(loan, rating, comment, userId)
+                              viewModel.reviewLoan(loan, rating, comment, userId)
                             }
                             openDialog.value = false
                           }) {

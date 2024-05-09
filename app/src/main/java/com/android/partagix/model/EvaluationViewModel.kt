@@ -1,10 +1,15 @@
 package com.android.partagix.model
 
 import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.loan.LoanState
+import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class EvaluationViewModel(loan: Loan, db: Database = Database()) {
+class EvaluationViewModel(
+    loan: Loan = Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.FINISHED),
+    db: Database = Database()
+) {
   private val database = db
 
   private val _uiState = MutableStateFlow(EvaluationUIState(loan))
