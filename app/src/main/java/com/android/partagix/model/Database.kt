@@ -135,7 +135,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           for (document in result) {
             val start_date: Timestamp = document.data["start_date"] as Timestamp
             val end_date: Timestamp = document.data["end_date"] as Timestamp
-            val loan_state: LoanState = LoanState.valueOf(document.data["loanstate"] as String)
+            val loan_state: LoanState = LoanState.valueOf(document.data["loan_state"] as String)
 
             val loan =
                 Loan(
@@ -324,7 +324,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "review_loaner" to newLoan.reviewLoaner,
             "comment_owner" to newLoan.commentOwner,
             "comment_loaner" to newLoan.commentLoaner,
-            "loanstate" to newLoan.state.toString())
+            "loan_state" to newLoan.state.toString())
     loan.document(newLoan.id).set(data5)
   }
 
