@@ -57,7 +57,6 @@ import com.android.partagix.ui.screens.StartLoanScreen
 import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -87,18 +86,26 @@ class App(
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
 
   @Composable
-  fun Create(idItem: String? = null) {
+  fun Create(
+      idItem: String? = null,
+      mock: Boolean = false,
+      mockNavigationActions: NavigationActions? = null
+  ) {
 
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+    if (!mock) {
+      fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+    }
     ComposeNavigationSetup()
+    if (mock) {
+      navigationActions = mockNavigationActions!!
+    }
 
-    if (idItem != null && FirebaseAuth.getInstance().currentUser != null) {
-      onQrScanned(idItem, FirebaseAuth.getInstance().currentUser!!.uid)
+    val user = Authentication.getUser()
+    if (idItem != null && user != null) {
+      onQrScanned(idItem, user.uid)
     } else {
       navigationActions.navigateTo(Route.BOOT)
     }
-    /*
-     */
   }
 
   private fun onQrScanned(idItem: String, idUser: String) {
@@ -114,6 +121,7 @@ class App(
           loans.find {
             it.idItem == idItem && it.state == LoanState.ONGOING && it.idLender == idUser
           }
+
       if (loan != null) {
         db.getItem(idItem) { item ->
           db.getUser(loan.idBorrower) { borrower ->

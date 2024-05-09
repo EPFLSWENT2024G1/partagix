@@ -25,7 +25,6 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -63,8 +62,9 @@ class ItemViewModel(
    */
   fun updateUiItem(new: Item) {
     var newUserId = new.idUser
-    if (newUserId == "" && Authentication.getUser() != null) {
-      newUserId = FirebaseAuth.getInstance().currentUser!!.uid
+    val user = Authentication.getUser()
+    if (newUserId == "" && user != null) {
+      newUserId = user.uid
     }
 
     val newWithUserId =

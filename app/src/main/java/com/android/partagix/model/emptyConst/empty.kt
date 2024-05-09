@@ -25,3 +25,5 @@ val emptyItem =
 val emptyLoan = Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.PENDING)
 
 val emptyUser = User("", "", "", "", Inventory("", emptyList()))
+
+val emptyInventory = Inventory("", emptyList())

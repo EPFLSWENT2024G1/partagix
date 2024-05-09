@@ -31,9 +31,6 @@ class StartOrEndLoanViewModel(private val db: Database) : ViewModel() {
             endDate = Date(),
         )
     db.setLoan(newLoan)
-    // db.setItem(item.copy(state = ItemState.BORROWED))
-    // db.updateUser(borrower.copy(loanId = newLoan.id))
-    // db.updateUser(lender.copy(loanId = newLoan.id))
   }
 
   fun onCancel() {}
