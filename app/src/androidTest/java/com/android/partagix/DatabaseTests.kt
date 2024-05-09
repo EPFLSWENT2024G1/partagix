@@ -18,6 +18,7 @@ import com.google.firebase.database.Query
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
@@ -525,6 +526,9 @@ class DatabaseTests {
     every { mockDocument.set(any()) } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
+    every { mockDocument.update(any<String>(), any<Double>()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
     val user1 =
         User(
             "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
@@ -625,6 +629,9 @@ class DatabaseTests {
     every { mockDocument.set(any()) } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
+    every { mockDocument.update(any<String>(), any<Double>()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
     val user1 =
         User(
             "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
@@ -681,11 +688,19 @@ class DatabaseTests {
     val mockDb: FirebaseFirestore = mockk {}
 
     every {
-      mockDb.collection("loan").document(idLoan1).update("comment_owner", "ok, nothing more")
+      mockDb
+          .collection(any())
+          .document(idLoan1)
+          .update(any<String>(), any<Double>(), any<List<Any>>())
     } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
-    every { mockDb.collection("loan").document(idLoan1).update("comment_loaner", "awful") } returns
+    every {
+      mockDb.collection(any()).document(any()).update(any<FieldPath>(), any(), any())
+    } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    every { mockDb.collection(any()).document(any()).update(any<String>(), any(), any()) } returns
         taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
 
     every { mockDb.collection(any()) } returns mockCollection // case other call than the one tested
@@ -701,8 +716,8 @@ class DatabaseTests {
       database.setReview(idLoan1, user1.id, 3.5, "ok, nothing more")
       database.setReview(idLoan1, user2.id, 1.5, "awful")
 
-      coVerify(exactly = 2) {
-        database.setReview("1", user1.id, 3.5, "ok, nothing more")
+      coVerify {
+        database.setReview(idLoan1, user1.id, 3.5, "ok, nothing more")
         database.setReview(idLoan1, user2.id, 1.5, "awful")
       }
     }
