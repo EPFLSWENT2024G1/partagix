@@ -25,9 +25,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
 
-  init {
-    // createExampleForDb()
-  }
+  init {} // kept for easier testing purposes
 
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
@@ -391,7 +389,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     onSuccess(user)
   }
 
-  // todo test
   /**
    * Retrieve all comments that a user has received, both as a owner than as an loaner
    *
@@ -431,7 +428,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             &&
                 document.data["id_loaner"] as String == userId // if the user is the loaner,
                 &&
-                document.data["review_loaner"] as Double != 0.0 // that has been reviewed
+                (document.data["review_loaner"] as String).toDouble() !=
+                    0.0 // that has been reviewed
                 &&
                 document.data["comment_loaner"] as String != "") { // and received a comment
 
@@ -445,7 +443,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     onSuccess(ret)
   }
 
-  // todo test
   /**
    * Retrieve all ranks that a user has received, both as a owner than as an loaner, compute the
    * average rank, and store it in the user's rank
@@ -465,39 +462,30 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             &&
                 document.data["id_owner"] as String == idUser // if the user is the owner,
                 &&
-                document.data["review_owner"] as Double != 0.0) { // that has been reviewed
+                (document.data["review_owner"] as String).toDouble() !=
+                    0.0) { // that has been reviewed
 
-              rankSum.doubleValue += document.data["review_owner"] as Double
+              rankSum.doubleValue += (document.data["review_owner"] as String).toDouble()
               rankCount.longValue++
             } else if (document.data["loan_state"] as String ==
                 LoanState.FINISHED.toString() // only finished loans
             &&
                 document.data["id_loaner"] as String == idUser // if the user is the loaner,
                 &&
-                document.data["review_loaner"] as Double != 0.0) { // that has been reviewed
+                (document.data["review_loaner"] as String).toDouble() !=
+                    0.0) { // that has been reviewed
 
-              rankSum.doubleValue += document.data["review_loaner"] as Double
+              rankSum.doubleValue += (document.data["review_loaner"] as String).toDouble()
               rankCount.longValue++
             }
           }
 
           val averageRank = rankSum.doubleValue / rankCount.longValue
-          users
-              .get()
-              .addOnSuccessListener { result ->
-                for (document in result) {
-                  if (document.data["id"] as String == idUser) {
-                    document.data["rank"] =
-                        averageRank.toString() // stores the new average rank in the user's rank
-                  }
-                }
-              }
-              .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+          users.document(idUser).update("rank", averageRank.toString())
         }
         .addOnFailureListener { Log.e(TAG, "Error getting loans", it) }
   }
 
-  // todo test
   /**
    * Set a review for a loan, i.e a rank and an optional comment
    *
@@ -525,20 +513,16 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           for (document in result) {
             if (document.data["loan_state"] as String ==
                 LoanState.FINISHED.toString() // only finished loans
-            &&
-                document.data["id"] as String == loanId &&
-                document.data["id_owner"] as String == userId) {
+            && document.id == loanId && document.data["id_owner"] as String == userId) {
 
-              document.data["review_owner"] = rank.toString()
-              if (comment != "") document.data["comment_owner"] = comment
+              loan.document(loanId).update("review_owner", rank.toString())
+              if (comment != "") loan.document(loanId).update("comment_owner", comment)
             } else if (document.data["loan_state"] as String ==
                 LoanState.FINISHED.toString() // only finished loans
-            &&
-                document.data["id"] as String == loanId &&
-                document.data["id_loaner"] as String == userId) {
+            && document.id == loanId && document.data["id_loaner"] as String == userId) {
 
-              document.data["review_loaner"] = rank.toString()
-              if (comment != "") document.data["comment_loaner"] = comment
+              loan.document(loanId).update("review_loaner", rank.toString())
+              if (comment != "") loan.document(loanId).update("comment_loaner", comment)
             }
           }
         }
