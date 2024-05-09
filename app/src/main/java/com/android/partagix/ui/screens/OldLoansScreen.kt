@@ -1,28 +1,71 @@
 package com.android.partagix.ui.screens
 
+import android.media.Image
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.partagix.R
+import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.FinishedLoansViewModel
+import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.item.Item
+import com.android.partagix.model.loan.Loan
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.EvaluationPopUp
+import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun oldLoansScreen(
-    modifier: Modifier = Modifier /*, finishedLoansViewModel: FinishedLoansViewModel*/
+fun OldLoansScreen(
+    modifier: Modifier = Modifier,
+    navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel,
+    evaluationViewModel: EvaluationViewModel,
+    finishedLoansViewModel: FinishedLoansViewModel
 ) {
+  val uiState by finishedLoansViewModel.uiState.collectAsStateWithLifecycle()
+  val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
 
   Scaffold(
       modifier = modifier,
@@ -30,15 +73,23 @@ fun oldLoansScreen(
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
             title = { Text(text = "Partagix") },
-        )
+            navigationIcon = {
+              IconButton(
+                  onClick = { navigationActions.goBack() },
+                  modifier = Modifier.testTag("navigationIcon")) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
+            })
       },
       bottomBar = {
         BottomNavigationBar(
             selectedDestination = Route.HOME,
-            navigateToTopLevelDestination = { /*navigationActions::navigateTo*/},
+            navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) },
             modifier = modifier)
       }) { innerPadding ->
-        if (/*TODO: get all loan of someone*/ true) {
+        if (uiState.loans.isEmpty()) {
           Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
@@ -46,6 +97,116 @@ fun oldLoansScreen(
               Text(text = "You have no finished loans", modifier = modifier.align(Alignment.Center))
             }
           }
-        } else {}
+        } else {
+          for (loan in uiState.loans) {
+            finishedLoansViewModel.getItem(loan.idItem)
+            ExpandableCard(
+                modifier = modifier,
+                loan = loan,
+                item = item,
+                navigationActions = navigationActions,
+                itemViewModel = itemViewModel,
+                evaluationViewModel = evaluationViewModel)
+          }
+        }
       }
+}
+
+/**
+ * ExpandableCard is a composable function that displays a card that can be expanded to show more
+ * information.
+ *
+ * @param modifier Modifier to be applied to the layout.
+ * @param loan Loan to be displayed.
+ * @param item Item to be displayed.
+ */
+@Composable
+fun ExpandableCard(
+    modifier: Modifier = Modifier,
+    loan: Loan,
+    item: Item,
+    navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel,
+    evaluationViewModel: EvaluationViewModel
+) {
+  var expanded by remember { mutableStateOf(false) }
+  var open by remember { mutableStateOf(false) }
+
+  /*TODO: get the item of the loan*/
+  OutlinedCard(
+      modifier =
+          modifier.fillMaxWidth().padding(16.dp).animateContentSize().clickable {
+            expanded = !expanded
+          }, // This enables the expansion animation
+      colors = CardDefaults.outlinedCardColors()) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+          Row(
+              modifier = modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                  Text(text = item.name, fontSize = 20.sp)
+                  Spacer(modifier.height(8.dp))
+                  Text(text = "Loan Date : ${loan.startDate}", fontSize = 15.sp)
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.mutliprise),
+                    contentDescription = "fds",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.scrim))
+              }
+
+          if (expanded) {
+            Spacer(modifier = modifier.height(8.dp))
+            Row(modifier = modifier.fillMaxWidth(0.70f), horizontalArrangement = Arrangement.End) {
+              IconButton(
+                  modifier = modifier.fillMaxWidth(0.43f),
+                  colors =
+                      IconButtonColors(
+                          containerColor = MaterialTheme.colorScheme.secondary,
+                          contentColor = MaterialTheme.colorScheme.onSecondary,
+                          disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                          disabledContainerColor = MaterialTheme.colorScheme.secondary),
+                  onClick = {
+                    expanded = false
+                    itemViewModel.updateUiItem(item)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  }) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                      Icon(imageVector = Icons.Default.Info, contentDescription = "info")
+                      Spacer(modifier = modifier.width(8.dp))
+                      Text("Infos")
+                    }
+                  }
+              Spacer(modifier = modifier.width(10.dp))
+
+              IconButton(
+                  modifier = modifier.fillMaxWidth(),
+                  colors =
+                      IconButtonColors(
+                          containerColor = MaterialTheme.colorScheme.primary,
+                          contentColor = MaterialTheme.colorScheme.onPrimary,
+                          disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                          disabledContainerColor = MaterialTheme.colorScheme.primary),
+                  onClick = {
+                    expanded = false
+                    evaluationViewModel.updateUIState(loan)
+                    open = true
+                  }) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                      Icon(imageVector = Icons.Default.Star, contentDescription = "rate")
+                      Spacer(modifier = modifier.width(8.dp))
+                      Text("Evaluate")
+                    }
+                  }
+            }
+          }
+        }
+      }
+  if (open) {
+    EvaluationPopUp(
+        loan = loan,
+        userId = FirebaseAuth.getInstance().currentUser!!.uid,
+        viewModel = evaluationViewModel)
+    open = false
+  }
 }

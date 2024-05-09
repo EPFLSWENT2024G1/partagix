@@ -25,6 +25,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
@@ -47,6 +49,7 @@ import com.android.partagix.ui.screens.InventoryViewItemScreen
 import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ManageLoanRequest
+import com.android.partagix.ui.screens.OldLoansScreen
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.ViewAccount
@@ -78,6 +81,8 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
+  private val evaluationViewModel = EvaluationViewModel(db = db)
+  private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
 
   @Composable
   fun Create() {
@@ -255,6 +260,14 @@ class App(
       composable(Route.MANAGE_LOAN_REQUEST) {
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
+      }
+      composable(Route.FINISHED_LOANS) {
+        finishedLoansViewModel.getFinishedLoan()
+        OldLoansScreen(
+            finishedLoansViewModel = finishedLoansViewModel,
+            itemViewModel = itemViewModel,
+            evaluationViewModel = evaluationViewModel,
+            navigationActions = navigationActions)
       }
       composable(
           Route.STAMP + "/{itemId}",
