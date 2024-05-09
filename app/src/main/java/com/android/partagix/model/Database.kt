@@ -481,20 +481,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param userId the reviewed user's id
    * @param rank the rank to be set, must be between 0.5 and 5
    * @param comment an optional comment to be set
-   * @param onInvalidRank the function to call when the rank is invalid
    */
   fun setReview(
       loanId: String,
       userId: String,
       rank: Double,
       comment: String,
-      onInvalidRank: () -> Unit
   ) {
-    if (rank < 0.0 || rank > 5) {
-      Log.e(TAG, "Error setting review: rank must be between 0.5 and 5")
-      onInvalidRank()
-    }
-
     getLoans { loans ->
       for (loan in loans) {
 
