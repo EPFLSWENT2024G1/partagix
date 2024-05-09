@@ -59,7 +59,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnSuccessListener { result ->
           val paths = mutableListOf<String>()
           for (document in result) {
-            paths.add(document.data["image_path"] as String)
+              if (document.data["image_path"] != null) {
+                  paths.add(document.data["image_path"] as String)
+              } else {
+                  paths.add("default-image.jpg")
+              }
           }
           categories
               .get()
@@ -366,6 +370,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
+    fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {
+
+    }
 
   fun createUser(user: User) {
     val data =

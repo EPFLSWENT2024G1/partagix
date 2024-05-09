@@ -197,8 +197,6 @@ fun InventoryCreateOrEditItem(
                           uiQuantity,
                           uiLocation,
                           i.idUser,
-                      ,
-                          i.idUser,
                         ))
                   navigationActions.goBack()
                 },

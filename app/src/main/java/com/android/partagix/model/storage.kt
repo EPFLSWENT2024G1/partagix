@@ -44,10 +44,13 @@ fun uploadImageToFirebaseStorage(
 }
 
 fun getImageFromFirebaseStorage(
-    path: String,
+    p: String,
     storage: FirebaseStorage = Firebase.storage,
     onSuccess: (localFile: File) -> Unit = {},
 ) {
+    val path: String = "images/" + p.ifEmpty {
+        "default-image.jpg"
+    }
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
@@ -64,7 +67,7 @@ fun getImageFromFirebaseStorage(
       }
       .addOnFailureListener {
         // Handle any errors
-        println("----- Image download failed: $it")
+        println("----- Image download failed: $it -- $path")
       }
 }
 
