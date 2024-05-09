@@ -401,14 +401,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
     val ret = mutableListOf<Pair<String, String>>()
 
-    // Function to add a comment with the author's name to the list
-    fun addComment(userId: String, comment: String) {
-      var authorName = "" // name of the author of the comment, i.e. the owner
-      getUser(userId) { user -> authorName = user.name }
-
-      ret.add(Pair(authorName, comment))
-    }
-
     getLoans { loans ->
       for (loan in loans) {
 
@@ -420,7 +412,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             &&
             loan.commentOwner != "") { // and received a comment
 
-          addComment(loan.idLoaner, loan.commentOwner)
+          getUser(loan.idLoaner, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentOwner))
+          }
         } else if (loan.state == LoanState.FINISHED // only finished loans
         &&
             loan.idLoaner == userId // if the user is the loaner,
@@ -429,7 +423,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             &&
             loan.commentLoaner != "") { // and received a comment
 
-          addComment(loan.idOwner, loan.commentLoaner)
+          getUser(loan.idOwner, onNoUser = {}) { user ->
+            ret.add(Pair(user.name, loan.commentLoaner))
+          }
         }
       }
     }
