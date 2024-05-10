@@ -110,15 +110,15 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
  */
 @Preview
 @Composable
-fun MainImagePicker() {
-  var selectedImages by remember { mutableStateOf<List<Uri?>>(emptyList()) }
+fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -> Unit = {}) {
+  var selectedImages by remember { mutableStateOf<List<Uri?>>(defaultImages) }
 
   val buttonText = "Select a photo"
 
   val singlePhotoPickerLauncher =
       rememberLauncherForActivityResult(
           contract = ActivityResultContracts.PickVisualMedia(),
-          onResult = { uri -> selectedImages = listOf(uri) })
+          onResult = { uri -> selectedImages = if (uri != null) listOf(uri) else defaultImages })
 
   val multiplePhotoPickerLauncher =
       rememberLauncherForActivityResult(
@@ -143,11 +143,14 @@ fun MainImagePicker() {
                     Modifier.fillMaxSize()
                         .background(color = androidx.compose.ui.graphics.Color.Gray)) {
                   items(selectedImages) { uri ->
+                      if (uri != null) {
+                          onSelected(uri)
+                      }
                     AsyncImage(
                         model = uri,
                         contentDescription = null,
                         modifier = Modifier.fillMaxHeight().testTag("ImagePicked"),
-                        contentScale = ContentScale.Crop)
+                        contentScale = ContentScale.Inside)
                   }
                 }
           }

@@ -323,7 +323,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location),
-            "image_path" to "images/${newItem.imageId.name}")
+            "image_path" to newItem.id)
     items.document(newItem.id).set(data)
   }
 

@@ -14,5 +14,6 @@ data class Item(
     val quantity: Long,
     val location: Location,
     val idUser: String = "",
+    // Path to the image in the local cache
     val imageId: File = File.createTempFile("default_image", null)
 )
