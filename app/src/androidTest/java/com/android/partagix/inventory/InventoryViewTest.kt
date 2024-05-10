@@ -2,6 +2,7 @@ package com.android.partagix.inventory
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
@@ -35,6 +36,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
 
   private var item1: Item =
       Item(
@@ -61,7 +63,11 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    composeTestRule.setContent { InventoryViewItemScreen(mockNavActions, mockItemViewModel) }
+    every { mockBorrowViewModel.resetBorrow(any(), any()) } just Runs
+
+    composeTestRule.setContent {
+      InventoryViewItemScreen(mockNavActions, mockItemViewModel, mockBorrowViewModel)
+    }
   }
 
   @Test

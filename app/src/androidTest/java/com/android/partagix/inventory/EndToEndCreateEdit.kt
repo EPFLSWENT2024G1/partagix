@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import com.android.partagix.MainActivity
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
@@ -63,6 +64,7 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
+  @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
   private lateinit var mockUiState2: MutableStateFlow<InventoryUIState>
@@ -113,6 +115,9 @@ class EndToEndCreateEdit {
 
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
+    mockBorrowViewModel = mockk()
+
+    every { mockBorrowViewModel.resetBorrow(any(), any()) } just Runs
 
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.CREATE_ITEM) } just Runs
@@ -236,7 +241,10 @@ class EndToEndCreateEdit {
     every { mockItemViewModel.uiState } returns mockItemUiState2
 
     composeTestRule.setContent {
-      InventoryViewItemScreen(navigationActions = mockNavActions, viewModel = mockItemViewModel)
+      InventoryViewItemScreen(
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel,
+          borrowViewModel = mockBorrowViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
@@ -279,7 +287,10 @@ class EndToEndCreateEdit {
     every { mockItemViewModel.uiState } returns mockItemUiState3
 
     composeTestRule.setContent {
-      InventoryViewItemScreen(navigationActions = mockNavActions, viewModel = mockItemViewModel)
+      InventoryViewItemScreen(
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel,
+          borrowViewModel = mockBorrowViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
