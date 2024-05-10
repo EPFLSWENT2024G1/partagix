@@ -37,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.android.partagix.R
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -82,13 +80,13 @@ fun ItemUi(
   var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
-    var imgBitmap: Bitmap? = null
-    val imgFile = item.imageId
-    if (imgFile.exists()) {
-        // on below line we are creating an image bitmap variable
-        // and adding a bitmap to it from image file.
-        imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-    }
+  var imgBitmap: Bitmap? = null
+  val imgFile = item.imageId
+  if (imgFile.exists()) {
+    // on below line we are creating an image bitmap variable
+    // and adding a bitmap to it from image file.
+    imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+  }
   if (isExpandable) {
     Column(
         // horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,11 +166,11 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-              Image(
-                  painter = rememberAsyncImagePainter(model = imgBitmap),
-                  contentDescription = "fds",
-                  contentScale = ContentScale.FillBounds,
-                  modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                Image(
+                    painter = rememberAsyncImagePainter(model = imgBitmap),
+                    contentDescription = "fds",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
               }
           if (expandables) {
 
@@ -286,11 +284,11 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-              Image(
-                  painter = rememberAsyncImagePainter(model = imgBitmap),
-                  contentDescription = "fds",
-                  contentScale = ContentScale.FillBounds,
-                  modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                Image(
+                    painter = rememberAsyncImagePainter(model = imgBitmap),
+                    contentDescription = "fds",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
               }
         }
   }

@@ -36,12 +36,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.android.partagix.R
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
@@ -64,13 +62,13 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
   var item = uiState.value.item
   val user = uiState.value.user
 
-    var imgBitmap: Bitmap? = null
-    val imgFile = item.imageId
-    if (imgFile.exists()) {
-        // on below line we are creating an image bitmap variable
-        // and adding a bitmap to it from image file.
-        imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-    }
+  var imgBitmap: Bitmap? = null
+  val imgFile = item.imageId
+  if (imgFile.exists()) {
+    // on below line we are creating an image bitmap variable
+    // and adding a bitmap to it from image file.
+    imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+  }
 
   LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
 
@@ -101,15 +99,13 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
             horizontalAlignment = Alignment.CenterHorizontally) {
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-
                   Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
-                      Image(
-                          painter = rememberAsyncImagePainter(model = imgBitmap),
-                          contentDescription = "fds",
-                          contentScale = ContentScale.FillWidth,
-                          modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black),
-                          alignment = Alignment.Center)
-
+                    Image(
+                        painter = rememberAsyncImagePainter(model = imgBitmap),
+                        contentDescription = "fds",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black),
+                        alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
 

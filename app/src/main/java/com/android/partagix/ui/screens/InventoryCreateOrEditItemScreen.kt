@@ -197,7 +197,7 @@ fun InventoryCreateOrEditItem(
                           uiQuantity,
                           uiLocation,
                           i.idUser,
-                          //TODO image
+                          // TODO image
                       ))
                   navigationActions.goBack()
                 },
