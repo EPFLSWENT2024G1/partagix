@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
@@ -104,7 +103,7 @@ fun InventoryCreateOrEditItem(
     var uiVisibility by remember { mutableStateOf(i.visibility) }
     var uiQuantity by remember { mutableStateOf(i.quantity) }
     var uiLocation by remember { mutableStateOf(Location(i.location)) }
-      var uiImage by remember { mutableStateOf(i.imageId) }
+    var uiImage by remember { mutableStateOf(i.imageId) }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
@@ -114,14 +113,11 @@ fun InventoryCreateOrEditItem(
               Box(
                   contentAlignment = Alignment.Center,
                   modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
-                    MainImagePicker(listOf(i.imageId.toUri())) {
-                        uri ->
-                        uploadImageToFirebaseStorage(uri, imageName = i.id)
-                        getImageFromFirebaseStorage(i.id) { file ->
-                          uiImage = file
-                        }
+                    MainImagePicker(listOf(i.imageId.toUri())) { uri ->
+                      uploadImageToFirebaseStorage(uri, imageName = i.id)
+                      getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
                     }
-              }
+                  }
 
               Spacer(modifier = modifier.width(8.dp))
 
@@ -208,8 +204,7 @@ fun InventoryCreateOrEditItem(
                           uiQuantity,
                           uiLocation,
                           i.idUser,
-                          uiImage
-                      ))
+                          uiImage))
                   navigationActions.goBack()
                 },
                 content = {

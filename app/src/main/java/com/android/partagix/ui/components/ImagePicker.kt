@@ -143,9 +143,9 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
                     Modifier.fillMaxSize()
                         .background(color = androidx.compose.ui.graphics.Color.Gray)) {
                   items(selectedImages) { uri ->
-                      if (uri != null) {
-                          onSelected(uri)
-                      }
+                    if (uri != null) {
+                      onSelected(uri)
+                    }
                     AsyncImage(
                         model = uri,
                         contentDescription = null,
