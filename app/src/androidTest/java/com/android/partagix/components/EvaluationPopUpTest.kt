@@ -34,10 +34,10 @@ class EvaluationPopUpTest {
           "item1",
           Date(),
           Date(),
-          "",
           "5.0",
           "",
           "commented",
+          "",
           LoanState.FINISHED)
   val loan2 =
       Loan(
@@ -126,7 +126,7 @@ class EvaluationPopUpTest {
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify { evaluationViewModel.reviewLoan(loan1, 5.0, "comment", "idOwner1") }
+    coVerify { evaluationViewModel.reviewLoan(loan1, 5.0, "comment", "idLoaner1") }
   }
 
   @Test
@@ -160,6 +160,6 @@ class EvaluationPopUpTest {
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify(exactly = 1) { evaluationViewModel.reviewLoan(loan3, 3.0, "comment", "idLoaner3") }
+    coVerify(exactly = 1) { evaluationViewModel.reviewLoan(loan3, 3.0, "comment", "idOwner3") }
   }
 }

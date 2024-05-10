@@ -47,6 +47,7 @@ import com.android.partagix.model.loan.Loan
  *
  * @param modifier Modifier to be applied to the layout.
  * @param loan Loan to be evaluated.
+ * @param userId Id of the user evaluating the loan.
  * @param viewModel EvaluationViewModel to handle the evaluation.
  */
 @Composable
@@ -62,30 +63,38 @@ fun EvaluationPopUp(
   val haveCommented = remember { mutableStateOf(false) }
   var comment by remember { mutableStateOf("") }
   var rating by remember { mutableDoubleStateOf(0.0) }
+  var idReviewed by remember { mutableStateOf("") }
   viewModel.updateUIState(loan)
 
-  if (userId == loan.idLender && loan.reviewLender.isNotEmpty()) {
-    rating = loan.reviewLender.toDouble()
-    haveRated.value = true
+  if (userId == loan.idLender) {
+    idReviewed = loan.idBorrower
+    if (loan.reviewBorrower.isNotEmpty()) {
+      rating = loan.reviewBorrower.toDouble()
+      haveRated.value = true
+    }
+    if (loan.commentBorrower.isNotEmpty()) {
+      comment = loan.commentBorrower
+      haveCommented.value = true
+    }
   }
-  if (userId == loan.idBorrower && loan.reviewBorrower.isNotEmpty()) {
-    rating = loan.reviewBorrower.toDouble()
-    haveRated.value = true
-  }
-  if (userId == loan.idLender && loan.commentLender.isNotEmpty()) {
-    comment = loan.commentLender
-    haveCommented.value = true
-  }
-  if (userId == loan.idBorrower && loan.commentBorrower.isNotEmpty()) {
-    comment = loan.commentBorrower
-    haveCommented.value = true
+
+  if (userId == loan.idBorrower) {
+    idReviewed = loan.idLender
+    if (loan.reviewLender.isNotEmpty()) {
+      rating = loan.reviewLender.toDouble()
+      haveRated.value = true
+    }
+    if (loan.commentLender.isNotEmpty()) {
+      comment = loan.commentLender
+      haveCommented.value = true
+    }
   }
 
   if (openDialog.value) {
     Dialog(
         onDismissRequest = {
           if (haveRated.value) {
-            viewModel.reviewLoan(loan, rating, comment, userId)
+            viewModel.reviewLoan(loan, rating, comment, idReviewed)
           }
           openDialog.value = false
           onClose()
@@ -116,7 +125,7 @@ fun EvaluationPopUp(
                             modifier = modifier.testTag("closeButton"),
                             onClick = {
                               if (haveRated.value) {
-                                viewModel.reviewLoan(loan, rating, comment, userId)
+                                viewModel.reviewLoan(loan, rating, comment, idReviewed)
                               }
                               onClose()
                               openDialog.value = false
