@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
@@ -72,6 +73,7 @@ class App(
   private val manageViewModel = ManageLoanViewModel(db = db)
 
   private val loanViewModel = LoanViewModel(db = db)
+  private val borrowViewModel = BorrowViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -147,9 +149,7 @@ class App(
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -221,7 +221,7 @@ class App(
         }
       }
       composable(Route.BORROW) {
-        BorrowScreen(navigationActions = navigationActions)
+        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
@@ -248,7 +248,7 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
 
       composable(Route.CREATE_ITEM) {
