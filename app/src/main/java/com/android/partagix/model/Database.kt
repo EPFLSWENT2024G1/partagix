@@ -495,11 +495,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         && loan.id == loanId && loan.idLender == userId) {
 
           this.loan.document(loanId).update("review_lender", rank.toString())
+          newAverageRank(userId)
           if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
         } else if (loan.state == LoanState.FINISHED // only finished loans
         && loan.id == loanId && loan.idBorrower == userId) {
 
           this.loan.document(loanId).update("review_borrower", rank.toString())
+          newAverageRank(userId)
           if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
         }
       }
