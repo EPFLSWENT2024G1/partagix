@@ -478,13 +478,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * Set a review for a loan, i.e a rank and an optional comment
    *
    * @param loanId the loan's id
-   * @param userReviewedId the reviewed user's id
+   * @param reviewedUserId the reviewed user's id
    * @param rank the rank to be set, must be between 0.5 and 5
    * @param comment an optional comment to be set
    */
   fun setReview(
       loanId: String,
-      userReviewedId: String,
+      reviewedUserId: String,
       rank: Double,
       comment: String = "",
   ) {
@@ -492,16 +492,16 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       for (loan in loans) {
 
         if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idLender == userReviewedId) {
+        && loan.id == loanId && loan.idLender == reviewedUserId) {
 
           this.loan.document(loanId).update("review_lender", rank.toString())
-          newAverageRank(userReviewedId)
+          newAverageRank(reviewedUserId)
           if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
         } else if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idBorrower == userReviewedId) {
+        && loan.id == loanId && loan.idBorrower == reviewedUserId) {
 
           this.loan.document(loanId).update("review_borrower", rank.toString())
-          newAverageRank(userReviewedId)
+          newAverageRank(reviewedUserId)
           if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
         }
       }
