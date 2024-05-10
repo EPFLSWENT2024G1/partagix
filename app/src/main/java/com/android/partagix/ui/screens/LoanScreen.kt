@@ -210,6 +210,7 @@ fun LoanScreen(
                           modifier =
                               modifier.testTag("LoanScreenItemListView").padding(10.dp, 0.dp),
                           isExpandable = false,
+                          isOutgoing = false,
                           wasExpanded = emptyList(),
                       )
                     }
