@@ -3,9 +3,11 @@ package com.android.partagix.model
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 val emptyLoan = Loan("", "", "", "", Date(0), Date(0), "", "", "", "", LoanState.PENDING)
 val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 0, Location(""))
+val emptyUser = User("", "", "", "", Inventory("", emptyList()))
 
 class BorrowViewModel(db: Database = Database()) : ViewModel() {
 
@@ -24,12 +27,15 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
   private var _itemUiState = MutableStateFlow(emptyItem)
   val itemUiState: StateFlow<Item> = _itemUiState
 
+  private var _userUiState = MutableStateFlow(emptyUser)
+  val userUiState: StateFlow<User> = _userUiState
+
   /**
    * Set the item to borrow and start a new borrow request
    *
    * @param item the item to borrow
    */
-  fun resetBorrow(item: Item) {
+  fun resetBorrow(item: Item, owner: User) {
     // Set the item to borrow
     _itemUiState.value = item
 
@@ -47,6 +53,9 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
 
     // Set the owner id in the loan to the owner of the item
     _loanUiState.value = _loanUiState.value.copy(idOwner = _itemUiState.value.id)
+
+    // Set the owner User to have the username
+    _userUiState.value = owner
   }
 
   /**
