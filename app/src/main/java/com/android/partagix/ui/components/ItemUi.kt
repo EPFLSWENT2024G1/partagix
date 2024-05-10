@@ -67,6 +67,8 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
+    isOutgoing: Boolean = false,
+    wasExpanded: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
@@ -175,18 +177,20 @@ fun ItemUi(
             Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
                 modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
-                  Button(
-                      onClick = { manageLoanViewModel.acceptLoan(loan, index) },
-                      content = {
-                        Icon(
-                            Icons.Default.Check,
-                            contentDescription = "cancel",
-                            modifier = Modifier,
-                            Color.Green)
-                        Text(text = "validate")
-                      },
-                      border = BorderStroke(1.dp, Color.Green),
-                      modifier = Modifier.fillMaxWidth(0.35f))
+                  if (!isOutgoing) {
+                    Button(
+                        onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                        content = {
+                          Icon(
+                              Icons.Default.Check,
+                              contentDescription = "validate",
+                              modifier = Modifier,
+                              Color.Green)
+                          Text(text = "validate")
+                        },
+                        border = BorderStroke(1.dp, Color.Green),
+                        modifier = Modifier.fillMaxWidth(0.35f))
+                  }
                   Button(
                       onClick = { manageLoanViewModel.declineLoan(loan, index) },
                       content = {

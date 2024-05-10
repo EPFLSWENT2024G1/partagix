@@ -173,6 +173,7 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
+          manageLoanViewModel = mockManageViewModel,
           itemViewModel = mockItemViewModel)
     }
 
@@ -220,6 +221,7 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
+          manageLoanViewModel = mockManageViewModel,
           itemViewModel = mockItemViewModel)
     }
 
@@ -301,6 +303,7 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
+          manageLoanViewModel = mockManageViewModel,
           itemViewModel = mockItemViewModel)
     }
 

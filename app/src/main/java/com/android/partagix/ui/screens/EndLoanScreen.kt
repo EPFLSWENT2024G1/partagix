@@ -77,7 +77,11 @@ fun EndLoanScreen(
             verticalArrangement = Arrangement.Center, // Center items vertically
             horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
             ) {
-              ItemUi(item, borrower, loan)
+              ItemUi(
+                  item,
+                  borrower,
+                  loan,
+              )
               Row {
                 Button(
                     onClick = { startOrEndLoanViewModel.onFinish() },

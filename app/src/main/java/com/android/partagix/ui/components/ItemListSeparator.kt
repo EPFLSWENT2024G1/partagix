@@ -48,6 +48,8 @@ fun ItemListColumn(
     onClickCorner: () -> Unit,
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
+    isOutgoing: Boolean,
+    canSeeOld: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isExpandable: Boolean,
 ) {
@@ -64,6 +66,9 @@ fun ItemListColumn(
                   color = Color(0xFF000000),
               ),
           modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
+      if (canSeeOld) {
+        Text(text = "see Old", modifier = Modifier.fillMaxWidth(0.5f).clickable { /* TO-DO */})
+      }
       Text(
           text = corner,
           textAlign = TextAlign.Right,
@@ -87,6 +92,7 @@ fun ItemListColumn(
             },
         isExpandable = isExpandable,
         wasExpanded = wasExpanded,
+        isOutgoing = isOutgoing,
         manageLoanViewModel = manageLoanViewModel,
         modifier = Modifier.fillMaxSize(),
         expandState = expandState,
