@@ -79,7 +79,7 @@ fun BorrowScreen(
         val user = userUIState.value
 
         val loanItemName by remember { mutableStateOf(item.name) }
-        val loanItemOwner by remember { mutableStateOf(user.name) }
+        val loanItemOwnerName by remember { mutableStateOf(user.name) }
         var loanDescription by remember {
           mutableStateOf("")
         } // TODO: edit Loan type to include description
@@ -135,7 +135,7 @@ fun BorrowScreen(
                         maxLines = 1, // Ensure only one line is displayed
                         readOnly = true)
                     OutlinedTextField(
-                        value = loanItemOwner, // TODO: display owner name instead of id
+                        value = loanItemOwnerName,
                         onValueChange = {},
                         label = { Text("Owner") },
                         modifier = modifier.testTag("itemOwner").fillMaxWidth(),
