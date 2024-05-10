@@ -134,7 +134,6 @@ class FinishedLoansViewModelTests {
   @Test
   fun getFinishedLoanNoUserTests() {
     every { Authentication.getUser() } returns null
-    assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
     finishedLoansViewModel.getFinishedLoan()
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
   }

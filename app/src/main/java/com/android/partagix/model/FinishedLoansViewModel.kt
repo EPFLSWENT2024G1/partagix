@@ -39,6 +39,7 @@ class FinishedLoansViewModel(db: Database = Database(), latch: CountDownLatch = 
     val user = Authentication.getUser()
 
     if (user == null) {
+      _uiState.value = _uiState.value.copy(loans = emptyList())
       // TODO: Handle error
       latch.countDown()
       return

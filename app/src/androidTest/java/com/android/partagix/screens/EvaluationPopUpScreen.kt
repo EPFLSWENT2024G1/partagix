@@ -14,6 +14,5 @@ class EvaluationPopUp(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val commentText: KNode = onNode { hasTestTag("commentText") }
   val commentField: KNode = onNode { hasTestTag("commentField") }
   val commentButton: KNode = onNode { hasTestTag("commentButton") }
-  val alreadyEvaluated: KNode = onNode { hasTestTag("alreadyRated") }
   val closeButton: KNode = onNode { hasTestTag("closeButton") }
 }

@@ -1,7 +1,9 @@
 package com.android.partagix.components
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
@@ -120,7 +122,7 @@ class EvaluationPopUpTest {
       commentField { performTextReplacement("comment") }
       commentButton { assertIsEnabled() }
       commentButton { performClick() }
-      alreadyEvaluated { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
@@ -135,10 +137,9 @@ class EvaluationPopUpTest {
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       rateStars { assertHasNoClickAction() }
       Thread.sleep(1000)
-      validateButton { assertIsNotEnabled() }
+      composeTestRule.onNodeWithText("already rated", true).assertIsDisplayed()
       commentField { assertTextEquals("commented") }
-      commentButton { assertIsNotEnabled() }
-      alreadyEvaluated { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
@@ -151,11 +152,11 @@ class EvaluationPopUpTest {
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       rateStars { assertHasNoClickAction() }
-      validateButton { assertIsNotEnabled() }
+      composeTestRule.onNodeWithText("already rated", true).assertIsDisplayed()
       commentField { performTextReplacement("comment") }
       commentButton { assertIsEnabled() }
       commentButton { performClick() }
-      alreadyEvaluated { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()

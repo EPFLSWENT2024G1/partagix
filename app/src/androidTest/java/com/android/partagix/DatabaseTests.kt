@@ -628,10 +628,18 @@ class DatabaseTests {
 
     val user1 =
         User(
-            "8WuTkKJZLTAr6zs5L7rH", "user1", "", "", Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
+            "8WuTkKJZLTAr6zs5L7rH",
+            "user1",
+            "",
+            "0.0",
+            Inventory("8WuTkKJZLTAr6zs5L7rH", emptyList()))
     val user2 =
         User(
-            "2WuTkKJZLTAr6zs5L7rH", "user2", "", "", Inventory("2WuTkKJZLTAr6zs5L7rH", emptyList()))
+            "2WuTkKJZLTAr6zs5L7rH",
+            "user2",
+            "",
+            "0.0",
+            Inventory("2WuTkKJZLTAr6zs5L7rH", emptyList()))
 
     val idLoan1 = "1"
     val idLoan2 = "2"
@@ -704,6 +712,15 @@ class DatabaseTests {
     every { database.getLoans(any()) } answers
         {
           firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
+        }
+
+    every { database.newAverageRank(user1.id) } answers
+        {
+          // do nothing
+        }
+    every { database.newAverageRank(user2.id) } answers
+        {
+          // do nothing
         }
 
     runBlocking {
