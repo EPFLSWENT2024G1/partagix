@@ -3,7 +3,6 @@ package com.android.partagix.model.notification
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -13,13 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.android.partagix.MainActivity
 import com.android.partagix.R
+import com.android.partagix.model.Database
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-
-class FirebaseMessagingService : FirebaseMessagingService() {
+class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
   // To be initialized using setContext()
   private var context: MainActivity? = null
 
@@ -46,18 +45,16 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     }
 
     // Check if message contains a notification payload.
-    remoteMessage.notification?.let {
-      Log.d(TAG, "Message Notification Body: ${it.body}")
-    }
+    remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
 
     // Also if you intend on generating your own notifications as a result of a received FCM
     // message, here is where that should be initiated. See sendNotification method below.
   }
 
   /**
-   * Called if the FCM registration token is updated. This may occur if the security of
-   * the previous token had been compromised. Note that this is called when the
-   * FCM registration token is initially generated so this is where you would retrieve the token.
+   * Called if the FCM registration token is updated. This may occur if the security of the previous
+   * token had been compromised. Note that this is called when the FCM registration token is
+   * initially generated so this is where you would retrieve the token.
    */
   override fun onNewToken(token: String) {
     Log.d(TAG, "Refreshed token: $token")
@@ -71,37 +68,55 @@ class FirebaseMessagingService : FirebaseMessagingService() {
   fun setContext(context: MainActivity) {
     this.context = context
 
-    requestPermissionLauncher = context.registerForActivityResult(
-      ActivityResultContracts.RequestPermission(),
-    ) { isGranted: Boolean ->
-      if (isGranted) {
-        // FCM SDK (and your app) can post notifications.
-      } else {
-        // TODO: Inform user that that your app will not show notifications.
-      }
-    }
+    requestPermissionLauncher =
+        context.registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+          if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+          } else {
+            // TODO: Inform user that that your app will not show notifications.
+          }
+        }
   }
 
-  fun getToken() {
+  fun getToken(onSuccess: (String) -> Unit = {}) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot get token")
       return
     }
 
-    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-      if (!task.isSuccessful) {
-        Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-        return@OnCompleteListener
+    FirebaseMessaging.getInstance()
+        .token
+        .addOnCompleteListener(
+            OnCompleteListener { task ->
+              if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+              }
+
+              // Get new FCM registration token
+              val token = task.result
+
+              // Log and toast
+              Log.d(TAG, token)
+              val msg = "Token: $token"
+              Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+              onSuccess(token)
+            })
+  }
+
+  fun checkToken(userId: String, onSuccess: (String) -> Unit = {}) {
+    getToken { newToken ->
+      db.getFCMToken(userId) { oldToken ->
+        if (oldToken != null && oldToken != newToken) {
+          db.updateFCMToken(userId, newToken)
+        }
+
+        onSuccess(newToken)
       }
-
-      // Get new FCM registration token
-      val token = task.result
-
-      // Log and toast
-      Log.d(TAG, token)
-      val msg = "Token: $token"
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-    })
+    }
   }
 
   fun askNotificationPermission() {
@@ -112,14 +127,15 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.POST_NOTIFICATIONS) ==
-        PackageManager.PERMISSION_GRANTED
-      ) {
+          PackageManager.PERMISSION_GRANTED) {
         // FCM SDK (and your app) can post notifications.
         Log.d(TAG, "Permission already granted")
-      } else if (context?.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) == true) {
+      } else if (context?.shouldShowRequestPermissionRationale(
+          Manifest.permission.POST_NOTIFICATIONS) == true) {
         // TODO: display an educational UI explaining to the user the features that will be enabled
         //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-        //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+        //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the
+        // permission.
         //       If the user selects "No thanks," allow the user to continue without notifications.
         Log.d(TAG, "Permission rationale")
       } else {
@@ -130,13 +146,17 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     }
   }
 
-  private fun createChannel(context: MainActivity, channelId: String, name: String, description: String) {
+  private fun createChannel(
+      context: MainActivity,
+      channelId: String,
+      name: String,
+      description: String
+  ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       val importance = NotificationManager.IMPORTANCE_DEFAULT
 
-      val channel = NotificationChannel(channelId, name, importance).apply {
-        this.description = description
-      }
+      val channel =
+          NotificationChannel(channelId, name, importance).apply { this.description = description }
 
       val notificationManager = context.getSystemService(NotificationManager::class.java)
       notificationManager.createNotificationChannel(channel)
@@ -150,25 +170,22 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     }
 
     createChannel(
-      context!!,
-      Channels.INCOMING.id(),
-      context!!.getString(R.string.incoming_name),
-      context!!.getString(R.string.incoming_description)
-    )
+        context!!,
+        Channels.INCOMING.id(),
+        context!!.getString(R.string.incoming_name),
+        context!!.getString(R.string.incoming_description))
 
     createChannel(
-      context!!,
-      Channels.OUTGOING.id(),
-      context!!.getString(R.string.outgoing_name),
-      context!!.getString(R.string.outgoing_description)
-    )
+        context!!,
+        Channels.OUTGOING.id(),
+        context!!.getString(R.string.outgoing_name),
+        context!!.getString(R.string.outgoing_description))
 
     createChannel(
-      context!!,
-      Channels.SOCIAL.id(),
-      context!!.getString(R.string.social_name),
-      context!!.getString(R.string.social_description)
-    )
+        context!!,
+        Channels.SOCIAL.id(),
+        context!!.getString(R.string.social_name),
+        context!!.getString(R.string.social_description))
   }
 
   private fun sendRegistrationToServer(token: String?) {

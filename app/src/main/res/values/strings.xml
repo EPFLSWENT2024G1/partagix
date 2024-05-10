@@ -7,13 +7,13 @@
     <string name="title_activity_test_upload">testUpload</string>
 
     <!-- Notifications -->
-    <string name="incoming_name">Incoming messages</string>
-    <string name="incoming_description">Notification channel for incoming messages</string>
+    <string name="incoming_name">Incoming events</string>
+    <string name="incoming_description">Notification channel for incoming events</string>
 
-    <string name="outgoing_name">Outgoing messages</string>
-    <string name="outgoing_description">Notification channel for outgoing messages</string>
+    <string name="outgoing_name">Outgoing events</string>
+    <string name="outgoing_description">Notification channel for outgoing events</string>
 
-    <string name="social_name">Social messages</string>
-    <string name="social_description">Notification channel for social messages, like new friends or new comments.</string>
+    <string name="social_name">Social events</string>
+    <string name="social_description">Notification channel for social events, like new friends or new comments.</string>
     <!-- End of Notifications -->
 </resources>

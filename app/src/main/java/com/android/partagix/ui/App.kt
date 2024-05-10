@@ -37,8 +37,8 @@ import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.model.inventory.Inventory
-import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -91,6 +91,7 @@ class App(
   init {
     notificationManager.setContext(activity)
     notificationManager.askNotificationPermission()
+    notificationManager.createChannels()
   }
 
   @Composable
@@ -104,13 +105,18 @@ class App(
       navigationActions = mockNavigationActions!!
     }
 
-    //notificationManager.setContext(activity)
-    notificationManager.getToken()
     navigationActions.navigateTo(Route.BOOT)
 
     val user = Authentication.getUser()
-    if (idItem != null && user != null) {
-      onQrScanned(idItem, user.uid)
+
+    if (user != null) {
+      notificationManager.checkToken(user.uid) {
+        if (idItem != null) {
+          onQrScanned(idItem, user.uid)
+        } else {
+          navigationActions.navigateTo(Route.BOOT)
+        }
+      }
     } else {
       navigationActions.navigateTo(Route.BOOT)
     }
@@ -163,20 +169,29 @@ class App(
 
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
-      val newUser =
-          User(
-              user.uid,
-              user.displayName ?: "",
-              user.email ?: "",
-              "0",
-              Inventory(user.uid, emptyList()))
-      db.getUser(user.uid, { db.createUser(newUser) }, {})
-    }
-    // test that navigationActions has been initialized
+      notificationManager.checkToken(user.uid) { newToken ->
+        val newUser =
+            User(
+                user.uid,
+                user.displayName ?: "",
+                user.email ?: "",
+                "0",
+                Inventory(user.uid, emptyList()),
+                newToken)
+        db.getUser(
+            user.uid,
+            onNoUser = {
+              // If the user is not found, create it
+              db.createUser(newUser)
+            }) {}
 
-    if (navigationActionsInitialized) {
-      navigationActions.navigateTo(Route.HOME)
+        // test that navigationActions has been initialized
+        if (navigationActionsInitialized) {
+          navigationActions.navigateTo(Route.HOME)
+        }
+      }
     }
+
     Log.d(TAG, "onSignInSuccess: user=$user")
   }
 
