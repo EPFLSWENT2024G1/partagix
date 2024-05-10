@@ -170,7 +170,7 @@ fun InventoryViewItemScreen(
 
                   Button(
                       onClick = {
-                        borrowViewModel.resetBorrow(item)
+                        borrowViewModel.resetBorrow(item, user)
                         navigationActions.navigateTo(Route.BORROW)
                       },
                       content = { Text("Borrow item") },
