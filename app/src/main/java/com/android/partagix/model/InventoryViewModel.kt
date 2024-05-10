@@ -84,7 +84,7 @@ class InventoryViewModel(
       val user = firebaseAuth.currentUser
       if (user != null) {
         database.getItems { items: List<Item> ->
-          println(items)
+          //println(items)
           updateInv(items.filter { it.idUser.equals(user.uid) })
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)

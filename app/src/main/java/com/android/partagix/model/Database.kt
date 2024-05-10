@@ -59,11 +59,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnSuccessListener { result ->
           val paths = mutableListOf<String>()
           for (document in result) {
-              if (document.data["image_path"] != null) {
-                  paths.add(document.data["image_path"] as String)
-              } else {
-                  paths.add("default-image.jpg")
-              }
+            if (document.data["image_path"] != null) {
+              paths.add(document.data["image_path"] as String)
+            } else {
+              paths.add("default-image.jpg")
+            }
           }
           categories
               .get()
@@ -295,7 +295,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "id_user" to userId,
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
-            "location" to locationToMap(newItem.location))
+            "location" to locationToMap(newItem.location),
+            "image_path" to "images/${newItem.imageId.name}")
     items.document(idItem).set(data)
     val new =
         Item(
@@ -306,7 +307,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             newItem.visibility,
             newItem.quantity,
             newItem.location,
-            userId)
+            userId,
+            newItem.imageId)
     onSuccess(new)
   }
 
@@ -321,8 +323,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location),
-            "image_path" to "images/${newItem.imageId.name}"
-        )
+            "image_path" to "images/${newItem.imageId.name}")
     items.document(newItem.id).set(data)
   }
 
@@ -371,9 +372,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
-    fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {
 
-    }
+  fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {}
 
   fun createUser(user: User) {
     val data =

@@ -3,7 +3,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 
 // Function to upload image to Firebase Storage
@@ -26,7 +25,7 @@ fun uploadImageToFirebaseStorage(
   val storageRef = storage.reference
 
   // Create a reference to 'images/imageName.jpg'
-  val imageRef = storageRef.child("images/$imageName.jpg")
+  val imageRef = storageRef.child("images/$imageName")
 
   // Upload the file to Firebase Storage
   val uploadTask = imageRef.putFile(imageUri)
@@ -48,9 +47,7 @@ fun getImageFromFirebaseStorage(
     storage: FirebaseStorage = Firebase.storage,
     onSuccess: (localFile: File) -> Unit = {},
 ) {
-    val path: String = "images/" + p.ifEmpty {
-        "default-image.jpg"
-    }
+  val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
@@ -58,7 +55,7 @@ fun getImageFromFirebaseStorage(
   val imageRef = storageRef.child(path)
 
   // Download the image to a local file
-  val localFile = File.createTempFile("images", "jpg")
+  val localFile = File.createTempFile("local", "jpg")
   imageRef
       .getFile(localFile)
       .addOnSuccessListener {

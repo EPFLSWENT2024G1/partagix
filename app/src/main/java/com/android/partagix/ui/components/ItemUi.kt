@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.R
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
@@ -83,6 +82,13 @@ fun ItemUi(
   var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
+    var imgBitmap: Bitmap? = null
+    val imgFile = item.imageId
+    if (imgFile.exists()) {
+        // on below line we are creating an image bitmap variable
+        // and adding a bitmap to it from image file.
+        imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+    }
   if (isExpandable) {
     Column(
         // horizontalAlignment = Alignment.CenterHorizontally,
@@ -162,11 +168,11 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+              Image(
+                  painter = rememberAsyncImagePainter(model = imgBitmap),
+                  contentDescription = "fds",
+                  contentScale = ContentScale.FillBounds,
+                  modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
               }
           if (expandables) {
 
@@ -280,19 +286,11 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                var imgBitmap: Bitmap? = null
-              val imgFile = item.imageId
-              if (imgFile.exists()) {
-                // on below line we are creating an image bitmap variable
-                // and adding a bitmap to it from image file.
-                imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-              }
-
               Image(
-                    painter = rememberAsyncImagePainter(model = imgBitmap),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                  painter = rememberAsyncImagePainter(model = imgBitmap),
+                  contentDescription = "fds",
+                  contentScale = ContentScale.FillBounds,
+                  modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
               }
         }
   }

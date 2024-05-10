@@ -14,5 +14,5 @@ data class Item(
     val quantity: Long,
     val location: Location,
     val idUser: String = "",
-    val imageId: File = File.createTempFile("default_image.jpg", null)
+    val imageId: File = File.createTempFile("default_image", null)
 )

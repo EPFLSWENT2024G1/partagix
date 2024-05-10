@@ -76,7 +76,8 @@ class ItemViewModel(
             new.visibility,
             new.quantity,
             new.location,
-            newUserId)
+            newUserId,
+            new.imageId)
     _uiState.value =
         _uiState.value.copy(
             item = newWithUserId,
