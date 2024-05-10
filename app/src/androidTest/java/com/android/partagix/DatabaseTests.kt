@@ -418,19 +418,18 @@ class DatabaseTests {
     val database = spyk(Database(mockDb), recordPrivateCalls = true)
 
     val loan =
-      Loan(
-        "id",
-        "id_owner",
-        "id_loaner",
-        "id_item",
-        Date(0),
-        Date(0),
-        "r",
-        "r",
-        "c",
-        "c",
-        LoanState.PENDING
-      )
+        Loan(
+            "id",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            Date(0),
+            Date(0),
+            "r",
+            "r",
+            "c",
+            "c",
+            LoanState.PENDING)
 
     runBlocking {
       database.createLoan(loan)
@@ -463,7 +462,7 @@ class DatabaseTests {
     val mockDb: FirebaseFirestore = mockk {}
 
     every { mockDb.collection(any()) } returns mockCollection
-      
+
     val database = spyk(Database(mockDb))
 
     val user1 =
