@@ -25,6 +25,28 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
   init {} // kept for easier testing purposes
 
+  private fun getUsers(onSuccess: (List<User>) -> Unit) {
+    users
+        .get()
+        .addOnSuccessListener { result ->
+          val ret = mutableListOf<User>()
+          for (document in result) {
+            getUserInventory(document.data["id"] as String) { inventory ->
+              val user =
+                  User(
+                      document.data["id"] as String,
+                      document.data["name"] as String,
+                      document.data["addr"] as String,
+                      document.data["rank"] as String,
+                      inventory)
+              ret.add(user)
+            }
+          }
+          onSuccess(ret)
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
+  }
+
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users
         .get()
@@ -402,36 +424,36 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
     val ret = mutableListOf<Pair<String, String>>()
 
-    getLoans { loans ->
-      for (loan in loans) {
+    getUsers { users ->
+      getLoans { loans ->
+        val loanBorrower =
+            loans.filter { loan ->
+              loan.state == LoanState.FINISHED &&
+                  loan.idBorrower == userId &&
+                  loan.reviewBorrower.toDouble() != 0.0 &&
+                  loan.commentBorrower != ""
+            }
 
-        if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idLender == userId // if the user is the lender,
-            &&
-            loan.reviewLender.toDouble() != 0.0 // that has been reviewed,
-            &&
-            loan.commentLender != "") { // and received a comment
+        val loanLender =
+            loans.filter { loan ->
+              loan.state == LoanState.FINISHED &&
+                  loan.idLender == userId &&
+                  loan.reviewLender.toDouble() != 0.0 &&
+                  loan.commentLender != ""
+            }
 
-          getUser(loan.idBorrower, onNoUser = {}) { user ->
-            ret.add(Pair(user.name, loan.commentLender))
-          }
-        } else if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idBorrower == userId // if the user is the borrower,
-            &&
-            loan.reviewBorrower.toDouble() != 0.0 // that has been reviewed
-            &&
-            loan.commentBorrower != "") { // and received a comment
-
-          getUser(loan.idLender, onNoUser = {}) { user ->
-            ret.add(Pair(user.name, loan.commentBorrower))
-          }
+        loanBorrower.forEach { loan ->
+          val user = users.first { it.id == loan.idLender }
+          ret.add(Pair(user.name, loan.commentBorrower))
         }
+
+        loanLender.forEach { loan ->
+          val user = users.first { it.id == loan.idBorrower }
+          ret.add(Pair(user.name, loan.commentLender))
+        }
+        onSuccess(ret)
       }
     }
-
-    onSuccess(ret)
   }
 
   /**
