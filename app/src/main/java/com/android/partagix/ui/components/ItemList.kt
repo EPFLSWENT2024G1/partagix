@@ -37,6 +37,7 @@ fun ItemList(
     users: List<User>,
     loan: List<Loan>,
     isExpandable: Boolean,
+    isOutgoing: Boolean,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onClick: (Item) -> Unit,
@@ -60,12 +61,6 @@ fun ItemList(
                   .testTag("ItemListItem")) {
             ItemUi(
                 isExpandable = isExpandable,
-                wasExpanded =
-                    if (wasExpanded.isEmpty()) {
-                      false
-                    } else {
-                      wasExpanded[index]
-                    },
                 item = item,
                 user =
                     if (users.isEmpty()) {
@@ -88,6 +83,7 @@ fun ItemList(
                       }
                     },
                 index = index,
+                isOutgoing = isOutgoing,
                 manageLoanViewModel = manageLoanViewModel,
                 expandState = expandState,
             )

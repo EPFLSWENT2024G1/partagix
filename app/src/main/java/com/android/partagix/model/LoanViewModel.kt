@@ -7,6 +7,7 @@ import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,11 +15,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoanViewModel(
-    private var availableItems: List<Item> = emptyList(),
+    private var availableLoans: List<LoanDetails> = emptyList(),
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(LoanUIState(availableItems))
+  private val _uiState = MutableStateFlow(LoanUIState(availableLoans))
   val uiState: StateFlow<LoanUIState> = _uiState
 
   private var filterState = FilterState()
@@ -40,10 +41,7 @@ class LoanViewModel(
    *
    * Returns the list of available items for a loan, and updates the UI state with it.
    */
-  fun getAvailableLoans(
-      onSuccess: (List<Item>) -> Unit = {},
-      latch: CountDownLatch = CountDownLatch(1)
-  ) {
+  fun getAvailableLoans(latch: CountDownLatch = CountDownLatch(1)) {
     val user = Authentication.getUser()
 
     if (user == null) {
@@ -64,9 +62,15 @@ class LoanViewModel(
                       item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
                 }
 
-            availableItems = newItems
-            update(newItems)
-            onSuccess(newItems)
+            availableLoans = emptyList()
+
+            for (item in newItems) {
+              db.getUser(item.idUser) { user: User ->
+                availableLoans += LoanDetails(item, user)
+                update(availableLoans)
+              }
+            }
+
             latch.countDown()
           }
         }
@@ -74,12 +78,12 @@ class LoanViewModel(
     }
   }
 
-  /** Update the UI state with the given list of items and an optional query. */
-  private fun update(items: List<Item>, filterState: FilterState? = null) {
+  /** Update the UI state with the given list of loans and an optional query. */
+  private fun update(loans: List<LoanDetails>, filterState: FilterState? = null) {
     if (filterState == null) {
-      _uiState.value = _uiState.value.copy(availableItems = items)
+      _uiState.value = _uiState.value.copy(availableLoans = loans)
     } else {
-      _uiState.value = _uiState.value.copy(availableItems = items, filterState = filterState)
+      _uiState.value = _uiState.value.copy(availableLoans = loans, filterState = filterState)
     }
   }
 
@@ -88,19 +92,27 @@ class LoanViewModel(
    */
   fun applyFilters(filterState: FilterState) {
     this.filterState = filterState
-    var items = availableItems
+    var loans = availableLoans
 
     filterState.query?.let { query ->
       if (query.isNotEmpty()) {
-        items = filtering.filterItems(items, query)
+        val filteredItems = filtering.filterItems(loans.map { it.item }, query)
+        loans = loans.filter { it.item in filteredItems }
       }
     }
-    filterState.atLeastQuantity?.let { quantity -> items = filtering.filterItems(items, quantity) }
-    if (filterState.location != null && filterState.radius != null) {
-      items = filtering.filterItems(items, filterState.location, filterState.radius)
+
+    filterState.atLeastQuantity?.let { quantity ->
+      val filteredItems = filtering.filterItems(loans.map { it.item }, quantity)
+      loans = loans.filter { it.item in filteredItems }
     }
 
-    update(items)
+    if (filterState.location != null && filterState.radius != null) {
+      val filteredItems =
+          filtering.filterItems(loans.map { it.item }, filterState.location, filterState.radius)
+      loans = loans.filter { it.item in filteredItems }
+    }
+
+    update(loans)
   }
 
   /**
@@ -121,8 +133,13 @@ class LoanViewModel(
   }
 }
 
+data class LoanDetails(
+    val item: Item,
+    val user: User,
+)
+
 data class LoanUIState(
-    val availableItems: List<Item>,
+    val availableLoans: List<LoanDetails>,
     val filterState: FilterState = FilterState()
 )
 
