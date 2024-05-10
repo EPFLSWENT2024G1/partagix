@@ -1,6 +1,7 @@
 package com.android.partagix.login
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.registerForActivityResult
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -65,6 +66,7 @@ class LoginTest {
   fun testOnSignInSuccess() {
 
     val mockMainActivity = mockk<MainActivity>()
+    val mockPackageManager = mockk<PackageManager>()
     val mockAuthentication = mockk<Authentication>()
     val mockDatabase = mockk<Database>()
     val mockActivityResultLauncher = mockk<ActivityResultLauncher<Intent>>()
@@ -73,6 +75,13 @@ class LoginTest {
     every {
       mockMainActivity.registerForActivityResult(any<FirebaseAuthUIActivityResultContract>(), any())
     } returns mockActivityResultLauncher
+
+    every { mockMainActivity.applicationContext } returns mockMainActivity
+    every { mockMainActivity.attributionTag } returns "tag"
+    every { mockPackageManager.hasSystemFeature(any()) } returns true
+    every { mockPackageManager.getPackageInfo(any<String>(), any<Int>()) } returns null
+    every { mockMainActivity.packageManager } returns mockPackageManager
+    every { mockMainActivity.packageName } returns "com.android.partagix"
 
     every { mockDatabase.getItems(any()) } just Runs
     every { mockDatabase.getUserInventory(any(), any()) } just Runs

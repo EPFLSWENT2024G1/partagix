@@ -153,7 +153,7 @@ fun SliderFilter(
     onReset: () -> Unit = {},
 ) {
   Column(modifier = modifier.padding(16.dp)) {
-    Row() {
+    Row {
       Text(
           text = minUnit,
           modifier = modifier.weight(1f),

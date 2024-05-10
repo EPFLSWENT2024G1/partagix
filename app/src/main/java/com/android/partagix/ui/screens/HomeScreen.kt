@@ -128,6 +128,7 @@ fun HomeScreen(
                   onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
                   isCornerClickable = true,
                   isExpandable = true,
+                  isOutgoing = false,
                   wasExpanded = uiState.expanded,
                   manageLoanViewModel = manageLoanViewModel,
                   isClickable = true,

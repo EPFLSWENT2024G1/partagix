@@ -4,14 +4,14 @@ import java.util.Date
 
 data class Loan(
     val id: String,
-    val idOwner: String,
-    val idLoaner: String,
+    val idLender: String,
+    val idBorrower: String,
     val idItem: String,
     val startDate: Date,
     val endDate: Date,
-    val reviewOwner: String,
-    val reviewLoaner: String,
-    val commentOwner: String,
-    val commentLoaner: String,
+    val reviewLender: String,
+    val reviewBorrower: String,
+    val commentLender: String,
+    val commentBorrower: String,
     val state: LoanState
 )

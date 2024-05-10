@@ -134,7 +134,7 @@ fun InventoryViewItemScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Box(modifier = Modifier.padding(8.dp)) {
-                  Column() {
+                  Column {
                     Text(
                         text = "Availability",
                         style = TextStyle(color = Color.Gray),

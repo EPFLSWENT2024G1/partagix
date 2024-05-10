@@ -18,6 +18,7 @@ package com.android.partagix.model
 
 import android.location.Location
 import androidx.lifecycle.ViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +46,7 @@ class UserViewModel(
   }
 
   fun setUserToCurrent() {
-    val userID = FirebaseAuth.getInstance().currentUser?.uid
+    val userID = Authentication.getUser()?.uid
 
     if (userID != null) {
       database.getUser(userID) { updateUIState(it) }
