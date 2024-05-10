@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
@@ -39,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -64,11 +67,10 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    wasExpanded: Boolean,
-    isExpandable: Boolean,
+    isExpandable: Boolean = false,
     expandState: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    index: Int,
+    index: Int = 0,
 ) {
   val date: Date =
       if (loan.startDate.before(Date())) {
@@ -78,10 +80,8 @@ fun ItemUi(
       }
   var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-  // val time = Duration.between(Date().toInstant(), date.toInstant())
   if (isExpandable) {
     Column(
-        // horizontalAlignment = Alignment.CenterHorizontally,
         horizontalAlignment = Alignment.Start,
         modifier =
             Modifier.fillMaxWidth()
@@ -97,9 +97,7 @@ fun ItemUi(
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
@@ -115,6 +113,8 @@ fun ItemUi(
                                 color = Color(0xFF000000),
                                 textAlign = TextAlign.Left,
                             ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth(0.85f))
                   }
                   Text(
@@ -144,6 +144,8 @@ fun ItemUi(
                               color = Color(0xFF000000),
                               textAlign = TextAlign.Right,
                           ),
+                      maxLines = 1,
+                      overflow = TextOverflow.Ellipsis,
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
                   Text(
@@ -202,7 +204,6 @@ fun ItemUi(
         }
   } else {
     Column(
-        // horizontalAlignment = Alignment.CenterHorizontally,
         horizontalAlignment = Alignment.Start,
         modifier =
             Modifier.fillMaxWidth()
@@ -211,32 +212,33 @@ fun ItemUi(
                     color = Color(0xFF939393),
                     shape = RoundedCornerShape(size = 4.dp))
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
-                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))) {
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+                .testTag("ItemUiNotExpanded")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)
-              // .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-              ) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
-                  Row(modifier = Modifier.fillMaxHeight(0.5f)) {
-                    Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.1f))
-
-                    Text(
-                        text = user.name,
-                        color = Color(0xff49454f),
-                        lineHeight = 1.33.em,
-                        style =
-                            TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight(500),
-                                color = Color(0xFF000000),
-                                textAlign = TextAlign.Left,
-                            ),
-                        modifier = Modifier.fillMaxWidth(0.9f))
-                  }
+                  Row(
+                      modifier = Modifier.fillMaxHeight(0.5f),
+                      verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = user.rank, style = TextStyle(fontWeight = FontWeight(500)))
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(
+                            text = user.name,
+                            color = Color(0xff49454f),
+                            style =
+                                TextStyle(
+                                    fontWeight = FontWeight(500),
+                                    color = Color(0xFF000000),
+                                    textAlign = TextAlign.Left,
+                                ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth(0.95f))
+                      }
                   Text(
                       text =
-                          if (loan.idItem.equals("")) {
+                          if (loan.idItem == "") {
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
@@ -245,36 +247,34 @@ fun ItemUi(
                               "borrowed until ${LocalDateTime.ofInstant(date.toInstant(), java.time.ZoneId.systemDefault()).format(formatter)}"
                             }
                           },
-                      lineHeight = 1.43.em,
-                      style = TextStyle(fontSize = 14.sp, letterSpacing = 0.25.sp),
+                      style = TextStyle(fontSize = 12.sp, letterSpacing = 0.25.sp),
                       modifier = Modifier.fillMaxWidth())
                 }
-                Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
-                  Text(
-                      text = item.name,
-                      textAlign = TextAlign.End,
-                      lineHeight = 1.45.em,
-                      style =
-                          TextStyle(
-                              fontSize = 18.sp,
-                              fontWeight = FontWeight(500),
-                              color = Color(0xFF000000),
-                              textAlign = TextAlign.Right,
-                          ),
-                      modifier =
-                          Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 10.dp))
-                  Text(
-                      text = "Quantity: " + item.quantity.toString(),
-                      style =
-                          TextStyle(
-                              fontSize = 9.sp,
-                              textAlign = TextAlign.Right,
-                          ),
-                      textAlign = TextAlign.End,
-                      lineHeight = 0.8.em,
-                      modifier =
-                          Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.5f).padding(top = 5.dp))
-                }
+                Column(
+                    modifier = Modifier.requiredHeight(height = 64.dp),
+                    horizontalAlignment = Alignment.End) {
+                      Text(
+                          text = item.name,
+                          textAlign = TextAlign.End,
+                          style =
+                              TextStyle(
+                                  color = Color(0xFF000000),
+                                  textAlign = TextAlign.Right,
+                              ),
+                          maxLines = 1,
+                          overflow = TextOverflow.Ellipsis,
+                          modifier = Modifier.fillMaxWidth(.3f).padding(top = 10.dp))
+                      Text(
+                          text = "Quantity: " + item.quantity.toString(),
+                          style =
+                              TextStyle(
+                                  fontSize = 11.sp,
+                                  textAlign = TextAlign.Right,
+                              ),
+                          textAlign = TextAlign.End,
+                          lineHeight = 0.8.em,
+                          modifier = Modifier.fillMaxWidth(0.2f).padding(top = 5.dp))
+                    }
                 Image(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",

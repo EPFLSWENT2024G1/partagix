@@ -60,7 +60,8 @@ fun LoanScreen(
 ) {
 
   val loansUIState = loanViewModel.uiState.collectAsState()
-  var items = loansUIState.value.availableItems
+  var loans = loansUIState.value.availableLoans
+  Log.d(TAG, "loans: $loans")
 
   val userUiState = userViewModel.uiState.collectAsState()
   var currentLocation = userUiState.value.location
@@ -75,11 +76,15 @@ fun LoanScreen(
     }
   }
 
-  LaunchedEffect(key1 = loansUIState) { items = loansUIState.value.availableItems }
+  LaunchedEffect(key1 = loansUIState) {
+    loans = loansUIState.value.availableLoans
+    Log.d(TAG, "loans2: $loans")
+  }
   LaunchedEffect(key1 = userUiState) { currentLocation = userUiState.value.location }
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
+  var mapLoaded by remember { mutableStateOf(false) }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
@@ -102,19 +107,23 @@ fun LoanScreen(
                   contentPadding = PaddingValues(bottom = mapPadding),
                   cameraPositionState = cameraPositionState,
                   properties = MapProperties(isMyLocationEnabled = true, isIndoorEnabled = true),
-                  modifier = modifier.testTag("LoanScreenMaps")) {
-                    items.forEach { item ->
-                      Marker(
-                          state =
-                              MarkerState(
-                                  position =
-                                      LatLng(item.location.latitude, item.location.longitude)),
-                          title = item.name,
-                          snippet = item.description,
-                          onClick = {
-                            // do nothing for now on click
-                            true
-                          })
+                  modifier = modifier.testTag("LoanScreenMaps"),
+                  onMapLoaded = { mapLoaded = true }) {
+                    if (mapLoaded) {
+                      loans.forEach { loan ->
+                        val item = loan.item
+                        Marker(
+                            state =
+                                MarkerState(
+                                    position =
+                                        LatLng(item.location.latitude, item.location.longitude)),
+                            title = item.name,
+                            snippet = item.description,
+                            onClick = {
+                              // do nothing for now on click
+                              true
+                            })
+                      }
                     }
                   }
             }
@@ -134,75 +143,76 @@ fun LoanScreen(
                               color = Color(0xFF464646),
                               shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                           .padding(PaddingValues(top = 10.dp, bottom = 10.dp))) {
-                    ItemList(
-                        itemList = items,
-                        onClick = {
-                          itemViewModel.updateUiItem(it)
-                          navigationActions.navigateTo(Route.VIEW_ITEM)
-                        },
-                        stickyHeader = {
-                          FlowRow(
-                              horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-                              verticalArrangement =
-                                  Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-                              modifier =
-                                  modifier
-                                      .background(Color.White)
-                                      .padding(
-                                          PaddingValues(
-                                              start = 10.dp, end = 10.dp, bottom = 10.dp))) {
-                                Filter(
-                                    title = "Distance",
-                                    selectedValue = {
-                                      if (currentLocation != null) {
+                    if (mapLoaded) {
+                      ItemList(
+                          itemList = loans.map { it.item },
+                          users = loans.map { it.user },
+                          loan = emptyList(),
+                          onClick = {
+                            itemViewModel.updateUiItem(it)
+                            navigationActions.navigateTo(Route.VIEW_ITEM)
+                          },
+                          stickyHeader = {
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
+                                verticalArrangement =
+                                    Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+                                modifier =
+                                    modifier
+                                        .background(Color.White)
+                                        .padding(PaddingValues(bottom = 10.dp))) {
+                                  Filter(
+                                      title = "Distance",
+                                      selectedValue = {
+                                        if (currentLocation != null) {
+                                          loanViewModel.applyFilters(
+                                              FilterState(
+                                                  location = currentLocation!!,
+                                                  radius = it.toDouble()))
+                                        }
+                                      },
+                                      unit = "km",
+                                      minUnit = "1",
+                                      maxUnit = "50",
+                                      minValue = 1f,
+                                      maxValue = 50f,
+                                      sliderTextValue = {
+                                        "Up to ${String.format("%02d", it.toInt())} km"
+                                      },
+                                      onReset = {
+                                        loanViewModel.resetFilter(FilterAction.ResetLocation)
+                                      },
+                                      modifier =
+                                          modifier
+                                              .fillMaxWidth(.3f)
+                                              .testTag("LoanScreenDistanceFilter"))
+                                  Filter(
+                                      title = "Quantity",
+                                      selectedValue = {
                                         loanViewModel.applyFilters(
-                                            FilterState(
-                                                location = currentLocation!!,
-                                                radius = it.toDouble()))
-                                      }
-                                    },
-                                    unit = "km",
-                                    minUnit = "1",
-                                    maxUnit = "50",
-                                    minValue = 0f,
-                                    maxValue = 50f,
-                                    sliderTextValue = {
-                                      "Up to ${String.format("%02d", it.toInt())} km"
-                                    },
-                                    onReset = {
-                                      loanViewModel.resetFilter(FilterAction.ResetLocation)
-                                    },
-                                    modifier =
-                                        modifier
-                                            .fillMaxWidth(.3f)
-                                            .testTag("LoanScreenDistanceFilter"))
-                                Filter(
-                                    title = "Quantity",
-                                    selectedValue = {
-                                      loanViewModel.applyFilters(
-                                          FilterState(atLeastQuantity = it.toInt()))
-                                    },
-                                    unit = "items",
-                                    minUnit = "1",
-                                    maxUnit = "100",
-                                    minValue = 1f,
-                                    maxValue = 100f,
-                                    sliderTextValue = {
-                                      "At least ${String.format("%02d", it.toInt())} items"
-                                    },
-                                    onReset = {
-                                      loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity)
-                                    },
-                                    modifier =
-                                        modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
-                              }
-                        },
-                        modifier = modifier.testTag("LoanScreenItemListView"),
-                        users = emptyList(),
-                        loan = emptyList(),
-                        isExpandable = false,
-                        wasExpanded = emptyList(),
-                    )
+                                            FilterState(atLeastQuantity = it.toInt()))
+                                      },
+                                      unit = "items",
+                                      minUnit = "1",
+                                      maxUnit = "100",
+                                      minValue = 1f,
+                                      maxValue = 100f,
+                                      sliderTextValue = {
+                                        "At least ${String.format("%02d", it.toInt())} items"
+                                      },
+                                      onReset = {
+                                        loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity)
+                                      },
+                                      modifier =
+                                          modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
+                                }
+                          },
+                          modifier =
+                              modifier.testTag("LoanScreenItemListView").padding(10.dp, 0.dp),
+                          isExpandable = false,
+                          wasExpanded = emptyList(),
+                      )
+                    }
                   }
             }
       }
