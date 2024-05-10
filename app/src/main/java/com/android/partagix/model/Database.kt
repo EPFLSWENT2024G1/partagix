@@ -499,7 +499,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
         } else if (loan.state == LoanState.FINISHED // only finished loans
         && loan.id == loanId && loan.idBorrower == reviewedUserId) {
-
           this.loan.document(loanId).update("review_borrower", rank.toString())
           newAverageRank(reviewedUserId)
           if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)

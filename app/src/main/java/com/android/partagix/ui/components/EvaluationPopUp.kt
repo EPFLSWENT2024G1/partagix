@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -49,6 +48,7 @@ import com.android.partagix.model.loan.Loan
  * @param loan Loan to be evaluated.
  * @param userId Id of the user evaluating the loan.
  * @param viewModel EvaluationViewModel to handle the evaluation.
+ * @param onClose Function to be called when the dialog is closed.
  */
 @Composable
 fun EvaluationPopUp(
@@ -56,11 +56,9 @@ fun EvaluationPopUp(
     loan: Loan,
     userId: String,
     viewModel: EvaluationViewModel,
-    onClose: () -> Unit = {}
+    onClose: (Loan) -> Unit = {}
 ) {
   val openDialog = remember { mutableStateOf(true) }
-  val haveRated = remember { mutableStateOf(false) }
-  val haveCommented = remember { mutableStateOf(false) }
   var comment by remember { mutableStateOf("") }
   var rating by remember { mutableDoubleStateOf(0.0) }
   var idReviewed by remember { mutableStateOf("") }
@@ -68,36 +66,21 @@ fun EvaluationPopUp(
 
   if (userId == loan.idLender) {
     idReviewed = loan.idBorrower
-    if (loan.reviewBorrower.isNotEmpty()) {
-      rating = loan.reviewBorrower.toDouble()
-      haveRated.value = true
-    }
-    if (loan.commentBorrower.isNotEmpty()) {
-      comment = loan.commentBorrower
-      haveCommented.value = true
-    }
+    rating = loan.reviewBorrower.toDouble()
+    comment = loan.commentBorrower
   }
 
   if (userId == loan.idBorrower) {
     idReviewed = loan.idLender
-    if (loan.reviewLender.isNotEmpty()) {
-      rating = loan.reviewLender.toDouble()
-      haveRated.value = true
-    }
-    if (loan.commentLender.isNotEmpty()) {
-      comment = loan.commentLender
-      haveCommented.value = true
-    }
+    rating = loan.reviewLender.toDouble()
+    comment = loan.commentLender
   }
 
   if (openDialog.value) {
     Dialog(
         onDismissRequest = {
-          if (haveRated.value) {
-            viewModel.reviewLoan(loan, rating, comment, idReviewed)
-          }
+          onClose(newLoan(loan, userId, comment, rating))
           openDialog.value = false
-          onClose()
         },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
           Surface(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
@@ -111,9 +94,7 @@ fun EvaluationPopUp(
                   Row(
                       horizontalArrangement = Arrangement.SpaceBetween,
                       verticalAlignment = Alignment.CenterVertically,
-                      modifier = modifier.fillMaxWidth()
-                      // .padding(start= 10.dp, end = 26.dp)
-                      ) {
+                      modifier = modifier.fillMaxWidth()) {
                         Text(
                             text = "Rate your loan :",
                             fontSize = 25.sp,
@@ -124,10 +105,7 @@ fun EvaluationPopUp(
                         IconButton(
                             modifier = modifier.testTag("closeButton"),
                             onClick = {
-                              if (haveRated.value) {
-                                viewModel.reviewLoan(loan, rating, comment, idReviewed)
-                              }
-                              onClose()
+                              onClose(newLoan(loan, userId, comment, rating))
                               openDialog.value = false
                             }) {
                               Icon(imageVector = Icons.Default.Close, contentDescription = "")
@@ -158,7 +136,7 @@ fun EvaluationPopUp(
                               contentDescription = "",
                               modifier =
                                   modifier
-                                      .clickable(enabled = !haveRated.value) {
+                                      .clickable {
                                         rating =
                                             when {
                                               isSelected ->
@@ -171,26 +149,6 @@ fun EvaluationPopUp(
                                       .testTag("star$index"))
                         }
                       }
-
-                  Spacer(modifier.height(20.dp))
-                  if (!haveRated.value) {
-                    Button(
-                        onClick = { haveRated.value = true },
-                        enabled = rating > 0f && !haveRated.value,
-                        modifier =
-                            Modifier.padding(end = 16.dp)
-                                .fillMaxWidth(0.6f)
-                                .align(Alignment.CenterHorizontally)
-                                .testTag("validateButton")) {
-                          Text(text = "Validate", fontSize = 18.sp)
-                        }
-                  } else {
-                    Row(
-                        modifier = modifier.padding(end = 16.dp).fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center) {
-                          Text(text = "You have already rated this loan.")
-                        }
-                  }
 
                   Spacer(modifier.height(30.dp))
 
@@ -212,33 +170,42 @@ fun EvaluationPopUp(
                               .padding(10.dp, 0.dp)
                               .testTag("commentField"),
                       minLines = 8,
-                      textStyle = TextStyle(fontSize = 16.sp),
-                      enabled = !haveCommented.value)
+                      textStyle = TextStyle(fontSize = 16.sp))
 
                   Spacer(modifier.height(16.dp))
-                  if (!haveCommented.value) {
-                    Button(
-                        onClick = { haveCommented.value = true },
-                        enabled = comment.isNotEmpty() && !haveCommented.value,
-                        modifier =
-                            Modifier.padding(end = 16.dp)
-                                .fillMaxWidth(0.6f)
-                                .align(Alignment.CenterHorizontally)
-                                .testTag("commentButton")) {
-                          Text(text = "Comment", fontSize = 18.sp)
+
+                  Button(
+                      onClick = {
+                        if (rating != 0.0 || comment.isNotEmpty()) {
+                          viewModel.reviewLoan(loan, rating, comment, idReviewed)
+                          onClose(newLoan(loan, userId, comment, rating))
+                          openDialog.value = false
                         }
-                  } else {
-                    Row(
-                        modifier = modifier.padding(end = 16.dp).fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
-                          Text(text = "You already left a comment.", textAlign = TextAlign.Center)
-                        }
-                  }
+                        onClose(newLoan(loan, userId, comment, rating))
+                      },
+                      enabled = (rating != 0.0 && comment.isNotEmpty()),
+                      modifier =
+                          Modifier.padding(end = 16.dp)
+                              .fillMaxWidth(0.6f)
+                              .align(Alignment.CenterHorizontally)
+                              .testTag("evaluationButton")) {
+                        Text(text = "Evaluate", fontSize = 18.sp)
+                      }
 
                   Spacer(modifier.height(8.dp))
                 }
           }
         }
   }
+}
+
+fun newLoan(loan: Loan, userId: String, comment: String, rating: Double): Loan {
+  var l = loan.copy()
+  if (userId == loan.idLender) {
+    l = loan.copy(commentBorrower = comment, reviewBorrower = rating.toString())
+  }
+  if (userId == loan.idBorrower) {
+    l = loan.copy(commentLender = comment, reviewLender = rating.toString())
+  }
+  return l
 }

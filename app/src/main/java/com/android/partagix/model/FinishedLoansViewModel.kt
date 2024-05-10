@@ -32,16 +32,16 @@ class FinishedLoansViewModel(db: Database = Database(), latch: CountDownLatch = 
   val uiItem: StateFlow<Item> = _uiItem
 
   init {
-    getFinishedLoan(latch)
+    getFinishedLoan()
   }
 
-  fun getFinishedLoan(latch: CountDownLatch = CountDownLatch(1)) {
+  fun getFinishedLoan() {
     val user = Authentication.getUser()
 
     if (user == null) {
       _uiState.value = _uiState.value.copy(loans = emptyList())
       // TODO: Handle error
-      latch.countDown()
+
       return
     } else {
       database.getLoans {
@@ -51,14 +51,21 @@ class FinishedLoansViewModel(db: Database = Database(), latch: CountDownLatch = 
                   (loan.idLender == user.uid || loan.idBorrower == user.uid)
             }
             .forEach { loan -> updateLoans(loan) }
-
-        latch.countDown()
       }
     }
   }
 
   fun getItem(itemId: String) {
     database.getItem(itemId) { _uiItem.value = it }
+  }
+
+  fun updateLoan(loan: Loan) {
+    var index = _uiState.value.loans.indexOfFirst { it.id == loan.id }
+    var list = _uiState.value.loans.toMutableList()
+    if (index != -1) {
+      list[index] = loan
+      _uiState.value = _uiState.value.copy(loans = list)
+    }
   }
 
   private fun updateLoans(new: Loan) {

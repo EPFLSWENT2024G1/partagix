@@ -49,6 +49,7 @@ import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.auth.Authentication
+import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -68,6 +69,7 @@ fun OldLoansScreen(
   val uiState by finishedLoansViewModel.uiState.collectAsStateWithLifecycle()
   val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
   var open by remember { mutableStateOf(false) }
+  var actualLoan by remember { mutableStateOf(emptyLoan) }
 
   Scaffold(
       modifier = modifier.testTag("oldLoansScreen"),
@@ -107,6 +109,16 @@ fun OldLoansScreen(
                       .fillMaxWidth()
                       .padding(innerPadding)
                       .verticalScroll(rememberScrollState())) {
+                if (open) {
+                  EvaluationPopUp(
+                      loan = actualLoan,
+                      userId = Authentication.getUser()?.uid ?: "",
+                      viewModel = evaluationViewModel,
+                      onClose = { l ->
+                        open = false
+                        finishedLoansViewModel.updateLoan(l)
+                      })
+                }
                 for (loan in uiState.loans) {
                   finishedLoansViewModel.getItem(loan.idItem)
                   ExpandableCard(
@@ -116,8 +128,10 @@ fun OldLoansScreen(
                       navigationActions = navigationActions,
                       itemViewModel = itemViewModel,
                       evaluationViewModel = evaluationViewModel,
-                      open = open,
-                      setOpen = { open = it })
+                      setOpen = {
+                        actualLoan = loan
+                        open = it
+                      })
                 }
               }
         }
@@ -131,6 +145,10 @@ fun OldLoansScreen(
  * @param modifier Modifier to be applied to the layout.
  * @param loan Loan to be displayed.
  * @param item Item to be displayed.
+ * @param navigationActions NavigationActions to handle navigation.
+ * @param itemViewModel ItemViewModel to handle the item.
+ * @param evaluationViewModel EvaluationViewModel to handle the evaluation.
+ * @param setOpen Function to be called when the card is expanded.
  */
 @Composable
 fun ExpandableCard(
@@ -140,22 +158,9 @@ fun ExpandableCard(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
     evaluationViewModel: EvaluationViewModel,
-    open: Boolean,
     setOpen: (Boolean) -> Unit
 ) {
   var expanded by remember { mutableStateOf(false) }
-
-  if (open) {
-    evaluationViewModel.updateUIState(loan)
-    EvaluationPopUp(
-        loan = loan,
-        userId = Authentication.getUser()?.uid ?: "",
-        viewModel = evaluationViewModel,
-        onClose = {
-          setOpen(false)
-          expanded = false
-        })
-  }
   OutlinedCard(
       modifier =
           modifier.fillMaxWidth().padding(16.dp).animateContentSize().clickable {
@@ -215,8 +220,9 @@ fun ExpandableCard(
                           disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                           disabledContainerColor = MaterialTheme.colorScheme.primary),
                   onClick = {
-                    println("---------------------------------cliclic")
+                    evaluationViewModel.updateUIState(loan)
                     setOpen(true)
+                    expanded = false
                   }) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                       Icon(imageVector = Icons.Default.Star, contentDescription = "rate")
