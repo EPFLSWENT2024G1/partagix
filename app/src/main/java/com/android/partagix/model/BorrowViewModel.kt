@@ -1,37 +1,52 @@
 package com.android.partagix.model
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
+import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.visibility.Visibility
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 val emptyLoan = Loan("", "", "", "", Date(0), Date(0), "", "", "", "", LoanState.PENDING)
+val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 0, Location(""))
 
-class BorrowViewModel(db: Database = Database(), item: Item) : ViewModel() {
+class BorrowViewModel(db: Database = Database()) : ViewModel() {
 
   private val database = db
 
-  private val _uiState = MutableStateFlow(emptyLoan)
-  val uiState: StateFlow<Loan> = _uiState
+  private val _loanUiState = MutableStateFlow(emptyLoan)
+  val loanUiState: StateFlow<Loan> = _loanUiState
 
-  private val _item = item
+  private var _itemUiState = MutableStateFlow(emptyItem)
+  val itemUiState: StateFlow<Item> = _itemUiState
 
-  init {
+  /**
+   * Set the item to borrow and start a new borrow request
+   *
+   * @param item the item to borrow
+   */
+  fun resetBorrow(item: Item) {
+    // Set the item to borrow
+    _itemUiState.value = item
+
     // Set the loaner id to the current logged user
-    _uiState.value = emptyLoan
-    database.getCurrentUser { user -> _uiState.value = _uiState.value.copy(idLoaner = user.id) }
+    _loanUiState.value = emptyLoan
+    database.getCurrentUser { user ->
+      _loanUiState.value = _loanUiState.value.copy(idLoaner = user.id)
+    }
 
     // Set the loan request to pending
-    _uiState.value = _uiState.value.copy(state = LoanState.PENDING)
+    _loanUiState.value = _loanUiState.value.copy(state = LoanState.PENDING)
 
     // Set the item id in the loan
-    _uiState.value = _uiState.value.copy(idItem = item.id)
+    _loanUiState.value = _loanUiState.value.copy(idItem = item.id)
 
     // Set the owner id in the loan to the owner of the item
-    _uiState.value = _uiState.value.copy(idOwner = _item.idUser)
+    _loanUiState.value = _loanUiState.value.copy(idOwner = _itemUiState.value.id)
   }
 
   /**
@@ -40,8 +55,8 @@ class BorrowViewModel(db: Database = Database(), item: Item) : ViewModel() {
    * @param new the new loan to update the UI state with
    */
   fun updateLoan(new: Loan) {
-    _uiState.value =
-        _uiState.value.copy(
+    _loanUiState.value =
+        _loanUiState.value.copy(
             id = new.id,
             idOwner = new.idOwner,
             idLoaner = new.idLoaner,
@@ -57,6 +72,6 @@ class BorrowViewModel(db: Database = Database(), item: Item) : ViewModel() {
 
   /** Save the loan in the database aka 'create the loan' */
   fun createLoan() {
-    database.createLoan(_uiState.value) { newLoan -> updateLoan(newLoan) }
+    database.createLoan(_loanUiState.value) { newLoan -> updateLoan(newLoan) }
   }
 }
