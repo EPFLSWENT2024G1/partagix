@@ -347,29 +347,29 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     val idLoan = getNewUid(loan)
     val data5 =
         hashMapOf(
-            "id_owner" to newLoan.idOwner,
-            "id_loaner" to newLoan.idLoaner,
-            "id_item" to newLoan.idItem,
-            "start_date" to newLoan.startDate,
-            "end_date" to newLoan.endDate,
-            "review_owner" to newLoan.reviewOwner,
-            "review_loaner" to newLoan.reviewLoaner,
-            "comment_owner" to newLoan.commentOwner,
-            "comment_loaner" to newLoan.commentLoaner,
-            "loanstate" to newLoan.state.toString())
+          "id_lender" to newLoan.idLender,
+          "id_borrower" to newLoan.idBorrower,
+          "id_item" to newLoan.idItem,
+          "start_date" to newLoan.startDate,
+          "end_date" to newLoan.endDate,
+          "review_lender" to newLoan.reviewLender,
+          "review_borrower" to newLoan.reviewBorrower,
+          "comment_lender" to newLoan.commentLender,
+          "comment_borrower" to newLoan.commentBorrower,
+          "loan_state" to newLoan.state.toString())
     loan.document(idLoan).set(data5)
     val new =
         Loan(
             idLoan,
-            newLoan.idOwner,
-            newLoan.idLoaner,
+            newLoan.idLender,
+            newLoan.idBorrower,
             newLoan.idItem,
             newLoan.startDate,
             newLoan.endDate,
-            newLoan.reviewOwner,
-            newLoan.reviewLoaner,
-            newLoan.commentOwner,
-            newLoan.commentLoaner,
+            newLoan.reviewLender,
+            newLoan.reviewBorrower,
+            newLoan.commentLender,
+            newLoan.commentBorrower,
             newLoan.state)
     onSuccess(new)
   }

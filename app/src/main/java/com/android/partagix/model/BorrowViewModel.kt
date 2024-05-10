@@ -42,7 +42,7 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
     // Set the loaner id to the current logged user
     _loanUiState.value = emptyLoan
     database.getCurrentUser { user ->
-      _loanUiState.value = _loanUiState.value.copy(idLoaner = user.id)
+      _loanUiState.value = _loanUiState.value.copy(idBorrower = user.id)
     }
 
     // Set the loan request to pending
@@ -52,7 +52,7 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
     _loanUiState.value = _loanUiState.value.copy(idItem = item.id)
 
     // Set the owner id in the loan to the owner of the item
-    _loanUiState.value = _loanUiState.value.copy(idOwner = _itemUiState.value.id)
+    _loanUiState.value = _loanUiState.value.copy(idLender = _itemUiState.value.id)
 
     // Set the owner User to have the username
     _userUiState.value = owner
@@ -67,15 +67,15 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
     _loanUiState.value =
         _loanUiState.value.copy(
             id = new.id,
-            idOwner = new.idOwner,
-            idLoaner = new.idLoaner,
+            idLender = new.idLender,
+            idBorrower = new.idBorrower,
             idItem = new.idItem,
             startDate = new.startDate,
             endDate = new.endDate,
-            reviewOwner = new.reviewOwner,
-            reviewLoaner = new.reviewLoaner,
-            commentOwner = new.commentOwner,
-            commentLoaner = new.commentLoaner,
+            reviewLender = new.reviewLender,
+            reviewBorrower = new.reviewBorrower,
+            commentLender = new.commentLender,
+            commentBorrower = new.commentBorrower,
             state = new.state)
   }
 
