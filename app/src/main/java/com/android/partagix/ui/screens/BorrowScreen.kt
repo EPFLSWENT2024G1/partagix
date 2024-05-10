@@ -28,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,9 +54,7 @@ fun BorrowScreen(
     navigationActions: NavigationActions
 ) {
   Scaffold(
-      modifier = modifier
-        .testTag("borrowScreen")
-        .fillMaxWidth(),
+      modifier = modifier.testTag("borrowScreen").fillMaxWidth(),
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("topBar"),
@@ -93,32 +90,29 @@ fun BorrowScreen(
           mutableStateOf(DatePickerState(locale = Locale.getDefault()))
         }
         val loanStartDate by remember(loan, loanUiState) { mutableStateOf(loan.startDate) }
-        val loanStartDateString by remember(loanStartDate) { mutableStateOf(DateFormat.getDateInstance().format(loanStartDate)) }
+        val loanStartDateString by
+            remember(loanStartDate) {
+              mutableStateOf(DateFormat.getDateInstance().format(loanStartDate))
+            }
 
         var isEndDatePickerVisible by remember { mutableStateOf(false) }
         val endDatePickerState by remember {
           mutableStateOf(DatePickerState(locale = Locale.getDefault()))
         }
         val loanEndDate by remember(loan, loanUiState) { mutableStateOf(loan.endDate) }
-        val loanEndDateString by remember(loanEndDate) { mutableStateOf(DateFormat.getDateInstance().format(loanEndDate)) }
+        val loanEndDateString by
+            remember(loanEndDate) {
+              mutableStateOf(DateFormat.getDateInstance().format(loanEndDate))
+            }
 
         Column(
-          modifier
-            .padding(it)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
-              Box(modifier = modifier
-                .fillMaxWidth()
-                .height(140.dp)
-                .padding(8.dp)) {
+              Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = modifier.fillMaxWidth()) {
                   Box(
                       contentAlignment = Alignment.Center,
-                      modifier = modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(.4f)
-                        .testTag("itemImage")) {
+                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("itemImage")) {
                         Image(
                             painter =
                                 painterResource(
@@ -137,26 +131,19 @@ fun BorrowScreen(
                         value = loanItemName,
                         onValueChange = {},
                         label = { Text("Item name") },
-                        modifier = modifier
-                          .testTag("itemName")
-                          .fillMaxWidth(),
+                        modifier = modifier.testTag("itemName").fillMaxWidth(),
                         maxLines = 1, // Ensure only one line is displayed
                         readOnly = true)
                     OutlinedTextField(
                         value = loanItemOwner, // TODO: display owner name instead of id
                         onValueChange = {},
                         label = { Text("Owner") },
-                        modifier = modifier
-                          .testTag("itemOwner")
-                          .fillMaxWidth(),
+                        modifier = modifier.testTag("itemOwner").fillMaxWidth(),
                         readOnly = true)
                   }
                 }
               }
-              Column(
-                modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 8.dp)) {
+              Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 OutlinedTextField(
                     value = loanDescription,
                     onValueChange = { loanDescription = it },
@@ -184,9 +171,7 @@ fun BorrowScreen(
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier
-                            .height(30.dp)
-                            .padding(0.dp),
+                          modifier = Modifier.height(30.dp).padding(0.dp),
                           onClick = { isStartDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
@@ -226,44 +211,37 @@ fun BorrowScreen(
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier
-                            .height(30.dp)
-                            .padding(0.dp),
+                          modifier = Modifier.height(30.dp).padding(0.dp),
                           onClick = { isEndDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
 
                 if (isEndDatePickerVisible) {
                   DatePickerDialog(
-                    onDismissRequest = { isEndDatePickerVisible = false },
-                    confirmButton = {
-                      TextButton(
-                        onClick = {
-                          val selectedDate =
-                            Calendar.getInstance().apply {
-                              timeInMillis = endDatePickerState.selectedDateMillis!!
+                      onDismissRequest = { isEndDatePickerVisible = false },
+                      confirmButton = {
+                        TextButton(
+                            onClick = {
+                              val selectedDate =
+                                  Calendar.getInstance().apply {
+                                    timeInMillis = endDatePickerState.selectedDateMillis!!
+                                  }
+                              viewModel.updateLoan(loan.copy(endDate = selectedDate.time))
+                              isEndDatePickerVisible = false
+                            }) {
+                              Text("OK")
                             }
-                          viewModel.updateLoan(loan.copy(endDate = selectedDate.time))
-                          isEndDatePickerVisible = false
-                        }) {
-                        Text("OK")
+                      },
+                      dismissButton = {
+                        TextButton(onClick = { isEndDatePickerVisible = false }) { Text("Cancel") }
+                      }) {
+                        DatePicker(state = endDatePickerState)
                       }
-                    },
-                    dismissButton = {
-                      TextButton(onClick = { isEndDatePickerVisible = false }) {
-                        Text("Cancel")
-                      }
-                    }) {
-                    DatePicker(state = endDatePickerState)
-                  }
                 }
               }
 
               Button(
-                  modifier = modifier
-                    .fillMaxWidth()
-                    .testTag("button")
-                    .padding(10.dp),
+                  modifier = modifier.fillMaxWidth().testTag("button").padding(10.dp),
                   onClick = {
                     viewModel.createLoan()
                     navigationActions.goBack()
