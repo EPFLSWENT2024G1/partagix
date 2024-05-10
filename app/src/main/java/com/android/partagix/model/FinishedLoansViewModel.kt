@@ -43,11 +43,11 @@ class FinishedLoansViewModel(db: Database = Database(), latch: CountDownLatch = 
       latch.countDown()
       return
     } else {
-
       database.getLoans {
+        _uiState.value = _uiState.value.copy(loans = emptyList())
         it.filter { loan ->
               loan.state == LoanState.FINISHED &&
-                  (loan.idOwner == user.uid || loan.idLoaner == user.uid)
+                  (loan.idLender == user.uid || loan.idBorrower == user.uid)
             }
             .forEach { loan -> updateLoans(loan) }
 

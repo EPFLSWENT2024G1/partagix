@@ -1,6 +1,10 @@
 package com.android.partagix.loan
 
 import android.location.Location
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -17,6 +21,7 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.OldLoansScreen
+import com.android.partagix.ui.screens.ExpandableCard
 import com.android.partagix.ui.screens.OldLoansScreen
 import com.google.firebase.auth.FirebaseUser
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
@@ -49,6 +54,7 @@ class OldLoanScreenTests {
           "",
           "commented",
           LoanState.FINISHED)
+
   val item1 =
       Item(
           "item1",
@@ -69,20 +75,20 @@ class OldLoanScreenTests {
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
           onSuccessLoan(listOf(loan1))
         }
+
     every { db.getItem(any(), any()) } answers
         {
           val id = invocation.args[0] as String
           val onSuccess: (Item) -> Unit = invocation.args[1] as (Item) -> Unit
-          if (id == "item1") { // Assuming item is the desired item to be returned
-            onSuccess(item1)
-          }
+          onSuccess(item1)
         }
 
-    finishedLoansViewModel = FinishedLoansViewModel(db)
     mockUser = mockk<FirebaseUser>()
     mockkObject(Authentication)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "idOwner1"
+
+    finishedLoansViewModel = FinishedLoansViewModel(db)
     finishedLoansViewModel.getFinishedLoan()
 
     evaluationViewModel = EvaluationViewModel(db = db)
@@ -107,5 +113,23 @@ class OldLoanScreenTests {
       composeTestRule.onNodeWithText("Evaluate").assertIsDisplayed()
       composeTestRule.onNodeWithText("Evaluate").assertHasClickAction()
     }
+  }
+
+  @Test
+  fun expendableCard() {
+    composeTestRule.setContent {
+      var open by remember { mutableStateOf(false) }
+      ExpandableCard(
+          loan = loan1,
+          item = item1,
+          navigationActions = mockk(),
+          itemViewModel = mockk(),
+          evaluationViewModel = evaluationViewModel,
+          open = open,
+          setOpen = { open = it })
+    }
+    composeTestRule.onNodeWithText("Object").performClick()
+    composeTestRule.onNodeWithText("Evaluate").assertHasClickAction()
+    composeTestRule.onNodeWithText("Infos").assertHasClickAction()
   }
 }

@@ -1,6 +1,5 @@
 package com.android.partagix.ui.screens
 
-import android.media.Image
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -49,13 +48,13 @@ import com.android.partagix.R
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.EvaluationPopUp
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +67,7 @@ fun OldLoansScreen(
 ) {
   val uiState by finishedLoansViewModel.uiState.collectAsStateWithLifecycle()
   val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
+  var open by remember { mutableStateOf(false) }
 
   Scaffold(
       modifier = modifier.testTag("oldLoansScreen"),
@@ -115,7 +115,9 @@ fun OldLoansScreen(
                       item = item,
                       navigationActions = navigationActions,
                       itemViewModel = itemViewModel,
-                      evaluationViewModel = evaluationViewModel)
+                      evaluationViewModel = evaluationViewModel,
+                      open = open,
+                      setOpen = { open = it })
                 }
               }
         }
@@ -137,15 +139,27 @@ fun ExpandableCard(
     item: Item,
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
-    evaluationViewModel: EvaluationViewModel
+    evaluationViewModel: EvaluationViewModel,
+    open: Boolean,
+    setOpen: (Boolean) -> Unit
 ) {
   var expanded by remember { mutableStateOf(false) }
-  var open by remember { mutableStateOf(false) }
 
+  if (open) {
+    evaluationViewModel.updateUIState(loan)
+    EvaluationPopUp(
+        loan = loan,
+        userId = Authentication.getUser()?.uid ?: "",
+        viewModel = evaluationViewModel,
+        onClose = {
+          setOpen(false)
+          expanded = false
+        })
+  }
   OutlinedCard(
       modifier =
           modifier.fillMaxWidth().padding(16.dp).animateContentSize().clickable {
-            expanded = true
+            expanded = !expanded
           }, // This enables the expansion animation
       colors = CardDefaults.outlinedCardColors()) {
         Column(modifier = Modifier.padding(16.dp).fillMaxWidth().testTag("card")) {
@@ -201,9 +215,8 @@ fun ExpandableCard(
                           disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                           disabledContainerColor = MaterialTheme.colorScheme.primary),
                   onClick = {
-                    expanded = false
-                    evaluationViewModel.updateUIState(loan)
-                    open = true
+                    println("---------------------------------cliclic")
+                    setOpen(true)
                   }) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                       Icon(imageVector = Icons.Default.Star, contentDescription = "rate")
@@ -215,11 +228,4 @@ fun ExpandableCard(
           }
         }
       }
-  if (open) {
-    EvaluationPopUp(
-        loan = loan,
-        userId = FirebaseAuth.getInstance().currentUser!!.uid,
-        viewModel = evaluationViewModel)
-    open = false
-  }
 }
