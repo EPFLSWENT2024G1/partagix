@@ -1,6 +1,7 @@
 package com.android.partagix.qr
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -46,6 +47,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @RelaxedMockK lateinit var mockAuthentication: Authentication
   @RelaxedMockK lateinit var mockDatabase: Database
   @RelaxedMockK lateinit var mockMainActivity: MainActivity
+  @RelaxedMockK lateinit var mockPackageManager: PackageManager
   @RelaxedMockK lateinit var app: App
 
   @Before
@@ -55,6 +57,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     mockkObject(Authentication)
 
     mockMainActivity = mockk<MainActivity>()
+    mockPackageManager = mockk<PackageManager>()
     mockDatabase = mockk<Database>()
     mockNavActions = mockk<NavigationActions>()
     mockAuthentication = mockk<Authentication>()
@@ -66,6 +69,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every {
       mockMainActivity.registerForActivityResult(any<FirebaseAuthUIActivityResultContract>(), any())
     } returns mockActivityResultLauncher
+
+    every { mockMainActivity.applicationContext } returns mockMainActivity
+    every { mockMainActivity.attributionTag } returns "tag"
+    every { mockPackageManager.hasSystemFeature(any()) } returns true
+    every { mockPackageManager.getPackageInfo(any<String>(), any<Int>()) } returns null
+    every { mockMainActivity.packageManager } returns mockPackageManager
+    every { mockMainActivity.packageName } returns "com.android.partagix"
 
     every { mockDatabase.getItems(any()) } just Runs
   }
