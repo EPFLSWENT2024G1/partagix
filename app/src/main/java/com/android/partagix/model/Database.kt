@@ -41,14 +41,32 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             val ret = mutableListOf<User>()
             for (document in result) {
               val listItems = items.filter { it.idUser == document.data["id"] }
-              val user =
-                  User(
-                      document.data["id"] as String,
-                      document.data["name"] as String,
-                      document.data["addr"] as String,
-                      document.data["rank"] as String,
-                      Inventory(document.data["id"] as String, listItems))
-              ret.add(user)
+              getImageFromFirebaseStorage(
+                  "users/" + (document.data["id"] as String),
+                  onFailure = {
+                    println("Error getting image from storage is handled by default image")
+                    getImageFromFirebaseStorage("users/default.png") { localFile ->
+                      val user =
+                          User(
+                              document.data["id"] as String,
+                              document.data["name"] as String,
+                              document.data["addr"] as String,
+                              document.data["rank"] as String,
+                              Inventory(document.data["id"] as String, listItems),
+                              localFile)
+                      ret.add(user)
+                    }
+                  }) { localFile ->
+                    val user =
+                        User(
+                            document.data["id"] as String,
+                            document.data["name"] as String,
+                            document.data["addr"] as String,
+                            document.data["rank"] as String,
+                            Inventory(document.data["id"] as String, listItems),
+                            localFile)
+                    ret.add(user)
+                  }
             }
             onSuccess(ret)
           }
@@ -64,54 +82,10 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the user
    */
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-      getUsers { users ->
-          val user = users.firstOrNull { it.id == idUser }
-          user?.let { onSuccess(it) } ?: onNoUser()
-      }
-  }
-  fun getUserOld(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-    users
-        .get()
-        .addOnSuccessListener { result ->
-          var found = false
-          for (document in result) {
-            if (document.data["id"] as String == idUser) {
-              found = true
-              getUserInventory(idUser) { inventory ->
-                getImageFromFirebaseStorage(
-                    "users/" + (document.data["id"] as String),
-                    onFailure = {
-                      println("Error getting image from storage is handled by default image")
-                      getImageFromFirebaseStorage("users/default.png") { localFile ->
-                        val user =
-                            User(
-                                document.data["id"] as String,
-                                document.data["name"] as String,
-                                document.data["addr"] as String,
-                                document.data["rank"] as String,
-                                inventory,
-                                localFile)
-                        onSuccess(user)
-                      }
-                    }) { localFile ->
-                      val user =
-                          User(
-                              document.data["id"] as String,
-                              document.data["name"] as String,
-                              document.data["addr"] as String,
-                              document.data["rank"] as String,
-                              inventory,
-                              localFile)
-                      onSuccess(user)
-                    }
-              }
-            }
-          }
-          if (!found) {
-            onNoUser()
-          }
-        }
-        .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+    getUsers { users ->
+      val user = users.firstOrNull { it.id == idUser }
+      user?.let { onSuccess(it) } ?: onNoUser()
+    }
   }
 
   /**
