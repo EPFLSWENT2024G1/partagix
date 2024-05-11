@@ -25,7 +25,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
   init {} // kept for easier testing purposes
 
-  private fun getUsers(onSuccess: (List<User>) -> Unit) {
+  fun getUsers(onSuccess: (List<User>) -> Unit) {
     users
         .get()
         .addOnSuccessListener { result ->
