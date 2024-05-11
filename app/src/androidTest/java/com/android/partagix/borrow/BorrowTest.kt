@@ -2,6 +2,7 @@ package com.android.partagix.borrow
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.core.os.persistableBundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.category.Category
@@ -42,15 +43,15 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   private lateinit var mockItemUiState: MutableStateFlow<Item>
   private lateinit var mockUserUiState: MutableStateFlow<User>
 
+  val cat1 = Category("1", "Category 1")
+  val vis1 = Visibility.PUBLIC
+  val loc1 = Location("1")
+  val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
+  val loan = Loan("1", "1", "1", "1", Date(), Date(), "1", "1", "1", "1", LoanState.PENDING)
+  val user = User("1", "Name 1", "Email 1", "Phone 1", Inventory("1", emptyList()))
+
   @Before
   fun testSetup() {
-    val cat1 = Category("1", "Category 1")
-    val vis1 = Visibility.PUBLIC
-    val loc1 = Location("1")
-    val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
-    val loan = Loan("1", "1", "1", "1", Date(), Date(), "1", "1", "1", "1", LoanState.PENDING)
-    val user = User("1", "Name 1", "Email 1", "Phone 1", Inventory("1", emptyList()))
-
     mockLoanUiState = MutableStateFlow(loan)
     mockItemUiState = MutableStateFlow(item)
     mockUserUiState = MutableStateFlow(user)
@@ -59,6 +60,9 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     every { mockViewModel.loanUiState } returns mockLoanUiState
     every { mockViewModel.itemUiState } returns mockItemUiState
     every { mockViewModel.userUiState } returns mockUserUiState
+    every { mockViewModel.resetBorrow(any(), any()) } just Runs
+    every { mockViewModel.updateLoan(any()) } just Runs
+    every { mockViewModel.createLoan() } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -80,6 +84,55 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
         assertIsDisplayed()
         assertHasClickAction()
       }
+      itemImage { assertIsDisplayed() }
+      itemName { assertIsDisplayed() }
+      itemOwner { assertIsDisplayed() }
+      description { assertIsDisplayed() }
+      location { assertIsDisplayed() }
+      startDate { assertIsDisplayed() }
+      startDateButton {
+        assertIsDisplayed()
+        assertHasClickAction()
+        performClick()
+      }
+      startDateCancel {
+        assertIsDisplayed()
+        assertHasClickAction()
+        performClick()
+      }
+      endDate { assertIsDisplayed() }
+      endDateButton {
+        assertIsDisplayed()
+        assertHasClickAction()
+        performClick()
+      }
+      endDateCancel {
+        assertIsDisplayed()
+        assertHasClickAction()
+        performClick()
+      }
+      saveButton {
+        assertIsDisplayed()
+        assertHasClickAction()
+      }
+    }
+  }
+
+  @Test
+  fun editAndSave() {
+    composeTestRule.setContent {
+      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
+    }
+
+    mockViewModel.resetBorrow(item, user)
+
+    onComposeScreen<BorrowScreen>(composeTestRule) {
+      description { performTextInput("test description") }
+      startDateButton { performClick() }
+      startDateOk { performClick() }
+      endDateButton { performClick() }
+      endDateOk { performClick() }
+      saveButton { performClick() }
     }
   }
 }
