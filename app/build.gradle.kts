@@ -219,6 +219,7 @@ dependencies {
         exclude(group = "com.google.protobuf", module="protobuf-java")
     }
 
+    implementation ("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
     implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
@@ -244,6 +245,7 @@ dependencies {
 
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
+
 }
 
 secrets {

@@ -24,6 +24,7 @@ import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class UserViewModel(
     user: User = User("", "", "", "", Inventory("", emptyList())),
