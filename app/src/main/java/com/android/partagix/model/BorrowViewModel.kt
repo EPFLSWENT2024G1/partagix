@@ -54,6 +54,10 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
     // Set the owner id in the loan to the owner of the item
     _loanUiState.value = _loanUiState.value.copy(idLender = _itemUiState.value.id)
 
+    // Set the start and end dates to now
+    _loanUiState.value = _loanUiState.value.copy(startDate = Date(System.currentTimeMillis()))
+    _loanUiState.value = _loanUiState.value.copy(endDate = Date(System.currentTimeMillis()))
+
     // Set the owner User to have the username
     _userUiState.value = owner
   }

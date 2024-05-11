@@ -89,6 +89,7 @@ fun BorrowScreen(
         val startDatePickerState by remember {
           mutableStateOf(DatePickerState(locale = Locale.getDefault()))
         }
+        startDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanStartDate by remember(loan, loanUiState) { mutableStateOf(loan.startDate) }
         val loanStartDateString by
             remember(loanStartDate) {
@@ -99,6 +100,7 @@ fun BorrowScreen(
         val endDatePickerState by remember {
           mutableStateOf(DatePickerState(locale = Locale.getDefault()))
         }
+        endDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanEndDate by remember(loan, loanUiState) { mutableStateOf(loan.endDate) }
         val loanEndDateString by
             remember(loanEndDate) {
