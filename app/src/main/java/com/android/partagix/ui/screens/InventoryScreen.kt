@@ -55,6 +55,8 @@ import com.android.partagix.ui.navigation.Route
  *
  * @param inventoryViewModel a view model to get the inventory.
  * @param navigationActions a class to navigate to different screens.
+ * @param manageLoanViewModel a view model to manage the loan requests.
+ * @param itemViewModel a view model to manage the items.
  * @param modifier a Modifier to apply to this layout.
  */
 @Composable
@@ -93,6 +95,7 @@ fun InventoryScreen(
             }
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
+
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
