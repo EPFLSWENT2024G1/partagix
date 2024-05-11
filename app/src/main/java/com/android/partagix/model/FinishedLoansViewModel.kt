@@ -8,12 +8,10 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.visibility.Visibility
-import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class FinishedLoansViewModel(db: Database = Database(), latch: CountDownLatch = CountDownLatch(1)) :
-    ViewModel() {
+class FinishedLoansViewModel(db: Database = Database()) : ViewModel() {
   private val database = db
 
   // UI state exposed to the UI
