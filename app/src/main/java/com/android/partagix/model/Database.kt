@@ -14,6 +14,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import getImageFromFirebaseStorage
 import getImagesFromFirebaseStorage
 
 class Database(database: FirebaseFirestore = Firebase.firestore) {
@@ -35,14 +36,33 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             if (document.data["id"] as String == idUser) {
               found = true
               getUserInventory(idUser) { inventory ->
-                val user =
-                    User(
-                        document.data["id"] as String,
-                        document.data["name"] as String,
-                        document.data["addr"] as String,
-                        document.data["rank"] as String,
-                        inventory)
-                onSuccess(user)
+                  getImageFromFirebaseStorage("users/" + (document.data["id"] as String),
+                      onFailure = {
+                          println("Error getting image from storage is handled by default image")
+                        getImageFromFirebaseStorage("users/default.png") { localFile ->
+                          val user =
+                            User(
+                                document.data["id"] as String,
+                                document.data["name"] as String,
+                                document.data["addr"] as String,
+                                document.data["rank"] as String,
+                                inventory,
+                                localFile)
+                          onSuccess(user)
+                        }
+
+                      }) { localFile ->
+                    val user =
+                      User(
+                          document.data["id"] as String,
+                          document.data["name"] as String,
+                          document.data["addr"] as String,
+                          document.data["rank"] as String,
+                          inventory,
+                          localFile)
+                    onSuccess(user)
+                  }
+
               }
             }
           }

@@ -118,7 +118,10 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
   val singlePhotoPickerLauncher =
       rememberLauncherForActivityResult(
           contract = ActivityResultContracts.PickVisualMedia(),
-          onResult = { uri -> selectedImages = if (uri != null) listOf(uri) else defaultImages })
+          onResult = { uri ->
+              selectedImages = if (uri != null) listOf(uri) else defaultImages
+              onSelected(uri!!)
+          })
 
   val multiplePhotoPickerLauncher =
       rememberLauncherForActivityResult(
@@ -126,9 +129,9 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
           onResult = { uris -> selectedImages = uris })
 
   fun launchPhotoPicker() {
-
     singlePhotoPickerLauncher.launch(
         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
   }
 
   Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -143,10 +146,7 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
                     Modifier.fillMaxSize()
                         .background(color = androidx.compose.ui.graphics.Color.Gray)) {
                   items(selectedImages) { uri ->
-                    if (uri != null) {
-                      onSelected(uri)
-                    }
-                    AsyncImage(
+                      AsyncImage(
                         model = uri,
                         contentDescription = null,
                         modifier = Modifier.fillMaxHeight().testTag("ImagePicked"),

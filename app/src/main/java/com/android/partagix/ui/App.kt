@@ -295,7 +295,7 @@ class App(
       composable(
           Route.EDIT_ACCOUNT,
       ) {
-        EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+        EditAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
 
       composable(Route.VIEW_ITEM) {

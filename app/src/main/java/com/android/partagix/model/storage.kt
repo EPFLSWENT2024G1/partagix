@@ -20,7 +20,8 @@ Example of Uri :
 fun uploadImageToFirebaseStorage(
     imageUri: Uri,
     storage: FirebaseStorage = Firebase.storage,
-    imageName: String = UUID.randomUUID().toString()
+    imageName: String = UUID.randomUUID().toString(),
+    onSuccess: (List<File>) -> Unit = {},
 ) {
   val storageRef = storage.reference
 
@@ -35,6 +36,7 @@ fun uploadImageToFirebaseStorage(
       .addOnSuccessListener { taskSnapshot ->
         // Image uploaded successfully
         println("----- Image uploaded successfully: ${taskSnapshot.metadata?.path}")
+          onSuccess(listOf(File(imageUri.path!!)))
       }
       .addOnFailureListener { exception ->
         // Image upload failed
@@ -45,7 +47,9 @@ fun uploadImageToFirebaseStorage(
 fun getImageFromFirebaseStorage(
     p: String,
     storage: FirebaseStorage = Firebase.storage,
+    onFailure: (exception: Exception) -> Unit = {},
     onSuccess: (localFile: File) -> Unit = {},
+
 ) {
   val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
   // Get the image from Firebase Storage
@@ -55,7 +59,7 @@ fun getImageFromFirebaseStorage(
   val imageRef = storageRef.child(path)
 
   // Download the image to a local file
-  val localFile = File.createTempFile("local", "jpg")
+  val localFile = File.createTempFile("local", ".tmp")
   imageRef
       .getFile(localFile)
       .addOnSuccessListener {
@@ -64,7 +68,7 @@ fun getImageFromFirebaseStorage(
       }
       .addOnFailureListener {
         // Handle any errors
-        println("----- Image download failed: $it -- $path")
+        onFailure(it)
       }
 }
 

@@ -134,8 +134,13 @@ fun InventoryCreateOrEditItem(
                         // Before this is done, display an empty image while waiting for the upload
                         uiImage = File.createTempFile("default_image", null)
                         // in the meantime do nothing and the image will be loaded from the database later
-                      uploadImageToFirebaseStorage(uri, imageName = i.id)
-                      getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
+                      uploadImageToFirebaseStorage(uri, imageName = i.id){
+                          println("------ uploading image.....")
+                          getImageFromFirebaseStorage(i.id) { file ->
+                              println("------ updating uiImage")
+                              uiImage = file }
+                      }
+
                     }
                   }
 

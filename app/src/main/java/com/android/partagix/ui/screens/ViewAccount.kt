@@ -1,7 +1,9 @@
 package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,9 +33,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -79,7 +83,8 @@ fun ViewAccount(
                 Modifier.fillMaxHeight()
                     .padding(it)
                     .verticalScroll(rememberScrollState())
-                    .testTag("mainContent")) {
+                    .testTag("mainContent"),
+            horizontalAlignment = Alignment.CenterHorizontally,) {
               Row(
                   modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
                   horizontalArrangement = Arrangement.Absolute.Right) {
@@ -90,13 +95,20 @@ fun ViewAccount(
                         }
                   }
               Spacer(modifier = Modifier.height(8.dp))
-              Image(
-                  painter =
-                      painterResource(
-                          id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
-                  contentDescription = null,
-                  modifier = Modifier.fillMaxWidth().testTag("userImage"),
-                  alignment = Alignment.Center)
+
+
+            Box(modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
+                contentAlignment = Alignment.Center) {
+                AsyncImage(
+                    model = user.imageId.absolutePath,
+                    contentDescription = "image",
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .border(1.dp, Color.Black)
+                        .fillMaxHeight()
+                        .testTag("userImage"),
+                    alignment = Alignment.Center,)
+            }
               Spacer(modifier = Modifier.height(8.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().testTag("username"),
