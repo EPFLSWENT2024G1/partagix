@@ -85,28 +85,21 @@ fun ItemUi(
     Column(
         horizontalAlignment = Alignment.Start,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = Color(0xFF939393),
-                shape = RoundedCornerShape(size = 4.dp)
-            )
-            .animateContentSize(
-                animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
-            )
-            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
-            .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-            .clickable(onClick = { expandables = !expandables })
-            .testTag("manageLoanScreenItemCard")) {
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF939393),
+                    shape = RoundedCornerShape(size = 4.dp))
+                .animateContentSize(
+                    animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+                .clickable(onClick = { expandables = !expandables })
+                .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .height(61.dp)) {
-                Column(modifier = Modifier
-                    .weight(weight = 1f)
-                    .fillMaxWidth()) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
+                Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
 
@@ -155,10 +148,7 @@ fun ItemUi(
                       maxLines = 1,
                       overflow = TextOverflow.Ellipsis,
                       modifier =
-                      Modifier
-                          .fillMaxWidth(0.3f)
-                          .fillMaxHeight(0.5f)
-                          .padding(top = 10.dp))
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 10.dp))
                   Text(
                       text = "Quantity: " + item.quantity.toString(),
                       style =
@@ -169,21 +159,16 @@ fun ItemUi(
                       textAlign = TextAlign.End,
                       lineHeight = 0.8.em,
                       modifier =
-                      Modifier
-                          .fillMaxWidth(0.3f)
-                          .fillMaxHeight(0.5f)
-                          .padding(top = 5.dp))
+                          Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-              Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.2f)) {
-                AsyncImage(
-                    model = item.imageId.absolutePath,
-                    contentDescription = "fds",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .border(1.dp, Color.Black)
-                        .fillMaxHeight())
+                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.2f)) {
+                  AsyncImage(
+                      model = item.imageId.absolutePath,
+                      contentDescription = "fds",
+                      contentScale = ContentScale.Inside,
+                      modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
+                }
               }
-          }
           if (expandables) {
 
             Text(
@@ -192,9 +177,7 @@ fun ItemUi(
                 modifier = Modifier.fillMaxWidth())
             Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("manageLoanScreenItemCardExpanded")) {
+                modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
                   if (!isOutgoing) {
                     Button(
                         onClick = { manageLoanViewModel.acceptLoan(loan, index) },
@@ -228,24 +211,18 @@ fun ItemUi(
     Column(
         horizontalAlignment = Alignment.Start,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = Color(0xFF939393),
-                shape = RoundedCornerShape(size = 4.dp)
-            )
-            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
-            .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-            .testTag("ItemUiNotExpanded")) {
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF939393),
+                    shape = RoundedCornerShape(size = 4.dp))
+                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+                .testTag("ItemUiNotExpanded")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .height(61.dp)) {
-                Column(modifier = Modifier
-                    .weight(weight = 1f)
-                    .fillMaxWidth()) {
+              modifier = Modifier.fillMaxWidth().height(61.dp)) {
+                Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(
                       modifier = Modifier.fillMaxHeight(0.5f),
                       verticalAlignment = Alignment.CenterVertically) {
@@ -291,9 +268,7 @@ fun ItemUi(
                               ),
                           maxLines = 1,
                           overflow = TextOverflow.Ellipsis,
-                          modifier = Modifier
-                              .fillMaxWidth(.3f)
-                              .padding(top = 10.dp))
+                          modifier = Modifier.fillMaxWidth(.3f).padding(top = 10.dp))
                       Text(
                           text = "Quantity: " + item.quantity.toString(),
                           style =
@@ -303,19 +278,15 @@ fun ItemUi(
                               ),
                           textAlign = TextAlign.End,
                           lineHeight = 0.8.em,
-                          modifier = Modifier
-                              .fillMaxWidth(0.2f)
-                              .padding(top = 5.dp))
+                          modifier = Modifier.fillMaxWidth(0.2f).padding(top = 5.dp))
                     }
-              Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.3f)) {
+                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.3f)) {
                   AsyncImage(
                       model = item.imageId.absolutePath,
                       contentDescription = "fds",
                       contentScale = ContentScale.Inside,
-                      modifier = Modifier
-                          .border(1.dp, Color.Black)
-                          .fillMaxHeight())
-              }
+                      modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
+                }
               }
         }
   }

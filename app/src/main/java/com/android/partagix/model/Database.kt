@@ -36,11 +36,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             if (document.data["id"] as String == idUser) {
               found = true
               getUserInventory(idUser) { inventory ->
-                  getImageFromFirebaseStorage("users/" + (document.data["id"] as String),
-                      onFailure = {
-                          println("Error getting image from storage is handled by default image")
-                        getImageFromFirebaseStorage("users/default.png") { localFile ->
-                          val user =
+                getImageFromFirebaseStorage(
+                    "users/" + (document.data["id"] as String),
+                    onFailure = {
+                      println("Error getting image from storage is handled by default image")
+                      getImageFromFirebaseStorage("users/default.png") { localFile ->
+                        val user =
                             User(
                                 document.data["id"] as String,
                                 document.data["name"] as String,
@@ -48,21 +49,19 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                                 document.data["rank"] as String,
                                 inventory,
                                 localFile)
-                          onSuccess(user)
-                        }
-
-                      }) { localFile ->
-                    val user =
-                      User(
-                          document.data["id"] as String,
-                          document.data["name"] as String,
-                          document.data["addr"] as String,
-                          document.data["rank"] as String,
-                          inventory,
-                          localFile)
-                    onSuccess(user)
-                  }
-
+                        onSuccess(user)
+                      }
+                    }) { localFile ->
+                      val user =
+                          User(
+                              document.data["id"] as String,
+                              document.data["name"] as String,
+                              document.data["addr"] as String,
+                              document.data["rank"] as String,
+                              inventory,
+                              localFile)
+                      onSuccess(user)
+                    }
               }
             }
           }

@@ -36,7 +36,7 @@ fun uploadImageToFirebaseStorage(
       .addOnSuccessListener { taskSnapshot ->
         // Image uploaded successfully
         println("----- Image uploaded successfully: ${taskSnapshot.metadata?.path}")
-          onSuccess(listOf(File(imageUri.path!!)))
+        onSuccess(listOf(File(imageUri.path!!)))
       }
       .addOnFailureListener { exception ->
         // Image upload failed
@@ -49,7 +49,6 @@ fun getImageFromFirebaseStorage(
     storage: FirebaseStorage = Firebase.storage,
     onFailure: (exception: Exception) -> Unit = {},
     onSuccess: (localFile: File) -> Unit = {},
-
 ) {
   val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
   // Get the image from Firebase Storage

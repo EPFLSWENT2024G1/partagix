@@ -1,6 +1,5 @@
 package com.android.partagix.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,10 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
@@ -84,118 +81,118 @@ fun ViewAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent"),
-            horizontalAlignment = Alignment.CenterHorizontally,) {
-              Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
-                  horizontalArrangement = Arrangement.Absolute.Right) {
-                    Button(
-                        onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
-                        modifier = Modifier.testTag("editProfileButton")) {
-                          Text("Edit Profile")
-                        }
-                  }
-              Spacer(modifier = Modifier.height(8.dp))
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
+              horizontalArrangement = Arrangement.Absolute.Right) {
+                Button(
+                    onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
+                    modifier = Modifier.testTag("editProfileButton")) {
+                      Text("Edit Profile")
+                    }
+              }
+          Spacer(modifier = Modifier.height(8.dp))
 
-
-            Box(modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
-                contentAlignment = Alignment.Center) {
+          Box(
+              modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
+              contentAlignment = Alignment.Center) {
                 AsyncImage(
                     model = user.imageId.absolutePath,
                     contentDescription = "image",
                     contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .border(1.dp, Color.Black)
-                        .fillMaxHeight()
-                        .testTag("userImage"),
-                    alignment = Alignment.Center,)
-            }
-              Spacer(modifier = Modifier.height(8.dp))
-              Row(
-                  modifier = Modifier.fillMaxWidth().testTag("username"),
-                  horizontalArrangement = Arrangement.Absolute.SpaceAround) {
-                    val username = user.name
-                    Text("$username's profile", modifier = Modifier.testTag("usernameText"))
+                    modifier =
+                        Modifier.border(1.dp, Color.Black).fillMaxHeight().testTag("userImage"),
+                    alignment = Alignment.Center,
+                )
+              }
+          Spacer(modifier = Modifier.height(8.dp))
+          Row(
+              modifier = Modifier.fillMaxWidth().testTag("username"),
+              horizontalArrangement = Arrangement.Absolute.SpaceAround) {
+                val username = user.name
+                Text("$username's profile", modifier = Modifier.testTag("usernameText"))
+              }
+          Spacer(modifier = Modifier.height(16.dp))
+          TextField(
+              modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
+              value = user.address,
+              onValueChange = {},
+              label = { Text("Location", modifier = Modifier.testTag("addressText")) },
+              colors =
+                  TextFieldDefaults.colors(
+                      focusedIndicatorColor = Color.Transparent,
+                      disabledIndicatorColor = Color.Transparent,
+                      unfocusedIndicatorColor = Color.Transparent,
+                      focusedContainerColor = Color.Transparent,
+                      unfocusedContainerColor = Color.Transparent,
+                      disabledContainerColor = Color.Transparent),
+              readOnly = true,
+              leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
+          val rank = user.rank
+          val stars: String
+          if (rank == "") {
+            stars = "No trust yet"
+          } else {
+            val rating = round(rank.toFloat() * 100) / 100
+            // val rating = 4.5
+            val roundedRating = round(rating).toInt()
+            stars =
+                when (roundedRating) {
+                  0 -> {
+                    "☆☆☆☆☆ ($rating/5)"
                   }
-              Spacer(modifier = Modifier.height(16.dp))
-              TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
-                  value = user.address,
-                  onValueChange = {},
-                  label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
-              val rank = user.rank
-              val stars: String
-              if (rank == "") {
-                stars = "No trust yet"
-              } else {
-                val rating = round(rank.toFloat() * 100) / 100
-                // val rating = 4.5
-                val roundedRating = round(rating).toInt()
-                stars =
-                    when (roundedRating) {
-                      0 -> {
-                        "☆☆☆☆☆ ($rating/5)"
-                      }
-                      1 -> {
-                        "★☆☆☆☆ ($rating/5)"
-                      }
-                      2 -> {
-                        "★★☆☆☆ ($rating/5)"
-                      }
-                      3 -> {
-                        "★★★☆☆ ($rating/5)"
-                      }
-                      4 -> {
-                        "★★★★☆ ($rating/5)"
-                      }
-                      5 -> {
-                        "★★★★★ ($rating/5)"
-                      }
-                      else -> {
-                        "..."
-                      }
+                  1 -> {
+                    "★☆☆☆☆ ($rating/5)"
+                  }
+                  2 -> {
+                    "★★☆☆☆ ($rating/5)"
+                  }
+                  3 -> {
+                    "★★★☆☆ ($rating/5)"
+                  }
+                  4 -> {
+                    "★★★★☆ ($rating/5)"
+                  }
+                  5 -> {
+                    "★★★★★ ($rating/5)"
+                  }
+                  else -> {
+                    "..."
+                  }
+                }
+          }
+          TextField(
+              modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
+              value = stars,
+              onValueChange = {},
+              label = { Text("Trust") },
+              colors =
+                  TextFieldDefaults.colors(
+                      focusedIndicatorColor = Color.Transparent,
+                      disabledIndicatorColor = Color.Transparent,
+                      unfocusedIndicatorColor = Color.Transparent,
+                      focusedContainerColor = Color.Transparent,
+                      unfocusedContainerColor = Color.Transparent,
+                      disabledContainerColor = Color.Transparent),
+              readOnly = true,
+              leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
+          Spacer(modifier = Modifier.height(16.dp))
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+              horizontalArrangement = Arrangement.Absolute.Center) {
+                Button(
+                    onClick = { navigationActions.navigateTo(Route.INVENTORY) },
+                    modifier = Modifier.weight(1f).testTag("inventoryButton")) {
+                      Text("See inventory")
+                    }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { /*TODO: friends*/},
+                    modifier = Modifier.weight(1f).testTag("friendButton")) {
+                      Text("Add Friends [not yet implemented]")
                     }
               }
-              TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
-                  value = stars,
-                  onValueChange = {},
-                  label = { Text("Trust") },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
-              Spacer(modifier = Modifier.height(16.dp))
-              Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
-                  horizontalArrangement = Arrangement.Absolute.Center) {
-                    Button(
-                        onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
-                          Text("See inventory")
-                        }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = { /*TODO: friends*/},
-                        modifier = Modifier.weight(1f).testTag("friendButton")) {
-                          Text("Add Friends [not yet implemented]")
-                        }
-                  }
-            }
+        }
       }
 }
