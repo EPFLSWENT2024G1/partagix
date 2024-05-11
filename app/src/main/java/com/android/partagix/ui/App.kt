@@ -24,7 +24,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
+import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
@@ -42,6 +45,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.BorrowScreen
 import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.EndLoanScreen
 import com.android.partagix.ui.screens.HomeScreen
@@ -52,6 +56,7 @@ import com.android.partagix.ui.screens.LoanScreen
 import com.android.partagix.ui.screens.LoginScreen
 import com.android.partagix.ui.screens.ManageLoanRequest
 import com.android.partagix.ui.screens.ManageOutgoingLoan
+import com.android.partagix.ui.screens.OldLoansScreen
 import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.StartLoanScreen
@@ -76,6 +81,7 @@ class App(
   private val manageViewModel = ManageLoanViewModel(db = db)
 
   private val loanViewModel = LoanViewModel(db = db)
+  private val borrowViewModel = BorrowViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -83,7 +89,10 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
+  private val evaluationViewModel = EvaluationViewModel(db = db)
+  private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+  private val homeViewModel = HomeViewModel(db = db)
 
   @Composable
   fun Create(
@@ -247,9 +256,10 @@ class App(
         inventoryViewModel.getInventory()
         manageViewModel.getLoanRequests()
         loanViewModel.getAvailableLoans()
+        homeViewModel.updateUser()
 
         HomeScreen(
-            homeViewModel = HomeViewModel(),
+            homeViewModel = homeViewModel,
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
@@ -275,6 +285,9 @@ class App(
               navigationActions = navigationActions)
         }
       }
+      composable(Route.BORROW) {
+        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
+      }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
         InventoryScreen(
@@ -283,6 +296,7 @@ class App(
             manageLoanViewModel = manageViewModel,
             itemViewModel = itemViewModel)
       }
+
       composable(Route.QR_SCAN) { QrScanScreen(navigationActions) }
 
       composable(
@@ -300,7 +314,7 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
 
       composable(Route.CREATE_ITEM) {
@@ -313,6 +327,14 @@ class App(
       composable(Route.MANAGE_LOAN_REQUEST) {
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
+      }
+      composable(Route.FINISHED_LOANS) {
+        finishedLoansViewModel.getFinishedLoan()
+        OldLoansScreen(
+            finishedLoansViewModel = finishedLoansViewModel,
+            itemViewModel = itemViewModel,
+            evaluationViewModel = evaluationViewModel,
+            navigationActions = navigationActions)
       }
       composable(Route.MANAGE_OUTGOING_LOAN) {
         ManageOutgoingLoan(

@@ -96,6 +96,7 @@ fun ManageLoanRequest(
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},
                     manageLoanViewModel = manageLoanViewModel,
+                    navigationActions = navigationActions,
                     isClickable = true,
                     isOutgoing = false,
                     modifier = Modifier.testTag("manageLoanScreenItemListColumn"))

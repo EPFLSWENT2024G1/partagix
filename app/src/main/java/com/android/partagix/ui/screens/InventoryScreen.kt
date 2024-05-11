@@ -6,6 +6,7 @@ import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,15 +111,23 @@ fun InventoryScreen(
               }
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
-            Text(
-                text = "Loan requests",
-                style =
-                    TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight(1000),
-                        color = Color(0xFF000000),
-                    ),
-                modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
+            Row(
+                modifier = modifier.fillMaxWidth().padding(8.dp, 0.dp),
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Text(
+                      text = "Loan requests",
+                      style =
+                          TextStyle(
+                              fontSize = 18.sp,
+                              fontWeight = FontWeight(1000),
+                              color = Color(0xFF000000),
+                          ))
+                  Text(
+                      text = "See Old",
+                      fontSize = 12.sp,
+                      modifier =
+                          Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })
+                }
             Row(
                 modifier =
                     Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).fillMaxSize(0.1f),
@@ -192,6 +201,8 @@ fun InventoryScreen(
                 isClickable = false,
                 isOutgoing = false,
                 isExpandable = false,
+                navigationActions = navigationActions,
+                manageLoanViewModel = manageLoanViewModel,
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -210,6 +221,8 @@ fun InventoryScreen(
                 isClickable = true,
                 isExpandable = false,
                 isOutgoing = false,
+                navigationActions = navigationActions,
+                manageLoanViewModel = manageLoanViewModel,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }
         }
