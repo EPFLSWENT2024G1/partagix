@@ -1,6 +1,9 @@
 package com.android.partagix
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.emptyConst.emptyUser
@@ -62,6 +65,26 @@ class HomeViewModelTests {
           "com.google.zxing.client.android", PackageManager.GET_ACTIVITIES)
     } returns mockk()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
+
+    homeViewModel.openQrScanner()
+    coVerify { mockMainActivity.startActivity(any(), any()) }
+  }
+
+  @Test
+  fun testQrScannerNoStore() {
+    every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
+    every {
+      mockMainActivity.packageManager.getPackageInfo(
+          "com.google.zxing.client.android", PackageManager.GET_ACTIVITIES)
+    } throws PackageManager.NameNotFoundException()
+    every { mockMainActivity.startActivity(any(), any()) } just Runs
+    every {
+      mockMainActivity.startActivity(
+          Intent(
+              Intent.ACTION_VIEW,
+              Uri.parse("market://details?id=\"com.google.zxing.client.android\"")),
+          any())
+    } throws ActivityNotFoundException()
 
     homeViewModel.openQrScanner()
     coVerify { mockMainActivity.startActivity(any(), any()) }
