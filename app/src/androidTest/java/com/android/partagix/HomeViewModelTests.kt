@@ -29,18 +29,19 @@ class HomeViewModelTests {
   fun setup() {
     db = mockk<Database>()
     mockMainActivity = mockk<MainActivity>()
+
+    every { db.getUser(any(), any(), any()) } answers
+        {
+          val id = firstArg<String>()
+          val onNoUser = secondArg<() -> Unit>()
+          val onSuccess = thirdArg<(User) -> Unit>()
+          onSuccess(emptyUser)
+        }
     homeViewModel = HomeViewModel(db, mockMainActivity)
   }
 
   @Test
   fun testUpdateUser() {
-    every { db.getUser(any(), any(), any()) } answers
-        {
-          val id = firstArg<String>()
-          val onSuccess = thirdArg<(User) -> Unit>()
-          onSuccess(emptyUser)
-        }
-
     homeViewModel.updateUser("0")
     assert(homeViewModel.uiState.value.user == emptyUser)
   }
