@@ -1,9 +1,10 @@
 package com.android.partagix.components
 
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
@@ -26,24 +27,24 @@ class EvaluationPopUpTest {
   @get:Rule val composeTestRule = createComposeRule()
   lateinit var evaluationViewModel: EvaluationViewModel
   lateinit var db: Database
-  val loan1 =
+  val loanEmptyCommentAndRating =
       Loan(
           "",
-          "idOwner1",
-          "idLoaner1",
+          "idLender1",
+          "idBorrower1",
           "item1",
           Date(),
           Date(),
-          "5.0",
           "",
-          "commented",
+          "",
+          "",
           "",
           LoanState.FINISHED)
-  val loan2 =
+  val loanAlreadyRate =
       Loan(
           "",
-          "idOwner2",
-          "idLoaner2",
+          "idLender2",
+          "idBorrower2",
           "item2",
           Date(),
           Date(),
@@ -52,11 +53,11 @@ class EvaluationPopUpTest {
           "commented",
           "commented",
           LoanState.FINISHED)
-  val loan3 =
+  val loanRatedButNoComment =
       Loan(
           "",
-          "idOwner3",
-          "idLoaner3",
+          "idLender3",
+          "idBorrower3",
           "item3",
           Date(),
           Date(),
@@ -74,37 +75,31 @@ class EvaluationPopUpTest {
     every { db.getLoans(any()) } answers
         { invocation ->
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
-          onSuccessLoan(listOf(loan1, loan2, loan3))
+          onSuccessLoan(listOf(loanEmptyCommentAndRating, loanAlreadyRate, loanRatedButNoComment))
         }
     every { db.setReview(any(), any(), any(), any()) } answers {}
-    evaluationViewModel = EvaluationViewModel(loan1, db)
+    evaluationViewModel = EvaluationViewModel(loanEmptyCommentAndRating, db)
   }
 
   /** Test if the content is displayed and works. */
   @Test
   fun contentIsDisplayedAndWorks() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loan1, userId = "", viewModel = evaluationViewModel)
+      EvaluationPopUp(
+          loan = loanEmptyCommentAndRating, userId = "", viewModel = evaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       rateText { assertIsDisplayed() }
       rateStars { assertIsDisplayed() }
-      validateButton { assertIsDisplayed() }
       commentText { assertIsDisplayed() }
       commentField { assertIsDisplayed() }
-      commentButton { assertIsDisplayed() }
+      evaluateButton { assertIsDisplayed() }
       closeButton { assertIsDisplayed() }
 
-      commentButton { assertIsNotEnabled() }
+      evaluateButton { assertIsNotEnabled() }
       commentField { performTextReplacement("test") }
-      commentButton { assertIsEnabled() }
-      commentButton { performClick() }
       commentField { assertTextEquals("test") }
-
-      validateButton { assertIsNotEnabled() }
       onNode { hasTestTag("star2") }.performClick()
-      validateButton { assertIsEnabled() }
-      validateButton { performClick() }
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
@@ -113,33 +108,33 @@ class EvaluationPopUpTest {
   @Test
   fun evaluationWorksForNoPreviousEvaluation() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loan1, userId = "idOwner1", viewModel = evaluationViewModel)
+      EvaluationPopUp(
+          loan = loanEmptyCommentAndRating, userId = "idLender1", viewModel = evaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       onNode { hasTestTag("star4") }.performClick()
-      validateButton { assertIsEnabled() }
-      validateButton { performClick() }
+      evaluateButton { assertHasClickAction() }
       commentField { performTextReplacement("comment") }
-      commentButton { assertIsEnabled() }
-      commentButton { performClick() }
-      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
-      closeButton { performClick() }
+      evaluateButton { assertHasClickAction() }
+      evaluateButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify { evaluationViewModel.reviewLoan(loan1, 5.0, "comment", "idLoaner1") }
+    coVerify {
+      evaluationViewModel.reviewLoan(loanEmptyCommentAndRating, 5.0, "comment", "idBorrower1")
+    }
   }
 
   @Test
   fun evaluationWorksForAlreadyCommentedAndRated() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loan2, userId = "idOwner2", viewModel = evaluationViewModel)
+      EvaluationPopUp(loan = loanAlreadyRate, userId = "idLender2", viewModel = evaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
-      rateStars { assertHasNoClickAction() }
-      Thread.sleep(1000)
-      composeTestRule.onNodeWithText("already rated", true).assertIsDisplayed()
+      composeTestRule.onNodeWithTag("star2").assertHasClickAction()
       commentField { assertTextEquals("commented") }
-      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
+      evaluateButton { assertIsEnabled() }
+      onNode { hasTestTag("star4") }.performClick()
+      commentField { performTextReplacement("comment") }
       closeButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
@@ -148,18 +143,19 @@ class EvaluationPopUpTest {
   @Test
   fun evaluationWorksForAlreadyRated() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loan3, userId = "idLoaner3", viewModel = evaluationViewModel)
+      EvaluationPopUp(
+          loan = loanRatedButNoComment, userId = "idBorrower3", viewModel = evaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
-      rateStars { assertHasNoClickAction() }
-      composeTestRule.onNodeWithText("already rated", true).assertIsDisplayed()
+      composeTestRule.onNodeWithTag("star2").assertHasClickAction()
+      composeTestRule.onNodeWithTag("star4").performClick()
+      evaluateButton { assertHasClickAction() }
       commentField { performTextReplacement("comment") }
-      commentButton { assertIsEnabled() }
-      commentButton { performClick() }
-      composeTestRule.onNodeWithText("left a comment", true).assertIsDisplayed()
-      closeButton { performClick() }
+      evaluateButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify(exactly = 1) { evaluationViewModel.reviewLoan(loan3, 3.0, "comment", "idOwner3") }
+    coVerify(exactly = 1) {
+      evaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
+    }
   }
 }

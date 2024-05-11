@@ -10,9 +10,8 @@ class EvaluationPopUp(semanticsProvider: SemanticsNodeInteractionsProvider) :
         viewBuilderAction = { hasTestTag("evaluationPopUp") }) {
   val rateText: KNode = onNode { hasTestTag("rateText") }
   val rateStars: KNode = onNode { hasTestTag("rateStars") }
-  val validateButton: KNode = onNode { hasTestTag("validateButton") }
   val commentText: KNode = onNode { hasTestTag("commentText") }
   val commentField: KNode = onNode { hasTestTag("commentField") }
-  val commentButton: KNode = onNode { hasTestTag("commentButton") }
   val closeButton: KNode = onNode { hasTestTag("closeButton") }
+  val evaluateButton: KNode = onNode { hasTestTag("evaluationButton") }
 }

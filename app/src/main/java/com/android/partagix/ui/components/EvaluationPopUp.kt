@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.loan.Loan
 
@@ -66,13 +65,13 @@ fun EvaluationPopUp(
 
   if (userId == loan.idLender) {
     idReviewed = loan.idBorrower
-    rating = loan.reviewBorrower.toDouble()
+    rating = loan.reviewBorrower.toDoubleOrNull() ?: 0.0
     comment = loan.commentBorrower
   }
 
   if (userId == loan.idBorrower) {
     idReviewed = loan.idLender
-    rating = loan.reviewLender.toDouble()
+    rating = loan.reviewLender.toDoubleOrNull() ?: 0.0
     comment = loan.commentLender
   }
 
@@ -183,7 +182,7 @@ fun EvaluationPopUp(
                         }
                         onClose(newLoan(loan, userId, comment, rating))
                       },
-                      enabled = (rating != 0.0 && comment.isNotEmpty()),
+                      enabled = (rating != 0.0 || comment.isNotEmpty()),
                       modifier =
                           Modifier.padding(end = 16.dp)
                               .fillMaxWidth(0.6f)

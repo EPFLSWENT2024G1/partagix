@@ -125,7 +125,6 @@ class OldLoanScreenTests {
           navigationActions = mockk(),
           itemViewModel = mockk(),
           evaluationViewModel = evaluationViewModel,
-          open = open,
           setOpen = { open = it })
     }
     composeTestRule.onNodeWithText("Object").performClick()
