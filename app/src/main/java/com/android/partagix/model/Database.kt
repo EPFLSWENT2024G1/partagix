@@ -173,10 +173,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Get the items that a user has borrowed
+   * Get all the loans
    *
-   * @param userId the user's id
-   * @param onSuccess the function to call with the list of borrowed items
+   * @param onSuccess the function to call with the list of loans
    */
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
     loan
@@ -232,7 +231,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    }
   */
 
-  fun getNewUid(collection: CollectionReference): String {
+  private fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
   }
@@ -381,7 +380,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
-   * Create a loan in the databases
+   * Set a loan in the database
    *
    * @param newLoan the loan to create
    */
