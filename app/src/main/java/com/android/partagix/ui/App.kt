@@ -92,7 +92,7 @@ class App(
   private val evaluationViewModel = EvaluationViewModel(db = db)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
-  private val homeViewModel = HomeViewModel(db = db)
+  private val homeViewModel = HomeViewModel(db = db, context = activity)
 
   @Composable
   fun Create(
