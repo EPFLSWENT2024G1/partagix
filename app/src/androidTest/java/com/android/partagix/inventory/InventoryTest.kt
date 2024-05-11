@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
@@ -34,6 +35,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
+  @RelaxedMockK lateinit var mockManageLoanViewModel: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<InventoryUIState>
@@ -55,6 +57,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
             InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
     mockItemViewModel = mockk()
+    mockManageLoanViewModel = mockk()
     mockInventoryViewModel = mockk()
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
@@ -75,7 +78,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   fun contentIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
+      InventoryScreen(
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
@@ -94,7 +98,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   fun itemListIsDisplayed() = run {
     every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
-      InventoryScreen(mockInventoryViewModel, mockNavActions, mockItemViewModel)
+      InventoryScreen(
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {

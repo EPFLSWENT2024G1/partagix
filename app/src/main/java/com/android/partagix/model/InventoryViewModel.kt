@@ -84,12 +84,12 @@ class InventoryViewModel(
       val user = firebaseAuth.currentUser
       if (user != null) {
         database.getItems { items: List<Item> ->
-          println(items)
+          update(emptyList(), emptyList(), emptyList())
           updateInv(items.filter { it.idUser.equals(user.uid) })
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
           database.getLoans {
-            it.filter { it.idBorrower.equals(user.uid) }
+            it.filter { it.idBorrower.equals(user.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
                   updateBor(items.filter { it.id.equals(loan.idItem) })
                   getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
@@ -111,6 +111,14 @@ class InventoryViewModel(
     }
   }
 
+  fun update(
+      borrowedItems: List<Item>,
+      loanBor: List<Loan>,
+      usersBor: List<User>,
+  ) {
+    _uiState.value =
+        _uiState.value.copy(borrowedItems = borrowedItems, loanBor = loanBor, usersBor = usersBor)
+  }
   /**
    * updateInv is a function that will update the uiState's inventory with the new items
    *
@@ -234,8 +242,6 @@ class InventoryViewModel(
    */
   fun filterItems(query: String) {
     val currentState = _uiState.value
-    println("items" + fetchedList)
-    println("borrow :" + fetchedBorrowed)
     val list = filtering.filterItems(fetchedList, query)
     val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
 

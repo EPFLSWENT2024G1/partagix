@@ -11,6 +11,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -50,6 +51,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+  }
+
+  fun getCurrentUser(onSuccess: (User) -> Unit) {
+    val user = Firebase.auth.currentUser
+    if (user != null) {
+      getUser(user.uid, onSuccess = onSuccess)
+    } else Log.e(TAG, "No user logged in")
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
@@ -329,6 +337,43 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     loan.document(newLoan.id).set(data5)
   }
 
+  /**
+   * Create a loan in the database
+   *
+   * @param newLoan the loan to create
+   * @param onSuccess the function to call when the loan is created
+   */
+  fun createLoan(newLoan: Loan, onSuccess: (Loan) -> Unit = {}) {
+    val idLoan = getNewUid(loan)
+    val data5 =
+        hashMapOf(
+            "id_lender" to newLoan.idLender,
+            "id_borrower" to newLoan.idBorrower,
+            "id_item" to newLoan.idItem,
+            "start_date" to newLoan.startDate,
+            "end_date" to newLoan.endDate,
+            "review_lender" to newLoan.reviewLender,
+            "review_borrower" to newLoan.reviewBorrower,
+            "comment_lender" to newLoan.commentLender,
+            "comment_borrower" to newLoan.commentBorrower,
+            "loan_state" to newLoan.state.toString())
+    loan.document(idLoan).set(data5)
+    val new =
+        Loan(
+            idLoan,
+            newLoan.idLender,
+            newLoan.idBorrower,
+            newLoan.idItem,
+            newLoan.startDate,
+            newLoan.endDate,
+            newLoan.reviewLender,
+            newLoan.reviewBorrower,
+            newLoan.commentLender,
+            newLoan.commentBorrower,
+            newLoan.state)
+    onSuccess(new)
+  }
+
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
     getItems { items ->
       for (item in items) {
@@ -478,13 +523,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * Set a review for a loan, i.e a rank and an optional comment
    *
    * @param loanId the loan's id
-   * @param userId the reviewed user's id
+   * @param reviewedUserId the reviewed user's id
    * @param rank the rank to be set, must be between 0.5 and 5
    * @param comment an optional comment to be set
    */
   fun setReview(
       loanId: String,
-      userId: String,
+      reviewedUserId: String,
       rank: Double,
       comment: String = "",
   ) {
@@ -492,15 +537,16 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       for (loan in loans) {
 
         if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idLender == userId) {
+        && loan.id == loanId && loan.idLender == reviewedUserId) {
 
           this.loan.document(loanId).update("review_lender", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
+          newAverageRank(reviewedUserId)
+          this.loan.document(loanId).update("comment_lender", comment.ifEmpty { "" })
         } else if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idBorrower == userId) {
-
+        && loan.id == loanId && loan.idBorrower == reviewedUserId) {
           this.loan.document(loanId).update("review_borrower", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
+          newAverageRank(reviewedUserId)
+          this.loan.document(loanId).update("comment_borrower", comment.ifEmpty { "" })
         }
       }
     }

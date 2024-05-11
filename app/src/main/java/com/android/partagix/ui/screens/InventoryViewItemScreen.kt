@@ -37,6 +37,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
@@ -48,18 +49,22 @@ import com.google.firebase.auth.FirebaseAuth
  * Screen to view an item.
  *
  * @param navigationActions a NavigationActions instance to navigate between screens.
- * @param viewModel an ItemViewModel which handles functionality.
+ * @param itemViewModel an ItemViewModel which handles functionality.
  */
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: ItemViewModel) {
-  val uiState = viewModel.uiState.collectAsState()
+fun InventoryViewItemScreen(
+    navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel,
+    borrowViewModel: BorrowViewModel
+) {
+  val uiState = itemViewModel.uiState.collectAsState()
 
   var item = uiState.value.item
   val user = uiState.value.user
 
-  LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
+  LaunchedEffect(key1 = uiState) { item = itemViewModel.uiState.value.item }
 
   Scaffold(
       topBar = {
@@ -129,7 +134,7 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Box(modifier = Modifier.padding(8.dp)) {
-                  Column() {
+                  Column {
                     Text(
                         text = "Availability",
                         style = TextStyle(color = Color.Gray),
@@ -164,15 +169,18 @@ fun InventoryViewItemScreen(navigationActions: NavigationActions, viewModel: Ite
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Button(
-                      onClick = { /*TODO: go to loan requests page*/},
-                      content = { Text("Loan requests") },
+                      onClick = {
+                        borrowViewModel.startBorrow(item, user)
+                        navigationActions.navigateTo(Route.BORROW)
+                      },
+                      content = { Text("Borrow item") },
                       modifier = Modifier.fillMaxWidth())
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // This should be displayed only if the user is the owner of the item
-                if (viewModel.compareIDs(
+                if (itemViewModel.compareIDs(
                     item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
                   Button(
                       onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
