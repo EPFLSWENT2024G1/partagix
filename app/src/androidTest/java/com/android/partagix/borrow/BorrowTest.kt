@@ -2,7 +2,6 @@ package com.android.partagix.borrow
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.core.os.persistableBundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.category.Category

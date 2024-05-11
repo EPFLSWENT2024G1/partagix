@@ -173,7 +173,8 @@ fun BorrowScreen(
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier.height(30.dp).padding(0.dp).testTag("startDateButton"),
+                          modifier =
+                              Modifier.height(30.dp).padding(0.dp).testTag("startDateButton"),
                           onClick = { isStartDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
@@ -197,9 +198,11 @@ fun BorrowScreen(
                             }
                       },
                       dismissButton = {
-                        TextButton(modifier = Modifier.testTag("startDateCancel"), onClick = { isStartDatePickerVisible = false }) {
-                          Text("Cancel")
-                        }
+                        TextButton(
+                            modifier = Modifier.testTag("startDateCancel"),
+                            onClick = { isStartDatePickerVisible = false }) {
+                              Text("Cancel")
+                            }
                       }) {
                         DatePicker(state = startDatePickerState)
                       }
@@ -239,7 +242,11 @@ fun BorrowScreen(
                             }
                       },
                       dismissButton = {
-                        TextButton(modifier = Modifier.testTag("endDateCancel"), onClick = { isEndDatePickerVisible = false }) { Text("Cancel") }
+                        TextButton(
+                            modifier = Modifier.testTag("endDateCancel"),
+                            onClick = { isEndDatePickerVisible = false }) {
+                              Text("Cancel")
+                            }
                       }) {
                         DatePicker(state = endDatePickerState)
                       }
