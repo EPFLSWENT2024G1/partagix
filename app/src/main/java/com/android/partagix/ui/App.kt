@@ -92,6 +92,7 @@ class App(
   private val evaluationViewModel = EvaluationViewModel(db = db)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+  private val homeViewModel = HomeViewModel(db = db)
 
   @Composable
   fun Create(
@@ -255,9 +256,10 @@ class App(
         inventoryViewModel.getInventory()
         manageViewModel.getLoanRequests()
         loanViewModel.getAvailableLoans()
+        homeViewModel.updateUser()
 
         HomeScreen(
-            homeViewModel = HomeViewModel(),
+            homeViewModel = homeViewModel,
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
