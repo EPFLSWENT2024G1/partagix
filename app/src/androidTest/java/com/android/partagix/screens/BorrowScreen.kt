@@ -12,4 +12,22 @@ class BorrowScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val topBar: KNode = onNode { hasTestTag("topBar") }
   val backText: KNode = topBar.child { hasTestTag("backText") }
   val backButton: KNode = topBar.child { hasTestTag("backButton") }
+
+  val itemImage: KNode = onNode { hasTestTag("itemImage") }
+  val itemName: KNode = onNode { hasTestTag("itemName") }
+  val itemOwner: KNode = onNode { hasTestTag("itemOwner") }
+  val description: KNode = onNode { hasTestTag("description") }
+  val location: KNode = onNode { hasTestTag("location") }
+  val startDate: KNode = onNode { hasTestTag("startDate") }
+  val startDatePicker: KNode = onNode { hasTestTag("startDatePicker") }
+  val startDateButton: KNode = onNode { hasTestTag("startDateButton") }
+  val startDateOk: KNode = onNode { hasTestTag("startDateOk") }
+  val startDateCancel: KNode = onNode { hasTestTag("startDateCancel") }
+  val endDate: KNode = onNode { hasTestTag("endDate") }
+  val endDatePicker: KNode = onNode { hasTestTag("endDatePicker") }
+  val endDateButton: KNode = onNode { hasTestTag("endDateButton") }
+  val endDateOk: KNode = onNode { hasTestTag("endDateOk") }
+  val endDateCancel: KNode = onNode { hasTestTag("endDateCancel") }
+
+  val saveButton: KNode = onNode { hasTestTag("saveButton") }
 }

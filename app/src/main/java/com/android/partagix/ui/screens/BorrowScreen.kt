@@ -150,7 +150,7 @@ fun BorrowScreen(
                     value = loanDescription,
                     onValueChange = { loanDescription = it },
                     label = { Text("Description") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth().testTag("description"),
                     minLines = 5,
                     readOnly = false)
 
@@ -160,29 +160,31 @@ fun BorrowScreen(
                     value = loanLocation.toString(),
                     onValueChange = {},
                     label = { Text("Location") },
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth().testTag("location"),
                     readOnly = true)
 
                 Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth().testTag("startDate"),
                     value = loanStartDateString,
                     label = { Text("Start date") },
                     onValueChange = {},
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier.height(30.dp).padding(0.dp),
+                          modifier = Modifier.height(30.dp).padding(0.dp).testTag("startDateButton"),
                           onClick = { isStartDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
 
                 if (isStartDatePickerVisible) {
                   DatePickerDialog(
+                      modifier = Modifier.testTag("startDatePicker"),
                       onDismissRequest = { isStartDatePickerVisible = false },
                       confirmButton = {
                         TextButton(
+                            modifier = Modifier.testTag("startDateOk"),
                             onClick = {
                               val selectedDate =
                                   Calendar.getInstance().apply {
@@ -195,7 +197,7 @@ fun BorrowScreen(
                             }
                       },
                       dismissButton = {
-                        TextButton(onClick = { isStartDatePickerVisible = false }) {
+                        TextButton(modifier = Modifier.testTag("startDateCancel"), onClick = { isStartDatePickerVisible = false }) {
                           Text("Cancel")
                         }
                       }) {
@@ -206,23 +208,25 @@ fun BorrowScreen(
                 Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth().testTag("endDate"),
                     value = loanEndDateString,
                     label = { Text("End date") },
                     onValueChange = {},
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier.height(30.dp).padding(0.dp),
+                          modifier = Modifier.height(30.dp).padding(0.dp).testTag("endDateButton"),
                           onClick = { isEndDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
 
                 if (isEndDatePickerVisible) {
                   DatePickerDialog(
+                      modifier = Modifier.testTag("endDatePicker"),
                       onDismissRequest = { isEndDatePickerVisible = false },
                       confirmButton = {
                         TextButton(
+                            modifier = Modifier.testTag("endDateOk"),
                             onClick = {
                               val selectedDate =
                                   Calendar.getInstance().apply {
@@ -235,7 +239,7 @@ fun BorrowScreen(
                             }
                       },
                       dismissButton = {
-                        TextButton(onClick = { isEndDatePickerVisible = false }) { Text("Cancel") }
+                        TextButton(modifier = Modifier.testTag("endDateCancel"), onClick = { isEndDatePickerVisible = false }) { Text("Cancel") }
                       }) {
                         DatePicker(state = endDatePickerState)
                       }
@@ -243,7 +247,7 @@ fun BorrowScreen(
               }
 
               Button(
-                  modifier = modifier.fillMaxWidth().testTag("button").padding(10.dp),
+                  modifier = modifier.fillMaxWidth().testTag("saveButton").padding(10.dp),
                   onClick = {
                     viewModel.createLoan()
                     navigationActions.goBack()
