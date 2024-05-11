@@ -425,8 +425,8 @@ class DatabaseTests {
             "id_item",
             Date(0),
             Date(0),
-            "r",
-            "r",
+            "0.0",
+            "0.0",
             "c",
             "c",
             LoanState.PENDING)
