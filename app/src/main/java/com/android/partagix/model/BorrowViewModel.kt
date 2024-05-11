@@ -1,17 +1,13 @@
 package com.android.partagix.model
 
-import android.location.Location
 import androidx.lifecycle.ViewModel
-import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
-import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
-import com.android.partagix.model.visibility.Visibility
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +30,7 @@ class BorrowViewModel(db: Database = Database()) : ViewModel() {
    *
    * @param item the item to borrow
    */
-  fun resetBorrow(item: Item, owner: User) {
+  fun startBorrow(item: Item, owner: User) {
     // Set the item to borrow
     _itemUiState.value = item
 

@@ -60,7 +60,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     every { mockItemViewModel.compareIDs(any(), any()) } returns true
 
     mockBorrowViewModel = mockk()
-    every { mockBorrowViewModel.resetBorrow(any(), any()) } just Runs
+    every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs

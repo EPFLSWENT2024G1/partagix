@@ -59,7 +59,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     every { mockViewModel.loanUiState } returns mockLoanUiState
     every { mockViewModel.itemUiState } returns mockItemUiState
     every { mockViewModel.userUiState } returns mockUserUiState
-    every { mockViewModel.resetBorrow(any(), any()) } just Runs
+    every { mockViewModel.startBorrow(any(), any()) } just Runs
     every { mockViewModel.updateLoan(any()) } just Runs
     every { mockViewModel.createLoan() } just Runs
 
@@ -123,7 +123,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
       BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
     }
 
-    mockViewModel.resetBorrow(item, user)
+    mockViewModel.startBorrow(item, user)
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
       description { performTextInput("test description") }

@@ -117,7 +117,7 @@ class EndToEndCreateEdit {
     mockStampViewModel = mockk()
     mockBorrowViewModel = mockk()
 
-    every { mockBorrowViewModel.resetBorrow(any(), any()) } just Runs
+    every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.CREATE_ITEM) } just Runs
