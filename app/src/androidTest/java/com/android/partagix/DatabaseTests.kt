@@ -531,16 +531,20 @@ class DatabaseTests {
         {
           thirdArg<(User) -> Unit>().invoke(user2)
         }
+    every { database.getUsers(any()) } answers
+        {
+          firstArg<(List<User>) -> Unit>().invoke(listOf(user1, user2))
+        }
 
     runBlocking {
-      var commentsOnUser1: List<Pair<String, String>> = emptyList()
-      database.getComments(user1.id) { commentsOnUser1 = it }
-      assertEquals(
-          commentsOnUser1,
-          listOf(
-              Pair(user2.name, "banger"),
-              Pair(user2.name, "sympathetic"),
-              Pair(user2.name, "unefficient")))
+      database.getComments(user1.id) {
+        assertEquals(
+            listOf(
+                Pair(user2.name, "sympathetic"),
+                Pair(user2.name, "banger"),
+                Pair(user2.name, "unefficient")),
+            it)
+      }
     }
 
     //  Don't forget to unmock.
