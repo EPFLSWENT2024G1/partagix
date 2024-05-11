@@ -3,6 +3,9 @@ package com.android.partagix.model
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.emptyConst.emptyItem
+import com.android.partagix.model.emptyConst.emptyLoan
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -12,10 +15,6 @@ import com.android.partagix.model.visibility.Visibility
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-val emptyLoan = Loan("", "", "", "", Date(0), Date(0), "", "", "", "", LoanState.PENDING)
-val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 0, Location(""))
-val emptyUser = User("", "", "", "", Inventory("", emptyList()))
 
 class BorrowViewModel(db: Database = Database()) : ViewModel() {
 
