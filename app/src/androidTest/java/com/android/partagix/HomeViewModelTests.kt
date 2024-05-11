@@ -1,9 +1,7 @@
 package com.android.partagix
 
 import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
@@ -51,8 +49,7 @@ class HomeViewModelTests {
   fun openQrScannerInstalled() {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
-      mockMainActivity.packageManager.getPackageInfo(
-        packageName, PackageManager.GET_ACTIVITIES)
+      mockMainActivity.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
     } returns mockk()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
 
@@ -64,8 +61,7 @@ class HomeViewModelTests {
   fun openQrScannerNotInstalled() {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
-      mockMainActivity.packageManager.getPackageInfo(
-          packageName, PackageManager.GET_ACTIVITIES)
+      mockMainActivity.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
     } throws PackageManager.NameNotFoundException()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
 
@@ -77,13 +73,10 @@ class HomeViewModelTests {
   fun testQrScannerNoStore() {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
-      mockMainActivity.packageManager.getPackageInfo(
-          packageName, PackageManager.GET_ACTIVITIES)
+      mockMainActivity.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
     } throws PackageManager.NameNotFoundException()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
-    every {
-      mockMainActivity.startActivity(any(), Bundle.EMPTY)
-    } throws ActivityNotFoundException()
+    every { mockMainActivity.startActivity(any(), Bundle.EMPTY) } throws ActivityNotFoundException()
 
     homeViewModel.openQrScanner()
     coVerify { mockMainActivity.startActivity(any(), any()) }
