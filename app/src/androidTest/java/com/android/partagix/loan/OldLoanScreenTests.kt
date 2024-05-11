@@ -88,6 +88,8 @@ class OldLoanScreenTests {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "idOwner1"
 
+    every { db.getUser(any(), any(), any()) } returns Unit
+
     finishedLoansViewModel = FinishedLoansViewModel(db)
     finishedLoansViewModel.getFinishedLoan()
 

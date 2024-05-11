@@ -56,6 +56,7 @@ import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.EvaluationPopUp
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -174,10 +175,28 @@ fun ExpandableCard(
                 Column(modifier) {
                   Text(text = item.name, fontSize = 20.sp)
                   Spacer(modifier.height(8.dp))
+                  val dateFormatter = SimpleDateFormat("dd/MM/yyyy")
                   Text(
-                      text =
-                          "Loan Date : ${loan.startDate.date}/${loan.startDate.month}/${loan.startDate.year}",
+                      text = "Star Date : ${dateFormatter.format(loan.startDate)}",
                       fontSize = 15.sp)
+                  Spacer(modifier.height(8.dp))
+                  Text(text = "End Date : ${dateFormatter.format(loan.endDate)}", fontSize = 15.sp)
+                  Spacer(modifier.height(8.dp))
+                  var user by remember { mutableStateOf("Unknown") }
+                  if (item.idUser == Authentication.getUser()?.uid) {
+
+                    evaluationViewModel.getUser(loan.idBorrower, { u -> user = u.name }, {})
+                    Text(
+                        text = "Borrower : $user",
+                        fontSize = 15.sp,
+                        modifier = modifier.fillMaxWidth(0.50f))
+                  } else {
+                    evaluationViewModel.getUser(loan.idLender, { u -> user = u.name }, {})
+                    Text(
+                        text = "Lender : $user",
+                        fontSize = 15.sp,
+                        modifier = modifier.fillMaxWidth(0.50f))
+                  }
                 }
                 Image(
                     painter = painterResource(id = R.drawable.mutliprise),
