@@ -496,12 +496,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
           this.loan.document(loanId).update("review_lender", rank.toString())
           newAverageRank(reviewedUserId)
-          if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
+          this.loan.document(loanId).update("comment_lender", comment.ifEmpty { "" })
         } else if (loan.state == LoanState.FINISHED // only finished loans
         && loan.id == loanId && loan.idBorrower == reviewedUserId) {
           this.loan.document(loanId).update("review_borrower", rank.toString())
           newAverageRank(reviewedUserId)
-          if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
+          this.loan.document(loanId).update("comment_borrower", comment.ifEmpty { "" })
         }
       }
     }

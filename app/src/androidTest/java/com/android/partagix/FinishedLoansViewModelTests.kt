@@ -125,8 +125,10 @@ class FinishedLoansViewModelTests {
   fun getFinishedLoanUserTests() {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "Cedric"
+    // check there is no loan before calling getFinishedLoan
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
     finishedLoansViewModel.getFinishedLoan()
+    // check that the correct loans are fetched
     assert(finishedLoansViewModel.uiState.value.loans.size == 2)
     assert(finishedLoansViewModel.uiState.value.loans.containsAll(listOf(loan1, loan2)))
   }
@@ -135,6 +137,7 @@ class FinishedLoansViewModelTests {
   fun getFinishedLoanNoUserTests() {
     every { Authentication.getUser() } returns null
     finishedLoansViewModel.getFinishedLoan()
+    // check that the loans are empty when there is no user
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
   }
 
@@ -148,6 +151,7 @@ class FinishedLoansViewModelTests {
           onSuccessItem(item)
         }
     finishedLoansViewModel.getItem("item1")
+    // check that the correct item is fetched
     assert(finishedLoansViewModel.uiItem.value == item)
   }
 }
