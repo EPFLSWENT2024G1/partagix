@@ -486,7 +486,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             loan.state == LoanState.FINISHED && // Only finished loans
                 loan.id == loanId && // Matches the loanId
                 ((loan.idLender == reviewedUserId) ||
-                    (loan.idBorrower == reviewedUserId)) // Matches the userId as either lender or borrower
+                    (loan.idBorrower ==
+                        reviewedUserId)) // Matches the userId as either lender or borrower
           }
 
       filteredLoans.forEach { loan ->
