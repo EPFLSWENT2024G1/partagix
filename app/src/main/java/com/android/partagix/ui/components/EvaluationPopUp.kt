@@ -175,12 +175,9 @@ fun EvaluationPopUp(
 
                   Button(
                       onClick = {
-                        if (rating != 0.0 || comment.isNotEmpty()) {
-                          viewModel.reviewLoan(loan, rating, comment, idReviewed)
-                          onClose(newLoan(loan, userId, comment, rating))
-                          openDialog.value = false
-                        }
+                        viewModel.reviewLoan(loan, rating, comment, idReviewed)
                         onClose(newLoan(loan, userId, comment, rating))
+                        openDialog.value = false
                       },
                       enabled = (rating != 0.0 || comment.isNotEmpty()),
                       modifier =
