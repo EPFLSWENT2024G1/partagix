@@ -75,7 +75,7 @@ fun InventoryViewItemScreen(
     imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
   }
 
-  LaunchedEffect(key1 = uiState) { item = viewModel.uiState.value.item }
+  LaunchedEffect(key1 = uiState) { item = itemViewModel.uiState.value.item }
 
   Scaffold(
       topBar = {
