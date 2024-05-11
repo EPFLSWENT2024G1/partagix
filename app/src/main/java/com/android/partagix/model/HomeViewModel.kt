@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import com.android.partagix.MainActivity
@@ -46,7 +47,7 @@ class HomeViewModel(
       // If the app is not installed -> open the Play Store to it
       try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-        startActivity(context, intent, null)
+        startActivity(context, intent, Bundle.EMPTY)
       } catch (e: ActivityNotFoundException) {
         // If the Play Store is not available -> open the website to it
         val intent =
