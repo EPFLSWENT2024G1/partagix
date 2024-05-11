@@ -36,7 +36,7 @@ class FirebaseStorageTest {
     val imageName = UUID.randomUUID().toString()
 
     every { firebaseStorage.reference } returns storageReference
-    every { storageReference.child("images/$imageName.jpg") } returns storageReference
+    every { storageReference.child("images/$imageName") } returns storageReference
     every { storageReference.putFile(builtUri) } returns uploadTask
 
     every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
@@ -44,9 +44,7 @@ class FirebaseStorageTest {
 
     // Call the function to be tested
     uploadImageToFirebaseStorage(builtUri, firebaseStorage, imageName)
-
     verify { storageReference.child(any()) }
-
     verify { storageReference.putFile(builtUri) }
   }
 
@@ -57,11 +55,11 @@ class FirebaseStorageTest {
     val storageReference = mockk<StorageReference>()
     val fileDownloadTask = mockk<FileDownloadTask>()
 
-    val path = "images/123.jpg"
-    val localFile = File.createTempFile("images", "jpg")
+    val path = "123.jpg"
+    val localFile = File.createTempFile("local", ".tmp")
 
     every { firebaseStorage.reference } returns storageReference
-    every { storageReference.child(path) } returns storageReference
+    every { storageReference.child("images/$path") } returns storageReference
     every { storageReference.getFile(any<File>()) } returns fileDownloadTask
 
     every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
@@ -69,7 +67,31 @@ class FirebaseStorageTest {
 
     getImageFromFirebaseStorage(path, firebaseStorage)
 
-    verify { storageReference.child(path) }
+    verify { storageReference.child("images/$path") }
+
+    verify { storageReference.getFile(any<File>()) }
+  }
+
+  @Test
+  fun testDownloadFromFirebaseStorageEmptyString() {
+    // Mock FirebaseStorage and StorageReference
+    val firebaseStorage = mockk<FirebaseStorage>()
+    val storageReference = mockk<StorageReference>()
+    val fileDownloadTask = mockk<FileDownloadTask>()
+
+    val path = ""
+    val localFile = File.createTempFile("local", ".tmp")
+
+    every { firebaseStorage.reference } returns storageReference
+    every { storageReference.child("images/default-image.jpg") } returns storageReference
+    every { storageReference.getFile(any<File>()) } returns fileDownloadTask
+
+    every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
+    every { fileDownloadTask.addOnFailureListener(any()) } returns fileDownloadTask
+
+    getImageFromFirebaseStorage(path, firebaseStorage)
+
+    verify { storageReference.child("images/default-image.jpg") }
 
     verify { storageReference.getFile(any<File>()) }
   }
