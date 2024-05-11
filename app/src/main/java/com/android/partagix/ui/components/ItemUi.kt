@@ -1,13 +1,10 @@
 package com.android.partagix.ui.components
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,7 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -84,13 +81,13 @@ fun ItemUi(
   var expandables by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   // val time = Duration.between(Date().toInstant(), date.toInstant())
-  var imgBitmap: Bitmap? = null
-  val imgFile = item.imageId
-  if (imgFile.exists()) {
-    // on below line we are creating an image bitmap variable
-    // and adding a bitmap to it from image file.
-    imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-  }
+  // var imgBitmap: Bitmap? = null
+  // val imgFile = item.imageId
+  // if (imgFile.exists()) {
+  // on below line we are creating an image bitmap variable
+  // and adding a bitmap to it from image file.
+  // imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+  // }
   if (isExpandable) {
     Column(
         horizontalAlignment = Alignment.Start,
@@ -130,7 +127,7 @@ fun ItemUi(
                   }
                   Text(
                       text =
-                          if (loan.idItem.equals("")) {
+                          if (loan.idItem == "") {
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
@@ -171,11 +168,11 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                Image(
-                    painter = rememberAsyncImagePainter(model = imgBitmap),
+                AsyncImage(
+                    model = item.imageId.absolutePath,
                     contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
               }
           if (expandables) {
 
@@ -288,11 +285,11 @@ fun ItemUi(
                           lineHeight = 0.8.em,
                           modifier = Modifier.fillMaxWidth(0.2f).padding(top = 5.dp))
                     }
-                Image(
-                    painter = rememberAsyncImagePainter(model = imgBitmap),
+                AsyncImage(
+                    model = item.imageId.absolutePath,
                     contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
               }
         }
   }
