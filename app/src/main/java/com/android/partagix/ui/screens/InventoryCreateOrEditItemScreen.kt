@@ -1,6 +1,9 @@
 package com.android.partagix.ui.screens
 
+import android.content.ContentProvider
+import android.content.ContentResolver
 import android.location.Location
+import android.os.Environment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.createBitmap
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
@@ -48,6 +53,12 @@ import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
 import getImageFromFirebaseStorage
 import uploadImageToFirebaseStorage
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.net.URL
 
 /**
  * Screen to create a new item in user's inventory.
@@ -114,6 +125,15 @@ fun InventoryCreateOrEditItem(
                   contentAlignment = Alignment.Center,
                   modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
                     MainImagePicker(listOf(i.imageId.toUri())) { uri ->
+                        // TODO :  Save the image to a local file to its displayed correctly while waiting for the upload
+                        /*
+                        val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
+                        Missing : save the image to the local file (need a ContentResolver ?)
+                        uiImage = localFilePath
+                         */
+                        // Before this is done, display an empty image while waiting for the upload
+                        uiImage = File.createTempFile("default_image", null)
+                        // in the meantime do nothing and the image will be loaded from the database later
                       uploadImageToFirebaseStorage(uri, imageName = i.id)
                       getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
                     }
