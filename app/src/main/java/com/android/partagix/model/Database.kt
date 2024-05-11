@@ -26,6 +26,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
   init {} // kept for easier testing purposes
 
+  /**
+   * Get all users from the database
+   *
+   * @param onSuccess the function to call with the list of users
+   */
   fun getUsers(onSuccess: (List<User>) -> Unit) {
     getItems { items ->
       users
@@ -49,6 +54,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
+  /**
+   * Get one user from the database
+   *
+   * @param idUser the user's id
+   * @param onNoUser the function to call when the user is not found
+   * @param onSuccess the function to call with the user
+   */
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     getUsers { users ->
       val user = users.firstOrNull { it.id == idUser }
@@ -56,6 +68,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
+  /**
+   * Get the current user
+   *
+   * @param onSuccess the function to call with the current user
+   */
   fun getCurrentUser(onSuccess: (User) -> Unit) {
     val user = Firebase.auth.currentUser
     if (user != null) {
@@ -63,6 +80,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     } else Log.e(TAG, "No user logged in")
   }
 
+  /**
+   * Get all items from the database
+   *
+   * @param onSuccess the function to call with the list of items
+   */
   fun getItems(onSuccess: (List<Item>) -> Unit) {
     items
         .get()
@@ -106,6 +128,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
   }
 
+  /**
+   * Convert a location map to a Location object
+   *
+   * @param locationMap the map containing the location data
+   * @return the Location object
+   */
   private fun toLocation(locationMap: HashMap<*, *>): Location {
     val latitude = locationMap["latitude"] as Double
     val longitude = locationMap["longitude"] as Double
@@ -116,6 +144,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     return location
   }
 
+  /**
+   * Convert a Location object to a map
+   *
+   * @param location the Location object
+   * @return the map containing the location data
+   */
   fun locationToMap(location: Location): Map<String, Any?> {
     val locationMap = mutableMapOf<String, Any?>()
     locationMap["latitude"] = location.latitude
@@ -125,6 +159,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     return locationMap
   }
 
+  /**
+   * Get the inventory of a user
+   *
+   * @param userId the user's id
+   * @param onSuccess the function to call with the user's inventory
+   */
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
     getItems { items ->
       val listItems = items.filter { it.idUser == userId }
@@ -132,6 +172,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
+  /**
+   * Get the items that a user has borrowed
+   *
+   * @param userId the user's id
+   * @param onSuccess the function to call with the list of borrowed items
+   */
   fun getLoans(onSuccess: (List<Loan>) -> Unit) {
     loan
         .get()
@@ -185,6 +231,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
          .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
    }
   */
+
   fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
@@ -280,6 +327,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
    */
 
+  /**
+   * Create an item in the database
+   *
+   * @param userId the user's id
+   * @param newItem the item to create
+   * @param onSuccess the function to call when the item is created
+   */
   fun createItem(userId: String, newItem: Item, onSuccess: (Item) -> Unit = {}) {
     val idItem = getNewUid(items)
     val data =
@@ -306,6 +360,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     onSuccess(new)
   }
 
+  /**
+   * Set an item in the database
+   *
+   * @param newItem the item to set
+   */
   fun setItem(newItem: Item) {
     val data =
         hashMapOf(
@@ -321,6 +380,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     items.document(newItem.id).set(data)
   }
 
+  /**
+   * Create a loan in the databases
+   *
+   * @param newLoan the loan to create
+   */
   fun setLoan(newLoan: Loan) {
     val data =
         hashMapOf(
@@ -375,6 +439,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     onSuccess(new)
   }
 
+  /**
+   * Get an item from the database
+   *
+   * @param id the item's id
+   * @param onSuccess the function to call with the item
+   */
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
     getItems { items ->
       val item = items.firstOrNull { it.id == id }
