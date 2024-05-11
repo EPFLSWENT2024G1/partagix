@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.partagix.MainActivity
+import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.FinishedLoansViewModel
@@ -44,6 +45,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
+import com.android.partagix.ui.screens.BorrowScreen
 import com.android.partagix.ui.screens.EditAccount
 import com.android.partagix.ui.screens.EndLoanScreen
 import com.android.partagix.ui.screens.HomeScreen
@@ -79,6 +81,7 @@ class App(
   private val manageViewModel = ManageLoanViewModel(db = db)
 
   private val loanViewModel = LoanViewModel(db = db)
+  private val borrowViewModel = BorrowViewModel(db = db)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -280,6 +283,9 @@ class App(
               navigationActions = navigationActions)
         }
       }
+      composable(Route.BORROW) {
+        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
+      }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
         InventoryScreen(
@@ -306,7 +312,7 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
 
       composable(Route.CREATE_ITEM) {
