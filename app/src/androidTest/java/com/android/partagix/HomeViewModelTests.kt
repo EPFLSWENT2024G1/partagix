@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import com.android.partagix.model.Database
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.emptyConst.emptyUser
@@ -23,6 +24,8 @@ class HomeViewModelTests {
   private lateinit var homeViewModel: HomeViewModel
 
   private lateinit var mockMainActivity: MainActivity
+
+  private val packageName = "com.google.zxing.client.android"
 
   @Before
   fun setup() {
@@ -45,12 +48,12 @@ class HomeViewModelTests {
   }
 
   @Test
-  fun openQrScannerNotInstalled() {
+  fun openQrScannerInstalled() {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
       mockMainActivity.packageManager.getPackageInfo(
-          "com.google.zxing.client.android", PackageManager.GET_ACTIVITIES)
-    } throws PackageManager.NameNotFoundException()
+        packageName, PackageManager.GET_ACTIVITIES)
+    } returns mockk()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
 
     homeViewModel.openQrScanner()
@@ -58,12 +61,12 @@ class HomeViewModelTests {
   }
 
   @Test
-  fun openQrScannerInstalled() {
+  fun openQrScannerNotInstalled() {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
       mockMainActivity.packageManager.getPackageInfo(
-          "com.google.zxing.client.android", PackageManager.GET_ACTIVITIES)
-    } returns mockk()
+          packageName, PackageManager.GET_ACTIVITIES)
+    } throws PackageManager.NameNotFoundException()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
 
     homeViewModel.openQrScanner()
@@ -75,15 +78,11 @@ class HomeViewModelTests {
     every { mockMainActivity.packageManager.getLaunchIntentForPackage(any()) } returns mockk()
     every {
       mockMainActivity.packageManager.getPackageInfo(
-          "com.google.zxing.client.android", PackageManager.GET_ACTIVITIES)
+          packageName, PackageManager.GET_ACTIVITIES)
     } throws PackageManager.NameNotFoundException()
     every { mockMainActivity.startActivity(any(), any()) } just Runs
     every {
-      mockMainActivity.startActivity(
-          Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse("market://details?id=\"com.google.zxing.client.android\"")),
-          any())
+      mockMainActivity.startActivity(any(), Bundle.EMPTY)
     } throws ActivityNotFoundException()
 
     homeViewModel.openQrScanner()
