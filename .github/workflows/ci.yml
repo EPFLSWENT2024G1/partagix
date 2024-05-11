@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - vs/233-fix-database-complexity
 
   pull_request:
     types:

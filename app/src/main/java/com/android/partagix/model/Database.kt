@@ -26,52 +26,33 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   init {} // kept for easier testing purposes
 
   fun getUsers(onSuccess: (List<User>) -> Unit) {
-    users
-        .get()
-        .addOnSuccessListener { result ->
-          val ret = mutableListOf<User>()
-          for (document in result) {
-            getUserInventory(document.data["id"] as String) { inventory ->
+    getItems { items ->
+      users
+          .get()
+          .addOnSuccessListener { result ->
+            val ret = mutableListOf<User>()
+            for (document in result) {
+              val listItems = items.filter { it.idUser == document.data["id"] }
               val user =
                   User(
                       document.data["id"] as String,
                       document.data["name"] as String,
                       document.data["addr"] as String,
                       document.data["rank"] as String,
-                      inventory)
+                      Inventory(document.data["id"] as String, listItems))
               ret.add(user)
             }
+            onSuccess(ret)
           }
-          onSuccess(ret)
-        }
-        .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
+          .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
+    }
   }
 
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-    users
-        .get()
-        .addOnSuccessListener { result ->
-          var found = false
-          for (document in result) {
-            if (document.data["id"] as String == idUser) {
-              found = true
-              getUserInventory(idUser) { inventory ->
-                val user =
-                    User(
-                        document.data["id"] as String,
-                        document.data["name"] as String,
-                        document.data["addr"] as String,
-                        document.data["rank"] as String,
-                        inventory)
-                onSuccess(user)
-              }
-            }
-          }
-          if (!found) {
-            onNoUser()
-          }
-        }
-        .addOnFailureListener { Log.e(TAG, "Error getting user", it) }
+    getUsers { users ->
+      val user = users.firstOrNull { it.id == idUser }
+      user?.let { onSuccess(it) } ?: onNoUser()
+    }
   }
 
   fun getItems(onSuccess: (List<Item>) -> Unit) {
@@ -81,11 +62,14 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           categories
               .get()
               .addOnSuccessListener { result2 ->
-                val categories = mutableMapOf<String, Category>()
-                for (document in result2) {
-                  categories[document.data["id"] as String] =
-                      Category(document.data["id"] as String, document.data["name"] as String)
-                }
+                val categories =
+                    result2
+                        .map { document ->
+                          document.data["id"] as String to
+                              Category(
+                                  document.data["id"] as String, document.data["name"] as String)
+                        }
+                        .toMap()
 
                 val ret = mutableListOf<Item>()
                 for (document in result) {
@@ -135,12 +119,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
     getItems { items ->
-      val listItems = mutableListOf<Item>()
-      for (item in items) {
-        if (item.idUser == userId) {
-          listItems.add(item)
-        }
-      }
+      val listItems = items.filter { it.idUser == userId }
       onSuccess(Inventory(userId, listItems))
     }
   }
@@ -335,7 +314,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   fun setLoan(newLoan: Loan) {
-    val data5 =
+    val data =
         hashMapOf(
             "id_lender" to newLoan.idLender,
             "id_borrower" to newLoan.idBorrower,
@@ -348,16 +327,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "comment_borrower" to newLoan.commentBorrower,
             "loan_state" to newLoan.state.toString())
 
-    loan.document(newLoan.id).set(data5)
+    loan.document(newLoan.id).set(data)
   }
 
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
     getItems { items ->
-      for (item in items) {
-        if (item.id == id) {
-          onSuccess(item)
-        }
-      }
+      val item = items.firstOrNull { it.id == id }
+      item?.let { onSuccess(it) }
     }
   }
 
@@ -371,11 +347,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     categories
         .get()
         .addOnSuccessListener { result ->
-          for (document in result) {
-            if ((document.data["name"] as String).equals(nameCategory, ignoreCase = true)) {
-              onSuccess(document.data["id"] as String)
-            }
-          }
+          val doc =
+              result.firstOrNull {
+                (it.data["name"] as String).equals(nameCategory, ignoreCase = true)
+              }
+          doc?.let { onSuccess(it["id"] as String) }
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
@@ -464,30 +440,24 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    */
   fun newAverageRank(idUser: String) {
 
-    var rankSum = 0.0
-    var rankCount = 0L
-
     getLoans { loans ->
-      for (loan in loans) {
+      val reviewedLoans =
+          loans.filter { loan ->
+            loan.state == LoanState.FINISHED && // Only finished loans
+                ((loan.idLender == idUser &&
+                    loan.reviewLender.toDouble() !=
+                        0.0) || // If the user is the lender and the loan has been reviewed
+                    (loan.idBorrower == idUser &&
+                        loan.reviewBorrower.toDouble() !=
+                            0.0)) // Or if the user is the borrower and the loan has been reviewed
+          }
 
-        if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idLender == idUser // if the user is the lender,
-            &&
-            loan.reviewLender.toDouble() != 0.0) { // that has been reviewed
-
-          rankSum += loan.reviewLender.toDouble()
-          rankCount++
-        } else if (loan.state == LoanState.FINISHED // only finished loans
-        &&
-            loan.idBorrower == idUser // if the user is the borrower,
-            &&
-            loan.reviewBorrower.toDouble() != 0.0) { // that has been reviewed
-
-          rankSum += loan.reviewBorrower.toDouble()
-          rankCount++
-        }
-      }
+      val rankSum =
+          reviewedLoans.sumOf { loan ->
+            if (loan.idLender == idUser) loan.reviewLender.toDouble()
+            else loan.reviewBorrower.toDouble()
+          }
+      val rankCount = reviewedLoans.size.toLong()
 
       if (rankCount != 0L) {
         val averageRank = rankSum / rankCount.toDouble()
@@ -511,18 +481,21 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       comment: String = "",
   ) {
     getLoans { loans ->
-      for (loan in loans) {
+      val filteredLoans =
+          loans.filter { loan ->
+            loan.state == LoanState.FINISHED && // Only finished loans
+                loan.id == loanId && // Matches the loanId
+                ((loan.idLender == userId) ||
+                    (loan.idBorrower == userId)) // Matches the userId as either lender or borrower
+          }
 
-        if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idLender == userId) {
-
+      filteredLoans.forEach { loan ->
+        if (loan.idLender == userId) {
           this.loan.document(loanId).update("review_lender", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_lender", comment)
-        } else if (loan.state == LoanState.FINISHED // only finished loans
-        && loan.id == loanId && loan.idBorrower == userId) {
-
+          if (comment.isNotBlank()) this.loan.document(loanId).update("comment_lender", comment)
+        } else if (loan.idBorrower == userId) {
           this.loan.document(loanId).update("review_borrower", rank.toString())
-          if (comment != "") this.loan.document(loanId).update("comment_borrower", comment)
+          if (comment.isNotBlank()) this.loan.document(loanId).update("comment_borrower", comment)
         }
       }
     }
