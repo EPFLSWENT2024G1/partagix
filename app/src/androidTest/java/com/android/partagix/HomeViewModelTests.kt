@@ -23,7 +23,7 @@ class HomeViewModelTests {
 
   private lateinit var mockMainActivity: MainActivity
 
-  private val packageName = "com.google.zxing.client.android"
+  private val packageName = "com.tomfong.simpleqr"
 
   @Before
   fun setup() {
