@@ -94,6 +94,7 @@ class App(
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
   private val homeViewModel = HomeViewModel(db = db)
+  private val locationPickerViewModel = LocationPickerViewModel()
 
   @Composable
   fun Create(
