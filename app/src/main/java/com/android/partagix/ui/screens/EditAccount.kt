@@ -1,14 +1,7 @@
 package com.android.partagix.ui.screens
 
-
-import android.app.Activity
 import android.content.Intent
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,23 +27,21 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.LifecycleOwner
+import androidx.core.content.ContextCompat.startActivity
 import com.android.partagix.LocationPicker
+import com.android.partagix.LocationSelectionManager
 import com.android.partagix.LocationSelectionManager.selectedAddress
 import com.android.partagix.LocationSelectionManager.selectedLocation
 import com.android.partagix.R
@@ -59,11 +50,8 @@ import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+
+val recomposeToggleState: MutableState<Boolean> = mutableStateOf(false)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,6 +69,7 @@ fun EditAccount(
 
   // Local state variables to hold the selected location and address
   var open by remember { mutableStateOf(false) }
+  var address by remember { mutableStateOf("Unknown Address") }
 
   // Set local state variables to user's current values
   fun resetTempValues() {
@@ -91,19 +80,12 @@ fun EditAccount(
   // Set temporary values to real values when the screen is opened
   LaunchedEffect(key1 = user.id) { resetTempValues() }
 
-
-    Scaffold(
-      modifier = Modifier
-          .fillMaxSize()
-          .testTag("editAccount"),
+  Scaffold(
+      modifier = Modifier.fillMaxSize().testTag("editAccount"),
       topBar = {
         TopAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("topBar"),
-            title = { Text("My Account", modifier = Modifier
-                .fillMaxWidth()
-                .testTag("title")) },
+            modifier = Modifier.fillMaxWidth().testTag("topBar"),
+            title = { Text("My Account", modifier = Modifier.fillMaxWidth().testTag("title")) },
             navigationIcon = {
               IconButton(
                   modifier = Modifier.testTag("backButton"),
@@ -129,31 +111,24 @@ fun EditAccount(
             userViewModel.getLoggedUserId()) { // Check if user is editing their own account
           Text(
               text = "You can only edit your own account. (this shouldn't be seen)",
-              modifier = Modifier
-                  .padding(it)
-                  .testTag("notYourAccount"))
+              modifier = Modifier.padding(it).testTag("notYourAccount"))
         } else {
           Column(
               modifier =
-              Modifier
-                  .fillMaxHeight()
-                  .padding(it)
-                  .verticalScroll(rememberScrollState())
-                  .testTag("mainContent")) {
+                  Modifier.fillMaxHeight()
+                      .padding(it)
+                      .verticalScroll(rememberScrollState())
+                      .testTag("mainContent")) {
                 Image(
                     painter =
                         painterResource(
                             id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("userImage"),
+                    modifier = Modifier.fillMaxWidth().testTag("userImage"),
                     alignment = Alignment.Center)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("username"),
+                    modifier = Modifier.fillMaxWidth().testTag("username"),
                     horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                       TextField(
                           modifier = Modifier.testTag("usernameField"),
@@ -162,44 +137,43 @@ fun EditAccount(
                           label = { Text("username") })
                     }
                 Spacer(modifier = Modifier.height(16.dp))
+                var a by remember {
+                  mutableStateOf(LocationSelectionManager.selectedAddress ?: "Unknown Address")
+                }
 
-              if(open){
+                LaunchedEffect(a) {
+                  a = LocationSelectionManager.selectedAddress ?: "Unknown Address"
+                  println("-------------------------launched : $a")
+                }
+                if (open) {
                   println("------------------- open: $open")
                   val intent = Intent(LocalContext.current, LocationPicker::class.java)
                   LocalContext.current.startActivity(intent)
-              }
-              println("------------------- selectedAddress: $selectedAddress")
+                }
+                println("------------------- selectedAddress: $selectedAddress")
 
-              LabeledText(modifier, "Location", selectedAddress ?: "Unknown address")
-              TextField(
-                    value = selectedAddress ?: "Unknown address",
+                LabeledText(modifier, "Location", selectedAddress ?: "Unknown address")
+                TextField(
+                    value = a,
                     onValueChange = { tempAddress = it },
                     label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .testTag("addressField"),
+                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("addressField"),
                     leadingIcon = {
                       Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier)
                     })
-              Button(
-                  onClick = {
+                Button(
+                    onClick = {
                       println("-------------------cliclicliclic")
                       println("------------------now: $selectedAddress and $selectedLocation")
-                      open = true },
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(8.dp)
-                      .testTag("locationButton")) {
-                  Text("Select location")
-              }
-              Spacer(modifier = Modifier.height(16.dp))
+                      open = true
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("locationButton")) {
+                      Text("Select location")
+                    }
+                Spacer(modifier = Modifier.height(16.dp))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp, 0.dp)
-                        .testTag("actionButtons"),
+                    modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
                     horizontalArrangement = Arrangement.Absolute.Center) {
                       Spacer(modifier = Modifier.width(8.dp))
                       Button(
@@ -211,19 +185,11 @@ fun EditAccount(
                                         tempAddress)) // Update user with new values in the database
                             navigationActions.goBack()
                           },
-                          modifier = Modifier
-                              .weight(1f)
-                              .testTag("saveButton")) {
+                          modifier = Modifier.weight(1f).testTag("saveButton")) {
                             Text("Save changes")
                           }
                     }
               }
         }
       }
-
 }
-
-
-
-
-
