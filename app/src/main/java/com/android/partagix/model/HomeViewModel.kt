@@ -37,7 +37,7 @@ class HomeViewModel(
   /** Open a qr code scanner app or the Play Store to download it */
   fun openQrScanner() {
     // Open source qr code scanner app
-    val packageName = "com.google.zxing.client.android"
+    val packageName = "com.tomfong.simpleqr"
 
     if (isAppInstalled(packageName)) {
       val intent = context.packageManager.getLaunchIntentForPackage(packageName)
