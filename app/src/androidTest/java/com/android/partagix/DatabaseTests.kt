@@ -391,6 +391,54 @@ class DatabaseTests {
   }
 
   @Test
+  fun testCreateLoan() {
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val taskCompletionSource = TaskCompletionSource<Void>()
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val loan =
+        Loan(
+            "id",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.PENDING)
+
+    runBlocking {
+      database.createLoan(loan)
+
+      coVerify(exactly = 1) { database.createLoan(loan) }
+    }
+  }
+
+  @Test
   fun testGetComments() {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
@@ -483,16 +531,20 @@ class DatabaseTests {
         {
           thirdArg<(User) -> Unit>().invoke(user2)
         }
+    every { database.getUsers(any()) } answers
+        {
+          firstArg<(List<User>) -> Unit>().invoke(listOf(user1, user2))
+        }
 
     runBlocking {
-      var commentsOnUser1: List<Pair<String, String>> = emptyList()
-      database.getComments(user1.id) { commentsOnUser1 = it }
-      assertEquals(
-          commentsOnUser1,
-          listOf(
-              Pair(user2.name, "banger"),
-              Pair(user2.name, "sympathetic"),
-              Pair(user2.name, "unefficient")))
+      database.getComments(user1.id) {
+        assertEquals(
+            listOf(
+                Pair(user2.name, "sympathetic"),
+                Pair(user2.name, "banger"),
+                Pair(user2.name, "unefficient")),
+            it)
+      }
     }
 
     //  Don't forget to unmock.
