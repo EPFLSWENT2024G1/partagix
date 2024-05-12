@@ -246,6 +246,14 @@ dependencies {
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
 
+    // ----------       OkHttp     ------------
+    implementation("com.squareup.okhttp3:okhttp:3.10.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.squareup.moshi:moshi:1.12.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation ("com.google.code.gson:gson:2.8.6")
+
 }
 
 secrets {

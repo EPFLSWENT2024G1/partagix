@@ -1,6 +1,5 @@
 package com.android.partagix.ui.screens
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +25,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,23 +32,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
-import com.android.partagix.LocationPicker
-import com.android.partagix.LocationSelectionManager
-import com.android.partagix.LocationSelectionManager.selectedAddress
-import com.android.partagix.LocationSelectionManager.selectedLocation
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.location.Location
 import com.android.partagix.ui.components.BottomNavigationBar
-import com.android.partagix.ui.components.LabeledText
+import com.android.partagix.ui.components.locationPicker.LocationPicker
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-
-val recomposeToggleState: MutableState<Boolean> = mutableStateOf(false)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +50,7 @@ fun EditAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
+    locationViewModel: LocationPickerViewModel
 ) {
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
@@ -67,9 +59,8 @@ fun EditAccount(
   var tempUsername by remember { mutableStateOf(user.name) }
   var tempAddress by remember { mutableStateOf(user.address) }
 
-  // Local state variables to hold the selected location and address
-  var open by remember { mutableStateOf(false) }
-  var address by remember { mutableStateOf("Unknown Address") }
+  // The field with the actual location
+  val loc = remember { mutableStateOf<Location?>(null) }
 
   // Set local state variables to user's current values
   fun resetTempValues() {
@@ -127,50 +118,21 @@ fun EditAccount(
                     modifier = Modifier.fillMaxWidth().testTag("userImage"),
                     alignment = Alignment.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().testTag("username"),
-                    horizontalArrangement = Arrangement.Absolute.SpaceAround) {
-                      TextField(
-                          modifier = Modifier.testTag("usernameField"),
-                          value = tempUsername,
-                          onValueChange = { tempUsername = it },
-                          label = { Text("username") })
-                    }
-                Spacer(modifier = Modifier.height(16.dp))
-                var a by remember {
-                  mutableStateOf(LocationSelectionManager.selectedAddress ?: "Unknown Address")
-                }
 
-                LaunchedEffect(a) {
-                  a = LocationSelectionManager.selectedAddress ?: "Unknown Address"
-                  println("-------------------------launched : $a")
-                }
-                if (open) {
-                  println("------------------- open: $open")
-                  val intent = Intent(LocalContext.current, LocationPicker::class.java)
-                  LocalContext.current.startActivity(intent)
-                }
-                println("------------------- selectedAddress: $selectedAddress")
-
-                LabeledText(modifier, "Location", selectedAddress ?: "Unknown address")
                 TextField(
-                    value = a,
-                    onValueChange = { tempAddress = it },
-                    label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("addressField"),
-                    leadingIcon = {
-                      Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier)
-                    })
-                Button(
-                    onClick = {
-                      println("-------------------cliclicliclic")
-                      println("------------------now: $selectedAddress and $selectedLocation")
-                      open = true
-                    },
-                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("locationButton")) {
-                      Text("Select location")
-                    }
+                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
+                    value = tempUsername,
+                    onValueChange = { tempUsername = it },
+                    label = { Text("username") })
+
                 Spacer(modifier = Modifier.height(16.dp))
+
+                LocationPicker(
+                    location = tempAddress,
+                    loc = loc.value,
+                    onTextChanged = { tempAddress = it },
+                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
@@ -182,7 +144,9 @@ fun EditAccount(
                                 user.copy(
                                     name = tempUsername,
                                     address =
-                                        tempAddress)) // Update user with new values in the database
+                                        loc.value?.locationName
+                                            ?: "Unknown Adress")) // Update user with new values in
+                            // the database
                             navigationActions.goBack()
                           },
                           modifier = Modifier.weight(1f).testTag("saveButton")) {
