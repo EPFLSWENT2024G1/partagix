@@ -104,7 +104,7 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = { navigationActions.navigateTo(Route.QR_SCAN) },
+                        onClick = { homeViewModel.openQrScanner() },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
@@ -131,6 +131,7 @@ fun HomeScreen(
                   isOutgoing = false,
                   wasExpanded = uiState.expanded,
                   manageLoanViewModel = manageLoanViewModel,
+                  navigationActions = navigationActions,
                   isClickable = true,
                   modifier = Modifier.testTag("homeScreenItemList"))
             }

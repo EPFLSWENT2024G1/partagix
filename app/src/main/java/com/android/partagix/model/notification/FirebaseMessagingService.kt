@@ -193,16 +193,17 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
   fun sendNotification(to: String, title: String, body: String) {
     val fm = Firebase.messaging
-    //enNSGi7WQdSlkiSPvFBY_W:APA91bFlKDlLkwD7A9hmRSeTSvkEjpjQv5r_DAQQbWf4MwlXzMvTbj2ZPKGL0pDbOhpvCbuFHo1RcT7TdgJAQOGHaDRJh7_W7L3h_Ke_UWXs_gnIRqdrzvQ7_vVCSCEbK2HQJWqAAUTY
+    // enNSGi7WQdSlkiSPvFBY_W:APA91bFlKDlLkwD7A9hmRSeTSvkEjpjQv5r_DAQQbWf4MwlXzMvTbj2ZPKGL0pDbOhpvCbuFHo1RcT7TdgJAQOGHaDRJh7_W7L3h_Ke_UWXs_gnIRqdrzvQ7_vVCSCEbK2HQJWqAAUTY
     fm.send(
-      remoteMessage(to) {
-        setMessageId(messageId)
-        addData("title", title)
-        addData("body", body)
-      },
+        remoteMessage(to) {
+          setMessageId(messageId)
+          addData("title", title)
+          addData("body", body)
+        },
     )
 
-    val fcmToken = "c-5Fwr7dR-SDIlVxw3cShM:APA91bEzITS-rmYBkatMAh7VuBabecWzVHDpfkjsMA4sOnT2xijeoDEU75_TuG6CveP4j4NbUe6IaV19YdP7SOAevAhxEAvu7mfA2I10T_dj3xQPZC2h9UXXwrnPaiC5UiIG3044vb-z"
+    val fcmToken =
+        "c-5Fwr7dR-SDIlVxw3cShM:APA91bEzITS-rmYBkatMAh7VuBabecWzVHDpfkjsMA4sOnT2xijeoDEU75_TuG6CveP4j4NbUe6IaV19YdP7SOAevAhxEAvu7mfA2I10T_dj3xQPZC2h9UXXwrnPaiC5UiIG3044vb-z"
 
     Log.d(TAG, "Sent notification to $to")
   }
