@@ -4,6 +4,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 // Function to upload image to Firebase Storage
 
@@ -50,7 +51,11 @@ fun getImageFromFirebaseStorage(
     onFailure: (exception: Exception) -> Unit = {},
     onSuccess: (localFile: File) -> Unit = {},
 ) {
-  val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
+  val path: String = if (p=="users/" || p=="") {
+    "images/default-image.jpg"
+    } else {
+      "images/$p"
+  }
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
@@ -63,11 +68,13 @@ fun getImageFromFirebaseStorage(
       .getFile(localFile)
       .addOnSuccessListener {
         // Local temp file has been created
-          println("____ YOOOOOOOOO")
+        // println("____ YOOOOOOOOO")
         onSuccess(localFile)
       }
       .addOnFailureListener {
         // Handle any errors
+          println("----- Image download failed: $it")
+          println("$p -> $path -> $localFile")
         onFailure(it)
       }
 }
@@ -75,22 +82,34 @@ fun getImageFromFirebaseStorage(
 fun getImagesFromFirebaseStorage(
     paths: List<String>,
     storage: FirebaseStorage = Firebase.storage,
+    onFailure: (Exception) -> Unit = {},
     onSuccess: (List<File>) -> Unit = {},
 ) {
-    println("____ MASTER YOOOOOOOOO " + paths.size)
-  var count = 0
-  if (paths.isNotEmpty()) {
-    getImageFromFirebaseStorage(paths[count]) { localFile ->
-      val localFiles = mutableListOf(localFile)
-      count++
-      if (count == paths.size) {
-        onSuccess(localFiles)
-      } else {
-        getImagesFromFirebaseStorage(paths.subList(count, paths.size), storage) { files ->
-          localFiles.addAll(files)
-          onSuccess(localFiles)
+  var count = AtomicInteger(0)
+  val res = mutableListOf<File>()
+  for (p in paths) {
+    val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
+    // Get the image from Firebase Storage
+    val storageRef = storage.reference
+
+    // Create a reference to the image
+    val imageRef = storageRef.child(path)
+
+    // Download the image to a local file
+    val localFile = File.createTempFile("local", ".tmp")
+    imageRef
+        .getFile(localFile)
+        .addOnSuccessListener {
+          // Local temp file has been created
+          // println("____ YOOOOOOOOO")
+          res.add(localFile)
+          if (count.incrementAndGet() == paths.size) {
+            onSuccess(res)
+          }
         }
-      }
-    }
+        .addOnFailureListener {
+          // Handle any errors
+          onFailure(it)
+        }
   }
 }

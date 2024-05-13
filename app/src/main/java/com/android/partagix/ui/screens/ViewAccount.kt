@@ -97,6 +97,7 @@ fun ViewAccount(
           Box(
               modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
               contentAlignment = Alignment.Center) {
+                println("---- user image: ${user.imageId.absolutePath}")
                 AsyncImage(
                     model = user.imageId.absolutePath,
                     contentDescription = "image",

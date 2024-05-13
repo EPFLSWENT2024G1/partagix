@@ -120,7 +120,7 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
           contract = ActivityResultContracts.PickVisualMedia(),
           onResult = { uri ->
             selectedImages = if (uri != null) listOf(uri) else defaultImages
-            onSelected(uri!!)
+            onSelected(selectedImages.first()!!)
           })
 
   val multiplePhotoPickerLauncher =

@@ -125,7 +125,7 @@ class InventoryViewModelTests {
           onSuccessinv(Inventory("", list))
         }
 
-    every { db.getItems(any()) } answers
+    every { db.getItemsWithImages(any()) } answers
         {
           onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
           onSuccess(list)

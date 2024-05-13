@@ -83,7 +83,9 @@ class InventoryViewModel(
     viewModelScope.launch {
       val user = firebaseAuth.currentUser
       if (user != null) {
-        database.getItems { items: List<Item> ->
+        println("---- inventory calling getItems")
+
+        database.getItemsWithImages { items: List<Item> ->
           update(emptyList(), emptyList(), emptyList())
           updateInv(items.filter { it.idUser.equals(user.uid) })
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
@@ -98,7 +100,7 @@ class InventoryViewModel(
           }
         }
       } else {
-        database.getItems {
+        database.getItemsWithImages {
           updateBor(it)
           getUsers(it, ::updateUsersBor)
           findTime(it, ::updateLoanBor)

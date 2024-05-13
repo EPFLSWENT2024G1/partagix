@@ -3,7 +3,6 @@ package com.android.partagix.ui.screens
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -105,8 +104,8 @@ fun InventoryViewItemScreen(
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = imgBitmap),
+                    AsyncImage(
+                        model = item.imageId.absolutePath,
                         contentDescription = "fds",
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black),

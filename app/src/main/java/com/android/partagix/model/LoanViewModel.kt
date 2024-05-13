@@ -50,6 +50,7 @@ class LoanViewModel(
     } else {
       viewModelScope.launch {
         db.getLoans { loans: List<Loan> ->
+          println("---- loans calling getItems")
           db.getItems { itemList: List<Item> ->
             val newItems =
                 itemList.filter { item ->

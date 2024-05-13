@@ -166,7 +166,11 @@ fun ItemUi(
                       model = item.imageId.absolutePath,
                       contentDescription = "fds",
                       contentScale = ContentScale.Inside,
-                      modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
+                      modifier =
+                          Modifier.border(1.dp, Color.Black)
+                              .fillMaxHeight()
+                              .align(Alignment.Center)
+                              .testTag("ItemUiImage"))
                 }
               }
           if (expandables) {

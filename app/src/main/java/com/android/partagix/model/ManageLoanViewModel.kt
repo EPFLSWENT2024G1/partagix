@@ -41,6 +41,8 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
       latch.countDown()
       return
     } else {
+      println("---- manageloans calling getItems")
+
       database.getItems { list ->
         database.getLoans {
           it.filter { loan ->
