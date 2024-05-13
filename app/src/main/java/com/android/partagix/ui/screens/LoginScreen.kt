@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,14 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,12 +50,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.auth.Authentication
-import org.jetbrains.annotations.TestOnly
 
 private const val TAG = "LoginActivity"
 
@@ -77,19 +71,16 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
 
   Box(
       modifier =
-      Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .testTag("Banner")) {
+          Modifier.fillMaxSize()
+              .background(MaterialTheme.colorScheme.background)
+              .testTag("Banner")) {
         Box(
             modifier =
-            Modifier
-              .fillMaxWidth()
-              .height(150.dp)
-              .background(
-                MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-              )) {
+                Modifier.fillMaxWidth()
+                    .height(150.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))) {
               Text(
                   text = "Partagix™",
                   style = MaterialTheme.typography.displayLarge,
@@ -99,9 +90,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
 
         Box(modifier = Modifier.testTag("CenterContent")) {
           Column(
-              modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp, 160.dp, 16.dp, 16.dp),
+              modifier = Modifier.fillMaxSize().padding(16.dp, 160.dp, 16.dp, 16.dp),
               verticalArrangement = Arrangement.Center,
               horizontalAlignment = Alignment.CenterHorizontally,
           ) {
@@ -120,26 +109,18 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
                     R.drawable.brouette,
                     R.drawable.gazon,
                 )
-            Box(modifier = Modifier
-              .fillMaxWidth()
-              .graphicsLayer {}) {
+            Box(modifier = Modifier.fillMaxWidth().graphicsLayer {}) {
               ImageGrid(images = images, onShowSignInChange = { showSignIn = it })
             }
           }
         }
 
         Box(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(16.dp)
-              .align(Alignment.BottomCenter),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomCenter),
             contentAlignment = Alignment.Center) {
               Button(
                   onClick = { showSignIn = true },
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .testTag("StartBorrowButton"),
+                  modifier = Modifier.fillMaxWidth().height(60.dp).testTag("StartBorrowButton"),
               ) {
                 Text(text = "Start Borrowing now", style = MaterialTheme.typography.titleLarge)
               }
@@ -150,44 +131,37 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
-        modifier = modifier
-          .fillMaxHeight(.4f)
-          .testTag("LoginBottomSheet"),
+        modifier = modifier.fillMaxHeight(.4f).testTag("LoginBottomSheet"),
     ) {
       LazyColumn(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-          .fillMaxSize()
-          .testTag("LoginScreen2")
-      ) {
-        item {
-          Text(
-            text = "Sign in to start Borrowing.",
-            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-          )
-          Spacer(modifier = Modifier.height(20.dp))
-        }
-        item {
-          LoginOptionButton(
-            modifier = Modifier,
-            name = "Sign in with Google",
-            icon = R.drawable.google,
-            onClick = {
-              Log.w(TAG, "push button to sign in (Google)")
-              authentication.signIn()
-            })
-        }
-        item {
-          LoginOptionButton(
-            modifier = Modifier,
-            name = "Sign in with other method",
-            icon = R.drawable.app_logo,
-            onClick = {
-              Log.w(TAG, "push button to sign in (Other)")
-            })
-        }
-      }
+          verticalArrangement = Arrangement.Top,
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = modifier.fillMaxSize().testTag("LoginScreen2")) {
+            item {
+              Text(
+                  text = "Sign in to start Borrowing.",
+                  style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+              )
+              Spacer(modifier = Modifier.height(20.dp))
+            }
+            item {
+              LoginOptionButton(
+                  modifier = Modifier,
+                  name = "Sign in with Google",
+                  icon = R.drawable.google,
+                  onClick = {
+                    Log.w(TAG, "push button to sign in (Google)")
+                    authentication.signIn()
+                  })
+            }
+            item {
+              LoginOptionButton(
+                  modifier = Modifier,
+                  name = "Sign in with other method",
+                  icon = R.drawable.app_logo,
+                  onClick = { Log.w(TAG, "push button to sign in (Other)") })
+            }
+          }
     }
   }
 }
@@ -212,9 +186,7 @@ fun ImageGrid(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         userScrollEnabled = true,
-        modifier = Modifier
-          .fillMaxWidth()
-          .testTag("ImageGrid")) {
+        modifier = Modifier.fillMaxWidth().testTag("ImageGrid")) {
           items(images.size) { index ->
             Surface(
                 shape = RoundedCornerShape(8.dp),
@@ -229,39 +201,31 @@ fun ImageGrid(
           }
         }
     Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .align(Alignment.BottomCenter)
-          .testTag("BlurEffectBox"),
+        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).testTag("BlurEffectBox"),
         verticalArrangement = Arrangement.Bottom) {
           Box(
               modifier =
-              Modifier
-                .fillMaxWidth()
-                .height(170.dp)
-                .align(Alignment.CenterHorizontally)
-                .background(
-                  Brush.verticalGradient(
-                    colors =
-                    listOf(Color.Transparent, MaterialTheme.colorScheme.background)
-                  )
-                )
-                .blur(
-                  radius = 10.dp,
-                ))
+                  Modifier.fillMaxWidth()
+                      .height(170.dp)
+                      .align(Alignment.CenterHorizontally)
+                      .background(
+                          Brush.verticalGradient(
+                              colors =
+                                  listOf(Color.Transparent, MaterialTheme.colorScheme.background)))
+                      .blur(
+                          radius = 10.dp,
+                      ))
           Box(
               modifier =
-              Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-                .background(color = MaterialTheme.colorScheme.background))
+                  Modifier.fillMaxWidth()
+                      .height(120.dp)
+                      .background(color = MaterialTheme.colorScheme.background))
         }
     ClickableText(
         modifier =
-        Modifier
-          .align(Alignment.BottomCenter)
-          .padding(bottom = 70.dp)
-          .testTag("SeeMoreClickableText"),
+            Modifier.align(Alignment.BottomCenter)
+                .padding(bottom = 70.dp)
+                .testTag("SeeMoreClickableText"),
         text = AnnotatedString(text = "See 99+ more"),
         style =
             MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
@@ -280,14 +244,12 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
       colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
       border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
       modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp))
-        .testTag("GoogleLoginButton"),
+          modifier
+              .fillMaxWidth()
+              .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp))
+              .testTag("GoogleLoginButton"),
   ) {
-    Box(modifier = Modifier
-      .padding(0.dp, 5.dp, 0.dp, 5.dp)
-      .fillMaxWidth()) {
+    Box(modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 5.dp).fillMaxWidth()) {
       Image(
           modifier = Modifier.size(30.dp),
           alignment = Alignment.CenterStart,
