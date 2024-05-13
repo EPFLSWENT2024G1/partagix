@@ -50,8 +50,8 @@ fun BootScreen(
             contentScale = ContentScale.FillBounds,
             modifier =
                 Modifier.aspectRatio(1f)
-                    .requiredWidth(width = 150.dp)
-                    .requiredHeight(height = 150.dp)
+                    .requiredWidth(width = 175.dp)
+                    .requiredHeight(height = 175.dp)
                     .testTag("BootLogo"))
 
         Handler(Looper.getMainLooper())
