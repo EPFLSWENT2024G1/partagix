@@ -246,21 +246,20 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
       modifier =
           modifier
               .fillMaxWidth()
-              .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp))
-  ) {
-    Box(modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 5.dp).fillMaxWidth()) {
-      Image(
-          modifier = Modifier.size(30.dp),
-          alignment = Alignment.CenterStart,
-          painter = painterResource(id = icon),
-          contentDescription = "Google Icon",
-      )
-      Text(
-          text = name,
-          color = MaterialTheme.colorScheme.onBackground,
-          textAlign = TextAlign.Center,
-          style = MaterialTheme.typography.titleMedium,
-          modifier = Modifier.align(Alignment.Center))
-    }
-  }
+              .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp))) {
+        Box(modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 5.dp).fillMaxWidth()) {
+          Image(
+              modifier = Modifier.size(30.dp),
+              alignment = Alignment.CenterStart,
+              painter = painterResource(id = icon),
+              contentDescription = "Google Icon",
+          )
+          Text(
+              text = name,
+              color = MaterialTheme.colorScheme.onBackground,
+              textAlign = TextAlign.Center,
+              style = MaterialTheme.typography.titleMedium,
+              modifier = Modifier.align(Alignment.Center))
+        }
+      }
 }
