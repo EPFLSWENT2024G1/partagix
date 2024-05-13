@@ -93,7 +93,7 @@ class LoginTest {
     }
   }
 
-  fun otherLoginButton() {
+  fun testOtherLoginButton() {
     every { authentication.signIn() } just Runs
 
     ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
