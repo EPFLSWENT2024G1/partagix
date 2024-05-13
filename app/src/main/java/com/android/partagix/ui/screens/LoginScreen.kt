@@ -146,7 +146,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
             }
             item {
               LoginOptionButton(
-                  modifier = Modifier,
+                  modifier = Modifier.testTag("GoogleLoginButton"),
                   name = "Sign in with Google",
                   icon = R.drawable.google,
                   onClick = {
@@ -156,7 +156,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
             }
             item {
               LoginOptionButton(
-                  modifier = Modifier,
+                  modifier = Modifier.testTag("OtherLoginButton"),
                   name = "Sign in with other method",
                   icon = R.drawable.app_logo,
                   onClick = { Log.w(TAG, "push button to sign in (Other)") })
@@ -247,7 +247,6 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
           modifier
               .fillMaxWidth()
               .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp))
-              .testTag("GoogleLoginButton"),
   ) {
     Box(modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 5.dp).fillMaxWidth()) {
       Image(
