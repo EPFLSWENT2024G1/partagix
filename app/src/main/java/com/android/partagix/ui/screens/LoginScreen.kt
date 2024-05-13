@@ -156,6 +156,13 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
   }
 }
 
+/**
+ * Custom composable to display a grid of images blurred at the end.
+ *
+ * @param modifier Modifier to apply to this layout.
+ * @param images List of image resources to display.
+ * @param onShowSignInChange Callback to change the visibility of the sign in screen.
+ */
 @Composable
 fun ImageGrid(
     modifier: Modifier = Modifier,
