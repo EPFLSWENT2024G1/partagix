@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.auth.Authentication
+import org.jetbrains.annotations.TestOnly
 
 private const val TAG = "LoginActivity"
 
@@ -238,10 +239,10 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
               .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
               .testTag("GoogleLoginButton"),
   ) {
-    Row(verticalAlignment = Alignment.Top, modifier = modifier.padding(10.dp)) {
+    Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 10.dp).fillMaxWidth()) {
       Image(
-          modifier = modifier.size(24.dp),
-          alignment = Alignment.TopStart,
+          modifier = Modifier.size(24.dp),
+          alignment = Alignment.CenterStart,
           painter = painterResource(id = icon),
           contentDescription = "Google Icon",
       )
@@ -250,7 +251,26 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
           color = MaterialTheme.colorScheme.onBackground,
           textAlign = TextAlign.Center,
           style = MaterialTheme.typography.titleMedium,
-          modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically))
+          modifier = Modifier.align(Alignment.Center))
     }
+  }
+}
+
+@Preview
+@Composable
+fun composeTest(){
+  Box(modifier = Modifier.padding(10.dp)) {
+    Image(
+      modifier = Modifier.size(24.dp),
+      alignment = Alignment.TopStart,
+      painter = painterResource(id = R.drawable.google),
+      contentDescription = "Google Icon",
+    )
+    Text(
+      text = "Sign in with Google",
+      color = MaterialTheme.colorScheme.onBackground,
+      textAlign = TextAlign.Center,
+      style = MaterialTheme.typography.titleMedium,
+      modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically))
   }
 }
