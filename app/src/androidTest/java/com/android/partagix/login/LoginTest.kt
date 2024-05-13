@@ -68,6 +68,7 @@ class LoginTest {
       startBorrowButton.performClick()
       loginBottomSheet.assertIsDisplayed()
       googleLoginButton.assertIsDisplayed()
+      otherLoginButton.assertIsDisplayed()
     }
   }
 
@@ -77,6 +78,7 @@ class LoginTest {
       seeMoreClickableText.performClick()
       loginBottomSheet.assertIsDisplayed()
       googleLoginButton.assertIsDisplayed()
+      otherLoginButton.assertIsDisplayed()
     }
   }
 
@@ -88,6 +90,16 @@ class LoginTest {
       startBorrowButton.performClick()
       googleLoginButton.performClick()
       coVerify { authentication.signIn() }
+    }
+  }
+
+  fun otherLoginButton() {
+    every { authentication.signIn() } just Runs
+
+    ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
+      startBorrowButton.performClick()
+      otherLoginButton.performClick()
+      coVerify {}
     }
   }
 
