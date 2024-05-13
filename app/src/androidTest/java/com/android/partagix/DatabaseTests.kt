@@ -343,7 +343,6 @@ class DatabaseTests {
       // Assert on the returned list of items
       assertNotNull(items)
       assertEquals(1, items.size)
-      println("__________ true ? ${items.size}")
       // Add your assertions here based on the expected behavior
     }
     database.getItems(onSuccessCallback)

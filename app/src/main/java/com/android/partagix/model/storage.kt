@@ -1,4 +1,5 @@
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -36,12 +37,10 @@ fun uploadImageToFirebaseStorage(
   uploadTask
       .addOnSuccessListener { taskSnapshot ->
         // Image uploaded successfully
-        println("----- Image uploaded successfully: ${taskSnapshot.metadata?.path}")
         onSuccess(listOf(File(imageUri.path!!)))
       }
       .addOnFailureListener { exception ->
         // Image upload failed
-        println("----- Image upload failed: $exception")
       }
 }
 
@@ -69,13 +68,12 @@ fun getImageFromFirebaseStorage(
       .getFile(localFile)
       .addOnSuccessListener {
         // Local temp file has been created
-        // println("____ YOOOOOOOOO")
         onSuccess(localFile)
       }
       .addOnFailureListener {
         // Handle any errors
-        println("----- Image download failed: $it")
-        println("$p -> $path -> $localFile")
+        Log.d("Image Download", "----- Image download failed: $it")
+        Log.d("Image Download", "$p -> $path -> $localFile")
         onFailure(it)
       }
 }
@@ -102,7 +100,6 @@ fun getImagesFromFirebaseStorage(
         .getFile(localFile)
         .addOnSuccessListener {
           // Local temp file has been created
-          // println("____ YOOOOOOOOO")
           res.add(localFile)
           if (count.incrementAndGet() == paths.size) {
             onSuccess(res)

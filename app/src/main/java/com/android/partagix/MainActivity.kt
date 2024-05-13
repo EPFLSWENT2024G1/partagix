@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
       if (uri != null) {
         // Handle the URI, extract additional data if needed
         itemId = uri.getQueryParameter("itemId")
-        println("----- itemId: $itemId")
         // Perform actions based on the itemId or other parameters
 
       }

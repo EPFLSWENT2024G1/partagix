@@ -45,7 +45,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
               getImageFromFirebaseStorage(
                   "users/" + (document.data["id"] as String),
                   onFailure = {
-                    println("Error getting image from storage is handled by default image")
                     getImageFromFirebaseStorage("users/default.png") { localFile ->
                       val user =
                           User(
@@ -100,7 +99,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       getImageFromFirebaseStorage(
           "users/$idUser",
           onFailure = {
-            println("Error getting image from storage is handled by default image")
             getImageFromFirebaseStorage("users/default.png") { localFile ->
               onSuccessImage(localFile)
             }
@@ -263,8 +261,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the user's inventory
    */
   fun getUserInventory(userId: String, onSuccess: (Inventory) -> Unit) {
-    println("---- getInventory calling getItems")
-
     getItems { items ->
       val listItems = items.filter { it.idUser == userId }
       onSuccess(Inventory(userId, listItems))
@@ -546,8 +542,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the item
    */
   fun getItem(id: String, onSuccess: (Item) -> Unit) {
-    println("---- getItem calling getItems")
-
     getItems { items ->
       val item = items.firstOrNull { it.id == id }
       item?.let { onSuccess(it) }

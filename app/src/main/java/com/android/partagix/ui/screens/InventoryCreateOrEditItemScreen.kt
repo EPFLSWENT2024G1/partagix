@@ -127,11 +127,7 @@ fun InventoryCreateOrEditItem(
                       // in the meantime do nothing and the image will be loaded from the database
                       // later
                       uploadImageToFirebaseStorage(uri, imageName = i.id) {
-                        println("------ uploading image.....")
-                        getImageFromFirebaseStorage(i.id) { file ->
-                          println("------ updating uiImage")
-                          uiImage = file
-                        }
+                        getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
                       }
                     }
                   }

@@ -83,8 +83,6 @@ class InventoryViewModel(
     viewModelScope.launch {
       val user = firebaseAuth.currentUser
       if (user != null) {
-        println("---- inventory calling getItems")
-
         database.getItemsWithImages { items: List<Item> ->
           update(emptyList(), emptyList(), emptyList())
           updateInv(items.filter { it.idUser.equals(user.uid) })
