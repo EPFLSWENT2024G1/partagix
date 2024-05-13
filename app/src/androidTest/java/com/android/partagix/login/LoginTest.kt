@@ -50,7 +50,7 @@ class LoginTest {
     ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
       banner.assertIsDisplayed()
       centerContent.assertIsDisplayed()
-      startBorrowButton{
+      startBorrowButton {
         assertIsDisplayed()
         assertHasClickAction()
       }

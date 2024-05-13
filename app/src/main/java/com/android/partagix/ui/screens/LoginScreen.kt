@@ -20,10 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -73,61 +70,63 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
   val sheetState = rememberModalBottomSheetState()
   var showSignIn by remember { mutableStateOf(false) }
 
-  Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).testTag("Banner")) {
-    Box(
-        modifier =
-            Modifier.fillMaxWidth()
-                .height(150.dp)
-                .background(
-                    MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))) {
-          Text(
-              text = "Partagix™",
-              style = MaterialTheme.typography.displayLarge,
-              color = MaterialTheme.colorScheme.onPrimary,
-              modifier = Modifier.align(Alignment.Center))
-        }
+  Box(
+      modifier =
+          Modifier.fillMaxSize()
+              .background(MaterialTheme.colorScheme.background)
+              .testTag("Banner")) {
+        Box(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .height(150.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))) {
+              Text(
+                  text = "Partagix™",
+                  style = MaterialTheme.typography.displayLarge,
+                  color = MaterialTheme.colorScheme.onPrimary,
+                  modifier = Modifier.align(Alignment.Center))
+            }
 
-    Box(
-      modifier = Modifier.testTag("CenterContent")
-    ) {
-      Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp, 160.dp, 16.dp, 16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        Text(
-          text = "Your neighbors are already here !",
-          style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center),
-        )
-        val images =
-          listOf(
-            R.drawable.multiprises,
-            R.drawable.holzkohle,
-            R.drawable.ks28,
-            R.drawable.remorque,
-            R.drawable.brouette,
-            R.drawable.gazon,
-          )
-        Box(modifier = Modifier.fillMaxWidth().graphicsLayer {}) {
-          ImageGrid(
-            images = images,
-            onShowSignInChange = { showSignIn = it })
-        }
-      }
-    }
-
-    Box(
-        modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomCenter),
-        contentAlignment = Alignment.Center) {
-          Button(
-              onClick = { showSignIn = true },
-              modifier = Modifier.fillMaxWidth().height(60.dp).testTag("StartBorrowButton"),
+        Box(modifier = Modifier.testTag("CenterContent")) {
+          Column(
+              modifier = Modifier.fillMaxSize().padding(16.dp, 160.dp, 16.dp, 16.dp),
+              verticalArrangement = Arrangement.Center,
+              horizontalAlignment = Alignment.CenterHorizontally,
           ) {
-            Text(text = "Start Borrowing now", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "Your neighbors are already here !",
+                style =
+                    MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center),
+            )
+            val images =
+                listOf(
+                    R.drawable.multiprises,
+                    R.drawable.holzkohle,
+                    R.drawable.ks28,
+                    R.drawable.remorque,
+                    R.drawable.brouette,
+                    R.drawable.gazon,
+                )
+            Box(modifier = Modifier.fillMaxWidth().graphicsLayer {}) {
+              ImageGrid(images = images, onShowSignInChange = { showSignIn = it })
+            }
           }
         }
-  }
+
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomCenter),
+            contentAlignment = Alignment.Center) {
+              Button(
+                  onClick = { showSignIn = true },
+                  modifier = Modifier.fillMaxWidth().height(60.dp).testTag("StartBorrowButton"),
+              ) {
+                Text(text = "Start Borrowing now", style = MaterialTheme.typography.titleLarge)
+              }
+            }
+      }
 
   if (showSignIn) {
     ModalBottomSheet(
@@ -170,9 +169,7 @@ fun ImageGrid(
     images: List<Int>,
     onShowSignInChange: (Boolean) -> Unit
 ) {
-  Box (
-    modifier = modifier
-  ){
+  Box(modifier = modifier) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(20.dp),
@@ -215,9 +212,13 @@ fun ImageGrid(
                       .background(color = MaterialTheme.colorScheme.background))
         }
     ClickableText(
-        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 70.dp).testTag("SeeMoreClickableText"),
+        modifier =
+            Modifier.align(Alignment.BottomCenter)
+                .padding(bottom = 70.dp)
+                .testTag("SeeMoreClickableText"),
         text = AnnotatedString(text = "See 99+ more"),
-        style = MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
+        style =
+            MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
         onClick = {
           Log.w(TAG, "See more clicked")
           onShowSignInChange(true)
@@ -243,7 +244,6 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
           alignment = Alignment.TopStart,
           painter = painterResource(id = icon),
           contentDescription = "Google Icon",
-
       )
       Text(
           text = name,

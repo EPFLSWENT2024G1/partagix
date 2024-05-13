@@ -63,6 +63,6 @@ fun BootScreen(
                     navigationActions.navigateTo(Route.LOGIN)
                   }
                 },
-                0)
+                2000L)
       }
 }
