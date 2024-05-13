@@ -60,7 +60,6 @@ fun BootScreen(
         .testTag("BootLogo")
     )
 
-    // wait 2sec before navigating to login screen
     Handler(Looper.getMainLooper())
       .postDelayed(
         {
