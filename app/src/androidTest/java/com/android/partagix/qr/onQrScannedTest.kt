@@ -78,6 +78,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockMainActivity.packageName } returns "com.android.partagix"
 
     every { mockDatabase.getItems(any()) } just Runs
+    every { mockDatabase.getItemsWithImages(any()) } just Runs
   }
 
   @Test

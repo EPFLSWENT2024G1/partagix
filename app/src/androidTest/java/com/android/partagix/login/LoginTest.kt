@@ -85,6 +85,7 @@ class LoginTest {
 
     every { mockDatabase.getItemsWithImages(any()) } just Runs
     every { mockDatabase.getUserInventory(any(), any()) } just Runs
+    every { mockDatabase.getItems(any()) } just Runs
     every { mockDatabase.getLoans(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
     every { mockDatabase.createUser(any()) } just Runs
