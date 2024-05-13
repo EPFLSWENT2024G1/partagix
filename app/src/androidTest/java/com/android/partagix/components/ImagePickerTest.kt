@@ -1,6 +1,8 @@
 package com.android.partagix.components
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.ui.components.ImageLayoutView
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.PhotoSelectorView
+import io.mockk.every
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +31,14 @@ import org.junit.runner.RunWith
 class ImagePickerTest {
   @get:Rule val composeTestRule = createComposeRule()
   val UI_TIMEOUT: Long = 100000
+
+  val uri1 =
+    Uri.parse(
+      "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+  val uri2 =
+    Uri.parse(
+      "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
+  val uriList = listOf(uri1, uri2)
 
   @Composable
   fun ImagePickerTestingScreen(testedComponent: @Composable () -> Unit) {
@@ -58,21 +69,26 @@ class ImagePickerTest {
   }
 
   @Test
-  fun testMainImagePicker() {
+  fun testMainImagePickerEmpty() {
     composeTestRule.setContent { ImagePickerTestingScreen { MainImagePicker() } }
+    composeTestRule.onNodeWithTag("MainImagePickerClickable").assertIsDisplayed()
+    composeTestRule.onNodeWithTag("MainImagePickerClickable").performClick()
+  }
+
+  fun testMainImagePicker1image() {
+    composeTestRule.setContent { ImagePickerTestingScreen { MainImagePicker(listOf(uri1)) } }
+    composeTestRule.onNodeWithTag("MainImagePickerClickable").assertIsDisplayed()
+    composeTestRule.onNodeWithTag("MainImagePickerClickable").performClick()
+  }
+
+  fun testMainImagePicker2images() {
+    composeTestRule.setContent { ImagePickerTestingScreen { MainImagePicker(uriList) } }
     composeTestRule.onNodeWithTag("MainImagePickerClickable").assertIsDisplayed()
     composeTestRule.onNodeWithTag("MainImagePickerClickable").performClick()
   }
 
   @Test
   fun testImageLayoutView() {
-    val uri1 =
-        Uri.parse(
-            "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
-    val uri2 =
-        Uri.parse(
-            "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
-    val uriList = listOf(uri1, uri2)
 
     composeTestRule.setContent { ImagePickerTestingScreen { ImageLayoutView(uriList) } }
 

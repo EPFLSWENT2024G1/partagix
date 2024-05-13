@@ -154,6 +154,7 @@ class InventoryCreateOrEditTest :
       name { performTextReplacement("my object") }
       description { performTextReplacement("what a nice object") }
       button { performClick() }
+      image { performClick() }
 
       assert(savedItem.captured.name == "my object")
       assert(savedItem.captured.description == "what a nice object")

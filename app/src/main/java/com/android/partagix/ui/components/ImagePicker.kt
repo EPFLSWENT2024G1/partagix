@@ -143,7 +143,7 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
             LazyColumn(
                 modifier =
                     Modifier.fillMaxSize()
-                        .background(color = androidx.compose.ui.graphics.Color.Gray)) {
+                        .background(color = MaterialTheme.colorScheme.background)) {
                   items(selectedImages) { uri ->
                     AsyncImage(
                         model = uri,
