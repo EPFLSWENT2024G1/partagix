@@ -73,7 +73,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
   val sheetState = rememberModalBottomSheetState()
   var showSignIn by remember { mutableStateOf(false) }
 
-  Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+  Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).testTag("Banner")) {
     Box(
         modifier =
             Modifier.fillMaxWidth()
@@ -89,6 +89,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
         }
 
     Box(
+      modifier = Modifier.testTag("CenterContent")
     ) {
       Column(
         modifier = Modifier.fillMaxSize().padding(16.dp, 160.dp, 16.dp, 16.dp),
@@ -121,7 +122,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center) {
           Button(
               onClick = { showSignIn = true },
-              modifier = Modifier.fillMaxWidth().height(60.dp),
+              modifier = Modifier.fillMaxWidth().height(60.dp).testTag("StartBorrowButton"),
           ) {
             Text(text = "Start Borrowing now", style = MaterialTheme.typography.titleLarge)
           }
@@ -132,7 +133,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
     ModalBottomSheet(
         onDismissRequest = { showSignIn = false },
         sheetState = sheetState,
-        modifier = modifier.fillMaxHeight(.4f),
+        modifier = modifier.fillMaxHeight(.4f).testTag("LoginBottomSheet"),
     ) {
       Column(
           verticalArrangement = Arrangement.Top,
@@ -178,7 +179,7 @@ fun ImageGrid(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         userScrollEnabled = true,
-        modifier = Modifier.fillMaxWidth()) {
+        modifier = Modifier.fillMaxWidth().testTag("ImageGrid")) {
           items(images.size) { index ->
             Surface(
                 shape = RoundedCornerShape(8.dp),
@@ -193,7 +194,7 @@ fun ImageGrid(
           }
         }
     Column(
-        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).testTag("BlurEffectBox"),
         verticalArrangement = Arrangement.Bottom) {
           Box(
               modifier =
@@ -214,7 +215,7 @@ fun ImageGrid(
                       .background(color = MaterialTheme.colorScheme.background))
         }
     ClickableText(
-        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 70.dp),
+        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 70.dp).testTag("SeeMoreClickableText"),
         text = AnnotatedString(text = "See 99+ more"),
         style = MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
         onClick = {
@@ -234,7 +235,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
       modifier =
           Modifier.fillMaxWidth()
               .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
-              .testTag("LoginButton"),
+              .testTag("GoogleLoginButton"),
   ) {
     Row(verticalAlignment = Alignment.Top, modifier = modifier.padding(10.dp)) {
       Image(
