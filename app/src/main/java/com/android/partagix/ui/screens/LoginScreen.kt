@@ -82,7 +82,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))) {
           Text(
-              text = "Partagix",
+              text = "Partagix™",
               style = MaterialTheme.typography.displayLarge,
               color = MaterialTheme.colorScheme.onPrimary,
               modifier = Modifier.align(Alignment.Center))
@@ -97,7 +97,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
       ) {
         Text(
           text = "Your neighbors are already here !",
-          style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+          style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center),
         )
         val images =
           listOf(
@@ -140,7 +140,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
           modifier = modifier.fillMaxSize().testTag("LoginScreen2"),
       ) {
         Text(
-            text = "Sign in to start Borrowing !",
+            text = "Sign in to start Borrowing.",
             style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
         )
         LoginOptionButton(
@@ -214,7 +214,7 @@ fun ImageGrid(
                       .background(color = MaterialTheme.colorScheme.background))
         }
     ClickableText(
-        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 80.dp),
+        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 70.dp),
         text = AnnotatedString(text = "See 99+ more"),
         style = MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
         onClick = {
@@ -236,7 +236,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
               .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
               .testTag("LoginButton"),
   ) {
-    Row(verticalAlignment = Alignment.Top, modifier = modifier.padding(vertical = 15.dp)) {
+    Row(verticalAlignment = Alignment.Top, modifier = modifier.padding(10.dp)) {
       Image(
           modifier = modifier.size(24.dp),
           alignment = Alignment.TopStart,
@@ -248,7 +248,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
           text = name,
           color = Color.Black,
           textAlign = TextAlign.Center,
-          style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Medium),
+          style = MaterialTheme.typography.titleMedium,
           modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically))
     }
   }
