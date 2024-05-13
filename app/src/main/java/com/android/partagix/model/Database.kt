@@ -82,10 +82,22 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the user
    */
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-    getUsers { users ->
-      val user = users.firstOrNull { it.id == idUser }
-      user?.let { onSuccess(it) } ?: onNoUser()
-    }
+      users.document(idUser)
+          .get()
+          .addOnSuccessListener {
+              val user = it.data
+              if (user != null) {
+                  getUserInventory(idUser) { inventory ->
+                      val name = user["name"] as String
+                      val addr = user["addr"] as String
+                      val rank = user["rank"] as String
+                      onSuccess(User(idUser, name, addr, rank, inventory))
+                  }
+              } else {
+                  onNoUser()
+              }
+          }
+
   }
 
   /**
@@ -151,8 +163,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                             localFiles[count++])
 
                     ret.add(item)
+
                   }
-                  onSuccess(ret)
+                    onSuccess(ret)
                 }
               }
               .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }

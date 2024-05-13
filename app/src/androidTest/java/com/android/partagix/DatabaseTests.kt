@@ -23,8 +23,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util.voidErrorTransformer
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import getImageFromFirebaseStorage
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.spyk
@@ -275,6 +281,7 @@ class DatabaseTests {
                   "visibility" to item.visibility.ordinal.toLong(),
                   "location" to Database(mockDb).locationToMap(item.location),
                   "id_user" to userId,
+                  "id_image" to "imageId"
               )
           every { mockSnapshot.iterator().next() } returns mockQueryDocument
 
@@ -321,7 +328,16 @@ class DatabaseTests {
     every { mockDb.collection("users") } returns mockUsersCollection
     every { mockDb.collection("loan") } returns mockLoanCollection
     every { mockDb.collection("item_loan") } returns mockItemLoanCollection
-    // every {mockDb.collection(any())} returns mockItemsCollection
+
+      val firebaseStorage = mockk<FirebaseStorage>()
+      val storageReference = mockk<StorageReference>()
+      val uploadTask = mockk<UploadTask>()
+      every { firebaseStorage.reference } returns storageReference
+      every { storageReference.child("imageId") } returns storageReference
+      every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
+      every { uploadTask.addOnFailureListener(any()) } returns uploadTask
+
+      // every {mockDb.collection(any())} returns mockItemsCollection
 
     // Create Database instance
     val database = Database(mockDb)
@@ -331,6 +347,7 @@ class DatabaseTests {
       // Assert on the returned list of items
       assertNotNull(items)
       assertEquals(1, items.size)
+        println("__________ true ? ${items.size}")
       // Add your assertions here based on the expected behavior
     }
     database.getItems(onSuccessCallback)

@@ -2,7 +2,9 @@ package com.android.partagix.editAccount
 
 import android.location.Location
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.UserUIState
 import com.android.partagix.model.UserViewModel
@@ -78,7 +80,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       backButton { assertIsDisplayed() }
       bottomNavBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-      userImage { assertIsDisplayed() }
+      composeTestRule.waitUntil(10000) { composeTestRule.onNodeWithTag("ImagePicked").isDisplayed() }
       username { assertIsDisplayed() }
       usernameField { assertIsDisplayed() }
       addressField { assertIsDisplayed() }

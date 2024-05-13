@@ -63,6 +63,7 @@ fun getImageFromFirebaseStorage(
       .getFile(localFile)
       .addOnSuccessListener {
         // Local temp file has been created
+          println("____ YOOOOOOOOO")
         onSuccess(localFile)
       }
       .addOnFailureListener {
@@ -76,6 +77,7 @@ fun getImagesFromFirebaseStorage(
     storage: FirebaseStorage = Firebase.storage,
     onSuccess: (List<File>) -> Unit = {},
 ) {
+    println("____ MASTER YOOOOOOOOO " + paths.size)
   var count = 0
   if (paths.isNotEmpty()) {
     getImageFromFirebaseStorage(paths[count]) { localFile ->
