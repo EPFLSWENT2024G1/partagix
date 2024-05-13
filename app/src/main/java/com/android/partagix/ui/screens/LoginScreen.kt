@@ -182,7 +182,7 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
           LoginOptionButton(
             modifier = Modifier,
             name = "Sign in with other method",
-            icon = R.drawable.ic_launcher_background,
+            icon = R.drawable.app_logo,
             onClick = {
               Log.w(TAG, "push button to sign in (Other)")
             })
