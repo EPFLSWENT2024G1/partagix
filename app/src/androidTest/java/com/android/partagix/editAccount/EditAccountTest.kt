@@ -80,9 +80,7 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       backButton { assertIsDisplayed() }
       bottomNavBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-      composeTestRule.waitUntil(10000) {
-        composeTestRule.onNodeWithTag("image").isDisplayed()
-      }
+      composeTestRule.waitUntil(10000) { composeTestRule.onNodeWithTag("image").isDisplayed() }
       username { assertIsDisplayed() }
       usernameField { assertIsDisplayed() }
       addressField { assertIsDisplayed() }

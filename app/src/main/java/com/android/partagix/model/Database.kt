@@ -84,30 +84,29 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    */
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
     users.document(idUser).get().addOnSuccessListener {
-
-        val onSuccessImage = { localFile: File ->
-          val user = it.data
-          if (user != null) {
-            getUserInventory(idUser) { inventory ->
-              val name = user["name"] as String
-              val addr = user["addr"] as String
-              val rank = user["rank"] as String
-              onSuccess(User(idUser, name, addr, rank, inventory, localFile))
-            }
-          } else {
-            onNoUser()
+      val onSuccessImage = { localFile: File ->
+        val user = it.data
+        if (user != null) {
+          getUserInventory(idUser) { inventory ->
+            val name = user["name"] as String
+            val addr = user["addr"] as String
+            val rank = user["rank"] as String
+            onSuccess(User(idUser, name, addr, rank, inventory, localFile))
           }
+        } else {
+          onNoUser()
         }
-      getImageFromFirebaseStorage("users/$idUser",
+      }
+      getImageFromFirebaseStorage(
+          "users/$idUser",
           onFailure = {
             println("Error getting image from storage is handled by default image")
-            getImageFromFirebaseStorage("users/default.png"){ localFile ->
-                onSuccessImage(localFile)}
-          }
-
-          ) { localFile ->
+            getImageFromFirebaseStorage("users/default.png") { localFile ->
+              onSuccessImage(localFile)
+            }
+          }) { localFile ->
             onSuccessImage(localFile)
-      }
+          }
     }
   }
 

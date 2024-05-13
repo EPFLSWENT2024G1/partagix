@@ -113,8 +113,7 @@ fun InventoryCreateOrEditItem(
             Row(modifier = modifier.fillMaxWidth()) {
               Box(
                   contentAlignment = Alignment.Center,
-                  modifier =
-                      modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image ${i.id}")) {
+                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image ${i.id}")) {
                     MainImagePicker(listOf(i.imageId.toUri())) { uri ->
                       // TODO :  Save the image to a local file to its displayed correctly while
                       // waiting for the upload
