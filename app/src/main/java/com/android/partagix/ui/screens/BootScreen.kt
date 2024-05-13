@@ -55,12 +55,14 @@ fun BootScreen(
   // wait 2sec before navigating to login screen
   Handler(Looper.getMainLooper())
       .postDelayed(
-          {
-            if (authentication.isAlreadySignedIn()) {
-              navigationActions.navigateTo(Route.HOME)
-            } else {
-              navigationActions.navigateTo(Route.LOGIN)
-            }
-          },
-          2000)
+        {
+          if (authentication.isAlreadySignedIn()) {
+            navigationActions.navigateTo(Route.HOME)
+          } else {
+            navigationActions.navigateTo(Route.LOGIN)
+          }
+        },
+        0
+      )
+  }
 }
