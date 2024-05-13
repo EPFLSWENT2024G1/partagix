@@ -286,10 +286,10 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
         .testTag("GoogleLoginButton"),
   ) {
     Box(modifier = Modifier
-      .padding(0.dp, 10.dp, 0.dp, 10.dp)
+      .padding(0.dp, 5.dp, 0.dp, 5.dp)
       .fillMaxWidth()) {
       Image(
-          modifier = Modifier.size(24.dp),
+          modifier = Modifier.size(30.dp),
           alignment = Alignment.CenterStart,
           painter = painterResource(id = icon),
           contentDescription = "Google Icon",
