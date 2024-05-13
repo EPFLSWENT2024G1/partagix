@@ -254,16 +254,3 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
     }
   }
 }
-
-@Preview
-@Composable
-fun GridPreview() {
-  ImageGrid(
-      images =
-          listOf(
-              R.drawable.ic_launcher_background,
-              R.drawable.ic_launcher_background,
-              R.drawable.ic_launcher_background,
-              R.drawable.ic_launcher_background),
-      onShowSignInChange = { _ -> })
-}
