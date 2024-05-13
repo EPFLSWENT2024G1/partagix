@@ -60,6 +60,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
     every { mockHomeViewModel.uiState } returns mockUiHomeState
+    every { mockHomeViewModel.openQrScanner() } just Runs
 
     every { mockInventoryViewModel.findTime(any(), any()) } just Runs
     every { mockInventoryViewModel.getUsers(any(), any()) } just Runs
