@@ -247,7 +247,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
       )
       Text(
           text = name,
-          color = Color.Black,
+          color = MaterialTheme.colorScheme.onBackground,
           textAlign = TextAlign.Center,
           style = MaterialTheme.typography.titleMedium,
           modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically))
