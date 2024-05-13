@@ -255,22 +255,3 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
     }
   }
 }
-
-@Preview
-@Composable
-fun composeTest(){
-  Box(modifier = Modifier.padding(10.dp)) {
-    Image(
-      modifier = Modifier.size(24.dp),
-      alignment = Alignment.TopStart,
-      painter = painterResource(id = R.drawable.google),
-      contentDescription = "Google Icon",
-    )
-    Text(
-      text = "Sign in with Google",
-      color = MaterialTheme.colorScheme.onBackground,
-      textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.titleMedium,
-      modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically))
-  }
-}
