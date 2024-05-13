@@ -4,15 +4,11 @@ import android.os.Handler
 import android.os.Looper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,34 +38,31 @@ fun BootScreen(
     modifier: Modifier = Modifier
 ) {
   Box(
-    modifier = modifier
-      .background(color = MaterialTheme.colorScheme.background)
-      .fillMaxSize()
-      .testTag("BootScreen")
-  ) {
-    Image(
-      alignment = Alignment.Center,
-      painter = painterResource(id = R.drawable.ic_launcher_background),
-      contentDescription = "Logo",
-      contentScale = ContentScale.FillBounds,
       modifier =
-      Modifier
-        .aspectRatio(1f)
-        .requiredWidth(width = 150.dp)
-        .requiredHeight(height = 150.dp)
-        .testTag("BootLogo")
-    )
+          modifier
+              .background(color = MaterialTheme.colorScheme.background)
+              .fillMaxSize()
+              .testTag("BootScreen")) {
+        Image(
+            alignment = Alignment.Center,
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = "Logo",
+            contentScale = ContentScale.FillBounds,
+            modifier =
+                Modifier.aspectRatio(1f)
+                    .requiredWidth(width = 150.dp)
+                    .requiredHeight(height = 150.dp)
+                    .testTag("BootLogo"))
 
-    Handler(Looper.getMainLooper())
-      .postDelayed(
-        {
-          if (authentication.isAlreadySignedIn()) {
-            navigationActions.navigateTo(Route.HOME)
-          } else {
-            navigationActions.navigateTo(Route.LOGIN)
-          }
-        },
-        0
-      )
-  }
+        Handler(Looper.getMainLooper())
+            .postDelayed(
+                {
+                  if (authentication.isAlreadySignedIn()) {
+                    navigationActions.navigateTo(Route.HOME)
+                  } else {
+                    navigationActions.navigateTo(Route.LOGIN)
+                  }
+                },
+                0)
+      }
 }
