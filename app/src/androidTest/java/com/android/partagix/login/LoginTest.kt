@@ -93,9 +93,8 @@ class LoginTest {
     }
   }
 
+  @Test
   fun testOtherLoginButton() {
-    every { authentication.signIn() } just Runs
-
     ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
       startBorrowButton.performClick()
       otherLoginButton.performClick()
