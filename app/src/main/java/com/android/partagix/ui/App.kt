@@ -166,7 +166,7 @@ class App(
           User(
               user.uid,
               user.displayName ?: "",
-              "No set localisation",
+              user.email ?: "",
               "0",
               Inventory(user.uid, emptyList()))
       db.getUser(user.uid, { db.createUser(newUser) }, {})
@@ -261,7 +261,7 @@ class App(
         homeViewModel.updateUser()
 
         HomeScreen(
-            homeViewModel = homeViewModel,
+            homeViewModel = HomeViewModel(Database(), activity),
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
@@ -282,7 +282,7 @@ class App(
         } else {
           inventoryViewModel.getInventory()
           HomeScreen(
-              homeViewModel = HomeViewModel(),
+              homeViewModel = HomeViewModel(Database(), activity),
               manageLoanViewModel = manageViewModel,
               navigationActions = navigationActions)
         }
