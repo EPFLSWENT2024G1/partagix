@@ -20,14 +20,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -37,19 +40,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
 import com.android.partagix.R
 import com.android.partagix.model.auth.Authentication
 
@@ -82,28 +88,31 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
               modifier = Modifier.align(Alignment.Center))
         }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+    Box(
+    ) {
+      Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp, 160.dp, 16.dp, 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-      Text(
+      ) {
+        Text(
           text = "Your neighbors are already here !",
           style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
-      )
-      val images =
+        )
+        val images =
           listOf(
-              R.drawable.multiprises,
-              R.drawable.holzkohle,
-              R.drawable.ks28,
-              R.drawable.remorque,
+            R.drawable.multiprises,
+            R.drawable.holzkohle,
+            R.drawable.ks28,
+            R.drawable.remorque,
+            R.drawable.brouette,
+            R.drawable.gazon,
           )
-      Box(
-        modifier = Modifier.fillMaxWidth().graphicsLayer {  }
-      ) {
-        ImageGrid(modifier = modifier
-          .align(Alignment.Center),
-          images = images)
+        Box(modifier = Modifier.fillMaxWidth().graphicsLayer {}) {
+          ImageGrid(
+            images = images,
+            onShowSignInChange = { showSignIn = it })
+        }
       }
     }
 
@@ -148,32 +157,64 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ImageGrid(modifier: Modifier = Modifier, images: List<Int>) {
-  LazyVerticalGrid(
-      columns = GridCells.Fixed(2),
-      contentPadding = PaddingValues(20.dp),
-      verticalArrangement = Arrangement.spacedBy(10.dp),
-      horizontalArrangement = Arrangement.spacedBy(10.dp),
-      userScrollEnabled = true,
-      modifier = Modifier.fillMaxWidth()) {
-        items(images.size) { index ->
-          Box(
-              modifier = Modifier
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .border(2.dp, MaterialTheme.colorScheme.primary),
-
-              contentAlignment = Alignment.Center
-          ) {
-            Image(
-              painter = painterResource(id = images[index]),
-              contentDescription = null,
-              contentScale = ContentScale.Crop,
-              modifier = Modifier.aspectRatio(1f).clip(RoundedCornerShape(8.dp))
-            )
+fun ImageGrid(
+    modifier: Modifier = Modifier,
+    images: List<Int>,
+    onShowSignInChange: (Boolean) -> Unit
+) {
+  Box (
+    modifier = modifier
+  ){
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        userScrollEnabled = true,
+        modifier = Modifier.fillMaxWidth()) {
+          items(images.size) { index ->
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                modifier = Modifier.aspectRatio(1f)) {
+                  Image(
+                      painter = painterResource(id = images[index]),
+                      contentDescription = null,
+                      contentScale = ContentScale.Crop,
+                      modifier = Modifier.fillMaxSize())
+                }
           }
         }
-      }
+    Column(
+        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+        verticalArrangement = Arrangement.Bottom) {
+          Box(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .height(170.dp)
+                      .align(Alignment.CenterHorizontally)
+                      .background(
+                          Brush.verticalGradient(
+                              colors =
+                                  listOf(Color.Transparent, MaterialTheme.colorScheme.background)))
+                      .blur(
+                          radius = 10.dp,
+                      ))
+          Box(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .height(120.dp)
+                      .background(color = MaterialTheme.colorScheme.background))
+        }
+    ClickableText(
+        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 80.dp),
+        text = AnnotatedString(text = "See 99+ more"),
+        style = MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline),
+        onClick = {
+          Log.w(TAG, "See more clicked")
+          onShowSignInChange(true)
+        })
+  }
 }
 
 @Composable
@@ -194,6 +235,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
           alignment = Alignment.TopStart,
           painter = painterResource(id = icon),
           contentDescription = "Google Icon",
+
       )
       Text(
           text = name,
@@ -214,5 +256,6 @@ fun GridPreview() {
               R.drawable.ic_launcher_background,
               R.drawable.ic_launcher_background,
               R.drawable.ic_launcher_background,
-              R.drawable.ic_launcher_background))
+              R.drawable.ic_launcher_background),
+      onShowSignInChange = { _ -> })
 }
