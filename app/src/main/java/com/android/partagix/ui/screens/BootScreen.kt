@@ -45,7 +45,7 @@ fun BootScreen(
               .testTag("BootScreen")) {
         Image(
             alignment = Alignment.Center,
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+            painter = painterResource(id = R.drawable.app_logo),
             contentDescription = "Logo",
             contentScale = ContentScale.FillBounds,
             modifier =
