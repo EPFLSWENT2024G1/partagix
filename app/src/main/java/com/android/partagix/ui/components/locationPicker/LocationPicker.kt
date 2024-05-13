@@ -39,7 +39,7 @@ fun LocationPicker(
           Text(
               text = loc.locationName,
               color = MaterialTheme.colorScheme.primary,
-              modifier = Modifier.testTag("locationFieldDropDown"))
+              modifier = Modifier.testTag("locationField"))
         }
       },
       leadingIcon = {
