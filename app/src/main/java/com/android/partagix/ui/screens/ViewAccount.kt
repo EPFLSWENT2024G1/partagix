@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
@@ -52,11 +53,17 @@ fun ViewAccount(
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
   Scaffold(
-      modifier = Modifier.fillMaxSize().testTag("viewAccount"),
+      modifier = Modifier
+        .fillMaxSize()
+        .testTag("viewAccount"),
       topBar = {
         TopAppBar(
-            modifier = Modifier.fillMaxWidth().testTag("topBar"),
-            title = { Text("My Account", modifier = Modifier.fillMaxWidth().testTag("title")) },
+            modifier = Modifier
+              .fillMaxWidth()
+              .testTag("topBar"),
+            title = { Text("My Account", modifier = Modifier
+              .fillMaxWidth()
+              .testTag("title")) },
             navigationIcon = {
               IconButton(
                   modifier = Modifier.testTag("backButton"),
@@ -76,12 +83,16 @@ fun ViewAccount(
       }) {
         Column(
             modifier =
-                Modifier.fillMaxHeight()
-                    .padding(it)
-                    .verticalScroll(rememberScrollState())
-                    .testTag("mainContent")) {
+            Modifier
+              .fillMaxHeight()
+              .padding(it)
+              .verticalScroll(rememberScrollState())
+              .testTag("mainContent")) {
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .testTag("editButton"),
                   horizontalArrangement = Arrangement.Absolute.Right) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
@@ -95,18 +106,27 @@ fun ViewAccount(
                       painterResource(
                           id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
                   contentDescription = null,
-                  modifier = Modifier.fillMaxWidth().testTag("userImage"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("userImage"),
                   alignment = Alignment.Center)
               Spacer(modifier = Modifier.height(8.dp))
               Row(
-                  modifier = Modifier.fillMaxWidth().testTag("username"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = user.name
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
+
+              LabeledText()
               TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .testTag("address"),
                   value = user.address,
                   onValueChange = {},
                   label = { Text("Location", modifier = Modifier.testTag("addressText")) },
@@ -154,7 +174,10 @@ fun ViewAccount(
                     }
               }
               TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .testTag("rating"),
                   value = stars,
                   onValueChange = {},
                   label = { Text("Trust") },
@@ -170,17 +193,24 @@ fun ViewAccount(
                   leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
               Spacer(modifier = Modifier.height(16.dp))
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, 0.dp)
+                    .testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
+                        modifier = Modifier
+                          .weight(1f)
+                          .testTag("inventoryButton")) {
                           Text("See inventory")
                         }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = { /*TODO: friends*/},
-                        modifier = Modifier.weight(1f).testTag("friendButton")) {
+                        modifier = Modifier
+                          .weight(1f)
+                          .testTag("friendButton")) {
                           Text("Add Friends [not yet implemented]")
                         }
                   }
