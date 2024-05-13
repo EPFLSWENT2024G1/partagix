@@ -98,7 +98,7 @@ class LoginTest {
     ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
       startBorrowButton.performClick()
       otherLoginButton.performClick()
-      coVerify {}
+      coVerify(exactly = 0) { authentication.signIn() } // Other login method do nothing for now
     }
   }
 
