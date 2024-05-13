@@ -3,12 +3,17 @@ package com.android.partagix.ui.screens
 import android.os.Handler
 import android.os.Looper
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,24 +41,27 @@ fun BootScreen(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier
 ) {
-  Column(
-      modifier = modifier.padding(15.dp).testTag("BootScreen"),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterVertically),
+  Box(
+    modifier = modifier
+      .background(color = MaterialTheme.colorScheme.background)
+      .fillMaxSize()
+      .testTag("BootScreen")
   ) {
     Image(
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "Logo",
-        contentScale = ContentScale.FillBounds,
-        modifier =
-            Modifier.aspectRatio(1f)
-                .requiredWidth(width = 189.dp)
-                .requiredHeight(height = 189.dp)
-                .testTag("BootLogo"))
-  }
+      alignment = Alignment.Center,
+      painter = painterResource(id = R.drawable.ic_launcher_background),
+      contentDescription = "Logo",
+      contentScale = ContentScale.FillBounds,
+      modifier =
+      Modifier
+        .aspectRatio(1f)
+        .requiredWidth(width = 150.dp)
+        .requiredHeight(height = 150.dp)
+        .testTag("BootLogo")
+    )
 
-  // wait 2sec before navigating to login screen
-  Handler(Looper.getMainLooper())
+    // wait 2sec before navigating to login screen
+    Handler(Looper.getMainLooper())
       .postDelayed(
         {
           if (authentication.isAlreadySignedIn()) {
