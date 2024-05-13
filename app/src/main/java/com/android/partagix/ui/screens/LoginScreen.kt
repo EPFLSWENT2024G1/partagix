@@ -230,7 +230,7 @@ fun LoginOptionButton(modifier: Modifier = Modifier, name: String, icon: Int, on
       onClick = onClick,
       shape = RoundedCornerShape(20.dp),
       colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-      border = BorderStroke(1.dp, Color(0xFFDADCE0)),
+      border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
       modifier =
           Modifier.fillMaxWidth()
               .padding(PaddingValues(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp))
