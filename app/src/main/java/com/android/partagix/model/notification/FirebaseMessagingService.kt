@@ -8,12 +8,14 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
 import com.android.partagix.R
 import com.android.partagix.model.Database
 import com.android.partagix.ui.components.notificationAlert
+import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -29,38 +31,32 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 
-class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
+class FirebaseMessagingService(private val db: Database = Database(), var navigationActions: NavigationActions? = null) : FirebaseMessagingService() {
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
   private var context = MainActivity.getContext()
 
-  enum class Channels {
-    INCOMING,
-    OUTGOING,
-    SOCIAL;
-
-    fun id(): String {
-      return this.ordinal.toString()
-    }
-  }
-
   init {
     Log.d(TAG, "context: $context")
+  }
 
-    if (context != null) {
-      /*requestPermissionLauncher =
+  fun initPermissions() {
+    if (context == null) {
+      Log.e(TAG, "Context is not set, cannot initialize permissions")
+      return
+    }
+
+    requestPermissionLauncher =
       context!!.registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
       ) { isGranted: Boolean ->
         if (isGranted) {
           // FCM SDK (and your app) can post notifications.
+          askNotificationPermission()
+          createChannels()
         } else {
           // TODO: Inform user that that your app will not show notifications.
         }
-      }*/
-
-      askNotificationPermission()
-      createChannels()
-    }
+      }
   }
 
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -80,8 +76,13 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
       remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
     }
 
+
+
     notificationAlert(
-        context!!, remoteMessage.notification?.title ?: "", remoteMessage.notification?.body ?: "")
+        context!!,
+      remoteMessage.notification?.title ?: "",
+      remoteMessage.notification?.body ?: ""
+    )
   }
 
   /**
@@ -92,17 +93,18 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
   override fun onNewToken(token: String) {
     Log.d(TAG, "Refreshed token: $token")
 
-    // If you want to send messages to this application instance or
-    // manage this apps subscriptions on the server side, send the
-    // FCM registration token to your app server.
-    sendRegistrationToServer(token)
+    db.getCurrentUser { user ->
+      checkToken(user.id) { newToken ->
+        db.updateFCMToken(user.id, newToken)
+      }
+    }
   }
 
   fun setContext(context: MainActivity) {
     this.context = context
   }
 
-  fun getToken(onSuccess: (String) -> Unit = {}) {
+  private fun getToken(onSuccess: (String) -> Unit = {}) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot get token")
       return
@@ -120,10 +122,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
               // Get new FCM registration token
               val token = task.result
 
-              // Log and toast
+              // Log
               Log.d(TAG, token)
-              val msg = "Token: $token"
-              Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 
               onSuccess(token)
             })
@@ -193,19 +193,19 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
     createChannel(
         context!!,
-        Channels.INCOMING.id(),
+        Notification.Channels.INCOMING.id(),
         context!!.getString(R.string.incoming_name),
         context!!.getString(R.string.incoming_description))
 
     createChannel(
         context!!,
-        Channels.OUTGOING.id(),
+      Notification.Channels.OUTGOING.id(),
         context!!.getString(R.string.outgoing_name),
         context!!.getString(R.string.outgoing_description))
 
     createChannel(
         context!!,
-        Channels.SOCIAL.id(),
+      Notification.Channels.SOCIAL.id(),
         context!!.getString(R.string.social_name),
         context!!.getString(R.string.social_description))
   }
@@ -244,28 +244,36 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
               override fun onResponse(call: Call, response: Response) {
                 Log.d(TAG, "POST request successful")
+                response.close()
               }
             })
   }
 
-  fun sendNotification() {
+  fun sendNotification(content: Notification, to: String) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot send notification")
       return
     }
 
+    val notificationField = JSONObject().apply {
+      put("title", content.title)
+      put("body", content.message)
+      put("android_channel_id", content.type.channelId())
+      put("image", content.imageUrl)
+    }
+
+    val data = JSONObject().apply {
+      put("type", content.type)
+      put("creationDate", content.creationDate)
+      put("navigationUrl", content.navigationUrl)
+    }
+
     val body = JSONObject()
-    body.put("notification", JSONObject().apply { put("title", "Yooo") })
-    body.put(
-        "to",
-        "enNSGi7WQdSlkiSPvFBY_W:APA91bFlKDlLkwD7A9hmRSeTSvkEjpjQv5r_DAQQbWf4MwlXzMvTbj2ZPKGL0pDbOhpvCbuFHo1RcT7TdgJAQOGHaDRJh7_W7L3h_Ke_UWXs_gnIRqdrzvQ7_vVCSCEbK2HQJWqAAUTY")
+    body.put("notification", notificationField)
+    body.put("data", data)
+    body.put("to", to)
 
     sendPostRequest(FCM_SERVER_URL, body.toString())
-  }
-
-  private fun sendRegistrationToServer(token: String?) {
-    // TODO: Implement this method to send token to your app server.
-    Log.d(TAG, "sendRegistrationTokenToServer($token)")
   }
 
   companion object {

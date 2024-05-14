@@ -74,17 +74,17 @@ class App(
 
   private var authentication: Authentication = Authentication(activity, this)
 
-  private val notificationManager: FirebaseMessagingService = FirebaseMessagingService()
-
   private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
   private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+
+  private val notificationManager = FirebaseMessagingService(db = db)
 
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel = ManageLoanViewModel(db = db)
 
   private val loanViewModel = LoanViewModel(db = db)
-  private val borrowViewModel = BorrowViewModel(db = db)
+  private val borrowViewModel = BorrowViewModel(db = db, notificationManager = notificationManager)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -94,8 +94,12 @@ class App(
   private val userViewModel = UserViewModel(db = db)
   private val evaluationViewModel = EvaluationViewModel(db = db)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
-  private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+  private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
+
+  init {
+    notificationManager.initPermissions()
+  }
 
   @Composable
   fun Create(
@@ -121,8 +125,6 @@ class App(
     } else {
       navigationActions.navigateTo(Route.BOOT)
     }
-
-    notificationManager.sendNotification()
   }
 
   private fun onQrScanned(idItem: String, idUser: String) {
@@ -212,6 +214,8 @@ class App(
 
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
+
+    notificationManager.navigationActions = navigationActions
 
     navigationActionsInitialized = true
     val selectedDestination = Route.BOOT // This is not even used
