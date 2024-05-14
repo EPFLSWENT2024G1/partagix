@@ -50,12 +50,16 @@ fun getImageFromFirebaseStorage(
     onFailure: (exception: Exception) -> Unit = {},
     onSuccess: (localFile: File) -> Unit = {},
 ) {
-  val path: String =
-      if (p == "users/" || p == "") {
-        "images/default-image.jpg"
-      } else {
-        "images/$p"
-      }
+  val prefix: String
+  val path: String
+  if (p == "users/" || p == "") {
+    path = "images/default-image.jpg"
+    prefix = "defalut"
+  } else {
+    path = "images/$p"
+    prefix = "real"
+  }
+
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
@@ -63,7 +67,7 @@ fun getImageFromFirebaseStorage(
   val imageRef = storageRef.child(path)
 
   // Download the image to a local file
-  val localFile = File.createTempFile("local", ".tmp")
+  val localFile = File.createTempFile(prefix, ".tmp")
   imageRef
       .getFile(localFile)
       .addOnSuccessListener {
@@ -84,10 +88,16 @@ fun getImagesFromFirebaseStorage(
     onFailure: (Exception) -> Unit = {},
     onSuccess: (List<File>) -> Unit = {},
 ) {
-  var count = AtomicInteger(0)
+  val count = AtomicInteger(0)
   val res = mutableListOf<File>()
   for (p in paths) {
-    val path: String = "images/" + p.ifEmpty { "default-image.jpg" }
+    val path: String =
+        if (p == "users/" || p == "") {
+          "images/default-image.jpg"
+        } else {
+          "images/$p"
+        }
+
     // Get the image from Firebase Storage
     val storageRef = storage.reference
 

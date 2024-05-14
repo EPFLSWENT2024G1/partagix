@@ -84,7 +84,7 @@ class InventoryViewModel(
       val user = firebaseAuth.currentUser
       if (user != null) {
         database.getItemsWithImages { items: List<Item> ->
-          update(emptyList(), emptyList(), emptyList())
+          // update(emptyList(), emptyList(), emptyList())
           updateInv(items.filter { it.idUser.equals(user.uid) })
           getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
@@ -206,7 +206,22 @@ class InventoryViewModel(
    * @param update a function to update the user list
    */
   fun getUsers(list: List<Item>, update: (User) -> Unit) {
-    list.forEach { database.getUser(it.idUser) { user -> update(user) } }
+    database.getUsers { users ->
+      val toUpdate = mutableListOf<Boolean>()
+      for (i in users.indices) {
+        toUpdate.add(false)
+        list.forEach { item ->
+          if (users[i].id.equals(item.idUser)) {
+            toUpdate[i] = true
+          }
+        }
+      }
+      for (i in users.indices) {
+        if (toUpdate[i]) {
+          update(users[i])
+        }
+      }
+    }
   }
 
   /**

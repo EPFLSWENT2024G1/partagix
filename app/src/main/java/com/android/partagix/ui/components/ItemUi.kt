@@ -1,6 +1,5 @@
 package com.android.partagix.ui.components
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -60,7 +59,6 @@ import java.util.Date
  * @param user the user of the item
  * @param loan the possible loan of the item
  */
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(
     item: Item,

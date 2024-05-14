@@ -49,7 +49,7 @@ class ItemViewModel(
 
   init {
     if (id != null) {
-      database.getItem(id) { newItem -> updateUiItem(newItem) }
+      database.getItemWithImage(id) { newItem -> updateUiItem(newItem) }
     } else {
       updateUiItem(item)
     }

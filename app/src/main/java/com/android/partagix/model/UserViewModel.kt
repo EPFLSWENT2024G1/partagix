@@ -48,9 +48,9 @@ class UserViewModel(
   fun setUserToCurrent() {
     val userID = Authentication.getUser()?.uid
     if (userID != null) {
-      database.getUser(userID) { updateUIState(it) }
+      database.getUserWithImage(userID) { updateUIState(it) }
     } else {
-      database.getUser("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
+      database.getUserWithImage("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
     }
   }
 

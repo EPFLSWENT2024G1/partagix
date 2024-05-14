@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
@@ -68,7 +68,7 @@ fun InventoryScreen(
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
-  val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  val uiState by inventoryViewModel.uiState.collectAsState()
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
