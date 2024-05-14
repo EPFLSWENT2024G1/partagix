@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Download
@@ -24,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -84,13 +86,15 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            modifier = modifier.testTag("inventoryScreenFab"),
+            modifier = modifier.size(65.dp).testTag("inventoryScreenFab"),
+            shape = FloatingActionButtonDefaults.largeShape,
+            containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
               val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
               itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
-              Icon(Icons.Default.Add, contentDescription = "Create")
+              Icon(Icons.Default.Add, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary, contentDescription = "Create")
             }
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
