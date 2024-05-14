@@ -33,6 +33,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,6 +74,11 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  var incomingRequests by remember { mutableIntStateOf(0) }
+  var outgoingRequests by remember { mutableIntStateOf(0) }
+
+  manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
+  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -161,7 +169,7 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests",
+                              text = "Incoming Requests ($incomingRequests)",
                               color = Color.Black,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -186,7 +194,7 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests",
+                              text = "Outgoing Requests ($outgoingRequests)",
                               color = Color.Black,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
