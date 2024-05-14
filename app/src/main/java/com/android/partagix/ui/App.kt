@@ -215,7 +215,7 @@ class App(
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
 
-    notificationManager.navigationActions = navigationActions
+    globalNavigationActions = navigationActions
 
     navigationActionsInitialized = true
     val selectedDestination = Route.BOOT // This is not even used
@@ -393,5 +393,11 @@ class App(
 
   companion object {
     private const val TAG = "App"
+
+    private var globalNavigationActions: NavigationActions? = null
+
+    fun getNavigationActions(): NavigationActions? {
+      return globalNavigationActions
+    }
   }
 }

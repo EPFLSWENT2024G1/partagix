@@ -98,7 +98,8 @@ class BorrowViewModel(db: Database = Database(), private val notificationManager
           title = "New incoming request",
           message = "You have a new incoming request for your item: ${item.name}, from ${loan.startDate} to ${loan.endDate}",
           type = Notification.Type.NEW_INCOMING_REQUEST,
-          creationDate = Date(System.currentTimeMillis())
+          creationDate = Date(System.currentTimeMillis()),
+            imageUrl = "https://pngimg.com/uploads/jail/jail_PNG6.png",
         )
 
       notificationManager.sendNotification(notification, ownerToken)

@@ -14,6 +14,7 @@ import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
 import com.android.partagix.R
 import com.android.partagix.model.Database
+import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
 import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.OnCompleteListener
@@ -30,10 +31,12 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
+import java.sql.Date
 
-class FirebaseMessagingService(private val db: Database = Database(), var navigationActions: NavigationActions? = null) : FirebaseMessagingService() {
+class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
   private var context = MainActivity.getContext()
+  private var navigationActions = App.getNavigationActions()
 
   init {
     Log.d(TAG, "context: $context")
@@ -65,8 +68,8 @@ class FirebaseMessagingService(private val db: Database = Database(), var naviga
     // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
     Log.d(TAG, "From: ${remoteMessage.from}")
 
-    if (context == null) {
-      Log.e(TAG, "Context is not set, cannot show notification")
+    if (context == null || navigationActions == null) {
+      Log.e(TAG, "Context or navigationActions is not set, cannot show notification")
       return
     }
 
@@ -76,13 +79,25 @@ class FirebaseMessagingService(private val db: Database = Database(), var naviga
       remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
     }
 
+    val data = remoteMessage.data
+    val notificationBody = remoteMessage.notification
 
+    if (data.isNotEmpty() && notificationBody != null) {
+      val notification = Notification(
+        title = notificationBody.title ?: "",
+        message = notificationBody.body ?: "",
+        type = Notification.Type.NEW_INCOMING_REQUEST,
+        creationDate = Date.valueOf(data["creationDate"]),
+        imageUrl = notificationBody.imageUrl.toString(),
+        navigationUrl = data["navigationUrl"]
+      )
 
-    notificationAlert(
+      notificationAlert(
         context!!,
-      remoteMessage.notification?.title ?: "",
-      remoteMessage.notification?.body ?: ""
-    )
+        notification,
+        navigationActions!!
+      )
+    }
   }
 
   /**
