@@ -95,7 +95,8 @@ class App(
   private val userViewModel = UserViewModel(db = db)
   private val evaluationViewModel = EvaluationViewModel(db = db)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
-  private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
+  private val startOrEndLoanViewModel =
+      StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
   private val locationPickerViewModel = LocationPickerViewModel()
 

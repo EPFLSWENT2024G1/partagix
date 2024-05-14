@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -16,13 +15,13 @@ import com.android.partagix.R
 import com.android.partagix.model.Database
 import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
-import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.remoteMessage
 import java.io.IOException
+import java.sql.Date
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -31,7 +30,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
-import java.sql.Date
 
 class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
@@ -49,29 +47,30 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
 
     requestPermissionLauncher =
-      context!!.registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-      ) { isGranted: Boolean ->
-        if (isGranted) {
-          // FCM SDK (and your app) can post notifications.
-          askNotificationPermission()
-          createChannels()
-        } else {
-          // TODO: Inform user that that your app will not show notifications.
+        context!!.registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+          if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+            Log.d(TAG, "Permission granted")
+            askNotificationPermission()
+            createChannels()
+          } else {
+            // TODO: Inform user that that your app will not show notifications.
+            Log.d(TAG, "Permission denied")
+          }
         }
-      }
   }
 
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
     super.onMessageReceived(remoteMessage)
-    // TODO(developer): Handle FCM messages here.
-    // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-    Log.d(TAG, "From: ${remoteMessage.from}")
 
     if (context == null || navigationActions == null) {
       Log.e(TAG, "Context or navigationActions is not set, cannot show notification")
       return
     }
+
+    Log.d(TAG, "From: ${remoteMessage.from}")
 
     // Check if message contains a data payload.
     if (remoteMessage.data.isNotEmpty()) {
@@ -83,19 +82,15 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     val notificationBody = remoteMessage.notification
 
     if (data.isNotEmpty() && notificationBody != null) {
-      val notification = Notification(
-        title = notificationBody.title ?: "",
-        message = notificationBody.body ?: "",
-        type = Notification.Type.NEW_INCOMING_REQUEST,
-        creationDate = Date.valueOf(data["creationDate"]),
-        navigationUrl = data["navigationUrl"]
-      )
+      val notification =
+          Notification(
+              title = notificationBody.title ?: "",
+              message = notificationBody.body ?: "",
+              type = Notification.Type.NEW_INCOMING_REQUEST,
+              creationDate = Date.valueOf(data["creationDate"]),
+              navigationUrl = data["navigationUrl"])
 
-      notificationAlert(
-        context!!,
-        notification,
-        navigationActions!!
-      )
+      notificationAlert(context!!, notification, navigationActions!!)
     }
   }
 
@@ -108,17 +103,11 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     Log.d(TAG, "Refreshed token: $token")
 
     db.getCurrentUser { user ->
-      checkToken(user.id) { newToken ->
-        db.updateFCMToken(user.id, newToken)
-      }
+      checkToken(user.id) { newToken -> db.updateFCMToken(user.id, newToken) }
     }
   }
 
-  fun setContext(context: MainActivity) {
-    this.context = context
-  }
-
-  private fun getToken(onSuccess: (String) -> Unit = {}) {
+  fun getToken(onSuccess: (String) -> Unit = {}) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot get token")
       return
@@ -182,12 +171,7 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
-  private fun createChannel(
-      context: MainActivity,
-      channelId: String,
-      name: String,
-      description: String
-  ) {
+  fun createChannel(context: MainActivity, channelId: String, name: String, description: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       val importance = NotificationManager.IMPORTANCE_DEFAULT
 
@@ -213,13 +197,13 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
     createChannel(
         context!!,
-      Notification.Channels.OUTGOING.id(),
+        Notification.Channels.OUTGOING.id(),
         context!!.getString(R.string.outgoing_name),
         context!!.getString(R.string.outgoing_description))
 
     createChannel(
         context!!,
-      Notification.Channels.SOCIAL.id(),
+        Notification.Channels.SOCIAL.id(),
         context!!.getString(R.string.social_name),
         context!!.getString(R.string.social_description))
   }
@@ -263,25 +247,32 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
             })
   }
 
+  // Usefully for testing
+  fun getJSON(): JSONObject {
+    return JSONObject()
+  }
+
   fun sendNotification(content: Notification, to: String) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot send notification")
       return
     }
 
-    val notificationField = JSONObject().apply {
-      put("title", content.title)
-      put("body", content.message)
-      put("android_channel_id", content.type.channelId())
-    }
+    val notificationField =
+        getJSON().apply {
+          put("title", content.title)
+          put("body", content.message)
+          put("android_channel_id", content.type.channelId())
+        }
 
-    val data = JSONObject().apply {
-      put("type", content.type)
-      put("creationDate", content.creationDate)
-      put("navigationUrl", content.navigationUrl)
-    }
+    val data =
+        getJSON().apply {
+          put("type", content.type)
+          put("creationDate", content.creationDate)
+          put("navigationUrl", content.navigationUrl)
+        }
 
-    val body = JSONObject()
+    val body = getJSON()
     body.put("notification", notificationField)
     body.put("data", data)
     body.put("to", to)
@@ -291,9 +282,6 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
   companion object {
     private const val TAG = "FirebaseMessagingService"
-
-    private const val SERVER_KEY_FILE_NAME = "secrets.properties"
-    private const val SERVER_KEY = "SERVER_API_KEY"
     private const val FCM_SERVER_URL = "https://fcm.googleapis.com/fcm/send"
   }
 }

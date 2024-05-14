@@ -3,11 +3,11 @@ package com.android.partagix.model.notification
 import java.util.Date
 
 data class Notification(
-  val title: String,
-  val message: String,
-  val type: Type,
-  val creationDate: Date,
-  val navigationUrl: String? = null
+    val title: String,
+    val message: String,
+    val type: Type,
+    val creationDate: Date,
+    val navigationUrl: String? = null
 ) {
   enum class Type {
     NEW_INCOMING_REQUEST;

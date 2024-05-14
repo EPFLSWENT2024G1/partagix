@@ -15,7 +15,10 @@ import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class BorrowViewModel(db: Database = Database(), private val notificationManager: FirebaseMessagingService) : ViewModel() {
+class BorrowViewModel(
+    db: Database = Database(),
+    private val notificationManager: FirebaseMessagingService
+) : ViewModel() {
 
   private val database = db
 
@@ -94,13 +97,13 @@ class BorrowViewModel(db: Database = Database(), private val notificationManager
     if (ownerToken != null) {
       val item = _itemUiState.value
       val notification =
-        Notification(
-          title = "New incoming request",
-          message = "You have a new incoming request for your item: ${item.name}, from ${loan.startDate} to ${loan.endDate}",
-          type = Notification.Type.NEW_INCOMING_REQUEST,
-          creationDate = Date(System.currentTimeMillis()),
-            imageUrl = "https://pngimg.com/uploads/jail/jail_PNG6.png",
-        )
+          Notification(
+              title = "New incoming request",
+              message =
+                  "You have a new incoming request for your item: ${item.name}, from ${loan.startDate} to ${loan.endDate}",
+              type = Notification.Type.NEW_INCOMING_REQUEST,
+              creationDate = Date(System.currentTimeMillis()),
+          )
 
       notificationManager.sendNotification(notification, ownerToken)
     }

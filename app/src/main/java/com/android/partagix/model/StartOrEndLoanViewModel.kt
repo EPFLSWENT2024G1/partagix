@@ -15,7 +15,10 @@ import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class StartOrEndLoanViewModel(private val db: Database, private val notificationManager: FirebaseMessagingService) : ViewModel() {
+class StartOrEndLoanViewModel(
+    private val db: Database,
+    private val notificationManager: FirebaseMessagingService
+) : ViewModel() {
 
   private val _uiState =
       MutableStateFlow(StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
@@ -39,13 +42,12 @@ class StartOrEndLoanViewModel(private val db: Database, private val notification
 
     if (borrowerToken != null) {
       val notification =
-        Notification(
-          title = "Loan started",
-          message = "Loan started for ${_uiState.value.item.name}",
-          type = Notification.Type.NEW_INCOMING_REQUEST,
-          creationDate = Date(),
-          navigationUrl = "loan/${newLoan.id}"
-        )
+          Notification(
+              title = "Loan started",
+              message = "Loan started for ${_uiState.value.item.name}",
+              type = Notification.Type.NEW_INCOMING_REQUEST,
+              creationDate = Date(),
+              navigationUrl = "loan/${newLoan.id}")
 
       notificationManager.sendNotification(notification, borrowerToken)
     }

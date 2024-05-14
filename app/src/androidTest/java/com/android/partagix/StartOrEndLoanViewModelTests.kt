@@ -8,6 +8,7 @@ import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -19,11 +20,13 @@ class StartOrEndLoanViewModelTests {
   private lateinit var db: Database
 
   private lateinit var startOrEndLoanViewModel: StartOrEndLoanViewModel
+  private val mockFirebaseMessagingService = mockk<FirebaseMessagingService>()
 
   @Before
   fun setup() {
     db = mockk<Database>()
-    startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+    startOrEndLoanViewModel =
+        StartOrEndLoanViewModel(db = db, notificationManager = mockFirebaseMessagingService)
   }
 
   @Test
