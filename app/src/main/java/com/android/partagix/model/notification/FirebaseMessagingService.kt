@@ -88,7 +88,6 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
         message = notificationBody.body ?: "",
         type = Notification.Type.NEW_INCOMING_REQUEST,
         creationDate = Date.valueOf(data["creationDate"]),
-        imageUrl = notificationBody.imageUrl.toString(),
         navigationUrl = data["navigationUrl"]
       )
 
@@ -274,7 +273,6 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
       put("title", content.title)
       put("body", content.message)
       put("android_channel_id", content.type.channelId())
-      put("image", content.imageUrl)
     }
 
     val data = JSONObject().apply {

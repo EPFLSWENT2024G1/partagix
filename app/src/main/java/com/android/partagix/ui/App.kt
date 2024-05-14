@@ -43,6 +43,7 @@ import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
@@ -96,6 +97,7 @@ class App(
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
+  private val locationPickerViewModel = LocationPickerViewModel()
 
   init {
     notificationManager.initPermissions()
@@ -334,7 +336,10 @@ class App(
       composable(
           Route.EDIT_ACCOUNT,
       ) {
-        EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+        EditAccount(
+            navigationActions = navigationActions,
+            userViewModel = UserViewModel(),
+            locationViewModel = locationPickerViewModel)
       }
 
       composable(Route.VIEW_ITEM) {
