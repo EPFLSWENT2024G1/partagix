@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -106,7 +107,8 @@ fun InventoryScreen(
                       .fillMaxSize()
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
-                    text = "There is no items in the inventory.",
+                    text = "There is no items in your inventory, click on the + button to add your first item",
+                    textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
