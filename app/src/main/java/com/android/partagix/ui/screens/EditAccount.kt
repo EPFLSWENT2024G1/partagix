@@ -143,10 +143,7 @@ fun EditAccount(
                             userViewModel.updateUser(
                                 user.copy(
                                     name = tempUsername,
-                                    address =
-                                        loc.value?.locationName
-                                            ?: "Unknown Adress")) // Update user with new values in
-                            // the database
+                                    address = loc.value?.locationName ?: "Unknown Address"))
                             navigationActions.goBack()
                           },
                           modifier = Modifier.weight(1f).testTag("saveButton")) {

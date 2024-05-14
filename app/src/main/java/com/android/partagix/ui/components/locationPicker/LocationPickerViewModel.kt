@@ -30,7 +30,10 @@ class LocationPickerViewModel {
               val response = Gson().fromJson(res, Array<NomatismResponse>::class.java).firstOrNull()
               if (response != null) {
                 val location =
-                    Location(response.lat.toDouble(), response.lon.toDouble(), response.name)
+                    Location(
+                        response.lat.toDouble(),
+                        response.lon.toDouble(),
+                        parseDisplayName(response.displayName))
                 locationState.value = location
               }
             }
@@ -39,8 +42,25 @@ class LocationPickerViewModel {
   }
 }
 
+fun parseDisplayName(displayName: String): String {
+  val parts = displayName.split(", ")
+  val country = parts.lastOrNull()
+  val town = parts[0].split(", ").last()
+  val countryCode =
+      if (country != null && parts.size >= 2) {
+        parts[parts.size - 2]
+      } else {
+        parts.last()
+      }
+  if (countryCode == town || countryCode.contains(country ?: "", ignoreCase = true)) {
+    return "$town, $country"
+  }
+
+  return "$town, $countryCode $country"
+}
+
 data class NomatismResponse(
     val lat: String,
     val lon: String,
-    @SerializedName("display_name") val name: String
-)
+    @SerializedName("display_name") val displayName: String
+) {}
