@@ -200,7 +200,7 @@ fun InventoryScreen(
                 isExpandable = false,
                 navigationActions = navigationActions,
                 manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
+                modifier = Modifier.padding(8.dp, 0.dp).height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
@@ -220,7 +220,7 @@ fun InventoryScreen(
                 isOutgoing = false,
                 navigationActions = navigationActions,
                 manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.testTag("inventoryScreenItemList"))
+                modifier = Modifier.padding(8.dp, 0.dp).testTag("inventoryScreenItemList"))
           }
         }
       }
