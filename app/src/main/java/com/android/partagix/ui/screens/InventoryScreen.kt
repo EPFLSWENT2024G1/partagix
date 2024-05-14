@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -194,44 +195,54 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            ItemListColumn(
-                list = uiState.borrowedItems,
-                users = uiState.usersBor,
-                loan = uiState.loanBor,
-                title = "Borrowed items",
-                corner = uiState.borrowedItems.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = false,
-                isOutgoing = false,
-                isExpandable = false,
-                navigationActions = navigationActions,
-                manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.padding(8.dp, 0.dp).height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
-            Spacer(modifier = Modifier.height(8.dp))
-            ItemListColumn(
-                list = uiState.items,
-                users = uiState.users,
-                loan = uiState.loan,
-                title = "Inventory item",
-                corner = uiState.items.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = true,
-                isExpandable = false,
-                isOutgoing = false,
-                navigationActions = navigationActions,
-                manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.padding(8.dp, 0.dp).testTag("inventoryScreenItemList"))
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+              ItemListColumn(
+                  list = uiState.borrowedItems,
+                  users = uiState.usersBor,
+                  loan = uiState.loanBor,
+                  title = "Borrowed items",
+                  corner = uiState.borrowedItems.size.toString(),
+                  onClick = {
+                    itemViewModel.updateUiItem(it)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  onClickCorner = {},
+                  isCornerClickable = false,
+                  isClickable = false,
+                  isOutgoing = false,
+                  isExpandable = false,
+                  navigationActions = navigationActions,
+                  manageLoanViewModel = manageLoanViewModel,
+                  modifier =
+                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp)
+                          .fillMaxHeight(0.4f)
+                          .testTag("inventoryScreenBorrowedItemList"))
+
+              Spacer(modifier = Modifier.height(8.dp))
+              ItemListColumn(
+                  list = uiState.items,
+                  users = uiState.users,
+                  loan = uiState.loan,
+                  title = "Inventory item",
+                  corner = uiState.items.size.toString(),
+                  onClick = {
+                    itemViewModel.updateUiItem(it)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  onClickCorner = {},
+                  isCornerClickable = false,
+                  isClickable = true,
+                  isExpandable = false,
+                  isOutgoing = false,
+                  navigationActions = navigationActions,
+                  manageLoanViewModel = manageLoanViewModel,
+                  modifier =
+                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp).testTag("inventoryScreenItemList"))
+            }
           }
         }
       }
