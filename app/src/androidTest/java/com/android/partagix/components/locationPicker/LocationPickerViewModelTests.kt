@@ -65,7 +65,7 @@ class LocationPickerViewModelTest {
     viewModel.getLocation("London", locationState)
     composeTestRule.waitUntil(10000) { locationSlot.isCaptured }
     val capturedLocation = locationSlot.captured
-    assert(capturedLocation.locationName == "London, Greater London, England, United Kingdom")
+    assert(capturedLocation.locationName == "London, England United Kingdom")
   }
 
   @Test
