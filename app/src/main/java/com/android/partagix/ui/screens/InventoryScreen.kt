@@ -95,7 +95,11 @@ fun InventoryScreen(
               itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
-              Icon(Icons.Default.Add, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary, contentDescription = "Create")
+              Icon(
+                  Icons.Default.Add,
+                  modifier = Modifier.size(40.dp),
+                  tint = MaterialTheme.colorScheme.onPrimary,
+                  contentDescription = "Create")
             }
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
@@ -107,7 +111,8 @@ fun InventoryScreen(
                       .fillMaxSize()
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
-                    text = "There is no items in your inventory, click on the + button to add your first item",
+                    text =
+                        "There is no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))

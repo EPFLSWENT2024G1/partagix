@@ -90,11 +90,12 @@ fun ItemListColumn(
     }
 
     if (list.isEmpty()) {
-      val emptyText = if (title.isBlank()) {
-        "Empty"
-      } else {
-        "$title is empty"
-      }
+      val emptyText =
+          if (title.isBlank()) {
+            "Empty"
+          } else {
+            "$title is empty"
+          }
       Text(
           text = emptyText,
           textAlign = TextAlign.Center,
@@ -102,21 +103,21 @@ fun ItemListColumn(
           modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
     } else {
       ItemList(
-        itemList = list,
-        users = users,
-        loan = loan,
-        onClick =
-        if (isClickable) {
-          onClick
-        } else {
-          {}
-        },
-        isExpandable = isExpandable,
-        wasExpanded = wasExpanded,
-        isOutgoing = isOutgoing,
-        manageLoanViewModel = manageLoanViewModel,
-        modifier = Modifier.fillMaxSize(),
-        expandState = expandState,
+          itemList = list,
+          users = users,
+          loan = loan,
+          onClick =
+              if (isClickable) {
+                onClick
+              } else {
+                {}
+              },
+          isExpandable = isExpandable,
+          wasExpanded = wasExpanded,
+          isOutgoing = isOutgoing,
+          manageLoanViewModel = manageLoanViewModel,
+          modifier = Modifier.fillMaxSize(),
+          expandState = expandState,
       )
     }
   }
