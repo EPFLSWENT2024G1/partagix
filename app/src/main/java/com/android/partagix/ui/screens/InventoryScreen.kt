@@ -86,7 +86,7 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            modifier = modifier.size(65.dp).testTag("inventoryScreenFab"),
+            modifier = modifier.size(60.dp).testTag("inventoryScreenFab"),
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
