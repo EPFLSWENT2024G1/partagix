@@ -8,24 +8,30 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
 import com.android.partagix.R
 import com.android.partagix.model.Database
+import com.android.partagix.ui.components.notificationAlert
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.messaging
 import com.google.firebase.messaging.remoteMessage
+import java.io.IOException
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
 
 class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
-  // To be initialized using setContext()
-  private var context: MainActivity? = null
-
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+  private var context = MainActivity.getContext()
 
   enum class Channels {
     INCOMING,
@@ -37,21 +43,45 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
+  init {
+    Log.d(TAG, "context: $context")
+
+    if (context != null) {
+      /*requestPermissionLauncher =
+      context!!.registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+      ) { isGranted: Boolean ->
+        if (isGranted) {
+          // FCM SDK (and your app) can post notifications.
+        } else {
+          // TODO: Inform user that that your app will not show notifications.
+        }
+      }*/
+
+      askNotificationPermission()
+      createChannels()
+    }
+  }
+
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
+    super.onMessageReceived(remoteMessage)
     // TODO(developer): Handle FCM messages here.
     // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
     Log.d(TAG, "From: ${remoteMessage.from}")
 
+    if (context == null) {
+      Log.e(TAG, "Context is not set, cannot show notification")
+      return
+    }
+
     // Check if message contains a data payload.
     if (remoteMessage.data.isNotEmpty()) {
       Log.d(TAG, "Message data payload: ${remoteMessage.data}")
+      remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
     }
 
-    // Check if message contains a notification payload.
-    remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
-
-    // Also if you intend on generating your own notifications as a result of a received FCM
-    // message, here is where that should be initiated. See sendNotification method below.
+    notificationAlert(
+        context!!, remoteMessage.notification?.title ?: "", remoteMessage.notification?.body ?: "")
   }
 
   /**
@@ -70,17 +100,6 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
   fun setContext(context: MainActivity) {
     this.context = context
-
-    requestPermissionLauncher =
-        context.registerForActivityResult(
-            ActivityResultContracts.RequestPermission(),
-        ) { isGranted: Boolean ->
-          if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
-          } else {
-            // TODO: Inform user that that your app will not show notifications.
-          }
-        }
   }
 
   fun getToken(onSuccess: (String) -> Unit = {}) {
@@ -191,21 +210,57 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
         context!!.getString(R.string.social_description))
   }
 
-  fun sendNotification(to: String, title: String, body: String) {
-    val fm = Firebase.messaging
-    // enNSGi7WQdSlkiSPvFBY_W:APA91bFlKDlLkwD7A9hmRSeTSvkEjpjQv5r_DAQQbWf4MwlXzMvTbj2ZPKGL0pDbOhpvCbuFHo1RcT7TdgJAQOGHaDRJh7_W7L3h_Ke_UWXs_gnIRqdrzvQ7_vVCSCEbK2HQJWqAAUTY
-    fm.send(
-        remoteMessage(to) {
-          setMessageId(messageId)
-          addData("title", title)
-          addData("body", body)
-        },
-    )
+  private fun sendPostRequest(url: String, body: String) {
+    if (context == null) {
+      Log.e(TAG, "Context is not set, cannot send POST request")
+      return
+    }
 
-    val fcmToken =
-        "c-5Fwr7dR-SDIlVxw3cShM:APA91bEzITS-rmYBkatMAh7VuBabecWzVHDpfkjsMA4sOnT2xijeoDEU75_TuG6CveP4j4NbUe6IaV19YdP7SOAevAhxEAvu7mfA2I10T_dj3xQPZC2h9UXXwrnPaiC5UiIG3044vb-z"
+    val client = OkHttpClient()
 
-    Log.d(TAG, "Sent notification to $to")
+    val apiKey = BuildConfig.SERVER_API_KEY
+
+    // Create request body
+    val json = body
+    val requestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+
+    // Create request
+    val request =
+        Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .header("Authorization", "key=$apiKey")
+            .header("Content-Type", "application/json")
+            .build()
+
+    // Send request
+    client
+        .newCall(request)
+        .enqueue(
+            object : Callback {
+              override fun onFailure(call: Call, e: IOException) {
+                Log.e(TAG, "Failed to send POST request", e)
+              }
+
+              override fun onResponse(call: Call, response: Response) {
+                Log.d(TAG, "POST request successful")
+              }
+            })
+  }
+
+  fun sendNotification() {
+    if (context == null) {
+      Log.e(TAG, "Context is not set, cannot send notification")
+      return
+    }
+
+    val body = JSONObject()
+    body.put("notification", JSONObject().apply { put("title", "Yooo") })
+    body.put(
+        "to",
+        "enNSGi7WQdSlkiSPvFBY_W:APA91bFlKDlLkwD7A9hmRSeTSvkEjpjQv5r_DAQQbWf4MwlXzMvTbj2ZPKGL0pDbOhpvCbuFHo1RcT7TdgJAQOGHaDRJh7_W7L3h_Ke_UWXs_gnIRqdrzvQ7_vVCSCEbK2HQJWqAAUTY")
+
+    sendPostRequest(FCM_SERVER_URL, body.toString())
   }
 
   private fun sendRegistrationToServer(token: String?) {
@@ -215,5 +270,9 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
 
   companion object {
     private const val TAG = "FirebaseMessagingService"
+
+    private const val SERVER_KEY_FILE_NAME = "secrets.properties"
+    private const val SERVER_KEY = "SERVER_API_KEY"
+    private const val FCM_SERVER_URL = "https://fcm.googleapis.com/fcm/send"
   }
 }

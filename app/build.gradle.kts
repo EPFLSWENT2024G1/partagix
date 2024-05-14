@@ -47,6 +47,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val serverApiKey = project.findProperty("SERVER_API_KEY") as String?
+        buildConfigField("String", "SERVER_API_KEY", "\"$serverApiKey\"")
     }
 
 
@@ -72,6 +75,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -246,6 +250,9 @@ dependencies {
 
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
+
+    // ----------       Http Requests     ------------
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
 secrets {

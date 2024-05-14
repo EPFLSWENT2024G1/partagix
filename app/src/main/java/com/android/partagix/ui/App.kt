@@ -97,17 +97,6 @@ class App(
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
 
-  init {
-    notificationManager.setContext(activity)
-    notificationManager.askNotificationPermission()
-    notificationManager.createChannels()
-
-    notificationManager.sendNotification(
-        "c-5Fwr7dR-SDIlVxw3cShM:APA91bEzITS-rmYBkatMAh7VuBabecWzVHDpfkjsMA4sOnT2xijeoDEU75_TuG6CveP4j4NbUe6IaV19YdP7SOAevAhxEAvu7mfA2I10T_dj3xQPZC2h9UXXwrnPaiC5UiIG3044vb-z",
-        "title1",
-        "body1")
-  }
-
   @Composable
   fun Create(
       idItem: String? = null,
@@ -118,8 +107,6 @@ class App(
     if (mock) {
       navigationActions = mockNavigationActions!!
     }
-
-    navigationActions.navigateTo(Route.BOOT)
 
     val user = Authentication.getUser()
 
@@ -134,6 +121,8 @@ class App(
     } else {
       navigationActions.navigateTo(Route.BOOT)
     }
+
+    notificationManager.sendNotification()
   }
 
   private fun onQrScanned(idItem: String, idUser: String) {
