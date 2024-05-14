@@ -42,6 +42,7 @@ import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.BootScreen
@@ -93,6 +94,7 @@ class App(
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
+  private val locationPickerViewModel = LocationPickerViewModel()
 
   @Composable
   fun Create(
@@ -164,7 +166,7 @@ class App(
           User(
               user.uid,
               user.displayName ?: "",
-              user.email ?: "",
+              "Unknown Location",
               "0",
               Inventory(user.uid, emptyList()))
       db.getUser(user.uid, { db.createUser(newUser) }, {})
@@ -309,7 +311,10 @@ class App(
       composable(
           Route.EDIT_ACCOUNT,
       ) {
-        EditAccount(navigationActions = navigationActions, userViewModel = UserViewModel())
+        EditAccount(
+            navigationActions = navigationActions,
+            userViewModel = UserViewModel(),
+            locationViewModel = locationPickerViewModel)
       }
 
       composable(Route.VIEW_ITEM) {
