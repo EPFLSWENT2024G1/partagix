@@ -121,11 +121,14 @@ class FirebaseMessagingServiceTest {
           mockk<ActivityResultLauncher<String>>()
         }
 
+    every { mockedFirebaseMessagingService.askNotificationPermission() } just runs
+    every { mockedFirebaseMessagingService.createChannels() } just runs
+
     mockedFirebaseMessagingService.initPermissions()
 
-    // Currently it does nothing
-    verify(exactly = 0) { mockedFirebaseMessagingService.askNotificationPermission() }
-    verify(exactly = 0) { mockedFirebaseMessagingService.createChannels() }
+    // Currently it calls anyway
+    verify { mockedFirebaseMessagingService.askNotificationPermission() }
+    verify { mockedFirebaseMessagingService.createChannels() }
   }
 
   @Test
