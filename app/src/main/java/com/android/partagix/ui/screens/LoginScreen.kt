@@ -154,13 +154,6 @@ fun LoginScreen(authentication: Authentication, modifier: Modifier = Modifier) {
                     authentication.signIn()
                   })
             }
-            item {
-              LoginOptionButton(
-                  modifier = Modifier.testTag("OtherLoginButton"),
-                  name = "Sign in with other method",
-                  icon = R.drawable.app_logo,
-                  onClick = { Log.w(TAG, "push button to sign in (Other)") })
-            }
           }
     }
   }
