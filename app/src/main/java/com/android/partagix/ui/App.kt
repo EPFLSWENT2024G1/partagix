@@ -348,6 +348,24 @@ class App(
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
 
+      composable(
+          Route.VIEW_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            val itemId = it.arguments?.getString("itemId")
+
+            if (itemId != null) {
+              db.getItem(itemId) { item ->
+                itemViewModel.updateUiItem(item)
+                itemViewModel.getUser()
+              }
+
+              InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+            } else {
+              // Fail safe defaults principle
+              navigationActions.navigateTo(Route.INVENTORY)
+            }
+          }
+
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
@@ -356,6 +374,9 @@ class App(
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
+        // Fetch the new loan requests first
+        manageViewModel.getLoanRequests()
+
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }

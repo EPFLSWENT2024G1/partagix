@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,19 @@ fun ManageLoanRequest(
     expandables: Boolean = false,
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
+
+  var items = uiState.items
+  var users = uiState.users
+  var loans = uiState.loans
+  var expanded = uiState.expanded
+
+  LaunchedEffect(key1 = uiState) {
+    items = uiState.items
+    users = uiState.users
+    loans = uiState.loans
+    expanded = uiState.expanded
+  }
+
   Scaffold(
       modifier = modifier,
       topBar = {
@@ -63,7 +77,7 @@ fun ManageLoanRequest(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("manageScreenBottomNavBar"))
       }) { innerPadding ->
-        if (uiState.items.isEmpty()) {
+        if (items.isEmpty()) {
           Column(modifier = modifier.fillMaxSize().padding(innerPadding)) {
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
@@ -83,16 +97,16 @@ fun ManageLoanRequest(
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
 
                 ItemListColumn(
-                    list = uiState.items,
-                    users = uiState.users,
-                    loan = uiState.loans,
+                    list = items,
+                    users = users,
+                    loan = loans,
                     title = "Borrowing requests",
-                    corner = uiState.items.size.toString(),
+                    corner = items.size.toString(),
                     isCornerClickable = false,
                     isExpandable = true,
                     canSeeOld = true,
                     expandState = expandables,
-                    wasExpanded = uiState.expanded,
+                    wasExpanded = expanded,
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},
                     manageLoanViewModel = manageLoanViewModel,

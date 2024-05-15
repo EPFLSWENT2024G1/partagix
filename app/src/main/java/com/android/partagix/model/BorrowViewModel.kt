@@ -11,6 +11,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.Route
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -103,6 +104,7 @@ class BorrowViewModel(
                   "You have a new incoming request for your item: ${item.name}, from ${loan.startDate} to ${loan.endDate}",
               type = Notification.Type.NEW_INCOMING_REQUEST,
               creationDate = Date(System.currentTimeMillis()),
+              navigationUrl = Route.MANAGE_LOAN_REQUEST,
           )
 
       notificationManager.sendNotification(notification, ownerToken)

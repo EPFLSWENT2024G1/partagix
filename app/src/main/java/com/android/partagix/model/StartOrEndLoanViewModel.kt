@@ -11,6 +11,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.Route
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +48,8 @@ class StartOrEndLoanViewModel(
               message = "Loan started for ${_uiState.value.item.name}",
               type = Notification.Type.NEW_INCOMING_REQUEST,
               creationDate = Date(),
-              navigationUrl = "loan/${newLoan.id}")
+              navigationUrl = "${Route.VIEW_ITEM}/${_uiState.value.item.id}",
+          )
 
       notificationManager.sendNotification(notification, borrowerToken)
     }
