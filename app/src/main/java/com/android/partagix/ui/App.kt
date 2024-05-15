@@ -261,7 +261,7 @@ class App(
         homeViewModel.updateUser()
 
         HomeScreen(
-            homeViewModel = HomeViewModel(Database(), activity),
+            homeViewModel = homeViewModel,
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
