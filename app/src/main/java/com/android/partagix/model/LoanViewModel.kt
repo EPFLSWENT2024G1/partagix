@@ -50,7 +50,9 @@ class LoanViewModel(
     } else {
       viewModelScope.launch {
         db.getLoans { loans: List<Loan> ->
-          db.getItems { itemList: List<Item> ->
+          db.getItemsWithImages { itemList: List<Item> ->
+            println("---- yooooo 3")
+
             val newItems =
                 itemList.filter { item ->
                   // item is not owned by the current user

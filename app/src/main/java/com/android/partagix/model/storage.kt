@@ -28,7 +28,7 @@ fun uploadImageToFirebaseStorage(
   val storageRef = storage.reference
 
   // Create a reference to 'images/imageName.jpg'
-  val imageRef = storageRef.child("images/$imageName")
+  val imageRef = storageRef.child("images/$imageName.jpg")
 
   // Upload the file to Firebase Storage
   val uploadTask = imageRef.putFile(imageUri)
@@ -52,11 +52,11 @@ fun getImageFromFirebaseStorage(
 ) {
   val prefix: String
   val path: String
-  if (p == "users/" || p == "") {
+  if (p == "users/" || p == "" || p == "default-image.jpg") {
     path = "images/default-image.jpg"
     prefix = "defalut"
   } else {
-    path = "images/$p"
+    path = "images/$p.jpg"
     prefix = "real"
   }
 
@@ -92,10 +92,10 @@ fun getImagesFromFirebaseStorage(
   val res = mutableListOf<File>()
   for (p in paths) {
     val path: String =
-        if (p == "users/" || p == "") {
+        if (p == "users/" || p == "" || p == "default-image.jpg") {
           "images/default-image.jpg"
         } else {
-          "images/$p"
+          "images/$p.jpg"
         }
 
     // Get the image from Firebase Storage
@@ -116,7 +116,8 @@ fun getImagesFromFirebaseStorage(
           }
         }
         .addOnFailureListener {
-          // Handle any errors
+          Log.d("Image Download", "----- Image download failed: $it")
+          Log.d("Image Download", "$p -> $path -> $localFile")
           onFailure(it)
         }
   }

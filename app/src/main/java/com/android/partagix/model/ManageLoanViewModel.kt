@@ -41,7 +41,7 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
       latch.countDown()
       return
     } else {
-      database.getItems { list ->
+      database.getItemsWithImages { list ->
         database.getLoans {
           it.filter { loan ->
                 val id =

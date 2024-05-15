@@ -110,7 +110,8 @@ class ItemViewModel(
                 new.visibility,
                 new.quantity,
                 new.location,
-            ),
+                new.idUser,
+                new.imageId),
             onItemCreated)
       }
     } else {

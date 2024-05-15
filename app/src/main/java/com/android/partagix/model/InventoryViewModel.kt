@@ -66,7 +66,8 @@ class InventoryViewModel(
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    getInventory(firebaseAuth = firebaseAuth, latch = latch)
+    // getInventory(firebaseAuth = firebaseAuth, latch = latch)
+      // This is already done during the navigation
   }
 
   /**
@@ -80,25 +81,32 @@ class InventoryViewModel(
       latch: CountDownLatch = CountDownLatch(1),
       firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
   ) {
+    println("---- yooooo 2")
+
     viewModelScope.launch {
-      val user = firebaseAuth.currentUser
-      if (user != null) {
+      val currentUser = firebaseAuth.currentUser
+      if (currentUser != null) {
         database.getItemsWithImages { items: List<Item> ->
-          updateInv(items.filter { it.idUser.equals(user.uid) })
-          findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
+          updateInv(items.filter { it.idUser.equals(currentUser.uid) })
+          findTime(items.filter { it.idUser.equals(currentUser.uid) }, ::updateLoan)
           database.getLoans {
-            val usersToUpdate = it.map { loan -> loan.idLender }.toMutableList()
-            it.filter { it.idBorrower.equals(user.uid) && it.state == LoanState.ACCEPTED }
+            val lenderUsersIds = emptyList<String>()
+            it.filter { it.idBorrower.equals(currentUser.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
-                  updateBor(items.filter { it.id.equals(loan.idItem) })
-                  // getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
+                  lenderUsersIds.plus(loan.idLender)
                   findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
-            usersToUpdate.forEach { id ->
-              database.getUser(id) { user ->
-                updateUsersBor(user)
-                updateUsers(user)
+            val lenderUsers = emptyList<User>()
+            database.getUsers { users ->
+              users.forEach { user ->
+                if (lenderUsersIds.contains(user.id)) {
+                  lenderUsers.plus(user)
+                }
+                if (user.id == currentUser.uid) {
+                  updateUser(user, items.filter { it.idUser.equals(currentUser.uid) }.size)
+                }
               }
+              updateUsersBor(lenderUsers)
             }
           }
         }
@@ -106,8 +114,8 @@ class InventoryViewModel(
         database.getItemsWithImages {
           updateBor(it)
           getUsers(it) {
-            updateUsersBor(it)
-            updateUsers(it)
+            updateUsersBor(emptyList())
+            updateUser(it, 1)
           }
           findTime(it, ::updateLoanBor)
           updateInv(it)
@@ -132,6 +140,8 @@ class InventoryViewModel(
    * @param new the new items to update the inventory
    */
   fun updateInv(new: List<Item>) {
+    println("yoooo ${new}")
+
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
   }
@@ -147,12 +157,13 @@ class InventoryViewModel(
   }
 
   /**
-   * updateUsers is a function that will update the uiState's user list
+   * updateUser is a function that will update the uiState's user list
    *
    * @param new the new user to update the user list
    */
-  fun updateUsers(new: User) {
-    _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
+  fun updateUser(new: User, count: Int) {
+    val list = List(count) { new }
+    _uiState.value = _uiState.value.copy(users = list)
   }
 
   /**
@@ -160,8 +171,8 @@ class InventoryViewModel(
    *
    * @param new the new user to update the user borrowed list
    */
-  fun updateUsersBor(new: User) {
-    _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
+  fun updateUsersBor(new: List<User>) {
+    _uiState.value = _uiState.value.copy(usersBor = new)
     println(uiState.value.usersBor.size)
   }
 

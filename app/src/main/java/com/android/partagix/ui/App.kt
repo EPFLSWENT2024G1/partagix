@@ -255,7 +255,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
-        inventoryViewModel.getInventory()
+          inventoryViewModel.getInventory()
         manageViewModel.getLoanRequests()
         loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
@@ -280,7 +280,7 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          inventoryViewModel.getInventory()
+          // inventoryViewModel.getInventory()
           HomeScreen(
               homeViewModel = HomeViewModel(Database(), activity),
               manageLoanViewModel = manageViewModel,
@@ -292,6 +292,7 @@ class App(
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
+
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
