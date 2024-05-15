@@ -346,11 +346,12 @@ class DatabaseTests {
       // Add your assertions here based on the expected behavior
     }
     database.getItems(onSuccessCallback)
+    database.getItemsWithImages(onSuccessCallback)
 
     // Verify that the Firestore collections were accessed correctly
-    verify(exactly = 1) { mockItemsCollection.get() }
+    verify(exactly = 2) { mockItemsCollection.get() }
 
-    verify(exactly = 1) { mockCategoriesCollection.get() }
+    verify(exactly = 2) { mockCategoriesCollection.get() }
 
     // Unmock static function
     unmockkStatic(::now)

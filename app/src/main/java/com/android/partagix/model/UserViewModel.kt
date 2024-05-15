@@ -41,7 +41,7 @@ class UserViewModel(
     if (user.id == "") {
       setUserToCurrent()
     } else {
-      database.getUser(user.id) { updateUIState(it) }
+      database.getUserWithImage(user.id) { updateUIState(it) }
     }
   }
 
