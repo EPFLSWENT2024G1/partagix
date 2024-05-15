@@ -9,6 +9,9 @@ class EndLoanScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
         semanticsProvider = semanticsProvider,
         viewBuilderAction = { hasTestTag("StartLoanScreen") }) {
 
-  val item: KNode = onNode { hasTestTag("ItemUiNotExpanded") }
+  val item: KNode = onNode { hasTestTag("item") }
   val endLoanButton: KNode = onNode { hasTestTag("endLoanButton") }
+  val title: KNode = onNode { hasTestTag("title") }
+  val close: KNode = onNode { hasTestTag("closeButton") }
+  val popUp: KNode = onNode { hasTestTag("popup") }
 }

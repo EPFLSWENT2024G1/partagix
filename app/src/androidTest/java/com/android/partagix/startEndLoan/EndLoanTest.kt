@@ -10,6 +10,7 @@ import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.screens.EndLoanScreen
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.EndLoanScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -48,6 +49,8 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
     every { mockNavActions.goBack() } just Runs
 
     mockItemViewModel = mockk()
+    every { mockItemViewModel.updateUiItem(emptyItem) } just Runs
+    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
 
     composeTestRule.setContent {
       EndLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockItemViewModel)
@@ -59,14 +62,35 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
     onComposeScreen<EndLoanScreen>(composeTestRule) {
       item { assertIsDisplayed() }
       endLoanButton { assertIsDisplayed() }
+      title { assertIsDisplayed() }
+      close { assertIsDisplayed() }
     }
   }
 
   @Test
-  fun buttonAction() = run {
+  fun endButton() = run {
     onComposeScreen<EndLoanScreen>(composeTestRule) {
       endLoanButton { performClick() }
       coVerify { mockStartOrEndLoanViewModel.onFinish() }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun clickOnItem() = run {
+    onComposeScreen<EndLoanScreen>(composeTestRule) {
+      item { performClick() }
+      coVerify { mockItemViewModel.updateUiItem(emptyItem) }
+      coVerify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun closeButton() = run {
+    onComposeScreen<EndLoanScreen>(composeTestRule) {
+      close { performClick() }
+      popUp { assertDoesNotExist() }
     }
   }
 }

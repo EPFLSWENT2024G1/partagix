@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -57,53 +58,64 @@ fun EndLoanScreen(
     Dialog(
         onDismissRequest = { open = false /*TODO: other things?*/ },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
-          Surface(shape = RoundedCornerShape(16.dp), modifier = modifier.fillMaxWidth()) {
-            Column(
-                modifier =
-                    modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
-                  Row(
-                      horizontalArrangement = Arrangement.SpaceBetween,
-                      verticalAlignment = Alignment.CenterVertically,
-                      modifier = modifier.fillMaxWidth()) {
-                        Text(
-                            text = "End loan :",
-                            fontSize = 20.sp,
+          Surface(
+              shape = RoundedCornerShape(16.dp),
+              modifier = modifier.fillMaxWidth().testTag("popup")) {
+                Column(
+                    modifier =
+                        modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+                      Row(
+                          horizontalArrangement = Arrangement.SpaceBetween,
+                          verticalAlignment = Alignment.CenterVertically,
+                          modifier = modifier.fillMaxWidth()) {
+                            Text(
+                                text = "End loan :",
+                                fontSize = 20.sp,
+                                modifier =
+                                    modifier
+                                        .padding(
+                                            start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp)
+                                        .testTag("title"))
+                            IconButton(
+                                onClick = { open = false },
+                                modifier = modifier.testTag("closeButton")) {
+                                  Icon(imageVector = Icons.Default.Close, contentDescription = "")
+                                }
+                          }
+                      Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
+                        Box(
                             modifier =
-                                modifier.padding(
-                                    start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp))
-                        IconButton(onClick = { navigationActions.goBack() }) {
-                          Icon(imageVector = Icons.Default.Close, contentDescription = "")
-                        }
-                      }
-                  Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
-                    Box(
-                        modifier =
-                            modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 35.dp)
-                                .clickable(
-                                    onClick = {
-                                      itemViewModel.updateUiItem(item)
-                                      navigationActions.navigateTo(Route.VIEW_ITEM)
-                                    })) {
-                          ItemUi(item = item, user = lender, loan = loan)
-                        }
+                                modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 35.dp)
+                                    .testTag("item")
+                                    .clickable(
+                                        onClick = {
+                                          itemViewModel.updateUiItem(item)
+                                          navigationActions.navigateTo(Route.VIEW_ITEM)
+                                          open = false
+                                        })) {
+                              ItemUi(item = item, user = lender, loan = loan)
+                            }
 
-                    Button(
-                        modifier = modifier.fillMaxWidth(),
-                        colors =
-                            ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.error,
-                                contentColor = MaterialTheme.colorScheme.onError,
-                                disabledContainerColor = MaterialTheme.colorScheme.error,
-                                disabledContentColor = MaterialTheme.colorScheme.onError),
-                        onClick = { startOrEndLoanViewModel.onFinish() }) {
-                          Text(text = "End Loan")
-                        }
-                    Spacer(modifier = modifier.width(6.dp))
-                  }
-                }
-          }
+                        Button(
+                            modifier = modifier.fillMaxWidth().testTag("endLoanButton"),
+                            colors =
+                                ButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.error,
+                                    contentColor = MaterialTheme.colorScheme.onError,
+                                    disabledContainerColor = MaterialTheme.colorScheme.error,
+                                    disabledContentColor = MaterialTheme.colorScheme.onError),
+                            onClick = {
+                              startOrEndLoanViewModel.onFinish()
+                              open = false
+                            }) {
+                              Text(text = "End Loan")
+                            }
+                        Spacer(modifier = modifier.width(6.dp))
+                      }
+                    }
+              }
         }
   }
 }
