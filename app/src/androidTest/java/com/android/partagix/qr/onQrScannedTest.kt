@@ -33,12 +33,12 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
+import java.io.File
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
@@ -121,22 +121,19 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(lender)
         }
 
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
 
-      every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(lender)
-              }
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
 
-
-      every { mockDatabase.getUserWithImage("", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(borrower)
-              }
-
-
-      app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    app = App(mockMainActivity, mockAuthentication, mockDatabase)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.STARTLOAN) }
@@ -181,22 +178,19 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
 
-      every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(lender)
-              }
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
 
-
-      every { mockDatabase.getUserWithImage("", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(borrower)
-              }
-
-
-      app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    app = App(mockMainActivity, mockAuthentication, mockDatabase)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.ENDLOAN) }
@@ -234,25 +228,23 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(lender)
         }
 
-
     every { mockDatabase.getUser("", any(), any()) } answers
         {
           val callback = it.invocation.args[2] as (User) -> Unit
           callback(borrower)
         }
 
-      every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(lender)
-              }
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
 
-
-      every { mockDatabase.getUserWithImage("", any(), any()) } answers
-              {
-                  val callback = it.invocation.args[2] as (User) -> Unit
-                  callback(borrower)
-              }
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
 
     app = App(mockMainActivity, mockAuthentication, mockDatabase)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
