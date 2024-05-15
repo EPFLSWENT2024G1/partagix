@@ -121,8 +121,8 @@ fun ViewAccount(
                   }
               Spacer(modifier = Modifier.height(16.dp))
 
-              LabeledText()
-              TextField(
+//                                                                                     from here
+/*              TextField(
                   modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -139,7 +139,21 @@ fun ViewAccount(
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
                   readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
+                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })*/
+
+          Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+            Icon(
+              Icons.Default.LocationOn,
+              contentDescription = null,
+              modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+            )
+            LabeledText(modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
+          }
+
+
+//                                                                                     to here
+
+
               val rank = user.rank
               val stars: String
               if (rank == "") {
@@ -173,6 +187,9 @@ fun ViewAccount(
                       }
                     }
               }
+
+
+//                                                                                   from here
               TextField(
                   modifier = Modifier
                     .fillMaxWidth()
@@ -191,6 +208,10 @@ fun ViewAccount(
                           disabledContainerColor = Color.Transparent),
                   readOnly = true,
                   leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
+//                                                                                   to here
+
+
+
               Spacer(modifier = Modifier.height(16.dp))
               Row(
                   modifier = Modifier
