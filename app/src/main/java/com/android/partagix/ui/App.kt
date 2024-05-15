@@ -71,6 +71,7 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
+    private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db)
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
@@ -78,8 +79,6 @@ class App(
   private var navigationActionsInitialized = false
   private lateinit var navigationActions: NavigationActions
   private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-
-  private val notificationManager = FirebaseMessagingService(db = db)
 
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel =
