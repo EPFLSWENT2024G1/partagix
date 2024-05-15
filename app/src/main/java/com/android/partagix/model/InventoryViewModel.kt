@@ -67,7 +67,7 @@ class InventoryViewModel(
 
   init {
     // getInventory(firebaseAuth = firebaseAuth, latch = latch)
-      // This is already done during the navigation
+    // This is already done during the navigation
   }
 
   /**
