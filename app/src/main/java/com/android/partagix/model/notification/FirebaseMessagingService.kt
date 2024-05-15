@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
@@ -51,15 +52,15 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
             ActivityResultContracts.RequestPermission(),
         ) { isGranted: Boolean ->
           if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
             Log.d(TAG, "Permission granted")
-            askNotificationPermission()
-            createChannels()
           } else {
             // TODO: Inform user that that your app will not show notifications.
             Log.d(TAG, "Permission denied")
           }
         }
+
+    askNotificationPermission()
+    createChannels()
   }
 
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
