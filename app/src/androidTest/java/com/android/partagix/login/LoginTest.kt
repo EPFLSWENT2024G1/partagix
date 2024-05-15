@@ -3,14 +3,12 @@ package com.android.partagix.login
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.registerForActivityResult
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.screens.LoginScreen
-import com.android.partagix.screens.LoginScreen2
 import com.android.partagix.ui.App
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -48,17 +46,48 @@ class LoginTest {
   }
 
   @Test
-  fun basicDisplayed() {
+  fun testIsDisplayed() {
     ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
-      loginTitle { assertIsDisplayed() }
-
-      popUpLoginButton {
+      banner.assertIsDisplayed()
+      centerContent.assertIsDisplayed()
+      startBorrowButton {
         assertIsDisplayed()
-        performClick()
+        assertHasClickAction()
       }
+      loginBottomSheet.assertIsNotDisplayed() // Not displayed before clicking on the button
+      imageGrid.assertIsDisplayed()
+      blurEffectBox.assertIsDisplayed()
+      seeMoreClickableText.assertIsDisplayed()
+      googleLoginButton.assertIsNotDisplayed() // Displayed with the loginBottomSheet
     }
-    ComposeScreen.onComposeScreen<LoginScreen2>(composeTestRule) {
-      loginButton { assertIsDisplayed() }
+  }
+
+  @Test
+  fun testBorrowButton() {
+    ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
+      startBorrowButton.performClick()
+      loginBottomSheet.assertIsDisplayed()
+      googleLoginButton.assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testClickableText() {
+    ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
+      seeMoreClickableText.performClick()
+      loginBottomSheet.assertIsDisplayed()
+      googleLoginButton.assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testGoogleLoginButton() {
+    every { authentication.signIn() } just Runs
+
+    ComposeScreen.onComposeScreen<LoginScreen>(composeTestRule) {
+      startBorrowButton.performClick()
+      googleLoginButton.performClick()
+      coVerify { authentication.signIn() }
     }
   }
 
