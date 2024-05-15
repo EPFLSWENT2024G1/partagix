@@ -16,5 +16,4 @@ class LoginScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val blurEffectBox: KNode = onNode { hasTestTag("BlurEffectBox") }
   val seeMoreClickableText: KNode = onNode { hasTestTag("SeeMoreClickableText") }
   val googleLoginButton: KNode = onNode { hasTestTag("GoogleLoginButton") }
-  val otherLoginButton: KNode = onNode { hasTestTag("OtherLoginButton") }
 }
