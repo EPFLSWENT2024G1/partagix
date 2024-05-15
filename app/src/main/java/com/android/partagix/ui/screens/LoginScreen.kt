@@ -221,7 +221,9 @@ fun ImageGrid(
                 .testTag("SeeMoreClickableText"),
         text = AnnotatedString(text = "See 99+ more"),
         style =
-            MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.Underline, color = MaterialTheme.colorScheme.onBackground),
+            MaterialTheme.typography.headlineSmall.copy(
+                textDecoration = TextDecoration.Underline,
+                color = MaterialTheme.colorScheme.onBackground),
         onClick = {
           Log.w(TAG, "See more clicked")
           onShowSignInChange(true)
