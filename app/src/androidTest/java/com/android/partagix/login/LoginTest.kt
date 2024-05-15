@@ -117,6 +117,7 @@ class LoginTest {
     every { mockDatabase.getItems(any()) } just Runs
     every { mockDatabase.getLoans(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
+    every { mockDatabase.getUserWithImage(any(), any(), any()) } just Runs
     every { mockDatabase.createUser(any()) } just Runs
 
     every { mockFirebaseUser.uid } returns "1234"
