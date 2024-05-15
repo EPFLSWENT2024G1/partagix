@@ -280,11 +280,7 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          // inventoryViewModel.getInventory()
-          HomeScreen(
-              homeViewModel = HomeViewModel(Database(), activity),
-              manageLoanViewModel = manageViewModel,
-              navigationActions = navigationActions)
+          navigationActions.navigateTo(Route.HOME)
         }
       }
       composable(Route.BORROW) {
@@ -292,7 +288,6 @@ class App(
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
-
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
