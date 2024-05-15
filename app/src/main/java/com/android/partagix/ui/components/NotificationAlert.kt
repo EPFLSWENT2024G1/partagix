@@ -4,14 +4,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.ContextThemeWrapper
 import android.view.Gravity
-import com.android.partagix.MainActivity
+import androidx.activity.ComponentActivity
 import com.android.partagix.R
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 fun notificationAlert(
-    context: MainActivity,
+    context: ComponentActivity,
     notification: Notification,
     navigationActions: NavigationActions
 ) {
