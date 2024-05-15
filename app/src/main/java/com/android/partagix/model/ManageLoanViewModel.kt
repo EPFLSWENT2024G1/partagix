@@ -127,6 +127,16 @@ class ManageLoanViewModel(
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
     UiStateWithoutIndex(index)
+
+    val requester = uiState.value.users.find { it.id == loan.idBorrower }
+
+    if (requester != null) {
+      sendNotification("declined", Notification.Type.LOAN_ACCEPTED, requester.id)
+    } else {
+      database.getFCMToken(loan.idBorrower) { token ->
+        sendNotification("declined", Notification.Type.LOAN_ACCEPTED, token)
+      }
+    }
   }
 
   private fun sendNotification(state: String, type: Notification.Type, to: String?) {
