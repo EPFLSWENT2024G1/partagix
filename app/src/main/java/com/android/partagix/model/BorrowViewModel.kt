@@ -54,7 +54,7 @@ class BorrowViewModel(
     _loanUiState.value = _loanUiState.value.copy(idItem = item.id)
 
     // Set the owner id in the loan to the owner of the item
-    _loanUiState.value = _loanUiState.value.copy(idLender = _itemUiState.value.id)
+    _loanUiState.value = _loanUiState.value.copy(idLender = _itemUiState.value.idUser)
 
     // Set the start and end dates to now
     _loanUiState.value = _loanUiState.value.copy(startDate = Date(System.currentTimeMillis()))
