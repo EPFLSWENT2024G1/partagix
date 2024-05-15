@@ -1,7 +1,9 @@
 package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,7 +49,6 @@ fun EndLoanScreen(
 
   val item = uiState.item
   val loan = uiState.loan
-  val borrower = uiState.borrower
   val lender = uiState.lender
 
   var open by remember { mutableStateOf(true) }
@@ -75,38 +76,31 @@ fun EndLoanScreen(
                         }
                       }
                   Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
-                    ItemUi(item = item, user = lender, loan = loan)
-                    Spacer(modifier = modifier.width(8.dp))
-                    Row(
-                        modifier = modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),
-                        horizontalArrangement = Arrangement.Center) {
-                          Button(
-                              modifier = modifier.fillMaxWidth(0.5f),
-                              colors =
-                                  ButtonColors(
-                                      containerColor = MaterialTheme.colorScheme.primary,
-                                      contentColor = MaterialTheme.colorScheme.onPrimary,
-                                      disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                      disabledContentColor = MaterialTheme.colorScheme.onPrimary),
-                              onClick = {
-                                itemViewModel.updateUiItem(item)
-                                navigationActions.navigateTo(Route.VIEW_ITEM)
-                              }) {
-                                Text(text = "See Item")
-                              }
-                          Spacer(modifier = modifier.width(10.dp))
-                          Button(
-                              modifier = modifier.fillMaxWidth(),
-                              colors =
-                                  ButtonColors(
-                                      containerColor = MaterialTheme.colorScheme.error,
-                                      contentColor = MaterialTheme.colorScheme.onError,
-                                      disabledContainerColor = MaterialTheme.colorScheme.error,
-                                      disabledContentColor = MaterialTheme.colorScheme.onError),
-                              onClick = { startOrEndLoanViewModel.onFinish() }) {
-                                Text(text = "End Loan")
-                              }
+                    Box(
+                        modifier =
+                            modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 35.dp)
+                                .clickable(
+                                    onClick = {
+                                      itemViewModel.updateUiItem(item)
+                                      navigationActions.navigateTo(Route.VIEW_ITEM)
+                                    })) {
+                          ItemUi(item = item, user = lender, loan = loan)
                         }
+
+                    Button(
+                        modifier = modifier.fillMaxWidth(),
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError,
+                                disabledContainerColor = MaterialTheme.colorScheme.error,
+                                disabledContentColor = MaterialTheme.colorScheme.onError),
+                        onClick = { startOrEndLoanViewModel.onFinish() }) {
+                          Text(text = "End Loan")
+                        }
+                    Spacer(modifier = modifier.width(6.dp))
                   }
                 }
           }

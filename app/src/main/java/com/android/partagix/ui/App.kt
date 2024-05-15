@@ -360,12 +360,14 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
+            itemViewModel = itemViewModel,
             modifier = modifier)
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
+            itemViewModel = itemViewModel,
             modifier = modifier)
       }
     }
