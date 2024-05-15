@@ -90,7 +90,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       noItemBox { assertIsDisplayed() }
       noItemText {
         assertIsDisplayed()
-        assertTextEquals("There is no items in the inventory.")
+        assertTextEquals("There is no items in your inventory, click on the + button to add your first item")
       }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
