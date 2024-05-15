@@ -81,8 +81,6 @@ class InventoryViewModel(
       latch: CountDownLatch = CountDownLatch(1),
       firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
   ) {
-    println("---- yooooo 2")
-
     viewModelScope.launch {
       val currentUser = firebaseAuth.currentUser
       if (currentUser != null) {
@@ -90,21 +88,23 @@ class InventoryViewModel(
           updateInv(items.filter { it.idUser.equals(currentUser.uid) })
           findTime(items.filter { it.idUser.equals(currentUser.uid) }, ::updateLoan)
           database.getLoans {
-            val lenderUsersIds = emptyList<String>()
+            val lenderUsersIds = mutableListOf<String>()
+            val itemsBor = mutableListOf<Item>()
             it.filter { it.idBorrower.equals(currentUser.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
-                  lenderUsersIds.plus(loan.idLender)
+                  lenderUsersIds.add(loan.idLender)
+                  val itemsBorHere = items.filter { item -> item.id == loan.idItem }
+                  itemsBor.add(itemsBorHere[0])
                   findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
-            val lenderUsers = emptyList<User>()
+            updateBor(itemsBor)
+            val lenderUsers = mutableListOf<User>()
             database.getUsers { users ->
-              users.forEach { user ->
-                if (lenderUsersIds.contains(user.id)) {
-                  lenderUsers.plus(user)
-                }
-                if (user.id == currentUser.uid) {
-                  updateUser(user, items.filter { it.idUser.equals(currentUser.uid) }.size)
-                }
+              lenderUsersIds.forEach { lenderId ->
+                lenderUsers.add(users.filter { it.id.equals(lenderId) }[0])
+                updateUser(
+                    users.filter { it.id.equals(currentUser.uid) }[0],
+                    items.filter { it.idUser.equals(currentUser.uid) }.size)
               }
               updateUsersBor(lenderUsers)
             }
@@ -140,8 +140,6 @@ class InventoryViewModel(
    * @param new the new items to update the inventory
    */
   fun updateInv(new: List<Item>) {
-    println("yoooo ${new}")
-
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
   }
@@ -152,8 +150,8 @@ class InventoryViewModel(
    * @param new the new items to update the borrowed items
    */
   fun updateBor(new: List<Item>) {
-    _uiState.value = _uiState.value.copy(borrowedItems = _uiState.value.borrowedItems.plus(new))
-    fetchedBorrowed = fetchedBorrowed.plus(new)
+    _uiState.value = _uiState.value.copy(borrowedItems = new)
+    fetchedBorrowed = new
   }
 
   /**
@@ -173,7 +171,6 @@ class InventoryViewModel(
    */
   fun updateUsersBor(new: List<User>) {
     _uiState.value = _uiState.value.copy(usersBor = new)
-    println(uiState.value.usersBor.size)
   }
 
   /**

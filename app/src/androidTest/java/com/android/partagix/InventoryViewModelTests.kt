@@ -131,7 +131,7 @@ class InventoryViewModelTests {
     every { db.getUserInventory(any(), any()) } answers
         {
           onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
-          onSuccessinv(Inventory("", list))
+          onSuccessinv(Inventory("8WuTkKJZLTAr6zs5L7rH", list))
         }
 
     every { db.getItemsWithImages(any()) } answers
@@ -174,6 +174,7 @@ class InventoryViewModelTests {
   fun testGetInventory() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch, firebaseAuth = fire))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     runBlocking {
       assert(inventoryViewModel.uiState.value.borrowedItems == list)
@@ -194,6 +195,7 @@ class InventoryViewModelTests {
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = fire, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
 
     runBlocking {
@@ -210,6 +212,8 @@ class InventoryViewModelTests {
   fun testFindTime() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
+
     latch.await()
     inventoryViewModel.updateInv(list)
     inventoryViewModel.findTime(
@@ -221,6 +225,7 @@ class InventoryViewModelTests {
   fun testFilterItems() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     inventoryViewModel.updateInv(list)
     inventoryViewModel.filterItems("Category 1")
@@ -240,6 +245,7 @@ class InventoryViewModelTests {
   fun testFilterItemsQuantity() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     inventoryViewModel.updateInv(list)
     assert(inventoryViewModel.uiState.value.items == list)
