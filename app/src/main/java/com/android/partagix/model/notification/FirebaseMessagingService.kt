@@ -8,7 +8,6 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
@@ -41,6 +40,13 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     Log.d(TAG, "context: $context")
   }
 
+  /**
+   * Initializes the permissions (notifications) for the app.
+   *
+   * This function should be called during the MainActivity's onCreate() method. It asks the user
+   * for permission to show notifications and creates the notification channels, as described in
+   * `createChannels()`.
+   */
   fun initPermissions() {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot initialize permissions")
@@ -63,20 +69,20 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     createChannels()
   }
 
+  /**
+   * Called when a message (a notification) is received.
+   *
+   * When the application is on the foreground, the notification is displayed as an alert, using the
+   * `notificationAlert()` function.
+   *
+   * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+   */
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
     super.onMessageReceived(remoteMessage)
 
     if (context == null || navigationActions == null) {
       Log.e(TAG, "Context or navigationActions is not set, cannot show notification")
       return
-    }
-
-    Log.d(TAG, "From: ${remoteMessage.from}")
-
-    // Check if message contains a data payload.
-    if (remoteMessage.data.isNotEmpty()) {
-      Log.d(TAG, "Message data payload: ${remoteMessage.data}")
-      remoteMessage.notification?.let { Log.d(TAG, "Message Notification Body: ${it.body}") }
     }
 
     val data = remoteMessage.data
@@ -99,6 +105,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
    * Called if the FCM registration token is updated. This may occur if the security of the previous
    * token had been compromised. Note that this is called when the FCM registration token is
    * initially generated so this is where you would retrieve the token.
+   *
+   * It updates the FCM token in the database if it has changed.
    */
   override fun onNewToken(token: String) {
     Log.d(TAG, "Refreshed token: $token")
@@ -108,6 +116,11 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
+  /**
+   * Gets the FCM registration token of the device.
+   *
+   * @param onSuccess Callback function that is called when the token is successfully retrieved.
+   */
   fun getToken(onSuccess: (String) -> Unit = {}) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot get token")
@@ -123,16 +136,20 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
                 return@OnCompleteListener
               }
 
-              // Get new FCM registration token
               val token = task.result
-
-              // Log
               Log.d(TAG, token)
 
               onSuccess(token)
             })
   }
 
+  /**
+   * Compares the FCM token of the device with the token stored in the database. If the token has
+   * changed, it updates the token in the database.
+   *
+   * @param userId The ID of the user whose token is being checked.
+   * @param onSuccess Callback function that is called when the token is successfully checked.
+   */
   fun checkToken(userId: String, onSuccess: (String) -> Unit = {}) {
     getToken { newToken ->
       db.getFCMToken(userId) { oldToken ->
@@ -145,6 +162,7 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
+  /** Asks the user for permission to show notifications. */
   fun askNotificationPermission() {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot ask for permission")
@@ -172,6 +190,16 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
+  /**
+   * Creates a notification channel.
+   *
+   * The default priority is set to `NotificationManager.IMPORTANCE_DEFAULT`.
+   *
+   * @param context The context of the application.
+   * @param channelId The ID of the channel.
+   * @param name The name of the channel.
+   * @param description The description of the channel.
+   */
   fun createChannel(context: MainActivity, channelId: String, name: String, description: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -184,6 +212,12 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     }
   }
 
+  /**
+   * Creates the notification channels for the application, being:
+   * - Incoming
+   * - Outgoing
+   * - Social
+   */
   fun createChannels() {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot create channels")
@@ -253,6 +287,12 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     return JSONObject()
   }
 
+  /**
+   * Sends a notification to a specific user, using the FCM server.
+   *
+   * @param content The content of the notification.
+   * @param to The FCM token of the user to whom the notification is being sent.
+   */
   fun sendNotification(content: Notification, to: String) {
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot send notification")
