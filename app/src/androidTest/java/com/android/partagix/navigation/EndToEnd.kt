@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.android.partagix.MainActivity
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
@@ -23,6 +24,10 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class EndToEnd {
+  @get:Rule
+  val grantPermissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(android.Manifest.permission.POST_NOTIFICATIONS)
+
   @get:Rule val composeTestRule = createComposeRule()
   @get:Rule val composeTestRule2 = createComposeRule()
 
