@@ -60,78 +60,77 @@ fun StartLoanScreen(
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
           Surface(
               shape = RoundedCornerShape(16.dp),
-              modifier = modifier.fillMaxWidth().testTag("popup")) {
+              modifier = Modifier.fillMaxWidth().testTag("popup")) {
                 Column(
                     modifier =
-                        modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+                        Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
                       Row(
                           horizontalArrangement = Arrangement.SpaceBetween,
                           verticalAlignment = Alignment.CenterVertically,
-                          modifier = modifier.fillMaxWidth()) {
+                          modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = "Start loan :",
                                 fontSize = 20.sp,
                                 modifier =
-                                    modifier
-                                        .padding(
+                                    Modifier.padding(
                                             start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp)
                                         .testTag("title"))
                             IconButton(
-                                onClick = { open = false },
-                                modifier = modifier.testTag("closeButton")) {
+                                onClick = {
+                                  navigationActions.navigateTo(Route.INVENTORY)
+                                  open = false
+                                },
+                                modifier = Modifier.testTag("closeButton")) {
                                   Icon(imageVector = Icons.Default.Close, contentDescription = "")
                                 }
                           }
-                      Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
-                        Box(
-                            modifier =
-                                modifier
-                                    .fillMaxWidth()
-                                    .clickable(
-                                        onClick = {
-                                          itemViewModel.updateUiItem(item)
-                                          navigationActions.navigateTo(Route.VIEW_ITEM)
-                                          open = false
-                                        })
-                                    .testTag("item")) {
-                              ItemUi(item = item, user = lender, loan = loan)
-                            }
-                        Row(
-                            modifier = modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),
-                            horizontalArrangement = Arrangement.Center) {
-                              Button(
-                                  modifier = modifier.fillMaxWidth(0.5f).testTag("startButton"),
-                                  colors =
-                                      ButtonColors(
-                                          containerColor = MaterialTheme.colorScheme.primary,
-                                          contentColor = MaterialTheme.colorScheme.onPrimary,
-                                          disabledContainerColor =
-                                              MaterialTheme.colorScheme.primary,
-                                          disabledContentColor =
-                                              MaterialTheme.colorScheme.onPrimary),
-                                  onClick = {
-                                    startOrEndLoanViewModel.onStart()
-                                    open = false
-                                  }) {
-                                    Text(text = "Start Loan")
-                                  }
-                              Spacer(modifier = modifier.width(10.dp))
-                              Button(
-                                  modifier = modifier.fillMaxWidth().testTag("cancelButton"),
-                                  colors =
-                                      ButtonColors(
-                                          containerColor = MaterialTheme.colorScheme.error,
-                                          contentColor = MaterialTheme.colorScheme.onError,
-                                          disabledContainerColor = MaterialTheme.colorScheme.error,
-                                          disabledContentColor = MaterialTheme.colorScheme.onError),
-                                  onClick = {
-                                    startOrEndLoanViewModel.onCancel()
-                                    open = false
-                                  }) {
-                                    Text(text = "Cancel Loan")
-                                  }
-                            }
-                      }
+                      Box(
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .clickable(
+                                      onClick = {
+                                        itemViewModel.updateUiItem(item)
+                                        navigationActions.navigateTo(Route.VIEW_ITEM)
+                                        open = false
+                                      })
+                                  .testTag("item")) {
+                            ItemUi(item = item, user = lender, loan = loan)
+                          }
+                      Row(
+                          modifier = Modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),
+                          horizontalArrangement = Arrangement.Center) {
+                            Button(
+                                modifier = Modifier.fillMaxWidth(0.5f).testTag("startButton"),
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                        disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                        disabledContentColor = MaterialTheme.colorScheme.onPrimary),
+                                onClick = {
+                                  startOrEndLoanViewModel.onStart()
+                                  navigationActions.navigateTo(Route.INVENTORY)
+                                  open = false
+                                }) {
+                                  Text(text = "Start Loan")
+                                }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Button(
+                                modifier = Modifier.fillMaxWidth().testTag("cancelButton"),
+                                colors =
+                                    ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.error,
+                                        contentColor = MaterialTheme.colorScheme.onError,
+                                        disabledContainerColor = MaterialTheme.colorScheme.error,
+                                        disabledContentColor = MaterialTheme.colorScheme.onError),
+                                onClick = {
+                                  startOrEndLoanViewModel.onCancel()
+                                  navigationActions.navigateTo(Route.INVENTORY)
+                                  open = false
+                                }) {
+                                  Text(text = "Cancel Loan")
+                                }
+                          }
                     }
               }
         }

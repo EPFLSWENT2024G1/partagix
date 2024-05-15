@@ -54,66 +54,66 @@ fun EndLoanScreen(
 
   var open by remember { mutableStateOf(true) }
   if (open) {
-
     Dialog(
-        onDismissRequest = { open = false /*TODO: other things?*/ },
+        onDismissRequest = { open = false },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
           Surface(
               shape = RoundedCornerShape(16.dp),
-              modifier = modifier.fillMaxWidth().testTag("popup")) {
+              modifier = Modifier.fillMaxWidth().testTag("popup")) {
                 Column(
                     modifier =
-                        modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+                        Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
                       Row(
                           horizontalArrangement = Arrangement.SpaceBetween,
                           verticalAlignment = Alignment.CenterVertically,
-                          modifier = modifier.fillMaxWidth()) {
+                          modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = "End loan :",
                                 fontSize = 20.sp,
                                 modifier =
-                                    modifier
-                                        .padding(
+                                    Modifier.padding(
                                             start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp)
                                         .testTag("title"))
                             IconButton(
-                                onClick = { open = false },
-                                modifier = modifier.testTag("closeButton")) {
+                                onClick = {
+                                  navigationActions.navigateTo(Route.INVENTORY)
+                                  open = false
+                                },
+                                modifier = Modifier.testTag("closeButton")) {
                                   Icon(imageVector = Icons.Default.Close, contentDescription = "")
                                 }
                           }
-                      Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
-                        Box(
-                            modifier =
-                                modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 35.dp)
-                                    .testTag("item")
-                                    .clickable(
-                                        onClick = {
-                                          itemViewModel.updateUiItem(item)
-                                          navigationActions.navigateTo(Route.VIEW_ITEM)
-                                          open = false
-                                        })) {
-                              ItemUi(item = item, user = lender, loan = loan)
-                            }
 
-                        Button(
-                            modifier = modifier.fillMaxWidth().testTag("endLoanButton"),
-                            colors =
-                                ButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.error,
-                                    contentColor = MaterialTheme.colorScheme.onError,
-                                    disabledContainerColor = MaterialTheme.colorScheme.error,
-                                    disabledContentColor = MaterialTheme.colorScheme.onError),
-                            onClick = {
-                              startOrEndLoanViewModel.onFinish()
-                              open = false
-                            }) {
-                              Text(text = "End Loan")
-                            }
-                        Spacer(modifier = modifier.width(6.dp))
-                      }
+                      Box(
+                          modifier =
+                              Modifier.fillMaxWidth()
+                                  .padding(bottom = 35.dp)
+                                  .testTag("item")
+                                  .clickable(
+                                      onClick = {
+                                        itemViewModel.updateUiItem(item)
+                                        navigationActions.navigateTo(Route.VIEW_ITEM)
+                                        open = false
+                                      })) {
+                            ItemUi(item = item, user = lender, loan = loan)
+                          }
+
+                      Button(
+                          modifier = Modifier.fillMaxWidth().testTag("endLoanButton"),
+                          colors =
+                              ButtonColors(
+                                  containerColor = MaterialTheme.colorScheme.error,
+                                  contentColor = MaterialTheme.colorScheme.onError,
+                                  disabledContainerColor = MaterialTheme.colorScheme.error,
+                                  disabledContentColor = MaterialTheme.colorScheme.onError),
+                          onClick = {
+                            startOrEndLoanViewModel.onFinish()
+                            navigationActions.navigateTo(Route.INVENTORY)
+                            open = false
+                          }) {
+                            Text(text = "End Loan")
+                          }
+                      Spacer(modifier = Modifier.width(6.dp))
                     }
               }
         }
