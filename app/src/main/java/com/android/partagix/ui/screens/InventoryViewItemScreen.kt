@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -57,7 +58,8 @@ import com.google.firebase.auth.FirebaseAuth
 fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
-    borrowViewModel: BorrowViewModel
+    borrowViewModel: BorrowViewModel,
+    actualUser: String
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
 
@@ -167,7 +169,7 @@ fun InventoryViewItemScreen(
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
-
+                  if (actualUser != user.id && actualUser != "" && user.id != "") {
                   Button(
                       onClick = {
                         borrowViewModel.startBorrow(item, user)
@@ -175,6 +177,7 @@ fun InventoryViewItemScreen(
                       },
                       content = { Text("Borrow item") },
                       modifier = Modifier.fillMaxWidth())
+                  }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))

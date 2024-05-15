@@ -319,7 +319,8 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+        val actualUser = Authentication.getUser()?.uid ?: ""
+       InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, actualUser)
       }
 
       composable(Route.CREATE_ITEM) {
