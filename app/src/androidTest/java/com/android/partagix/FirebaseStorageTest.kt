@@ -36,7 +36,7 @@ class FirebaseStorageTest {
     val imageName = UUID.randomUUID().toString()
 
     every { firebaseStorage.reference } returns storageReference
-    every { storageReference.child("images/$imageName") } returns storageReference
+    every { storageReference.child("images/$imageName.jpg") } returns storageReference
     every { storageReference.putFile(builtUri) } returns uploadTask
 
     every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
@@ -59,7 +59,7 @@ class FirebaseStorageTest {
     val localFile = File.createTempFile("local", ".tmp")
 
     every { firebaseStorage.reference } returns storageReference
-    every { storageReference.child("images/$path") } returns storageReference
+    every { storageReference.child("images/$path.jpg") } returns storageReference
     every { storageReference.getFile(any<File>()) } returns fileDownloadTask
 
     every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
@@ -67,7 +67,7 @@ class FirebaseStorageTest {
 
     getImageFromFirebaseStorage(path, firebaseStorage)
 
-    verify { storageReference.child("images/$path") }
+    verify { storageReference.child("images/$path.jpg") }
 
     verify { storageReference.getFile(any<File>()) }
   }
