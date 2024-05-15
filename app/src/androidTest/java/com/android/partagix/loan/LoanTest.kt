@@ -12,6 +12,7 @@ import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onNodeWithTag
@@ -79,6 +80,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         latitude = 46.520238
         longitude = 6.566109
       }
+
+  private val timeWait: Long = 20000
 
   @Before
   fun testSetup() {
@@ -187,6 +190,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
     }
 
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+    }
+
     onComposeScreen<LoanScreen>(composeTestRule) {
       searchBar { assertIsDisplayed() }
       maps { assertIsDisplayed() }
@@ -204,6 +211,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockUserViewModel.uiState } returns userUIStateWithoutLocation
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+    }
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
@@ -225,6 +236,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+    }
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
     }
 
     val node = composeTestRule.onNodeWithTag("LoanScreenSearchBar").onChild()
@@ -277,6 +292,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
     }
 
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+    }
+
     onComposeScreen<LoanScreen>(composeTestRule) {
       distanceFilter {
         assertIsDisplayed()
@@ -320,6 +339,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+    }
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -370,6 +393,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
     }
 
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+    }
+
     onComposeScreen<LoanScreen>(composeTestRule) {
       qtyFilter {
         assertIsDisplayed()
@@ -394,6 +421,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
       LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+    }
+
+    composeTestRule.waitUntil(timeWait) {
+      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
