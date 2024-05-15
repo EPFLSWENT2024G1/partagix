@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
-import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -170,13 +169,13 @@ fun InventoryViewItemScreen(
 
                   Spacer(modifier = Modifier.width(8.dp))
                   if (actualUser != user.id && actualUser != "" && user.id != "") {
-                  Button(
-                      onClick = {
-                        borrowViewModel.startBorrow(item, user)
-                        navigationActions.navigateTo(Route.BORROW)
-                      },
-                      content = { Text("Borrow item") },
-                      modifier = Modifier.fillMaxWidth())
+                    Button(
+                        onClick = {
+                          borrowViewModel.startBorrow(item, user)
+                          navigationActions.navigateTo(Route.BORROW)
+                        },
+                        content = { Text("Borrow item") },
+                        modifier = Modifier.fillMaxWidth())
                   }
                 }
 
