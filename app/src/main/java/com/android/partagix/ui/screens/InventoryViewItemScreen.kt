@@ -58,10 +58,9 @@ fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
     borrowViewModel: BorrowViewModel,
-    actualUser: String
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
-
+  var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
   val user = uiState.value.user
 
