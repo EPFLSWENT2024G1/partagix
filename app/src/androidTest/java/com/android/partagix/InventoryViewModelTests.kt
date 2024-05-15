@@ -177,8 +177,6 @@ class InventoryViewModelTests {
     latch.await()
     runBlocking {
       assert(inventoryViewModel.uiState.value.borrowedItems == list)
-      println(
-          "inventoryViewModel.uiState.value.usersBor = ${inventoryViewModel.uiState.value.usersBor}")
       assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
       assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
       assert(inventoryViewModel.uiState.value.items == list)

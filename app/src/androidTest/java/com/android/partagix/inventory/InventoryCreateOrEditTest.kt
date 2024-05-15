@@ -1,6 +1,7 @@
 package com.android.partagix.inventory
 
 import android.location.Location
+import android.net.Uri
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
@@ -45,6 +46,13 @@ class InventoryCreateOrEditTest :
   private lateinit var noCategoryMockUiState: MutableStateFlow<ItemUIState>
 
   private var savedItem = slot<Item>()
+
+  val uri1 =
+      Uri.parse(
+          "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+  val uri2 =
+      Uri.parse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
+  val uriList = listOf(uri1, uri2)
 
   @Before
   fun testSetup() {

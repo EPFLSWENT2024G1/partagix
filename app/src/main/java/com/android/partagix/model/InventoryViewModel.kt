@@ -80,25 +80,20 @@ class InventoryViewModel(
       latch: CountDownLatch = CountDownLatch(1),
       firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
   ) {
-    println("_____ yooooo")
     viewModelScope.launch {
       val user = firebaseAuth.currentUser
       if (user != null) {
-        println("_____ yooooo good")
         database.getItemsWithImages { items: List<Item> ->
           updateInv(items.filter { it.idUser.equals(user.uid) })
           findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
           database.getLoans {
-            println("loans = $it")
             val usersToUpdate = it.map { loan -> loan.idLender }.toMutableList()
             it.filter { it.idBorrower.equals(user.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
-                  println("--- beep boop ---")
                   updateBor(items.filter { it.id.equals(loan.idItem) })
                   // getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
                   findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
                 }
-            println("usersToUpdate = $usersToUpdate")
             usersToUpdate.forEach { id ->
               database.getUser(id) { user ->
                 updateUsersBor(user)
@@ -108,7 +103,6 @@ class InventoryViewModel(
           }
         }
       } else {
-        println("_____ yooooo bad")
         database.getItemsWithImages {
           updateBor(it)
           getUsers(it) {
@@ -159,7 +153,6 @@ class InventoryViewModel(
    */
   fun updateUsers(new: User) {
     _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
-    println("users = ${uiState.value.users.size}")
   }
 
   /**

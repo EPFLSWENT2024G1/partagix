@@ -2,6 +2,7 @@ package com.android.partagix.ui.components
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -32,6 +33,11 @@ import coil.compose.AsyncImage
 
 // Functions commented as "imported" are from this webpage :
 // https://medium.com/@jpmtech/jetpack-compose-display-a-photo-picker-6bcb9b357a3a
+
+fun launchPhotoPicker(photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>) {
+  photoPickerLauncher.launch(
+      PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+}
 
 /**
  * PhotoSelectorView composable to display a photo picker
@@ -67,19 +73,13 @@ fun PhotoSelectorView(maxSelectionCount: Int = 1) {
                       }),
           onResult = { uris -> selectedImages = uris })
 
-  fun launchPhotoPicker() {
-    if (maxSelectionCount > 1) {
-      multiplePhotoPickerLauncher.launch(
-          PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    } else {
-      singlePhotoPickerLauncher.launch(
-          PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    }
-  }
-
   Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
     Button(
-        onClick = { launchPhotoPicker() },
+        onClick = {
+          launchPhotoPicker(
+              if (maxSelectionCount == 1) singlePhotoPickerLauncher
+              else multiplePhotoPickerLauncher)
+        },
         modifier = Modifier.testTag("PhotoSelectorClickable $maxSelectionCount")) {
           Text(buttonText)
         }
@@ -113,8 +113,6 @@ fun ImageLayoutView(selectedImages: List<Uri?>) {
 fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -> Unit = {}) {
   var selectedImages by remember { mutableStateOf<List<Uri?>>(defaultImages) }
 
-  val buttonText = "Select a photo"
-
   val singlePhotoPickerLauncher =
       rememberLauncherForActivityResult(
           contract = ActivityResultContracts.PickVisualMedia(),
@@ -128,16 +126,15 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
           contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 2),
           onResult = { uris -> selectedImages = uris })
 
-  fun launchPhotoPicker() {
-    singlePhotoPickerLauncher.launch(
-        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-  }
-
   Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
     Box(
         modifier =
             Modifier.fillMaxSize()
-                .clickable { launchPhotoPicker() }
+                .clickable {
+                  launchPhotoPicker(
+                      if (selectedImages.size == 1) singlePhotoPickerLauncher
+                      else multiplePhotoPickerLauncher)
+                }
                 .testTag("MainImagePickerClickable")) {
           Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             LazyColumn(
