@@ -88,6 +88,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     val data = remoteMessage.data
     val notificationBody = remoteMessage.notification
 
+    Log.d(TAG, "From: ${remoteMessage.from}, data: $data, notification: $notificationBody")
+
     if (data.isNotEmpty() && notificationBody != null) {
       val date =
           try {

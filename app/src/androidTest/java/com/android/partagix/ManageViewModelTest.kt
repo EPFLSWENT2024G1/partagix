@@ -129,6 +129,7 @@ class ManageViewModelTest {
     mockkObject(Authentication)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    every { db.getFCMToken(any(), any()) } answers { secondArg<(String) -> Unit>().invoke("token") }
 
     val latch = CountDownLatch(1)
     val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
