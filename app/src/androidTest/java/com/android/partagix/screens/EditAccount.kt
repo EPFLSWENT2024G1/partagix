@@ -14,7 +14,6 @@ class EditAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val notYourAccount: KNode = child { hasTestTag("notYourAccount") }
   val mainContent: KNode = child { hasTestTag("mainContent") }
   val userImage: KNode = child { hasTestTag("userImage") }
-  val username: KNode = child { hasTestTag("username") }
   val usernameField: KNode = child { hasTestTag("usernameField") }
   val addressField: KNode = child { hasTestTag("addressField") }
   val actionButtons: KNode = child { hasTestTag("actionButtons") }

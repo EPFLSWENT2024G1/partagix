@@ -70,7 +70,8 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       EditAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          navigationActions = mockNavActions,
+          locationViewModel = mockk())
     }
 
     ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) {
@@ -79,7 +80,6 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       bottomNavBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
       userImage { assertIsDisplayed() }
-      username { assertIsDisplayed() }
       usernameField { assertIsDisplayed() }
       addressField { assertIsDisplayed() }
       actionButtons { assertIsDisplayed() }
@@ -96,7 +96,8 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       EditAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          navigationActions = mockNavActions,
+          locationViewModel = mockk())
     }
 
     ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) {
@@ -116,7 +117,8 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       EditAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          navigationActions = mockNavActions,
+          locationViewModel = mockk())
     }
 
     ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) { backButton { performClick() } }
@@ -133,7 +135,8 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       EditAccount(
           modifier = Modifier,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          navigationActions = mockNavActions,
+          locationViewModel = mockk())
     }
 
     ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) { saveButton { performClick() } }
