@@ -19,6 +19,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
+import java.io.File
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.runBlocking
@@ -37,7 +38,9 @@ class InventoryViewModelTests {
           Visibility.PUBLIC,
           1,
           Location(""),
-          idUser = "8WuTkKJZLTAr6zs5L7rH")
+          idUser = "8WuTkKJZLTAr6zs5L7rH",
+          imageId = File("image1"))
+
   val item2 =
       Item(
           "item2",
@@ -47,7 +50,8 @@ class InventoryViewModelTests {
           Visibility.PUBLIC,
           32,
           Location(""),
-          idUser = "8WuTkKJZLTAr6zs5L7rH")
+          idUser = "8WuTkKJZLTAr6zs5L7rH",
+          imageId = File("image2"))
   val item3 =
       Item(
           "item3",
@@ -113,12 +117,17 @@ class InventoryViewModelTests {
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
   var onSuccess: (List<Item>) -> Unit = {}
+  var onSuccess1Item: (Item) -> Unit = {}
   var onSuccessinv: (Inventory) -> Unit = {}
   @RelaxedMockK lateinit var fire: FirebaseAuth
 
   @Before
   fun setUp() {
     fire = mockk()
+    val firebaseUser = mockk<FirebaseUser>()
+    every { firebaseUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    every { fire.currentUser } returns firebaseUser
+    every { this@InventoryViewModelTests.fire.currentUser } returns firebaseUser
     every { db.getUserInventory(any(), any()) } answers
         {
           onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
@@ -129,6 +138,17 @@ class InventoryViewModelTests {
         {
           onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
           onSuccess(list)
+        }
+    every { db.getItemWithImage(any(), any()) } answers
+        {
+          onSuccess1Item = it.invocation.args[0] as (Item) -> Unit
+          onSuccess1Item(item1)
+        }
+
+    every { db.getUsers(any()) } answers
+        {
+          val onSuccessUs = it.invocation.args[0] as (List<User>) -> Unit
+          onSuccessUs(listOf(user))
         }
 
     every { db.getUser(any(), any(), any()) } answers
@@ -141,7 +161,8 @@ class InventoryViewModelTests {
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
-    every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+    every { this@InventoryViewModelTests.fire.currentUser } returns
+        mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
   }
 
   @After
@@ -152,10 +173,12 @@ class InventoryViewModelTests {
   @Test
   fun testGetInventory() {
     val latch = CountDownLatch(1)
-    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch, firebaseAuth = fire))
     latch.await()
     runBlocking {
       assert(inventoryViewModel.uiState.value.borrowedItems == list)
+      println(
+          "inventoryViewModel.uiState.value.usersBor = ${inventoryViewModel.uiState.value.usersBor}")
       assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
       assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
       assert(inventoryViewModel.uiState.value.items == list)

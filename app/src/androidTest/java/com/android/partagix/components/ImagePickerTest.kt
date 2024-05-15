@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ImagePickerTest {
   @get:Rule val composeTestRule = createComposeRule()
-  val UI_TIMEOUT: Long = 100000
+  val UI_TIMEOUT: Long = 10000
 
   val uri1 =
       Uri.parse(
