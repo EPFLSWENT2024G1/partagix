@@ -89,12 +89,19 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     val notificationBody = remoteMessage.notification
 
     if (data.isNotEmpty() && notificationBody != null) {
+      val date =
+          try {
+            Date.valueOf(data["creationDate"])
+          } catch (e: IllegalArgumentException) {
+            Date(System.currentTimeMillis())
+          }
+
       val notification =
           Notification(
               title = notificationBody.title ?: "",
               message = notificationBody.body ?: "",
               type = Notification.Type.NEW_INCOMING_REQUEST,
-              creationDate = Date.valueOf(data["creationDate"]),
+              creationDate = date,
               navigationUrl = data["navigationUrl"])
 
       notificationAlert(context!!, notification, navigationActions!!)

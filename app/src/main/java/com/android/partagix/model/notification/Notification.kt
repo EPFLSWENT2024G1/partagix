@@ -6,15 +6,17 @@ data class Notification(
     val title: String,
     val message: String,
     val type: Type,
-    val creationDate: Date,
+    val creationDate: Date = Date(System.currentTimeMillis()),
     val navigationUrl: String? = null
 ) {
   enum class Type {
+    LOAN_ACCEPTED,
     NEW_INCOMING_REQUEST;
 
     fun channelId(): String {
       return when (this) {
         NEW_INCOMING_REQUEST -> Channels.INCOMING.id()
+        LOAN_ACCEPTED -> Channels.OUTGOING.id()
       }
     }
   }

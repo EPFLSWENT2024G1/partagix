@@ -82,7 +82,8 @@ class App(
   private val notificationManager = FirebaseMessagingService(db = db)
 
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val manageViewModel = ManageLoanViewModel(db = db)
+  private val manageViewModel =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
 
   private val loanViewModel = LoanViewModel(db = db)
   private val borrowViewModel = BorrowViewModel(db = db, notificationManager = notificationManager)
