@@ -1,43 +1,46 @@
 package com.android.partagix.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StartOrEndLoanViewModel
-import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemUi
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
@@ -47,59 +50,78 @@ fun StartLoanScreen(
   val borrower = uiState.borrower
   val lender = uiState.lender
 
-  Scaffold(
-      modifier = Modifier.fillMaxSize(),
-      topBar = {
-        TopAppBar(
-            modifier = Modifier.fillMaxWidth().testTag("topBar"),
-            title = { Text("Start Loan", modifier = Modifier.fillMaxWidth().testTag("title")) },
-            navigationIcon = {
-              IconButton(
-                  modifier = Modifier.testTag("backButton"),
-                  onClick = { navigationActions.goBack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        modifier = Modifier.width(48.dp))
+  var open by remember { mutableStateOf(true) }
+  if (open) {
+
+    Dialog(
+        onDismissRequest = { open = false /*TODO: other things?*/ },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
+          Surface(shape = RoundedCornerShape(16.dp), modifier = modifier.fillMaxWidth()) {
+            Column(
+                modifier =
+                    modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+                  Row(
+                      horizontalArrangement = Arrangement.SpaceBetween,
+                      verticalAlignment = Alignment.CenterVertically,
+                      modifier = modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Start loan :",
+                            fontSize = 20.sp,
+                            modifier =
+                                modifier.padding(
+                                    start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp))
+                        IconButton(onClick = {}) {
+                          Icon(imageVector = Icons.Default.Close, contentDescription = "")
+                        }
+                      }
+                  Column(modifier = modifier.padding(8.dp, 0.dp, 8.dp, 8.dp).fillMaxWidth()) {
+                    ItemUi(item = item, user = lender, loan = loan)
+                    Spacer(modifier = modifier.width(8.dp))
+                    Row(
+                        modifier = modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),
+                        horizontalArrangement = Arrangement.Center) {
+                          Button(
+                              modifier = modifier.fillMaxWidth(0.5f),
+                              colors =
+                                  ButtonColors(
+                                      containerColor = MaterialTheme.colorScheme.primary,
+                                      contentColor = MaterialTheme.colorScheme.onPrimary,
+                                      disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                      disabledContentColor = MaterialTheme.colorScheme.onPrimary),
+                              onClick = {
+                                itemViewModel.updateUiItem(item)
+                                navigationActions.navigateTo(Route.VIEW_ITEM)
+                              }) {
+                                Text(text = "See Item")
+                              }
+                          Spacer(modifier = modifier.width(10.dp))
+                          Button(
+                              modifier = modifier.fillMaxWidth(),
+                              colors =
+                                  ButtonColors(
+                                      containerColor = MaterialTheme.colorScheme.error,
+                                      contentColor = MaterialTheme.colorScheme.onError,
+                                      disabledContainerColor = MaterialTheme.colorScheme.error,
+                                      disabledContentColor = MaterialTheme.colorScheme.onError),
+                              onClick = { startOrEndLoanViewModel.onCancel() }) {
+                                Text(text = "Cancel Loan")
+                              }
+                        }
+                    Button(
+                        modifier = modifier.fillMaxWidth(),
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                        onClick = { startOrEndLoanViewModel.onStart() }) {
+                          Text(text = "Start Loan")
+                        }
                   }
-            })
-      },
-      bottomBar = {
-        BottomNavigationBar(
-            selectedDestination = Route.HOME,
-            navigateToTopLevelDestination = navigationActions::navigateTo,
-        )
-      }) {
-        Column(
-            modifier =
-                Modifier.fillMaxHeight()
-                    .padding(it) // Adjust padding as needed
-                    .fillMaxWidth() // Make the column fill the entire width
-                    .testTag("StartLoanScreen"),
-            verticalArrangement = Arrangement.Center, // Center items vertically
-            horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
-            ) {
-              ItemUi(item, borrower, loan)
-              Row {
-                Button(
-                    onClick = { startOrEndLoanViewModel.onStart() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                    modifier =
-                        Modifier.weight(1f).testTag("startButton") // Expand to fill available space
-                    ) {
-                      Text(text = "start Loan", color = Color.Black)
-                    }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { startOrEndLoanViewModel.onCancel() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                    modifier =
-                        Modifier.weight(1f)
-                            .testTag("cancelButton") // Expand to fill available space
-                    ) {
-                      Text(text = "cancel Loan", color = Color.Black)
-                    }
-              }
-            }
-      }
+                }
+          }
+        }
+  }
 }
