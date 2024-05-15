@@ -71,7 +71,7 @@ fun EndLoanScreen(
                             modifier =
                                 modifier.padding(
                                     start = 10.dp, end = 26.dp, top = 16.dp, bottom = 16.dp))
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = { navigationActions.goBack() }) {
                           Icon(imageVector = Icons.Default.Close, contentDescription = "")
                         }
                       }

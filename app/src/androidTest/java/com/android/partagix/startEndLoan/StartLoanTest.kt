@@ -10,6 +10,7 @@ import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.screens.StartLoanScreen
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.StartLoanScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -49,6 +50,8 @@ class StartLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockNavActions.goBack() } just Runs
 
     mockItemViewModel = mockk()
+    every { mockItemViewModel.updateUiItem(emptyItem) } just Runs
+    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
 
     composeTestRule.setContent {
       StartLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockItemViewModel)
@@ -58,20 +61,47 @@ class StartLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   @Test
   fun contentIsDisplayed() = run {
     onComposeScreen<StartLoanScreen>(composeTestRule) {
+      title { assertIsDisplayed() }
       item { assertIsDisplayed() }
       startButton { assertIsDisplayed() }
       cancelButton { assertIsDisplayed() }
+      close { assertIsDisplayed() }
     }
   }
 
   @Test
-  fun buttonAction() = run {
+  fun startButton() = run {
     onComposeScreen<StartLoanScreen>(composeTestRule) {
       startButton { performClick() }
       coVerify { mockStartOrEndLoanViewModel.onStart() }
+      popUp { assertDoesNotExist() }
+    }
+  }
 
+  @Test
+  fun cancelButton() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
       cancelButton { performClick() }
       coVerify { mockStartOrEndLoanViewModel.onCancel() }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun clickOnItem() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
+      item { performClick() }
+      coVerify { mockItemViewModel.updateUiItem(emptyItem) }
+      coVerify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun closeButton() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
+      close { performClick() }
+      popUp { assertDoesNotExist() }
     }
   }
 }
