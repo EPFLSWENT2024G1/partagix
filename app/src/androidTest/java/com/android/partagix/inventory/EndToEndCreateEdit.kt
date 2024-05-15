@@ -185,7 +185,7 @@ class EndToEndCreateEdit {
           itemViewModel = mockItemViewModel)
     }
 
-    composeTestRule.onNodeWithText("There is no items in the inventory.").assertIsDisplayed()
+    composeTestRule.onNodeWithText("There is no items in your inventory, click on the + button to add your first item").assertIsDisplayed()
     composeTestRule.onNodeWithTag("inventoryScreenFab").performClick()
 
     coVerify(exactly = 1) { mockNavActions.navigateTo(Route.CREATE_ITEM) }
