@@ -50,9 +50,7 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
       stampScreen { assertIsDisplayed() }
       topAppBar { assertIsDisplayed() }
       mainContent { assertIsDisplayed() }
-      dimensionLabel { assertIsDisplayed() }
       dimensionBox { assertIsDisplayed() }
-      labelLabel { assertIsDisplayed() }
       labelTextField { assertIsDisplayed() }
     }
   }
@@ -66,6 +64,7 @@ class StampTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppo
       title { assertIsDisplayed() }
       backButton { assertIsDisplayed() }
       backButton { performClick() }
+      bottomBar { assertIsDisplayed() }
       downloadRow { assertIsDisplayed() }
       downloadButton { assertIsDisplayed() }
 
