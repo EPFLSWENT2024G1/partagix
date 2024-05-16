@@ -8,20 +8,12 @@ class LoginScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
     ComposeScreen<LoginScreen>(
         semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("LoginScreen") }) {
 
-  val loginTitle: KNode = child { hasTestTag("LoginTitle") }
-  val popUpLoginButton: KNode = child { hasTestTag("PopUpLoginButton") }
-  val loginButtonOpenBottomSheet: KNode = child { hasTestTag("LoginButtonOpenBottomSheet") }
-  val loginBottomSheet: KNode = child { hasTestTag("LoginBottomSheet") }
-  val loginButton: KNode = child { hasTestTag("LoginButton") }
-}
-
-class LoginScreen2(semanticsProvider: SemanticsNodeInteractionsProvider) :
-    ComposeScreen<LoginScreen2>(
-        semanticsProvider = semanticsProvider, viewBuilderAction = { hasTestTag("LoginScreen2") }) {
-
-  val loginTitle: KNode = child { hasTestTag("LoginTitle") }
-  val popUpLoginButton: KNode = child { hasTestTag("PopUpLoginButton") }
-  val loginButtonOpenBottomSheet: KNode = child { hasTestTag("LoginButtonOpenBottomSheet") }
-  val loginBottomSheet: KNode = child { hasTestTag("LoginBottomSheet") }
-  val loginButton: KNode = child { hasTestTag("LoginButton") }
+  val banner: KNode = onNode { hasTestTag("Banner") }
+  val centerContent: KNode = onNode { hasTestTag("CenterContent") }
+  val startBorrowButton: KNode = onNode { hasTestTag("StartBorrowButton") }
+  val loginBottomSheet: KNode = onNode { hasTestTag("LoginBottomSheet") }
+  val imageGrid: KNode = onNode { hasTestTag("ImageGrid") }
+  val blurEffectBox: KNode = onNode { hasTestTag("BlurEffectBox") }
+  val seeMoreClickableText: KNode = onNode { hasTestTag("SeeMoreClickableText") }
+  val googleLoginButton: KNode = onNode { hasTestTag("GoogleLoginButton") }
 }

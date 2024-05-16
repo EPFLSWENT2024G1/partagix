@@ -57,10 +57,10 @@ import com.google.firebase.auth.FirebaseAuth
 fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
-    borrowViewModel: BorrowViewModel
+    borrowViewModel: BorrowViewModel,
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
-
+  var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
   val user = uiState.value.user
 
@@ -167,14 +167,15 @@ fun InventoryViewItemScreen(
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
-
-                  Button(
-                      onClick = {
-                        borrowViewModel.startBorrow(item, user)
-                        navigationActions.navigateTo(Route.BORROW)
-                      },
-                      content = { Text("Borrow item") },
-                      modifier = Modifier.fillMaxWidth())
+                  if (actualUser != user.id && actualUser != "" && user.id != "") {
+                    Button(
+                        onClick = {
+                          borrowViewModel.startBorrow(item, user)
+                          navigationActions.navigateTo(Route.BORROW)
+                        },
+                        content = { Text("Borrow item") },
+                        modifier = Modifier.fillMaxWidth())
+                  }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))

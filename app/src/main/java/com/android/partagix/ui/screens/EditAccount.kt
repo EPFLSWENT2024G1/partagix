@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,7 +37,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.location.Location
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.locationPicker.LocationPicker
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
@@ -48,6 +50,7 @@ fun EditAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
+    locationViewModel: LocationPickerViewModel
 ) {
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
@@ -55,6 +58,9 @@ fun EditAccount(
   // Local state variables to hold temporary values for editable fields
   var tempUsername by remember { mutableStateOf(user.name) }
   var tempAddress by remember { mutableStateOf(user.address) }
+
+  // The field with the actual location
+  val loc = remember { mutableStateOf<Location?>(null) }
 
   // Set local state variables to user's current values
   fun resetTempValues() {
@@ -112,24 +118,21 @@ fun EditAccount(
                     modifier = Modifier.fillMaxWidth().testTag("userImage"),
                     alignment = Alignment.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().testTag("username"),
-                    horizontalArrangement = Arrangement.Absolute.SpaceAround) {
-                      TextField(
-                          modifier = Modifier.testTag("usernameField"),
-                          value = tempUsername,
-                          onValueChange = { tempUsername = it },
-                          label = { Text("username") })
-                    }
-                Spacer(modifier = Modifier.height(16.dp))
+
                 TextField(
-                    value = tempAddress,
-                    onValueChange = { tempAddress = it },
-                    label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("addressField"),
-                    leadingIcon = {
-                      Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier)
-                    })
+                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
+                    value = tempUsername,
+                    onValueChange = { tempUsername = it },
+                    label = { Text("username") })
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LocationPicker(
+                    location = tempAddress,
+                    loc = loc.value,
+                    onTextChanged = { tempAddress = it },
+                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
@@ -140,8 +143,7 @@ fun EditAccount(
                             userViewModel.updateUser(
                                 user.copy(
                                     name = tempUsername,
-                                    address =
-                                        tempAddress)) // Update user with new values in the database
+                                    address = loc.value?.locationName ?: "Unknown Address"))
                             navigationActions.goBack()
                           },
                           modifier = Modifier.weight(1f).testTag("saveButton")) {
