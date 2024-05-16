@@ -1,7 +1,6 @@
 package com.android.partagix.loan
 
 import android.content.Context
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.SystemClock
@@ -166,16 +165,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     // Set the mock location
     try {
       locationManager.addTestProvider(
-          LocationManager.GPS_PROVIDER,
-          false,
-          false,
-          false,
-          false,
-          true,
-          true,
-          true,
-          Criteria.POWER_LOW,
-          Criteria.ACCURACY_FINE)
+          LocationManager.GPS_PROVIDER, false, false, false, false, true, true, true, 1, 1)
       locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true)
       locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, mockLocation)
     } catch (e: SecurityException) {
@@ -192,7 +182,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -215,7 +205,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
@@ -240,7 +230,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     val node = composeTestRule.onNodeWithTag("LoanScreenSearchBar").onChild()
@@ -294,7 +284,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -343,7 +333,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -395,7 +385,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -425,7 +415,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     composeTestRule.waitUntil(timeWait) {
-      composeTestRule.onNodeWithTag("makeLoanRequestScreen").isDisplayed()
+      composeTestRule.onNodeWithTag("LoanScreenItemListView").isDisplayed()
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
