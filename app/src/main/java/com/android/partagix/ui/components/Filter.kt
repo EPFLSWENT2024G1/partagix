@@ -55,8 +55,9 @@ fun Filter(
     maxValue: Float = 50f,
     sliderTextValue: ((Float) -> String)? = null,
     onReset: () -> Unit = {},
+    value: Float = 0f
 ) {
-  var sliderPosition by remember { mutableFloatStateOf(0f) }
+  var sliderPosition by remember { mutableFloatStateOf(value) }
   var showDialog by remember { mutableStateOf(false) }
 
   val defaultPaddingValues = ButtonDefaults.ContentPadding

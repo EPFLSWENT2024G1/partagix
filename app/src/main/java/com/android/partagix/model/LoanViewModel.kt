@@ -67,7 +67,7 @@ class LoanViewModel(
             for (item in newItems) {
               db.getUser(item.idUser) { user: User ->
                 availableLoans += LoanDetails(item, user)
-                update(availableLoans)
+                applyFilters(uiState.value.filterState)
               }
             }
 
@@ -112,6 +112,7 @@ class LoanViewModel(
       loans = loans.filter { it.item in filteredItems }
     }
 
+    _uiState.value = _uiState.value.copy(filterState = filterState)
     update(loans)
   }
 
