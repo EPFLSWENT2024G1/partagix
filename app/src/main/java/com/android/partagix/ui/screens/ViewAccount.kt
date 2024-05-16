@@ -23,14 +23,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -53,17 +50,11 @@ fun ViewAccount(
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
   Scaffold(
-      modifier = Modifier
-        .fillMaxSize()
-        .testTag("viewAccount"),
+      modifier = Modifier.fillMaxSize().testTag("viewAccount"),
       topBar = {
         TopAppBar(
-            modifier = Modifier
-              .fillMaxWidth()
-              .testTag("topBar"),
-            title = { Text("My Account", modifier = Modifier
-              .fillMaxWidth()
-              .testTag("title")) },
+            modifier = Modifier.fillMaxWidth().testTag("topBar"),
+            title = { Text("My Account", modifier = Modifier.fillMaxWidth().testTag("title")) },
             navigationIcon = {
               IconButton(
                   modifier = Modifier.testTag("backButton"),
@@ -83,16 +74,12 @@ fun ViewAccount(
       }) {
         Column(
             modifier =
-            Modifier
-              .fillMaxHeight()
-              .padding(it)
-              .verticalScroll(rememberScrollState())
-              .testTag("mainContent")) {
+                Modifier.fillMaxHeight()
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+                    .testTag("mainContent")) {
               Row(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .testTag("editButton"),
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
                   horizontalArrangement = Arrangement.Absolute.Right) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
@@ -106,53 +93,25 @@ fun ViewAccount(
                       painterResource(
                           id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
                   contentDescription = null,
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("userImage"),
+                  modifier = Modifier.fillMaxWidth().testTag("userImage"),
                   alignment = Alignment.Center)
               Spacer(modifier = Modifier.height(8.dp))
               Row(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("username"),
+                  modifier = Modifier.fillMaxWidth().testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = user.name
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
 
-//                                                                                     from here
-/*              TextField(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .testTag("address"),
-                  value = user.address,
-                  onValueChange = {},
-                  label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })*/
-
-          Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
-            Icon(
-              Icons.Default.LocationOn,
-              contentDescription = null,
-              modifier = Modifier.padding(start = 12.dp, top = 15.dp)
-            )
-            LabeledText(modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
-          }
-
-
-//                                                                                     to here
-
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+                Icon(
+                    Icons.Default.LocationOn,
+                    contentDescription = null,
+                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("address"))
+                LabeledText(
+                    modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
+              }
 
               val rank = user.rank
               val stars: String
@@ -160,7 +119,6 @@ fun ViewAccount(
                 stars = "No trust yet"
               } else {
                 val rating = round(rank.toFloat() * 100) / 100
-                // val rating = 4.5
                 val roundedRating = round(rating).toInt()
                 stars =
                     when (roundedRating) {
@@ -188,59 +146,27 @@ fun ViewAccount(
                     }
               }
 
-
-//                                                                                   from here
-              /*TextField(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .testTag("rating"),
-                  value = stars,
-                  onValueChange = {},
-                  label = { Text("Trust") },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })*/
-
-          Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
-            Icon(
-              Icons.Default.CheckCircle,
-              contentDescription = null,
-              modifier = Modifier.padding(start = 12.dp, top = 15.dp)
-            )
-            LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
-          }
-//                                                                                   to here
-
-
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("rating"))
+                LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
+              }
 
               Spacer(modifier = Modifier.height(16.dp))
               Row(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp, 0.dp)
-                    .testTag("actionButtons"),
+                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                        modifier = Modifier
-                          .weight(1f)
-                          .testTag("inventoryButton")) {
+                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
                           Text("See inventory")
                         }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = { /*TODO: friends*/},
-                        modifier = Modifier
-                          .weight(1f)
-                          .testTag("friendButton")) {
+                        modifier = Modifier.weight(1f).testTag("friendButton")) {
                           Text("Add Friends [not yet implemented]")
                         }
                   }
