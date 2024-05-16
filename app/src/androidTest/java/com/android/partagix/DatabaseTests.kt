@@ -23,9 +23,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util.voidErrorTransformer
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import getImagesFromFirebaseStorage
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -38,6 +40,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import java.io.File
 
 class DatabaseTests {
   val path = "rentals"
@@ -175,6 +178,23 @@ class DatabaseTests {
 
     every { mockCollection.document() } returns mockDocument
 
+      val firebaseStorage = mockk<FirebaseStorage>()
+      val storageReference = mockk<StorageReference>()
+      val downloadTask = mockk<FileDownloadTask>()
+
+      every { firebaseStorage.reference } returns storageReference
+      every { storageReference.child("imageId") } returns storageReference
+      every { downloadTask.addOnSuccessListener(any()) } answers {
+          val listener = arg<OnSuccessListener<File>>(0)
+          listener.onSuccess(File("imageId"))
+          downloadTask
+      }
+      every { downloadTask.addOnFailureListener(any()) } returns downloadTask
+
+      every {storageReference.getFile(any<File>())} answers {
+          downloadTask
+      }
+
     val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
     every { mockDocument.id } returns documentId
 
@@ -241,7 +261,7 @@ class DatabaseTests {
     val mockItemsTask = mockk<Task<QuerySnapshot>>()
     val mockCategoriesTask = mockk<Task<QuerySnapshot>>()
 
-    val categoryId = "catId"
+      val categoryId = "catId"
     val categoryName = "catName"
 
     val userId = "userId"
@@ -328,10 +348,23 @@ class DatabaseTests {
     val firebaseStorage = mockk<FirebaseStorage>()
     val storageReference = mockk<StorageReference>()
     val uploadTask = mockk<UploadTask>()
+      val downloadTask = mockk<FileDownloadTask>()
+
     every { firebaseStorage.reference } returns storageReference
     every { storageReference.child("imageId") } returns storageReference
     every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
     every { uploadTask.addOnFailureListener(any()) } returns uploadTask
+
+      every { downloadTask.addOnSuccessListener(any()) } answers {
+        val listener = arg<OnSuccessListener<File>>(0)
+        listener.onSuccess(File("imageId"))
+        downloadTask
+      }
+      every { downloadTask.addOnFailureListener(any()) } returns downloadTask
+
+    every {storageReference.getFile(any<File>())} answers {
+        downloadTask
+    }
 
     // every {mockDb.collection(any())} returns mockItemsCollection
 
