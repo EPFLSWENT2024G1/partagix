@@ -145,7 +145,7 @@ fun ViewAccount(
             Icon(
               Icons.Default.LocationOn,
               contentDescription = null,
-              modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+              modifier = Modifier.padding(start = 12.dp, top = 15.dp)
             )
             LabeledText(modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
           }
@@ -190,7 +190,7 @@ fun ViewAccount(
 
 
 //                                                                                   from here
-              TextField(
+              /*TextField(
                   modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -207,7 +207,16 @@ fun ViewAccount(
                           unfocusedContainerColor = Color.Transparent,
                           disabledContainerColor = Color.Transparent),
                   readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
+                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })*/
+
+          Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+            Icon(
+              Icons.Default.CheckCircle,
+              contentDescription = null,
+              modifier = Modifier.padding(start = 12.dp, top = 15.dp)
+            )
+            LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
+          }
 //                                                                                   to here
 
 
