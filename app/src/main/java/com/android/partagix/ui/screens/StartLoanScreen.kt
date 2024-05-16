@@ -56,14 +56,19 @@ fun StartLoanScreen(
   if (open) {
 
     Dialog(
-        onDismissRequest = { open = false },
+        onDismissRequest = {
+          navigationActions.navigateTo(Route.INVENTORY)
+          open = false
+        },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
           Surface(
               shape = RoundedCornerShape(16.dp),
               modifier = Modifier.fillMaxWidth().testTag("popup")) {
                 Column(
                     modifier =
-                        Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+                        Modifier.fillMaxWidth()
+                            .padding(10.dp, 0.dp)
+                            .background(MaterialTheme.colorScheme.background)) {
                       Row(
                           horizontalArrangement = Arrangement.SpaceBetween,
                           verticalAlignment = Alignment.CenterVertically,
