@@ -52,6 +52,7 @@ class StartLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockItemViewModel = mockk()
     every { mockItemViewModel.updateUiItem(emptyItem) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
+    every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
 
     composeTestRule.setContent {
       StartLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockItemViewModel)
