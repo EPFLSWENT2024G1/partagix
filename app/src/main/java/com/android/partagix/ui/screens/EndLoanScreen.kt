@@ -43,8 +43,7 @@ import com.android.partagix.ui.navigation.Route
 fun EndLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
-    itemViewModel: ItemViewModel,
-    modifier: Modifier = Modifier
+    itemViewModel: ItemViewModel
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -66,7 +65,7 @@ fun EndLoanScreen(
                 Column(
                     modifier =
                         Modifier.fillMaxWidth()
-                            .padding(10.dp, 0.dp)
+                            .padding(start = 10.dp, end = 10.dp, top = 0.dp, bottom = 6.dp)
                             .background(MaterialTheme.colorScheme.background)) {
                       Row(
                           horizontalArrangement = Arrangement.SpaceBetween,

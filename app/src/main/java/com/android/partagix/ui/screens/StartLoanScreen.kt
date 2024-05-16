@@ -43,8 +43,7 @@ import com.android.partagix.ui.navigation.Route
 fun StartLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
-    itemViewModel: ItemViewModel,
-    modifier: Modifier = Modifier
+    itemViewModel: ItemViewModel
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
 
