@@ -41,7 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
+import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -68,9 +70,13 @@ fun BorrowScreen(
                         contentDescription = null)
                   }
             })
-      }
-      // Bottom navbar
-      ) {
+      },
+      bottomBar = {
+          BottomNavigationBar(
+              selectedDestination = Route.LOAN,
+              navigateToTopLevelDestination = navigationActions::navigateTo,
+              modifier = modifier.testTag("LoanScreenBottomNavBar"))
+      }) {
         val loanUiState = viewModel.loanUiState.collectAsStateWithLifecycle()
         val itemUIState = viewModel.itemUiState.collectAsStateWithLifecycle()
         val userUIState = viewModel.userUiState.collectAsStateWithLifecycle()
@@ -84,6 +90,7 @@ fun BorrowScreen(
           mutableStateOf("")
         } // TODO: edit Loan type to include description
         val loanLocation by remember { mutableStateOf(item.location) }
+        val loanQuantity by remember { mutableStateOf(item.quantity) }
 
         var isStartDatePickerVisible by remember { mutableStateOf(false) }
         val startDatePickerState by remember {
@@ -152,7 +159,7 @@ fun BorrowScreen(
                     label = { Text("Description") },
                     modifier = modifier.fillMaxWidth().testTag("description"),
                     minLines = 5,
-                    readOnly = false)
+                    readOnly = true)
 
                 Spacer(modifier = modifier.height(8.dp))
 
@@ -251,6 +258,14 @@ fun BorrowScreen(
                         DatePicker(state = endDatePickerState)
                       }
                 }
+                  Spacer(modifier = modifier.height(8.dp))
+
+                  OutlinedTextField(
+                      value = loanQuantity.toString(),
+                      onValueChange = {},
+                      label = { Text("Quantity") },
+                      modifier = modifier.fillMaxWidth(),
+                      readOnly = false)
               }
 
               Button(

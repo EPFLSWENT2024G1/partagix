@@ -150,7 +150,7 @@ fun LoanScreen(
                           loan = emptyList(),
                           onClick = {
                             itemViewModel.updateUiItem(it)
-                            navigationActions.navigateTo(Route.VIEW_ITEM)
+                            navigationActions.navigateTo(Route.VIEW_OTHERS_ITEM)
                           },
                           stickyHeader = {
                             FlowRow(

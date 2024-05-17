@@ -57,7 +57,8 @@ import com.google.firebase.auth.FirebaseAuth
 fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
-    borrowViewModel: BorrowViewModel
+    borrowViewModel: BorrowViewModel,
+    viewOthersItem: Boolean = false
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
 
@@ -118,14 +119,16 @@ fun InventoryViewItemScreen(
                 LabeledText(label = "Description", text = item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
+                if (!viewOthersItem) {
+                    LabeledText(label = "Category", text = item.category.name)
 
-                LabeledText(label = "Category", text = item.category.name)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
 
-                LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                }
 
                 LabeledText(label = "Quantity", text = item.quantity.toString())
 

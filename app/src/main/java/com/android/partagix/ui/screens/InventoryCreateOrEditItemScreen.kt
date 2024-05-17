@@ -40,6 +40,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.getVisibility
+import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
@@ -90,6 +91,12 @@ fun InventoryCreateOrEditItem(
                   }
             })
       },
+      bottomBar = {
+          BottomNavigationBar(
+              modifier = Modifier.testTag("inventoryViewItemBottomBar"),
+              selectedDestination = "Inventory",
+              navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
+      }
   ) {
     val uis = itemViewModel.uiState.collectAsState()
     val i = uis.value.item

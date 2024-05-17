@@ -103,7 +103,7 @@ fun ManageOutgoingLoan(
                     onClickCorner = { /* isnt usefull for this column */},
                     manageLoanViewModel = manageLoanViewModel,
                     navigationActions = navigationActions,
-                    modifier = Modifier.testTag("manageLoanScreenItemListColumn"))
+                    modifier = Modifier.padding(horizontal = 5.dp).testTag("manageLoanScreenItemListColumn"))
               }
         }
       }
