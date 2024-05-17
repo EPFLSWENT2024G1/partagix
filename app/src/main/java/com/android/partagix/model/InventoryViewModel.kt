@@ -284,7 +284,6 @@ class InventoryViewModel(
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list = filtering.filterItems(fetchedList, query)
-      println("-- filtering $fetchedBorrowed with $query")
     val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
 
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)

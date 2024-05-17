@@ -233,7 +233,6 @@ class InventoryViewModelTests {
     inventoryViewModel.filterItems("Category 1")
     assert(inventoryViewModel.uiState.value.items == listOf(item1))
     inventoryViewModel.filterItems("32")
-      println(inventoryViewModel.uiState.value.borrowedItems )
     assert(inventoryViewModel.uiState.value.items == listOf(item2))
     assert(inventoryViewModel.uiState.value.borrowedItems == listOf(item2))
     inventoryViewModel.filterItems("oops")

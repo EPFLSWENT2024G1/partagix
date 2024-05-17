@@ -294,7 +294,7 @@ class App(
         BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
-        // inventoryViewModel.getInventory()
+        inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
@@ -307,7 +307,7 @@ class App(
       composable(
           Route.ACCOUNT,
       ) {
-        // userViewModel.setUserToCurrent()
+        userViewModel.setUserToCurrent()
         ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
 
@@ -366,7 +366,6 @@ class App(
             manageLoanViewModel = manageViewModel,
             itemViewModel = itemViewModel,
             modifier = modifier)
-            )
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(

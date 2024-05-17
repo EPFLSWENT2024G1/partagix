@@ -15,5 +15,5 @@ data class Item(
     val location: Location,
     val idUser: String = "",
     // Path to the image in the local cache
-    val imageId: File = File.createTempFile("default_image", null)
+    val imageId: File = File("res/drawable/default_image.jpg")
 )
