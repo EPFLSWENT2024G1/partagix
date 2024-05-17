@@ -198,7 +198,6 @@ fun InventoryScreen(
                 isClickable = false,
                 isOutgoing = false,
                 isExpandable = false,
-                navigationActions = navigationActions,
                 manageLoanViewModel = manageLoanViewModel,
                 modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
 
@@ -218,7 +217,6 @@ fun InventoryScreen(
                 isClickable = true,
                 isExpandable = false,
                 isOutgoing = false,
-                navigationActions = navigationActions,
                 manageLoanViewModel = manageLoanViewModel,
                 modifier = Modifier.testTag("inventoryScreenItemList"))
           }

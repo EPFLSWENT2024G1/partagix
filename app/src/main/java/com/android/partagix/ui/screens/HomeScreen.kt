@@ -129,7 +129,6 @@ fun HomeScreen(
                     isOutgoing = false,
                     wasExpanded = uiState.expanded,
                     manageLoanViewModel = manageLoanViewModel,
-                    navigationActions = navigationActions,
                     isClickable = true,
                     modifier =
                         Modifier.padding(start = 10.dp, end = 10.dp, top = 12.dp)

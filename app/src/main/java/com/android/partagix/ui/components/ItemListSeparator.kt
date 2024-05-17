@@ -19,8 +19,6 @@ import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
-import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 
 /**
  * ItemListColumn is a composable function that displays a list of items in a column. which is the
@@ -51,9 +49,7 @@ fun ItemListColumn(
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
     isOutgoing: Boolean,
-    canSeeOld: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel,
-    navigationActions: NavigationActions,
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
@@ -69,14 +65,6 @@ fun ItemListColumn(
                   color = Color(0xFF000000),
               ),
           modifier = Modifier.fillMaxWidth(0.8f).padding(horizontal = 10.dp))
-      if (canSeeOld) {
-        Text(
-            text = "Historic",
-            modifier =
-                Modifier.fillMaxWidth().clickable {
-                  navigationActions.navigateTo(Route.FINISHED_LOANS)
-                })
-      }
       Text(
           text = corner,
           textAlign = TextAlign.Right,

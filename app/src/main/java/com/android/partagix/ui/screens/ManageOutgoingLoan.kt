@@ -36,7 +36,7 @@ fun ManageOutgoingLoan(
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
-    expandables: Boolean = false,
+    expandable: Boolean = false,
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -91,18 +91,16 @@ fun ManageOutgoingLoan(
                     users = uiState.users,
                     loan = uiState.loans,
                     title = "Outgoing requests",
-                    corner = uiState.items.size.toString(),
-                    isCornerClickable = false,
+                    corner = "Historic",
+                    isCornerClickable = true,
                     isExpandable = true,
-                    expandState = expandables,
+                    expandState = expandable,
                     wasExpanded = uiState.expanded,
                     isOutgoing = true,
-                    canSeeOld = true,
                     isClickable = false,
-                    onClick = { /* isnt usefull for this column */},
-                    onClickCorner = { /* isnt usefull for this column */},
+                    onClick = {},
+                    onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     manageLoanViewModel = manageLoanViewModel,
-                    navigationActions = navigationActions,
                     modifier = Modifier.testTag("manageLoanScreenItemListColumn"))
               }
         }

@@ -79,25 +79,27 @@ fun ManageLoanRequest(
           Column(
               verticalArrangement = Arrangement.Center,
               modifier =
-                  modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 10.dp).testTag("manageScreenMainContent")) {
+                  modifier
+                      .fillMaxSize()
+                      .padding(innerPadding)
+                      .padding(horizontal = 10.dp)
+                      .testTag("manageScreenMainContent")) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
 
                 ItemListColumn(
                     list = uiState.items,
                     users = uiState.users,
                     loan = uiState.loans,
-                    title = "Borrowing requests",
-                    corner = uiState.items.size.toString(),
-                    isCornerClickable = false,
+                    title = "Incoming requests",
+                    corner = "Historic",
+                    isCornerClickable = true,
                     isExpandable = true,
-                    canSeeOld = true,
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
-                    onClick = { /* isnt usefull for this column */},
-                    onClickCorner = { /* isnt usefull for this column */},
+                    onClick = {},
+                    onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     manageLoanViewModel = manageLoanViewModel,
-                    navigationActions = navigationActions,
-                    isClickable = true,
+                    isClickable = false,
                     isOutgoing = false,
                     modifier = Modifier.testTag("manageLoanScreenItemListColumn"))
               }
