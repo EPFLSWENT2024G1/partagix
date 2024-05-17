@@ -57,6 +57,7 @@ fun LoanScreen(
     itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
+    isMapLoadingOptimized: Boolean = true,
 ) {
 
   val loansUIState = loanViewModel.uiState.collectAsState()
@@ -84,7 +85,7 @@ fun LoanScreen(
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
-  var mapLoaded by remember { mutableStateOf(false) }
+  var mapLoaded by remember { mutableStateOf(!isMapLoadingOptimized) }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
