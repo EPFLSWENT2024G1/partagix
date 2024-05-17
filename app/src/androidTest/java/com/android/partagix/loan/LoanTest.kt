@@ -432,7 +432,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         // click the first one
         performClick()
 
-        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }
@@ -557,7 +557,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         // click the first one
         performClick()
 
-        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }
