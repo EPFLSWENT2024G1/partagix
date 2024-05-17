@@ -182,7 +182,7 @@ class App(
             User(
                 user.uid,
                 user.displayName ?: "",
-                user.email ?: "",
+                "Unknown Location",
                 "0",
                 Inventory(user.uid, emptyList()),
                 newToken)
