@@ -47,6 +47,7 @@ class AppTest {
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
+  private val newToken = "newToken"
 
   @Before
   fun setup() {
@@ -59,7 +60,9 @@ class AppTest {
     every { mockActivity.attributionTag } returns "testTag"
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
+
     mockDatabase = spyk(Database())
+    every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -70,6 +73,12 @@ class AppTest {
 
     mockNotificationManager = mockk()
     every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+    every { mockNotificationManager.initPermissions() } just Runs
+    every { mockNotificationManager.checkToken(any(), any()) } answers
+        {
+          val callback = secondArg<(String) -> Unit>()
+          callback(newToken)
+        }
 
     mockFusedLocationProviderClient = mockk()
 
