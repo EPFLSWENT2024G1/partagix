@@ -27,8 +27,7 @@ class EvaluationViewModelTests {
   private lateinit var evaluationViewModel: EvaluationViewModel
   private lateinit var db: Database
 
-  @RelaxedMockK
-  lateinit var mockNotificationManager: FirebaseMessagingService
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
 
   val loan1 =
       Loan(
@@ -84,11 +83,11 @@ class EvaluationViewModelTests {
     coVerify {
       db.setReview(loan1.id, "idOwner1", 5.0, "commented")
       mockNotificationManager.sendNotification(
-        match {
-          it.title == "New User Review" &&
-                  it.type == Notification.Type.USER_REVIEW &&
-                  it.navigationUrl == Route.ACCOUNT
-        },
+          match {
+            it.title == "New User Review" &&
+                it.type == Notification.Type.USER_REVIEW &&
+                it.navigationUrl == Route.ACCOUNT
+          },
           "idOwner1")
     }
   }

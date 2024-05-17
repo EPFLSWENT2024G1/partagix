@@ -46,8 +46,7 @@ class OldLoanScreenTests {
   lateinit var db: Database
   lateinit var mockUser: FirebaseUser
 
-  @RelaxedMockK
-  lateinit var mockNotificationManager: FirebaseMessagingService
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
 
   val loan1 =
       Loan(
@@ -104,7 +103,8 @@ class OldLoanScreenTests {
     finishedLoansViewModel = FinishedLoansViewModel(db)
     finishedLoansViewModel.getFinishedLoan()
 
-    evaluationViewModel = EvaluationViewModel(db = db, notificationManager = mockNotificationManager)
+    evaluationViewModel =
+        EvaluationViewModel(db = db, notificationManager = mockNotificationManager)
   }
 
   @Test

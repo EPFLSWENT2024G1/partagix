@@ -95,7 +95,8 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val evaluationViewModel = EvaluationViewModel(db = db, notificationManager = notificationManager)
+  private val evaluationViewModel =
+      EvaluationViewModel(db = db, notificationManager = notificationManager)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel =
       StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)

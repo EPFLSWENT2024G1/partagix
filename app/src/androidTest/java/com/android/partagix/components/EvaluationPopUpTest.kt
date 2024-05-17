@@ -11,20 +11,16 @@ import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
-import com.android.partagix.model.notification.Notification
 import com.android.partagix.screens.EvaluationPopUp
 import com.android.partagix.ui.components.EvaluationPopUp
-import com.android.partagix.ui.navigation.Route
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
-import io.mockk.clearAllMocks
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.After
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
@@ -38,8 +34,7 @@ class EvaluationPopUpTest {
   lateinit var evaluationViewModel: EvaluationViewModel
   lateinit var db: Database
 
-  @RelaxedMockK
-  lateinit var mockNotificationManager: FirebaseMessagingService
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
 
   val loanEmptyCommentAndRating =
       Loan(
@@ -94,11 +89,12 @@ class EvaluationPopUpTest {
     every { db.setReview(any(), any(), any(), any()) } answers {}
 
     mockNotificationManager = mockk()
-    every { mockNotificationManager.sendNotification(match {
-                                                           it.title == "New User Review"
-    }, any()) } just Runs
+    every {
+      mockNotificationManager.sendNotification(match { it.title == "New User Review" }, any())
+    } just Runs
 
-    evaluationViewModel = EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager)
+    evaluationViewModel =
+        EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager)
   }
 
   /** Test if the content is displayed and works. */

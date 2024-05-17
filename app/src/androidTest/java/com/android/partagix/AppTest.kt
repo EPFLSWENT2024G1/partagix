@@ -72,14 +72,21 @@ class AppTest {
 
     mockNavigationActions = mockk()
     every { mockNavigationActions.initPermissions() } just Runs
-    every { mockNavigationActions.checkToken(any(), any()) } answers {
-      val callback = secondArg<(String) -> Unit>()
-      callback(new_token)
-    }
+    every { mockNavigationActions.checkToken(any(), any()) } answers
+        {
+          val callback = secondArg<(String) -> Unit>()
+          callback(new_token)
+        }
 
     mockFusedLocationProviderClient = mockk()
 
-    app = App(mockActivity, mockAuth, mockDatabase, mockNavigationActions, mockFusedLocationProviderClient)
+    app =
+        App(
+            mockActivity,
+            mockAuth,
+            mockDatabase,
+            mockNavigationActions,
+            mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
   }
 
