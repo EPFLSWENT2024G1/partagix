@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,13 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.StampViewModel
+import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.StampDimensions
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 
 const val MAX_LABEL_LENGTH = 20
 
-/**  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StampScreen(
@@ -49,16 +49,22 @@ fun StampScreen(
       topBar = {
         TopAppBar(
             modifier = modifier.fillMaxWidth().testTag("topAppBar"),
-            title = { Text("Export QR code stamps", modifier = Modifier.testTag("title")) },
+            title = { Text("Export QR code stamps", modifier = modifier.testTag("title")) },
             navigationIcon = {
               IconButton(
-                  modifier = Modifier.testTag("backButton"),
+                  modifier = modifier.testTag("backButton"),
                   onClick = { navigationActions.goBack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = null)
                   }
             })
+      },
+      bottomBar = {
+        BottomNavigationBar(
+            selectedDestination = Route.STAMP,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = modifier.testTag("bottomBar"))
       }) {
         var uiDetailedDimension by remember { mutableStateOf("") }
         var uiLabel by remember { mutableStateOf("") }
@@ -68,36 +74,27 @@ fun StampScreen(
                 modifier
                     .padding(it)
                     .fillMaxWidth()
-                    .height(330.dp)
+                    .height(200.dp)
                     .padding(horizontal = 8.dp, vertical = 0.dp)
                     .testTag("mainContent"),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top) {
-              Text(
-                  text = "Dimension of stamps",
-                  modifier =
-                      modifier
-                          .fillMaxWidth()
-                          .padding(top = 8.dp)
-                          .requiredHeight(20.dp)
-                          .testTag("dimensionLabel"))
               Box(
                   modifier =
                       modifier.fillMaxWidth().requiredHeight(40.dp).testTag("dimensionBox")) {
                     uiDetailedDimension = DropDown("Dimensions", StampDimensions)
                   }
 
-              Text(
-                  text = "Label on stamps",
-                  modifier = modifier.fillMaxWidth().requiredHeight(20.dp).testTag("labelLabel"))
               OutlinedTextField(
-                  modifier = modifier.fillMaxWidth().fillMaxHeight().testTag("labelTextField"),
+                  modifier = modifier.fillMaxWidth().testTag("labelTextField"),
                   value = uiLabel,
                   onValueChange = { if (it.length <= MAX_LABEL_LENGTH) uiLabel = it },
-                  label = { Text("(optional) max. 40 characters") },
+                  label = { Text("Label on stamps") },
+                  placeholder = { Text(text = "(optional) max $MAX_LABEL_LENGTH characters") },
+                  singleLine = true,
                   readOnly = false)
 
-              Row(modifier = modifier.fillMaxWidth().requiredHeight(40.dp).testTag("downloadRow")) {
+              Row(modifier = modifier.fillMaxWidth().padding(top = 20.dp).testTag("downloadRow")) {
                 Button(
                     modifier = modifier.fillMaxWidth().testTag("downloadButton"),
                     onClick = {

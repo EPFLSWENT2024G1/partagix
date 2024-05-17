@@ -14,10 +14,9 @@ class StampScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val topAppBar: KNode = child { hasTestTag("topAppBar") }
   val title: KNode = child { hasTestTag("title") }
   val backButton: KNode = child { hasTestTag("backButton") }
+  val bottomBar: KNode = child { hasTestTag("bottomBar") }
   val mainContent: KNode = child { hasTestTag("mainContent") }
-  val dimensionLabel: KNode = child { hasTestTag("dimensionLabel") }
   val dimensionBox: KNode = child { hasTestTag("dimensionBox") }
-  val labelLabel: KNode = child { hasTestTag("labelLabel") }
   val labelTextField: KNode = child { hasTestTag("labelTextField") }
   val downloadRow: KNode = child { hasTestTag("downloadRow") }
   val downloadButton: KNode = child { hasTestTag("downloadButton") }
