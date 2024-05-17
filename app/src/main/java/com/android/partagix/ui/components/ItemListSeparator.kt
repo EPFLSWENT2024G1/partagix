@@ -26,7 +26,7 @@ import com.android.partagix.ui.navigation.Route
  * ItemListColumn is a composable function that displays a list of items in a column. which is the
  * function that will be called when we want to see a list of items.
  *
- * @param List a list of items.
+ * @param list a list of items.
  * @param users a list of the users from the items
  * @param loan a list of loans associated to the items
  * @param title a string that represents the title of the column.
@@ -68,12 +68,12 @@ fun ItemListColumn(
                   fontWeight = FontWeight(1000),
                   color = Color(0xFF000000),
               ),
-          modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
+          modifier = Modifier.fillMaxWidth(0.8f).padding(horizontal = 10.dp))
       if (canSeeOld) {
         Text(
-            text = "see Old",
+            text = "Historic",
             modifier =
-                Modifier.fillMaxWidth(0.5f).clickable {
+                Modifier.fillMaxWidth().clickable {
                   navigationActions.navigateTo(Route.FINISHED_LOANS)
                 })
       }

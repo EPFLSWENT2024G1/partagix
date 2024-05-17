@@ -36,7 +36,7 @@ fun ManageLoanRequest(
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier,
-    expandables: Boolean = false,
+    expandable: Boolean = false,
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(
@@ -79,7 +79,7 @@ fun ManageLoanRequest(
           Column(
               verticalArrangement = Arrangement.Center,
               modifier =
-                  modifier.fillMaxSize().padding(innerPadding).testTag("manageScreenMainContent")) {
+                  modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 10.dp).testTag("manageScreenMainContent")) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color(0xffcac4d0))
 
                 ItemListColumn(
@@ -91,7 +91,7 @@ fun ManageLoanRequest(
                     isCornerClickable = false,
                     isExpandable = true,
                     canSeeOld = true,
-                    expandState = expandables,
+                    expandState = expandable,
                     wasExpanded = uiState.expanded,
                     onClick = { /* isnt usefull for this column */},
                     onClickCorner = { /* isnt usefull for this column */},
