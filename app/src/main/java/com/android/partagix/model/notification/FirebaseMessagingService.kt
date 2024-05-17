@@ -98,11 +98,18 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
             Date(System.currentTimeMillis())
           }
 
+      val type =
+          try {
+            Notification.Type.valueOf(data["type"] ?: "")
+          } catch (e: IllegalArgumentException) {
+            Notification.Type.DEFAULT
+          }
+
       val notification =
           Notification(
               title = notificationBody.title ?: "",
               message = notificationBody.body ?: "",
-              type = Notification.Type.NEW_INCOMING_REQUEST,
+              type = type,
               creationDate = date,
               navigationUrl = data["navigationUrl"])
 

@@ -11,12 +11,14 @@ data class Notification(
 ) {
   enum class Type {
     LOAN_ACCEPTED,
-    NEW_INCOMING_REQUEST;
+    NEW_INCOMING_REQUEST,
+    DEFAULT;
 
     fun channelId(): String {
       return when (this) {
         NEW_INCOMING_REQUEST -> Channels.INCOMING.id()
         LOAN_ACCEPTED -> Channels.OUTGOING.id()
+        else -> Channels.SOCIAL.id()
       }
     }
   }
