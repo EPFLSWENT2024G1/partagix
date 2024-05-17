@@ -76,8 +76,6 @@ fun getImageFromFirebaseStorage(
       }
       .addOnFailureListener {
         // Handle any errors
-        Log.d("Image Download", "----- 1 Image download failed: $it")
-        Log.d("Image Download", "$p -> $path -> $localFile")
         onFailure(it)
       }
 }
@@ -120,8 +118,6 @@ fun getImagesFromFirebaseStorage(
           }
         }
         .addOnFailureListener {
-          Log.d("Image Download", "----- Image download failed: $it")
-          Log.d("Image Download", "${paths[p]} -> $path -> $localFile")
           onFailure(it)
         }
   }

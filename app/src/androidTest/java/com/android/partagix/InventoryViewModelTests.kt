@@ -114,6 +114,7 @@ class InventoryViewModelTests {
           "",
           LoanState.ACCEPTED)
   val list: List<Item> = listOf(item1, item2, item3)
+    val loans = listOf(loaned1, loaned2, loaned3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
   var onSuccess: (List<Item>) -> Unit = {}
@@ -218,6 +219,7 @@ class InventoryViewModelTests {
     inventoryViewModel.updateInv(list)
     inventoryViewModel.findTime(
         listOf(item4),
+        loans,
         { assert(it == Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)) })
   }
 
@@ -231,6 +233,7 @@ class InventoryViewModelTests {
     inventoryViewModel.filterItems("Category 1")
     assert(inventoryViewModel.uiState.value.items == listOf(item1))
     inventoryViewModel.filterItems("32")
+      println(inventoryViewModel.uiState.value.borrowedItems )
     assert(inventoryViewModel.uiState.value.items == listOf(item2))
     assert(inventoryViewModel.uiState.value.borrowedItems == listOf(item2))
     inventoryViewModel.filterItems("oops")

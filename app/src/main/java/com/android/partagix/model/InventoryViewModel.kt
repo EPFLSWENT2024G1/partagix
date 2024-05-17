@@ -139,6 +139,7 @@ class InventoryViewModel(
       loanBor: List<Loan>,
       usersBor: List<User>,
   ) {
+      fetchedBorrowed = borrowedItems
     _uiState.value =
         _uiState.value.copy(borrowedItems = borrowedItems, loanBor = loanBor, usersBor = usersBor)
   }
@@ -200,15 +201,6 @@ class InventoryViewModel(
    */
   fun updateLoan(new: Loan) {
     _uiState.value = _uiState.value.copy(loan = uiState.value.loan.plus(new))
-  }
-
-  /**
-   * updateUIState is a function that will update all fields in the uiState
-   *
-   * @param new the new UI state to set
-   */
-  fun updateUIState(new: InventoryUIState) {
-    _uiState.value = new
   }
 
   /**
@@ -292,6 +284,7 @@ class InventoryViewModel(
   fun filterItems(query: String) {
     val currentState = _uiState.value
     val list = filtering.filterItems(fetchedList, query)
+      println("-- filtering $fetchedBorrowed with $query")
     val listBorrowed = filtering.filterItems(fetchedBorrowed, query)
 
     _uiState.value = currentState.copy(query = query, items = list, borrowedItems = listBorrowed)
