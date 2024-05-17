@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.App
 import com.android.partagix.ui.navigation.NavigationActions
@@ -41,6 +42,8 @@ class AppTest {
 
   @Mock private lateinit var mockFirebaseUser: FirebaseUser
 
+  @Mock private lateinit var mockNotificationManager: FirebaseMessagingService
+
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
@@ -65,9 +68,18 @@ class AppTest {
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
 
+    mockNotificationManager = mockk()
+    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+
     mockFusedLocationProviderClient = mockk()
 
-    app = App(mockActivity, mockAuth, mockDatabase, mockFusedLocationProviderClient)
+    app =
+        App(
+            mockActivity,
+            mockAuth,
+            mockDatabase,
+            mockNotificationManager,
+            mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
   }
 
