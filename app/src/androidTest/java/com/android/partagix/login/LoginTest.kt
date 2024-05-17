@@ -14,6 +14,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.LoginScreen
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.mockk.Runs
@@ -22,6 +23,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -121,6 +123,9 @@ class LoginTest {
     every { mockFirebaseUser.uid } returns "1234"
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
+
+    mockkStatic(FirebaseAuth::class)
+    every { Authentication.getUser() } returns mockFirebaseUser
 
     val app = App(mockMainActivity, mockAuthentication, mockDatabase)
 

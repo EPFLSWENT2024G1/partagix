@@ -1,5 +1,6 @@
 package com.android.partagix.navigation
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -10,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.partagix.MainActivity
 import com.android.partagix.screens.InventoryCreateOrEditScreen
 import com.android.partagix.screens.InventoryScreen
@@ -17,14 +19,25 @@ import com.android.partagix.screens.NavigationBar
 import com.android.partagix.screens.ViewAccount
 import com.android.partagix.ui.components.CategoryItems
 import io.github.kakaocup.compose.node.element.ComposeScreen
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class EndToEnd {
+  // @get:Rule
+  // val grantPermissionRule: GrantPermissionRule =
+  //    GrantPermissionRule.grant(POST_NOTIFICATIONS)
+
   @get:Rule val composeTestRule = createComposeRule()
   @get:Rule val composeTestRule2 = createComposeRule()
+
+  @Before
+  fun setUp() {
+    val instrumentation = InstrumentationRegistry.getInstrumentation()
+    instrumentation.uiAutomation.grantRuntimePermission("com.android.partagix", POST_NOTIFICATIONS)
+  }
 
   @Test
   fun NavigationInventory() {

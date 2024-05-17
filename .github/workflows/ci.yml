@@ -65,7 +65,13 @@ jobs:
           target: google_apis
           arch: x86_64
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: >
+            -no-window
+            -gpu swiftshader_indirect
+            -noaudio
+            -no-boot-anim
+            -camera-back none
+            -memory 16384MB  # Increase heap size
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
@@ -87,10 +93,10 @@ jobs:
           DATA: ${{ secrets.KEYSTORE}}
         run: echo $DATA | base64 -di > keystore.properties
 
-      # Load the MAPS API key from the secrets
-      - name: Load MAPS API key
+      # Load the secrets.properties file from the secrets
+      - name: Load Secrets
         env:
-          DATA: ${{ secrets.MAPS_API_KEY }}
+          DATA: ${{ secrets.SECRETS }}
         run: |
           echo $DATA > secrets.properties
           echo $DATA > local.defaults.properties
@@ -106,9 +112,11 @@ jobs:
 
       # This step runs gradle commands to build the application
       - name: Assemble
+        env:
+          GRADLE_OPTS: -Xmx16g
         run: |
           # To run the CI with debug information, add --info
-          ./gradlew assemble lint --parallel --build-cache
+          ./gradlew assemble lint --parallel --build-cache --info
 
       # Run Unit tests
       - name: Run tests
@@ -126,7 +134,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedCheck --parallel --build-cache
+          script: ./gradlew connectedCheck --parallel --build-cache --info
 
       # This step generates the coverage report which will be uploaded to sonar
       - name: Generate Coverage Report

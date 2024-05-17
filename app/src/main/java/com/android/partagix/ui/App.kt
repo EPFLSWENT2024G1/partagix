@@ -41,6 +41,7 @@ import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
@@ -70,6 +71,7 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
+    private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db)
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
@@ -79,10 +81,11 @@ class App(
   private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
 
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val manageViewModel = ManageLoanViewModel(db = db)
+  private val manageViewModel =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
 
   private val loanViewModel = LoanViewModel(db = db)
-  private val borrowViewModel = BorrowViewModel(db = db)
+  private val borrowViewModel = BorrowViewModel(db = db, notificationManager = notificationManager)
   private val itemViewModel =
       ItemViewModel(
           db = db,
@@ -92,9 +95,14 @@ class App(
   private val userViewModel = UserViewModel(db = db)
   private val evaluationViewModel = EvaluationViewModel(db = db)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
-  private val startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+  private val startOrEndLoanViewModel =
+      StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
   private val homeViewModel = HomeViewModel(db = db, context = activity)
   private val locationPickerViewModel = LocationPickerViewModel()
+
+  init {
+    notificationManager.initPermissions()
+  }
 
   @Composable
   fun Create(
@@ -108,8 +116,15 @@ class App(
     }
 
     val user = Authentication.getUser()
-    if (idItem != null && user != null) {
-      onQrScanned(idItem, user.uid)
+
+    if (user != null) {
+      notificationManager.checkToken(user.uid) {
+        if (idItem != null) {
+          onQrScanned(idItem, user.uid)
+        } else {
+          navigationActions.navigateTo(Route.BOOT)
+        }
+      }
     } else {
       navigationActions.navigateTo(Route.BOOT)
     }
@@ -162,20 +177,29 @@ class App(
 
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
-      val newUser =
-          User(
-              user.uid,
-              user.displayName ?: "",
-              "Unknown Location",
-              "0",
-              Inventory(user.uid, emptyList()))
-      db.getUser(user.uid, { db.createUser(newUser) }, {})
-    }
-    // test that navigationActions has been initialized
+      notificationManager.checkToken(user.uid) { newToken ->
+        val newUser =
+            User(
+                user.uid,
+                user.displayName ?: "",
+                "Unknown Location",
+                "0",
+                Inventory(user.uid, emptyList()),
+                newToken)
+        db.getUser(
+            user.uid,
+            onNoUser = {
+              // If the user is not found, create it
+              db.createUser(newUser)
+            }) {}
 
-    if (navigationActionsInitialized) {
-      navigationActions.navigateTo(Route.HOME)
+        // test that navigationActions has been initialized
+        if (navigationActionsInitialized) {
+          navigationActions.navigateTo(Route.HOME)
+        }
+      }
     }
+
     Log.d(TAG, "onSignInSuccess: user=$user")
   }
 
@@ -193,6 +217,8 @@ class App(
 
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
+
+    globalNavigationActions = navigationActions
 
     navigationActionsInitialized = true
     val selectedDestination = Route.BOOT // This is not even used
@@ -318,6 +344,24 @@ class App(
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
 
+      composable(
+          Route.VIEW_ITEM + "/{itemId}",
+          arguments = listOf(navArgument("itemId") { type = NavType.StringType })) {
+            val itemId = it.arguments?.getString("itemId")
+
+            if (itemId != null) {
+              db.getItem(itemId) { item ->
+                itemViewModel.updateUiItem(item)
+                itemViewModel.getUser()
+              }
+
+              InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+            } else {
+              // Fail safe defaults principle
+              navigationActions.navigateTo(Route.INVENTORY)
+            }
+          }
+
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
@@ -326,6 +370,9 @@ class App(
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
+        // Fetch the new loan requests first
+        manageViewModel.getLoanRequests()
+
         ManageLoanRequest(
             manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
       }
@@ -369,5 +416,11 @@ class App(
 
   companion object {
     private const val TAG = "App"
+
+    private var globalNavigationActions: NavigationActions? = null
+
+    fun getNavigationActions(): NavigationActions? {
+      return globalNavigationActions
+    }
   }
 }

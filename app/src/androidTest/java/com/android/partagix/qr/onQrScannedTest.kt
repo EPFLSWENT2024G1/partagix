@@ -15,12 +15,14 @@ import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.App
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -31,6 +33,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.verify
 import java.util.Date
@@ -48,6 +51,8 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @RelaxedMockK lateinit var mockDatabase: Database
   @RelaxedMockK lateinit var mockMainActivity: MainActivity
   @RelaxedMockK lateinit var mockPackageManager: PackageManager
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
+  @RelaxedMockK lateinit var mockFirebaseUser: FirebaseUser
   @RelaxedMockK lateinit var app: App
 
   @Before
@@ -61,6 +66,8 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     mockDatabase = mockk<Database>()
     mockNavActions = mockk<NavigationActions>()
     mockAuthentication = mockk<Authentication>()
+    mockNotificationManager = mockk<FirebaseMessagingService>()
+    mockFirebaseUser = mockk<FirebaseUser>()
 
     every { Authentication.getUser() } returns user
     every { user.uid } returns "abcd"
@@ -76,8 +83,21 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     every { mockPackageManager.getPackageInfo(any<String>(), any<Int>()) } returns null
     every { mockMainActivity.packageManager } returns mockPackageManager
     every { mockMainActivity.packageName } returns "com.android.partagix"
+    every { mockNotificationManager.initPermissions() } just runs
+    every { mockNotificationManager.checkToken(any(), any()) } answers
+        {
+          val callback = it.invocation.args[1] as (String) -> Unit
+          callback("new_token")
+        }
 
     every { mockDatabase.getItems(any()) } just Runs
+
+    every { mockFirebaseUser.uid } returns "abcd"
+    every { mockFirebaseUser.displayName } returns "name"
+    every { mockFirebaseUser.email } returns "email"
+
+    mockkStatic(FirebaseAuth::class)
+    every { Authentication.getUser() } returns mockFirebaseUser
   }
 
   @Test
@@ -119,7 +139,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(lender)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    every { mockDatabase.getUser("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
+
+    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.STARTLOAN) }
@@ -164,7 +190,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    every { mockDatabase.getUser("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+
+    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.ENDLOAN) }
@@ -208,7 +240,9 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    every { mockDatabase.getUser("1234", any(), any()) } just Runs
+
+    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
