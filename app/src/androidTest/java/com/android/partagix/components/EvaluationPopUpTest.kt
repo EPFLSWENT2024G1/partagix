@@ -23,12 +23,14 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.After
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class EvaluationPopUpTest {
@@ -92,7 +94,9 @@ class EvaluationPopUpTest {
     every { db.setReview(any(), any(), any(), any()) } answers {}
 
     mockNotificationManager = mockk()
-    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+    every { mockNotificationManager.sendNotification(match {
+                                                           it.title == "New User Review"
+    }, any()) } just Runs
 
     evaluationViewModel = EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager)
   }
@@ -170,7 +174,7 @@ class EvaluationPopUpTest {
       evaluateButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify(exactly = 1) {
+    verify(exactly = 1) {
       evaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
     }
   }
