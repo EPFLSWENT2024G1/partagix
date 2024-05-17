@@ -58,46 +58,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
-  fun getUsersWithImages(onSuccess: (List<User>) -> Unit) {
-    getItems { items ->
-      users
-          .get()
-          .addOnSuccessListener { result ->
-            val ret = mutableListOf<User>()
-            for (document in result) {
-              val listItems = items.filter { it.idUser == document.data["id"] }
-              getImageFromFirebaseStorage(
-                  "users/" + (document.data["id"] as String),
-                  onFailure = {
-                    getImageFromFirebaseStorage("users/default.png") { localFile ->
-                      val user =
-                          User(
-                              document.data["id"] as String,
-                              document.data["name"] as String,
-                              document.data["addr"] as String,
-                              document.data["rank"] as String,
-                              Inventory(document.data["id"] as String, listItems),
-                              localFile)
-                      ret.add(user)
-                    }
-                  }) { localFile ->
-                    val user =
-                        User(
-                            document.data["id"] as String,
-                            document.data["name"] as String,
-                            document.data["addr"] as String,
-                            document.data["rank"] as String,
-                            Inventory(document.data["id"] as String, listItems),
-                            localFile)
-                    ret.add(user)
-                  }
-            }
-            onSuccess(ret)
-          }
-          .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
-    }
-  }
-
   /**
    * Get one user from the database
    *
@@ -765,6 +725,49 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       newAverageRank(reviewedUserId)
     }
   }
+
+    /* TODO : uncomment this function is at some point we need to display multiple users with their profile pictures in the app
+  fun getUsersWithImages(onSuccess: (List<User>) -> Unit) {
+    getItems { items ->
+      users
+          .get()
+          .addOnSuccessListener { result ->
+            val ret = mutableListOf<User>()
+            for (document in result) {
+              val listItems = items.filter { it.idUser == document.data["id"] }
+              getImageFromFirebaseStorage(
+                  "users/" + (document.data["id"] as String),
+                  onFailure = {
+                    getImageFromFirebaseStorage("users/default.png") { localFile ->
+                      val user =
+                          User(
+                              document.data["id"] as String,
+                              document.data["name"] as String,
+                              document.data["addr"] as String,
+                              document.data["rank"] as String,
+                              Inventory(document.data["id"] as String, listItems),
+                              localFile)
+                      ret.add(user)
+                    }
+                  }) { localFile ->
+                    val user =
+                        User(
+                            document.data["id"] as String,
+                            document.data["name"] as String,
+                            document.data["addr"] as String,
+                            document.data["rank"] as String,
+                            Inventory(document.data["id"] as String, listItems),
+                            localFile)
+                    ret.add(user)
+                  }
+            }
+            onSuccess(ret)
+          }
+          .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
+    }
+  }
+
+ */
 
   companion object {
     private const val TAG = "Database"
