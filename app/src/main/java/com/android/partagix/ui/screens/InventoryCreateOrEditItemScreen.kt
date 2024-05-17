@@ -48,6 +48,7 @@ import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.navigation.NavigationActions
 import getImageFromFirebaseStorage
 import java.io.File
+import java.util.UUID
 import uploadImageToFirebaseStorage
 
 /**
@@ -66,6 +67,8 @@ fun InventoryCreateOrEditItem(
     modifier: Modifier = Modifier,
     mode: String
 ) {
+
+  var dbImage = "empty"
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -114,7 +117,8 @@ fun InventoryCreateOrEditItem(
               Box(
                   contentAlignment = Alignment.Center,
                   modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
-                    MainImagePicker(listOf(i.imageId.toUri())) { uri ->
+                    val image = File(uiImage.toString().ifEmpty { "default-image.jpg" })
+                    MainImagePicker(listOf(image.toUri())) { uri ->
                       // TODO :  Save the image to a local file to its displayed correctly while
                       // waiting for the upload
                       /*
@@ -126,7 +130,9 @@ fun InventoryCreateOrEditItem(
                       uiImage = File.createTempFile("default_image", null)
                       // in the meantime do nothing and the image will be loaded from the database
                       // later
-                      uploadImageToFirebaseStorage(uri, imageName = i.id) {
+                      dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+
+                      uploadImageToFirebaseStorage(uri, imageName = dbImage) {
                         getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
                       }
                     }
@@ -217,7 +223,7 @@ fun InventoryCreateOrEditItem(
                           uiQuantity,
                           uiLocation,
                           i.idUser,
-                          uiImage))
+                          File(dbImage)))
                   navigationActions.goBack()
                 },
                 content = {

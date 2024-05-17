@@ -254,7 +254,6 @@ class DatabaseTests {
     every { getImagesFromFirebaseStorage(any(), any()) } answers
         {
           val onSuccess = arg<(List<File>) -> Unit>(4)
-          println("------ calling onSuccess from mockk")
           onSuccess(listOf(File("imageId")))
         }
 

@@ -278,6 +278,7 @@ class App(
               loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
+              manageLoanViewModel = manageViewModel,
               modifier = modifier)
         } else {
           navigationActions.navigateTo(Route.HOME)
@@ -287,7 +288,7 @@ class App(
         BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
-        inventoryViewModel.getInventory()
+        // inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
@@ -300,7 +301,7 @@ class App(
       composable(
           Route.ACCOUNT,
       ) {
-        userViewModel.setUserToCurrent()
+        // userViewModel.setUserToCurrent()
         ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
       }
 
@@ -356,6 +357,7 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
+            manageLoanViewModel = manageViewModel,
             modifier = modifier)
       }
       composable(Route.ENDLOAN) {

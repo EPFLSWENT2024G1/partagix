@@ -169,10 +169,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     items
         .get()
         .addOnSuccessListener { result ->
-          println("items : $result")
           val paths = mutableListOf<String>()
           for (document in result) {
-            if (document.data["image_path"] != null) {
+            if (document.data["image_path"] != null && document.data["image_path"] != "") {
               paths.add(document.data["image_path"] as String)
             } else {
               paths.add("default-image.jpg")
@@ -181,7 +180,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           categories
               .get()
               .addOnSuccessListener { result2 ->
-                println("categories : $result2")
                 val categories =
                     result2
                         .map { document ->
@@ -192,11 +190,9 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                         .toMap()
 
                 getImagesFromFirebaseStorage(paths) { localFiles ->
-                  println("localFiles : $localFiles")
                   val ret = mutableListOf<Item>()
                   var count = 0
                   for (document in result) {
-                    println("document : $document")
                     val locationMap = document.data["location"] as HashMap<*, *>
                     val location = toLocation(locationMap)
 
@@ -213,7 +209,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                             document.data["id_user"] as String,
                             localFiles[count++])
                     ret.add(item)
-                    println("added item : $item")
                   }
                   onSuccess(ret)
                 }
@@ -483,7 +478,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location),
-            "image_path" to "images/${newItem.imageId.name}")
+            "image_path" to newItem.imageId.name)
     items.document(idItem).set(data)
     val new =
         Item(

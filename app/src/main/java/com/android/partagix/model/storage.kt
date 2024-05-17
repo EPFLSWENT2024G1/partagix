@@ -37,7 +37,7 @@ fun uploadImageToFirebaseStorage(
   uploadTask
       .addOnSuccessListener { taskSnapshot ->
         // Image uploaded successfully
-        onSuccess(listOf(File(imageUri.path!!)))
+        onSuccess(listOf(File(imageUri.path!!.drop(7))))
       }
       .addOnFailureListener { exception ->
         // Image upload failed
@@ -53,8 +53,8 @@ fun getImageFromFirebaseStorage(
   val prefix: String
   val path: String
   if (p == "users/" || p == "" || p == "default-image.jpg") {
-    path = "images/default-image.jpg"
-    prefix = "defalut"
+    onSuccess(File("res/drawable/default_image.jpg"))
+    return
   } else {
     path = "images/$p.jpg"
     prefix = "real"
@@ -76,7 +76,7 @@ fun getImageFromFirebaseStorage(
       }
       .addOnFailureListener {
         // Handle any errors
-        Log.d("Image Download", "----- Image download failed: $it")
+        Log.d("Image Download", "----- 1 Image download failed: $it")
         Log.d("Image Download", "$p -> $path -> $localFile")
         onFailure(it)
       }
@@ -88,15 +88,19 @@ fun getImagesFromFirebaseStorage(
     onFailure: (Exception) -> Unit = {},
     onSuccess: (List<File>) -> Unit = {},
 ) {
+  val prefix = "real"
   val count = AtomicInteger(0)
-  val res = mutableListOf<File>()
-  for (p in paths) {
-    val path: String =
-        if (p == "users/" || p == "" || p == "default-image.jpg") {
-          "images/default-image.jpg"
-        } else {
-          "images/$p.jpg"
-        }
+  val res = Array(paths.size) { File("drawable/default_image.jpg") }
+  for (p in paths.indices) {
+    val path: String
+    if (paths[p] == "users/" || paths[p] == "" || paths[p] == "default-image.jpg") {
+      if (count.incrementAndGet() == paths.size) {
+        onSuccess(res.toList())
+      }
+      continue
+    } else {
+      path = "images/${paths[p]}.jpg"
+    }
 
     // Get the image from Firebase Storage
     val storageRef = storage.reference
@@ -105,19 +109,19 @@ fun getImagesFromFirebaseStorage(
     val imageRef = storageRef.child(path)
 
     // Download the image to a local file
-    val localFile = File.createTempFile("local", ".tmp")
+    val localFile = File.createTempFile(prefix, ".tmp")
     imageRef
         .getFile(localFile)
         .addOnSuccessListener {
           // Local temp file has been created
-          res.add(localFile)
+          res[p] = localFile
           if (count.incrementAndGet() == paths.size) {
-            onSuccess(res)
+            onSuccess(res.toList())
           }
         }
         .addOnFailureListener {
           Log.d("Image Download", "----- Image download failed: $it")
-          Log.d("Image Download", "$p -> $path -> $localFile")
+          Log.d("Image Download", "${paths[p]} -> $path -> $localFile")
           onFailure(it)
         }
   }

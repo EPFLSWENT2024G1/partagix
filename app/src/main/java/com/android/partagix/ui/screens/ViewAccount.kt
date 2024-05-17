@@ -75,6 +75,7 @@ fun ViewAccount(
             modifier = modifier.testTag("accountScreenBottomNavBar"))
       }) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier =
                 Modifier.fillMaxHeight()
                     .padding(it)
@@ -90,18 +91,18 @@ fun ViewAccount(
                         }
                   }
               Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
-                contentAlignment = Alignment.Center) {
-                AsyncImage(
-                    model = user.imageId.absolutePath,
-                    contentDescription = "image",
-                    contentScale = ContentScale.Inside,
-                    modifier =
-                    Modifier.border(1.dp, Color.Black).fillMaxHeight().testTag("userImage"),
-                    alignment = Alignment.Center,
-                )
-            }
+              Box(
+                  modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
+                  contentAlignment = Alignment.Center) {
+                    AsyncImage(
+                        model = user.imageId.absolutePath,
+                        contentDescription = "image",
+                        contentScale = ContentScale.Inside,
+                        modifier =
+                            Modifier.border(1.dp, Color.Black).fillMaxHeight().testTag("userImage"),
+                        alignment = Alignment.Center,
+                    )
+                  }
               Spacer(modifier = Modifier.height(8.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().testTag("username"),
@@ -110,16 +111,16 @@ fun ViewAccount(
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
                 Icon(
                     Icons.Default.LocationOn,
                     contentDescription = null,
                     modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("address"))
                 LabeledText(
                     modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
-            }
+              }
 
-            val rank = user.rank
+              val rank = user.rank
               val stars: String
               if (rank == "") {
                 stars = "No trust yet"
@@ -151,13 +152,13 @@ fun ViewAccount(
                       }
                     }
               }
-            Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
                 Icon(
                     Icons.Default.CheckCircle,
                     contentDescription = null,
                     modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("rating"))
                 LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
-            }
+              }
               Spacer(modifier = Modifier.height(16.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
