@@ -139,7 +139,7 @@ class InventoryViewModel(
       loanBor: List<Loan>,
       usersBor: List<User>,
   ) {
-      fetchedBorrowed = borrowedItems
+    fetchedBorrowed = borrowedItems
     _uiState.value =
         _uiState.value.copy(borrowedItems = borrowedItems, loanBor = loanBor, usersBor = usersBor)
   }

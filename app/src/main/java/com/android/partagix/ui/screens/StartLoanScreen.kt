@@ -101,7 +101,12 @@ fun StartLoanScreen(
                                         open = false
                                       })
                                   .testTag("item")) {
-                            ItemUi(item = item, user = lender, loan = loan, manageLoanViewModel = manageLoanViewModel,)
+                            ItemUi(
+                                item = item,
+                                user = lender,
+                                loan = loan,
+                                manageLoanViewModel = manageLoanViewModel,
+                            )
                           }
                       Row(
                           modifier = Modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),

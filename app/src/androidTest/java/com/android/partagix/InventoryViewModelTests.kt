@@ -114,7 +114,7 @@ class InventoryViewModelTests {
           "",
           LoanState.ACCEPTED)
   val list: List<Item> = listOf(item1, item2, item3)
-    val loans = listOf(loaned1, loaned2, loaned3)
+  val loans = listOf(loaned1, loaned2, loaned3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
   var onSuccess: (List<Item>) -> Unit = {}
