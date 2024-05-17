@@ -63,4 +63,4 @@ data class NomatismResponse(
     val lat: String,
     val lon: String,
     @SerializedName("display_name") val displayName: String
-) {}
+)

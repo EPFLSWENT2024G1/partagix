@@ -62,6 +62,7 @@ import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.StartLoanScreen
 import com.android.partagix.ui.screens.ViewAccount
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -70,13 +71,14 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
+    private val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(activity)
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
 
   private var navigationActionsInitialized = false
-  private lateinit var navigationActions: NavigationActions
-  private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+  lateinit var navigationActions: NavigationActions
 
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel = ManageLoanViewModel(db = db)
@@ -160,6 +162,10 @@ class App(
     navigationActions.navigateTo(route)
   }
 
+  fun setNavigationActionsInitialized(value: Boolean) {
+    navigationActionsInitialized = value
+  }
+
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
       val newUser =
@@ -194,7 +200,7 @@ class App(
     val navController = rememberNavController()
     navigationActions = remember(navController) { NavigationActions(navController) }
 
-    navigationActionsInitialized = true
+    setNavigationActionsInitialized(true)
     val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,
@@ -280,11 +286,7 @@ class App(
               itemViewModel = itemViewModel,
               modifier = modifier)
         } else {
-          inventoryViewModel.getInventory()
-          HomeScreen(
-              homeViewModel = HomeViewModel(Database(), activity),
-              manageLoanViewModel = manageViewModel,
-              navigationActions = navigationActions)
+          navigationActions.navigateTo(Route.HOME)
         }
       }
       composable(Route.BORROW) {
@@ -321,10 +323,10 @@ class App(
         itemViewModel.getUser()
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
-        composable(Route.VIEW_OTHERS_ITEM) {
-          itemViewModel.getUser()
-          InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
-        }
+      composable(Route.VIEW_OTHERS_ITEM) {
+        itemViewModel.getUser()
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
+      }
 
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
@@ -364,13 +366,13 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            modifier = modifier)
+            itemViewModel = itemViewModel)
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            modifier = modifier)
+            itemViewModel = itemViewModel)
       }
     }
   }

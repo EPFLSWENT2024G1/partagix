@@ -57,6 +57,7 @@ fun LoanScreen(
     itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
+    isMapLoadingOptimized: Boolean = true,
 ) {
 
   val loansUIState = loanViewModel.uiState.collectAsState()
@@ -84,7 +85,7 @@ fun LoanScreen(
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
-  var mapLoaded by remember { mutableStateOf(false) }
+  var mapLoaded by remember { mutableStateOf(!isMapLoadingOptimized) }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
@@ -168,7 +169,11 @@ fun LoanScreen(
                                           loanViewModel.applyFilters(
                                               FilterState(
                                                   location = currentLocation!!,
-                                                  radius = it.toDouble()))
+                                                  radius = it.toDouble(),
+                                                  query = loansUIState.value.filterState.query,
+                                                  atLeastQuantity =
+                                                      loansUIState.value.filterState
+                                                          .atLeastQuantity))
                                         }
                                       },
                                       unit = "km",
@@ -182,6 +187,8 @@ fun LoanScreen(
                                       onReset = {
                                         loanViewModel.resetFilter(FilterAction.ResetLocation)
                                       },
+                                      value =
+                                          loansUIState.value.filterState.radius?.toFloat() ?: 0f,
                                       modifier =
                                           modifier
                                               .fillMaxWidth(.3f)
@@ -190,7 +197,11 @@ fun LoanScreen(
                                       title = "Quantity",
                                       selectedValue = {
                                         loanViewModel.applyFilters(
-                                            FilterState(atLeastQuantity = it.toInt()))
+                                            FilterState(
+                                                location = currentLocation,
+                                                radius = loansUIState.value.filterState.radius,
+                                                query = loansUIState.value.filterState.query,
+                                                atLeastQuantity = it.toInt()))
                                       },
                                       unit = "items",
                                       minUnit = "1",
@@ -203,6 +214,9 @@ fun LoanScreen(
                                       onReset = {
                                         loanViewModel.resetFilter(FilterAction.ResetAtLeastQuantity)
                                       },
+                                      value =
+                                          loansUIState.value.filterState.atLeastQuantity?.toFloat()
+                                              ?: 0f,
                                       modifier =
                                           modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                                 }

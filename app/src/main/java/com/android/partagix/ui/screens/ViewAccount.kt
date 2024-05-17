@@ -23,20 +23,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.partagix.R
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
@@ -105,28 +103,22 @@ fun ViewAccount(
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
               Spacer(modifier = Modifier.height(16.dp))
-              TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("address"),
-                  value = user.address,
-                  onValueChange = {},
-                  label = { Text("Location", modifier = Modifier.testTag("addressText")) },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) })
+
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+                Icon(
+                    Icons.Default.LocationOn,
+                    contentDescription = null,
+                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("address"))
+                LabeledText(
+                    modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
+              }
+
               val rank = user.rank
               val stars: String
               if (rank == "") {
                 stars = "No trust yet"
               } else {
                 val rating = round(rank.toFloat() * 100) / 100
-                // val rating = 4.5
                 val roundedRating = round(rating).toInt()
                 stars =
                     when (roundedRating) {
@@ -153,21 +145,15 @@ fun ViewAccount(
                       }
                     }
               }
-              TextField(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("rating"),
-                  value = stars,
-                  onValueChange = {},
-                  label = { Text("Trust") },
-                  colors =
-                      TextFieldDefaults.colors(
-                          focusedIndicatorColor = Color.Transparent,
-                          disabledIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedContainerColor = Color.Transparent,
-                          unfocusedContainerColor = Color.Transparent,
-                          disabledContainerColor = Color.Transparent),
-                  readOnly = true,
-                  leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null) })
+
+              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("rating"))
+                LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
+              }
+
               Spacer(modifier = Modifier.height(16.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),

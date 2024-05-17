@@ -72,10 +72,10 @@ fun BorrowScreen(
             })
       },
       bottomBar = {
-          BottomNavigationBar(
-              selectedDestination = Route.LOAN,
-              navigateToTopLevelDestination = navigationActions::navigateTo,
-              modifier = modifier.testTag("LoanScreenBottomNavBar"))
+        BottomNavigationBar(
+            selectedDestination = Route.LOAN,
+            navigateToTopLevelDestination = navigationActions::navigateTo,
+            modifier = modifier.testTag("LoanScreenBottomNavBar"))
       }) {
         val loanUiState = viewModel.loanUiState.collectAsStateWithLifecycle()
         val itemUIState = viewModel.itemUiState.collectAsStateWithLifecycle()
@@ -258,14 +258,14 @@ fun BorrowScreen(
                         DatePicker(state = endDatePickerState)
                       }
                 }
-                  Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = modifier.height(8.dp))
 
-                  OutlinedTextField(
-                      value = loanQuantity.toString(),
-                      onValueChange = {},
-                      label = { Text("Quantity") },
-                      modifier = modifier.fillMaxWidth(),
-                      readOnly = false)
+                OutlinedTextField(
+                    value = loanQuantity.toString(),
+                    onValueChange = {},
+                    label = { Text("Quantity") },
+                    modifier = modifier.fillMaxWidth(),
+                    readOnly = false)
               }
 
               Button(

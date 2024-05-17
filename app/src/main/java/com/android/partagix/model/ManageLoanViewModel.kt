@@ -65,6 +65,14 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
     }
   }
 
+  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
+    getLoanRequests(isOutgoing = false, onSuccess = { onSuccess(uiState.value.loans.size) })
+  }
+
+  fun getOutGoingRequestCount(onSuccess: (Int) -> Unit) {
+    getLoanRequests(isOutgoing = true, onSuccess = { onSuccess(uiState.value.loans.size) })
+  }
+
   fun update(
       items: List<Item>,
       users: List<User>,
