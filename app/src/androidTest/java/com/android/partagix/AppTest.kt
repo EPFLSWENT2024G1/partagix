@@ -1,11 +1,11 @@
 package com.android.partagix
 
-import androidx.activity.result.registerForActivityResult
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.App
 import com.android.partagix.ui.navigation.NavigationActions
@@ -41,9 +41,12 @@ class AppTest {
 
   @Mock private lateinit var mockFirebaseUser: FirebaseUser
 
+  @Mock private lateinit var mockNavigationActions: FirebaseMessagingService
+
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
+  private val new_token = "new_token"
 
   @Before
   fun setup() {
@@ -56,7 +59,9 @@ class AppTest {
     every { mockActivity.attributionTag } returns "testTag"
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
+
     mockDatabase = spyk(Database())
+    every { mockDatabase.createUser(any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -65,9 +70,16 @@ class AppTest {
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
 
+    mockNavigationActions = mockk()
+    every { mockNavigationActions.initPermissions() } just Runs
+    every { mockNavigationActions.checkToken(any(), any()) } answers {
+      val callback = secondArg<(String) -> Unit>()
+      callback(new_token)
+    }
+
     mockFusedLocationProviderClient = mockk()
 
-    app = App(mockActivity, mockAuth, mockDatabase, mockFusedLocationProviderClient)
+    app = App(mockActivity, mockAuth, mockDatabase, mockNavigationActions, mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
   }
 

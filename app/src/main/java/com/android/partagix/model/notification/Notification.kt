@@ -13,6 +13,7 @@ data class Notification(
     LOAN_ACCEPTED,
     LOAN_REJECTED,
     NEW_INCOMING_REQUEST,
+    USER_REVIEW,
     DEFAULT;
 
     fun channelId(): String {
@@ -20,7 +21,8 @@ data class Notification(
         NEW_INCOMING_REQUEST -> Channels.INCOMING.id()
         LOAN_ACCEPTED -> Channels.OUTGOING.id()
         LOAN_REJECTED -> Channels.OUTGOING.id()
-        else -> Channels.SOCIAL.id()
+        USER_REVIEW -> Channels.SOCIAL.id()
+        DEFAULT -> Channels.SOCIAL.id()
       }
     }
   }

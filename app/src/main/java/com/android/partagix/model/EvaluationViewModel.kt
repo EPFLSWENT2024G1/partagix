@@ -4,11 +4,18 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class EvaluationViewModel(loan: Loan = emptyLoan, db: Database = Database()) : ViewModel() {
+class EvaluationViewModel(
+    loan: Loan = emptyLoan,
+    db: Database = Database(),
+    private val notificationManager: FirebaseMessagingService
+) : ViewModel() {
   private val database = db
 
   private val _uiState = MutableStateFlow(EvaluationUIState(loan))
@@ -34,6 +41,15 @@ class EvaluationViewModel(loan: Loan = emptyLoan, db: Database = Database()) : V
 
   fun reviewLoan(loan: Loan, rating: Double, comment: String, userId: String) {
     database.setReview(loan.id, userId, rating, comment)
+
+    val notification =
+        Notification(
+            title = "New User Review",
+            message = "You have received a new user review.",
+            type = Notification.Type.USER_REVIEW,
+            navigationUrl = Route.ACCOUNT)
+
+    notificationManager.sendNotification(notification, userId)
   }
 
   fun getUser(userId: String, onSuccess: (User) -> Unit, onError: () -> Unit) {
