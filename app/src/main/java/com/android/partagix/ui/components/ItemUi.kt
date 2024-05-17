@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,13 +18,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -80,7 +82,7 @@ fun ItemUi(
       } else {
         loan.startDate
       }
-  var expandables by remember { mutableStateOf(expandState) }
+  var expandable by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   if (isExpandable) {
     Column(
@@ -95,7 +97,7 @@ fun ItemUi(
                     animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-                .clickable(onClick = { expandables = !expandables })
+                .clickable(onClick = { expandable = !expandable })
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
@@ -121,7 +123,7 @@ fun ItemUi(
                   }
                   Text(
                       text =
-                          if (loan.idItem.equals("")) {
+                          if (loan.idItem == "") {
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
@@ -168,12 +170,9 @@ fun ItemUi(
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
               }
-          if (expandables) {
 
-            Text(
-                text = "Stay in touch:",
-                textAlign = TextAlign.Left,
-                modifier = Modifier.fillMaxWidth())
+          if (expandable) {
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
                 modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
@@ -184,25 +183,30 @@ fun ItemUi(
                           Icon(
                               Icons.Default.Check,
                               contentDescription = "validate",
-                              modifier = Modifier,
-                              Color.Green)
-                          Text(text = "validate")
+                              modifier = Modifier)
+                          Spacer(Modifier.width(3.dp))
+                          Text(text = "Validate")
                         },
-                        border = BorderStroke(1.dp, Color.Green),
-                        modifier = Modifier.fillMaxWidth(0.35f))
+                        modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                        contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
                   }
+                  Spacer(modifier = Modifier.width(6.dp))
                   Button(
                       onClick = { manageLoanViewModel.declineLoan(loan, index) },
                       content = {
                         Icon(
-                            Icons.Default.Cancel,
-                            contentDescription = "cancel",
-                            modifier = Modifier,
-                            Color.Red)
-                        Text(text = "cancel")
+                            Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                        Spacer(Modifier.width(2.dp))
+                        Text(text = "Cancel")
                       },
-                      border = BorderStroke(1.dp, Color.Red),
-                      modifier = Modifier.fillMaxWidth(0.5f))
+                      colors =
+                          ButtonColors(
+                              containerColor = MaterialTheme.colorScheme.error,
+                              contentColor = MaterialTheme.colorScheme.onError,
+                              disabledContainerColor = MaterialTheme.colorScheme.error,
+                              disabledContentColor = MaterialTheme.colorScheme.onError),
+                      modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                      contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
                 }
           }
         }
