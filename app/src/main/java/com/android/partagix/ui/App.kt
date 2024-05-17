@@ -63,6 +63,7 @@ import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.StartLoanScreen
 import com.android.partagix.ui.screens.ViewAccount
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -71,14 +72,15 @@ class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
     private val db: Database = Database(),
-    private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db)
+    private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db),
+    private val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(activity)
 ) : SignInResultListener {
 
   private var authentication: Authentication = Authentication(activity, this)
 
   private var navigationActionsInitialized = false
-  private lateinit var navigationActions: NavigationActions
-  private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+  lateinit var navigationActions: NavigationActions
 
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModel =
@@ -175,6 +177,10 @@ class App(
     navigationActions.navigateTo(route)
   }
 
+  fun setNavigationActionsInitialized(value: Boolean) {
+    navigationActionsInitialized = value
+  }
+
   override fun onSignInSuccess(user: FirebaseUser?) {
     if (user != null) {
       notificationManager.checkToken(user.uid) { newToken ->
@@ -220,7 +226,7 @@ class App(
 
     globalNavigationActions = navigationActions
 
-    navigationActionsInitialized = true
+    setNavigationActionsInitialized(true)
     val selectedDestination = Route.BOOT // This is not even used
     ComposeMainContent(
         navController = navController,

@@ -204,6 +204,7 @@ dependencies {
 
     androidTestImplementation("androidx.test:core:1.4.0")
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     androidTestImplementation(libs.kaspresso.compose) {
         exclude(group="com.google.protobuf", module="protobuf-lite")
@@ -236,6 +237,10 @@ dependencies {
     testImplementation("io.mockk:mockk:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+
+    // ----------       Mockito     ------------
+    androidTestImplementation("org.mockito:mockito-core:3.+")
+    androidTestImplementation("org.mockito:mockito-android:3.+")
 
     // ----------       Google Maps     ------------
     implementation("com.google.maps.android:maps-compose:4.3.0")
