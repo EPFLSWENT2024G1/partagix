@@ -1,5 +1,6 @@
 package com.android.partagix.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,17 +16,18 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun LabeledText(modifier: Modifier = Modifier, label: String = "label", text: String = "text") {
   Box(modifier = modifier.padding(8.dp).testTag("labeledText")) {
-    Column(modifier = modifier.testTag("mainColumn")) {
+    Column(modifier = Modifier.testTag("mainColumn")) {
       Text(
-          modifier = modifier.testTag("label"),
+          modifier = Modifier.testTag("label"),
           text = label,
           style = TextStyle(color = Color.Gray),
-          fontSize = 10.sp)
-      Spacer(modifier = modifier.height(4.dp))
+          fontSize = 8.sp)
+      Spacer(modifier = Modifier.height(4.dp))
       Text(
           text = text,
           style = TextStyle(color = Color.Black),
-          modifier = modifier.padding(6.dp, 0.dp, 0.dp, 0.dp).testTag("text"),
+          fontSize = 10.sp,
+          modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp).fillMaxHeight().testTag("text"),
       )
     }
   }

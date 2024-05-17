@@ -106,9 +106,11 @@ fun InventoryViewItemScreen(
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column {
-                    LabeledText(label = "Object Name", text = item.name)
+                    LabeledText(label = "Object Name", text = item.name,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f))
 
-                    LabeledText(label = "Author", text = user.name)
+                    LabeledText(label = "Author", text = user.name,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight())
                   }
                 }
               }
