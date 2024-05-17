@@ -87,7 +87,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
-      every { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) } just Runs
+    every { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) } just Runs
 
     mockDatabase = mockk()
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
