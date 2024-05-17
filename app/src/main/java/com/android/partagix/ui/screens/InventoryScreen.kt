@@ -3,7 +3,6 @@
 package com.android.partagix.ui.screens
 
 import android.content.ContentValues.TAG
-import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -49,10 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
-import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyItem
-import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
