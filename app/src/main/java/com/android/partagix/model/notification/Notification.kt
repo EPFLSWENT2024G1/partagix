@@ -11,6 +11,7 @@ data class Notification(
 ) {
   enum class Type {
     LOAN_ACCEPTED,
+    LOAN_REJECTED,
     NEW_INCOMING_REQUEST,
     DEFAULT;
 
@@ -18,6 +19,7 @@ data class Notification(
       return when (this) {
         NEW_INCOMING_REQUEST -> Channels.INCOMING.id()
         LOAN_ACCEPTED -> Channels.OUTGOING.id()
+        LOAN_REJECTED -> Channels.OUTGOING.id()
         else -> Channels.SOCIAL.id()
       }
     }

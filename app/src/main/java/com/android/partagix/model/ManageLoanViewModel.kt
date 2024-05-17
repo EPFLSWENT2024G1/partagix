@@ -103,11 +103,6 @@ class ManageLoanViewModel(
   private fun updateExpandedReset() {
     _uiState.value = _uiState.value.copy(expanded = _uiState.value.expanded.plus(false))
   }
-  /*fun updateExpanded (index : Int) {
-      val list = _uiState.value.expanded.toMutableList()
-      list[index] = !list[index]
-      _uiState.value = _uiState.value.copy(expanded = list)
-  }*/
 
   fun acceptLoan(loan: Loan, index: Int) {
     UiStateWithoutIndex(index)
@@ -131,10 +126,10 @@ class ManageLoanViewModel(
     val requester = uiState.value.users.find { it.id == loan.idBorrower }
 
     if (requester != null) {
-      sendNotification("declined", Notification.Type.LOAN_ACCEPTED, requester.id)
+      sendNotification("declined", Notification.Type.LOAN_REJECTED, requester.id)
     } else {
       database.getFCMToken(loan.idBorrower) { token ->
-        sendNotification("declined", Notification.Type.LOAN_ACCEPTED, token)
+        sendNotification("declined", Notification.Type.LOAN_REJECTED, token)
       }
     }
   }
