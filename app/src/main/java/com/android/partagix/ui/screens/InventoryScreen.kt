@@ -50,6 +50,7 @@ import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -100,7 +101,7 @@ fun InventoryScreen(
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
-              val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
+              val i = emptyItem
               itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
