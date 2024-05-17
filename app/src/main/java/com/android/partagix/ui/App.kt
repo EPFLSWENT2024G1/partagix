@@ -356,13 +356,13 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            modifier = modifier)
+            itemViewModel = itemViewModel)
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            modifier = modifier)
+            itemViewModel = itemViewModel)
       }
     }
   }

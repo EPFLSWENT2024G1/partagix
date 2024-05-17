@@ -2,6 +2,7 @@ package com.android.partagix.startEndLoan
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StartOrEndLoanUIState
 import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.model.emptyConst.emptyItem
@@ -9,6 +10,7 @@ import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.screens.StartLoanScreen
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.StartLoanScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -32,6 +34,7 @@ class StartLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockStartOrEndLoanViewModel: StartOrEndLoanViewModel
   @RelaxedMockK lateinit var mockStartOrEndLoanUiState: MutableStateFlow<StartOrEndLoanUIState>
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   @Before
   fun testSetup() {
@@ -46,26 +49,60 @@ class StartLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.goBack() } just Runs
 
-    composeTestRule.setContent { StartLoanScreen(mockStartOrEndLoanViewModel, mockNavActions) }
+    mockItemViewModel = mockk()
+    every { mockItemViewModel.updateUiItem(emptyItem) } just Runs
+    every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
+    every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
+
+    composeTestRule.setContent {
+      StartLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockItemViewModel)
+    }
   }
 
   @Test
   fun contentIsDisplayed() = run {
     onComposeScreen<StartLoanScreen>(composeTestRule) {
+      title { assertIsDisplayed() }
       item { assertIsDisplayed() }
       startButton { assertIsDisplayed() }
       cancelButton { assertIsDisplayed() }
+      close { assertIsDisplayed() }
     }
   }
 
   @Test
-  fun buttonAction() = run {
+  fun startButton() = run {
     onComposeScreen<StartLoanScreen>(composeTestRule) {
       startButton { performClick() }
       coVerify { mockStartOrEndLoanViewModel.onStart() }
+      popUp { assertDoesNotExist() }
+    }
+  }
 
+  @Test
+  fun cancelButton() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
       cancelButton { performClick() }
       coVerify { mockStartOrEndLoanViewModel.onCancel() }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun clickOnItem() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
+      item { performClick() }
+      coVerify { mockItemViewModel.updateUiItem(emptyItem) }
+      coVerify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+      popUp { assertDoesNotExist() }
+    }
+  }
+
+  @Test
+  fun closeButton() = run {
+    onComposeScreen<StartLoanScreen>(composeTestRule) {
+      close { performClick() }
+      popUp { assertDoesNotExist() }
     }
   }
 }
