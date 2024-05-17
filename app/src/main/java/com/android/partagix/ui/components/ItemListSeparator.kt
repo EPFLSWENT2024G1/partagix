@@ -61,10 +61,10 @@ fun ItemListColumn(
           style =
               TextStyle(
                   fontSize = 18.sp,
-                  fontWeight = FontWeight(1000),
+                  fontWeight = FontWeight(800),
                   color = Color(0xFF000000),
               ),
-          modifier = Modifier.fillMaxWidth(0.8f).padding(horizontal = 10.dp))
+          modifier = Modifier.fillMaxWidth(0.7f).padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,

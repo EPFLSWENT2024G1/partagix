@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Download
@@ -118,20 +119,23 @@ fun InventoryScreen(
                               fontSize = 18.sp,
                               fontWeight = FontWeight(1000),
                               color = Color(0xFF000000),
-                          ))
+                          ),
+                      modifier = modifier.padding(start = 10.dp))
                   Text(
-                      text = "See Old",
+                      text = "Historic",
                       fontSize = 12.sp,
                       modifier =
                           Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })
                 }
             Row(
                 modifier =
-                    Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).fillMaxSize(0.1f),
+                    Modifier.fillMaxWidth()
+                        .padding(start = 10.dp, top = 5.dp, end = 10.dp)
+                        .fillMaxSize(0.1f),
                 horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
             ) {
               Button(
-                  modifier = modifier.fillMaxWidth(0.49f),
+                  modifier = modifier.fillMaxWidth(0.49f).requiredHeight(55.dp),
                   colors = buttonColors(Color.White),
                   border = BorderStroke(width = 1.dp, color = Color.Black),
                   shape = MaterialTheme.shapes.small,
@@ -156,7 +160,7 @@ fun InventoryScreen(
                         }
                   }
               Button(
-                  modifier = modifier.fillMaxWidth(),
+                  modifier = modifier.fillMaxWidth().requiredHeight(55.dp),
                   colors = buttonColors(Color.White),
                   border = BorderStroke(width = 1.dp, color = Color.Black),
                   shape = MaterialTheme.shapes.small,
@@ -199,7 +203,10 @@ fun InventoryScreen(
                 isOutgoing = false,
                 isExpandable = false,
                 manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.height(220.dp).testTag("inventoryScreenBorrowedItemList"))
+                modifier =
+                    Modifier.height(220.dp)
+                        .padding(horizontal = 10.dp)
+                        .testTag("inventoryScreenBorrowedItemList"))
 
             Spacer(modifier = Modifier.height(8.dp))
             ItemListColumn(
@@ -218,7 +225,7 @@ fun InventoryScreen(
                 isExpandable = false,
                 isOutgoing = false,
                 manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.testTag("inventoryScreenItemList"))
+                modifier = Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
           }
         }
       }

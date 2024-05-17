@@ -96,7 +96,7 @@ fun ManageLoanRequest(
                     isExpandable = true,
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
-                    onClick = {},
+                    onClick = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     manageLoanViewModel = manageLoanViewModel,
                     isClickable = false,

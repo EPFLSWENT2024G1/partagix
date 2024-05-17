@@ -49,7 +49,7 @@ private const val quickAccessText = "Quick access"
 private const val findItemButtonName = "Find item to borrow"
 private const val quickScanButtonName = "Quick scan"
 private const val findItemInventoryName = "Find item in inventory"
-private const val incomingRequestsText = "Incoming requests"
+private const val incomingRequestsText = "Incoming request"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,7 +121,7 @@ fun HomeScreen(
                     users = uiState.users,
                     loan = uiState.loans,
                     title = "",
-                    corner = "see all",
+                    corner = "See All",
                     onClick = { /* useless on this list */},
                     onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
                     isCornerClickable = true,
