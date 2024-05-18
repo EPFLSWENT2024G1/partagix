@@ -147,6 +147,9 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.uid } returns "1234"
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
+
+    every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
+    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs
   }
 
   // Navigate from Home screen to Inventory screen
@@ -182,7 +185,10 @@ class EndToEndCreateEdit {
           itemViewModel = mockItemViewModel)
     }
 
-    composeTestRule.onNodeWithText("There is no items in the inventory.").assertIsDisplayed()
+    composeTestRule
+        .onNodeWithText(
+            "There is no items in your inventory, click on the + button to add your first item")
+        .assertIsDisplayed()
     composeTestRule.onNodeWithTag("inventoryScreenFab").performClick()
 
     coVerify(exactly = 1) { mockNavActions.navigateTo(Route.CREATE_ITEM) }
