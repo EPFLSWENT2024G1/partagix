@@ -147,20 +147,24 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(lender)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
-        {
-          val callback = it.invocation.args[2] as (User) -> Unit
-          callback(lender)
-        }
-
-    every { mockDatabase.getUserWithImage("", any(), any()) } answers
         {
           val callback = it.invocation.args[2] as (User) -> Unit
           callback(borrower)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
+
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
+    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.STARTLOAN) }
@@ -218,6 +222,11 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
         }
 
     every { mockDatabase.getUser("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } answers
         {
           val callback = it.invocation.args[2] as (User) -> Unit
           callback(borrower)
@@ -280,7 +289,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
         }
 
     every { mockDatabase.getUser("1234", any(), any()) } just Runs
-
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } just Runs
     app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 

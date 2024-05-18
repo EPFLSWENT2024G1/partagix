@@ -369,20 +369,6 @@ class DatabaseTests {
     every { storageReference.child("imageId") } returns storageReference
     every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
     every { uploadTask.addOnFailureListener(any()) } returns uploadTask
-    /*
-       every { downloadTask.addOnSuccessListener(any()) } answers
-           {
-             val listener = arg<OnSuccessListener<File>>(0)
-             listener.onSuccess(File("imageId"))
-             downloadTask
-           }
-       every { downloadTask.addOnFailureListener(any()) } returns downloadTask
-
-       every { storageReference.getFile(any<File>()) } answers { downloadTask }
-
-    */
-
-    // every {mockDb.collection(any())} returns mockItemsCollection
 
     // Create Database instance
     val database = Database(mockDb)
