@@ -64,7 +64,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   val grantPermissionRule: GrantPermissionRule =
       GrantPermissionRule.grant(
           android.Manifest.permission.ACCESS_FINE_LOCATION,
-          android.Manifest.permission.ACCESS_COARSE_LOCATION)
+          android.Manifest.permission.ACCESS_COARSE_LOCATION,
+          android.Manifest.permission.POST_NOTIFICATIONS)
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockLoanViewModel: LoanViewModel
