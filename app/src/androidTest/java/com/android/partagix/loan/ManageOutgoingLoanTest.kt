@@ -147,7 +147,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
       ManageOutgoingLoan(
           mockManageViewModel,
           mockNavActions,
-          expandables = true,
+          expandable = true,
       )
     }
 
