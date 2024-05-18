@@ -9,8 +9,7 @@ data class User(
     val address: String,
     val rank: String,
     val inventory: Inventory,
-    val imageId: File = File.createTempFile("default_image", null)
-
+    val imageId: File = File.createTempFile("default_image", null),
     // Can be null if the user has disabled notifications
     val fcmToken: String? = null,
 )

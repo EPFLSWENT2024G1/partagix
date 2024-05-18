@@ -47,8 +47,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["addr"] as String,
                       document.data["rank"] as String,
                       Inventory(document.data["id"] as String, listItems),
-                      File("noImage"))
-                      Inventory(document.data["id"] as String, listItems),
+                      File("noImage"),
                       document.data["fcmToken"] as String?)
               ret.add(user)
             }
