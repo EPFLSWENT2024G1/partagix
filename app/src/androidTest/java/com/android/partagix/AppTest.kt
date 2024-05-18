@@ -1,5 +1,6 @@
 package com.android.partagix
 
+import androidx.activity.result.registerForActivityResult
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
@@ -43,6 +44,8 @@ class AppTest {
 
   @Mock private lateinit var mockNavigationActions: FirebaseMessagingService
 
+  @Mock private lateinit var mockNotificationManager: FirebaseMessagingService
+
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
@@ -62,6 +65,7 @@ class AppTest {
 
     mockDatabase = spyk(Database())
     every { mockDatabase.createUser(any()) } just Runs
+    every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -70,12 +74,13 @@ class AppTest {
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
 
-    mockNavigationActions = mockk()
-    every { mockNavigationActions.initPermissions() } just Runs
-    every { mockNavigationActions.checkToken(any(), any()) } answers
+    mockNotificationManager = mockk()
+    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+    every { mockNotificationManager.initPermissions() } just Runs
+    every { mockNotificationManager.checkToken(any(), any()) } answers
         {
           val callback = secondArg<(String) -> Unit>()
-          callback(new_token)
+          callback(newToken)
         }
 
     mockFusedLocationProviderClient = mockk()
@@ -86,6 +91,7 @@ class AppTest {
             mockAuth,
             mockDatabase,
             mockNavigationActions,
+            mockNotificationManager,
             mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
   }

@@ -72,6 +72,9 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+
+    every { mockManageLoanViewModel.getInComingRequestCount(any()) } just Runs
+    every { mockManageLoanViewModel.getOutGoingRequestCount(any()) } just Runs
   }
 
   @Test
@@ -87,7 +90,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       noItemBox { assertIsDisplayed() }
       noItemText {
         assertIsDisplayed()
-        assertTextEquals("There is no items in the inventory.")
+        assertTextEquals(
+            "There is no items in your inventory, click on the + button to add your first item")
       }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
