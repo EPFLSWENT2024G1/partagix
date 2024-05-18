@@ -1,4 +1,5 @@
 import android.net.Uri
+import com.android.partagix.model.item.Item
 import com.google.common.base.Verify.verify
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
@@ -7,9 +8,11 @@ import com.google.firebase.storage.UploadTask
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase
 import java.io.File
 import java.util.*
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
 
 class FirebaseStorageTest {
 
@@ -82,6 +85,14 @@ class FirebaseStorageTest {
     val path = ""
     val localFile = File.createTempFile("local", ".tmp")
 
+    val latch = CountDownLatch(1)
+
+    val onSuccessCallback: (File) -> Unit = { res ->
+      // Assert on the returned file
+      TestCase.assertEquals(File("res/drawable/default_image.jpg"), res)
+      latch.countDown()
+    }
+
     every { firebaseStorage.reference } returns storageReference
     every { storageReference.child("images/default-image.jpg") } returns storageReference
     every { storageReference.getFile(any<File>()) } returns fileDownloadTask
@@ -89,10 +100,9 @@ class FirebaseStorageTest {
     every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
     every { fileDownloadTask.addOnFailureListener(any()) } returns fileDownloadTask
 
-    getImageFromFirebaseStorage(path, firebaseStorage)
 
-    verify { storageReference.child("images/default-image.jpg") }
+    getImageFromFirebaseStorage(path, firebaseStorage, onSuccess = onSuccessCallback)
+    latch.await()
 
-    verify { storageReference.getFile(any<File>()) }
   }
 }
