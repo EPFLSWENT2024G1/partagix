@@ -19,6 +19,7 @@ package com.android.partagix.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.filtering.Filtering
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -29,6 +30,7 @@ import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * InventoryViewModel is a ViewModel that will handle the inventory of the user
@@ -119,16 +121,15 @@ class InventoryViewModel(
           }
         }
       } else {
-        database.getItemsWithImages {
-          updateBor(it)
-          getUsers(it) {
-            updateUsersBor(emptyList())
-            updateUser(it, 1)
-          }
-          findTime(it, emptyList(), ::updateLoanBor)
-          updateInv(it)
-          findTime(it, emptyList(), ::updateLoan)
+        val emptyItems = emptyList<Item>()
+        updateBor(emptyItems)
+        getUsers(emptyItems) {
+          updateUsersBor(emptyList())
+          updateUser(it, 0)
         }
+        findTime(emptyItems, emptyList(), ::updateLoanBor)
+        updateInv(emptyItems)
+        findTime(emptyItems, emptyList(), ::updateLoan)
       }
       latch.countDown()
     }
@@ -234,6 +235,11 @@ class InventoryViewModel(
    * @param update a function to update the user list
    */
   fun getUsers(list: List<Item>, update: (User) -> Unit) {
+      if (list.isEmpty()) {
+          update(User("", "", "", "", Inventory("", emptyList()), File(""), ""))
+            return
+      }
+
     database.getUsers { users ->
       val toUpdate = mutableListOf<Boolean>()
       for (i in users.indices) {

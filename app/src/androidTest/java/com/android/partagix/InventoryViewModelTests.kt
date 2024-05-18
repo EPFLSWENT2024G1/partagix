@@ -19,6 +19,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
+import junit.framework.TestCase.assertEquals
 import java.io.File
 import java.util.Date
 import java.util.concurrent.CountDownLatch
@@ -206,6 +207,27 @@ class InventoryViewModelTests {
       assert(inventoryViewModel.uiState.value.borrowedItems == list)
       assert(inventoryViewModel.uiState.value.usersBor == listOf(user, user, user))
       assert(inventoryViewModel.uiState.value.loanBor == listOf(loaned1, loaned2, loaned3))
+    }
+  }
+
+  @Test
+  fun testInventoryNullUser() {
+
+    val mockAuthEmptyUser = mockk<FirebaseAuth>()
+    every { mockAuthEmptyUser.currentUser } returns null
+    val latch = CountDownLatch(1)
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = mockAuthEmptyUser, latch = latch))
+    inventoryViewModel.getInventory(latch, mockAuthEmptyUser)
+    latch.await()
+
+    runBlocking {
+      assertEquals(emptyList<Item>(), inventoryViewModel.uiState.value.items,)
+        assertEquals( emptyList<User>(), inventoryViewModel.uiState.value.users)
+        assertEquals( emptyList<User>(), inventoryViewModel.uiState.value.users)
+        assertEquals( emptyList<Loan>(), inventoryViewModel.uiState.value.loan)
+        assertEquals( emptyList<Item>(), inventoryViewModel.uiState.value.borrowedItems)
+        assertEquals( emptyList<User>(), inventoryViewModel.uiState.value.usersBor)
+        assertEquals( emptyList<Loan>(), inventoryViewModel.uiState.value.loanBor)
     }
   }
 

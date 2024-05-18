@@ -439,6 +439,94 @@ class DatabaseTests {
   }
 
   @Test
+  fun testGetUser() {
+    // Mock current timestamp
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    mockkStatic(::getImagesFromFirebaseStorage)
+    every { getImagesFromFirebaseStorage(any(), any()) } answers
+        {
+          val onSuccess = arg<(List<File>) -> Unit>(4)
+          onSuccess(listOf(File("imageId")))
+        }
+
+    // Mock Firestore objects
+
+    val mockDb: FirebaseFirestore = mockk()
+    val mockUsersCollection = mockk<CollectionReference>()
+    val mockUsersTask = mockk<Task<DocumentSnapshot>>()
+    val mockDocumentReference = mockk<DocumentReference>()
+
+    val userId = "userId"
+
+    // This user is returned by Firestore
+    val user =
+        User(
+            userId,
+            "userName",
+            "userAddress",
+            "rank",
+            Inventory("id", listOf()),
+            imageId = File("userImageId"),
+        )
+    // This user should be returned by getUser and the other one for getUserWithImage
+    val userWithoutImage =
+        User(
+            userId,
+            "userName",
+            "userAddress",
+            "rank",
+            Inventory("id", listOf()),
+            imageId = File("noImage"),
+        )
+    // Define behavior for Firestore mocks
+    every { mockDb.collection(any()) } returns mockUsersCollection
+
+    every { mockDb.collection("users") } returns mockUsersCollection
+    every { mockUsersCollection.document("userId") } returns mockDocumentReference
+    every { mockDocumentReference.get() } returns mockUsersTask
+    every { mockUsersTask.addOnSuccessListener(any<OnSuccessListener<DocumentSnapshot>>()) } answers
+        {
+          val listener = arg<OnSuccessListener<DocumentSnapshot>>(0)
+          val mockDocument = mockk<DocumentSnapshot>()
+          every { mockDocument.data } returns
+              mapOf(
+                  "id" to user.id,
+                  "name" to user.name,
+                  "addr" to user.address,
+                  "rank" to user.rank,
+              )
+
+          listener.onSuccess(mockDocument)
+          mockUsersTask
+        }
+
+    every { mockUsersTask.addOnFailureListener(any()) } returns mockUsersTask
+
+    // Perform the function call
+    val onSuccessCallback: (User) -> Unit = { res ->
+      // Assert on the returned list of items
+      assertEquals(userWithoutImage, res)
+    }
+    val onNoUserCallback: () -> Unit = { assert(false) }
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    every { database.getUserInventory(any(), any()) } answers
+        {
+          val onSuccess = arg<(Inventory) -> Unit>(1)
+          onSuccess(user.inventory)
+        }
+
+    runBlocking { database.getUser(userId, onNoUserCallback, onSuccessCallback) }
+
+    runBlocking { database.getUserWithImage(userId, onNoUserCallback, onSuccessCallback) }
+
+    //  Don't forget to unmock.
+    unmockkStatic(::now)
+  }
+
+  @Test
   fun testCreateLoan() {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
