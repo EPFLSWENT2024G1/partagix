@@ -5,13 +5,19 @@ import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.Route
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = CountDownLatch(1)) :
-    ViewModel() {
+class ManageLoanViewModel(
+    db: Database = Database(),
+    latch: CountDownLatch = CountDownLatch(1),
+    private val notificationManager: FirebaseMessagingService = FirebaseMessagingService()
+) : ViewModel() {
 
   private val database = db
 
@@ -114,11 +120,44 @@ class ManageLoanViewModel(db: Database = Database(), latch: CountDownLatch = Cou
   fun acceptLoan(loan: Loan, index: Int) {
     UiStateWithoutIndex(index)
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
+
+    val requester = uiState.value.users.find { it.id == loan.idBorrower }
+
+    if (requester != null) {
+      sendNotification("accepted", Notification.Type.LOAN_ACCEPTED, requester.id)
+    } else {
+      database.getFCMToken(loan.idBorrower) { token ->
+        sendNotification("accepted", Notification.Type.LOAN_ACCEPTED, token)
+      }
+    }
   }
 
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
     UiStateWithoutIndex(index)
+
+    val requester = uiState.value.users.find { it.id == loan.idBorrower }
+
+    if (requester != null) {
+      sendNotification("declined", Notification.Type.LOAN_ACCEPTED, requester.id)
+    } else {
+      database.getFCMToken(loan.idBorrower) { token ->
+        sendNotification("declined", Notification.Type.LOAN_ACCEPTED, token)
+      }
+    }
+  }
+
+  private fun sendNotification(state: String, type: Notification.Type, to: String?) {
+    if (to != null) {
+      val notification =
+          Notification(
+              title = "Loan request $state",
+              message = "Your loan request has been $state",
+              type = type,
+              navigationUrl = Route.INVENTORY)
+
+      notificationManager.sendNotification(notification, to)
+    }
   }
 
   private fun UiStateWithoutIndex(index: Int) {

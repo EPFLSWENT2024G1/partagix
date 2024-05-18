@@ -24,8 +24,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
 
-  init {} // kept for easier testing purposes
-
   /**
    * Get all users from the database
    *
@@ -45,7 +43,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["name"] as String,
                       document.data["addr"] as String,
                       document.data["rank"] as String,
-                      Inventory(document.data["id"] as String, listItems))
+                      Inventory(document.data["id"] as String, listItems),
+                      document.data["fcmToken"] as String?)
               ret.add(user)
             }
             onSuccess(ret)
@@ -482,6 +481,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "name" to user.name,
             "addr" to user.address,
             "rank" to user.rank,
+            "fcmToken" to user.fcmToken,
         )
     users.document(user.id).set(data)
   }
@@ -499,9 +499,31 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "name" to user.name,
             "addr" to user.address,
             "rank" to user.rank,
+            "fcmToken" to user.fcmToken,
         )
     users.document(user.id).set(data)
     onSuccess(user)
+  }
+
+  /**
+   * Get the FCM token of a user
+   *
+   * @param userId the user's id
+   * @param onSuccess the function to call when the token is found (or null if the user does not
+   *   exist).
+   */
+  fun getFCMToken(userId: String, onSuccess: (String?) -> Unit) {
+    getUser(userId, onNoUser = { onSuccess(null) }) { user -> onSuccess(user.fcmToken) }
+  }
+
+  /**
+   * Update the FCM token of a user
+   *
+   * @param userId the user's id
+   * @param fcmToken the new FCM token
+   */
+  fun updateFCMToken(userId: String, fcmToken: String) {
+    users.document(userId).update("fcmToken", fcmToken)
   }
 
   /**
