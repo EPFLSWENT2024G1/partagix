@@ -280,4 +280,20 @@ class InventoryViewModelTests {
     inventoryViewModel.filterItems(3)
     assert(inventoryViewModel.uiState.value.items == listOf(item2, item3))
   }
+
+  @Test
+  fun getUsersTest() {
+    val latch = CountDownLatch(1)
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
+    latch.await()
+    inventoryViewModel.updateInv(list)
+
+    var updatedList = emptyList<User>()
+
+    val onSuccessCallback: (User) -> Unit = { res -> updatedList = updatedList.plus(res) }
+
+    inventoryViewModel.getUsers(list, onSuccessCallback)
+    assertEquals(listOf(user), updatedList)
+  }
 }

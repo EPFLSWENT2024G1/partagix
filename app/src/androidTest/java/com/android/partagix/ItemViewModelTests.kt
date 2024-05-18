@@ -115,6 +115,11 @@ class ItemViewModelTests {
 
     assertEquals(item, itemViewModel.uiState.value.item)
     assertEquals(emptyUser, itemViewModel.uiState.value.user)
+
+    val itemViewModel2 = ItemViewModel(item, id = "idItem", db = db)
+
+    assertEquals(item, itemViewModel2.uiState.value.item)
+    assertEquals(emptyUser, itemViewModel2.uiState.value.user)
   }
 
   /**

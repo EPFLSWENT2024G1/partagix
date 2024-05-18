@@ -445,9 +445,9 @@ class DatabaseTests {
     every { now() } returns Timestamp(Date(0))
 
     mockkStatic(::getImagesFromFirebaseStorage)
-    every { getImagesFromFirebaseStorage(any(), any()) } answers
+    every { getImagesFromFirebaseStorage(any(), any(), any(), any()) } answers
         {
-          val onSuccess = arg<(List<File>) -> Unit>(4)
+          val onSuccess = arg<(List<File>) -> Unit>(3)
           onSuccess(listOf(File("imageId")))
         }
 
