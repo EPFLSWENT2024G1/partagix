@@ -67,6 +67,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
+import java.io.File
 
 class App(
     private val activity: MainActivity,
@@ -191,6 +192,7 @@ class App(
                 "Unknown Location",
                 "0",
                 Inventory(user.uid, emptyList()),
+                File("res/drawable/default_image.jpg"),
                 newToken)
         db.getUser(
             user.uid,
