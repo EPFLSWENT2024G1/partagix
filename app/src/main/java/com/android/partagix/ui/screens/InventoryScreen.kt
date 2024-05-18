@@ -45,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel

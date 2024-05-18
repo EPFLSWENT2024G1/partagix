@@ -581,7 +581,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
 
-    fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {}
+  fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {}
 
   /**
    * Create a user in the database

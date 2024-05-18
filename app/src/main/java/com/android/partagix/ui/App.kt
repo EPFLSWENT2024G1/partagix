@@ -66,8 +66,8 @@ import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.launch
 import java.io.File
+import kotlinx.coroutines.launch
 
 class App(
     private val activity: MainActivity,
