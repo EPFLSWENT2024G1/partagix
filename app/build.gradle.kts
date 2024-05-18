@@ -47,6 +47,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val serverApiKey = project.findProperty("SERVER_API_KEY") as String?
+        buildConfigField("String", "SERVER_API_KEY", "\"$serverApiKey\"")
     }
 
 
@@ -72,6 +75,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -200,6 +204,7 @@ dependencies {
 
     androidTestImplementation("androidx.test:core:1.4.0")
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     androidTestImplementation(libs.kaspresso.compose) {
         exclude(group="com.google.protobuf", module="protobuf-lite")
@@ -225,11 +230,17 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0-rc01")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-messaging-directboot:20.2.0")
 
     // ----------       Mockk     ------------
     testImplementation("io.mockk:mockk:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-android:${mockkVersion}")
     androidTestImplementation("io.mockk:mockk-agent:${mockkVersion}")
+
+    // ----------       Mockito     ------------
+    androidTestImplementation("org.mockito:mockito-core:3.+")
+    androidTestImplementation("org.mockito:mockito-android:3.+")
 
     // ----------       Google Maps     ------------
     implementation("com.google.maps.android:maps-compose:4.3.0")
@@ -246,6 +257,10 @@ dependencies {
     // ----------       New Icons     ------------
     implementation("androidx.compose.material:material-icons-extended")
 
+    // ----------       Glide     ------------
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+  annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
     // ----------       OkHttp     ------------
     implementation("com.squareup.okhttp3:okhttp:3.10.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
@@ -253,7 +268,6 @@ dependencies {
     implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("com.google.code.gson:gson:2.8.6")
-
 }
 
 secrets {

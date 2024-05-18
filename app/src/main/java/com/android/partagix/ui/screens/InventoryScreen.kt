@@ -3,7 +3,6 @@
 package com.android.partagix.ui.screens
 
 import android.content.ContentValues.TAG
-import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -12,11 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Download
@@ -25,27 +26,30 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.InventoryViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
-import com.android.partagix.model.category.Category
-import com.android.partagix.model.item.Item
-import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.components.TopSearchBar
@@ -68,6 +72,11 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
+  var incomingRequests by remember { mutableIntStateOf(0) }
+  var outgoingRequests by remember { mutableIntStateOf(0) }
+
+  manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
+  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -85,13 +94,19 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            modifier = modifier.testTag("inventoryScreenFab"),
+            modifier = modifier.size(60.dp).testTag("inventoryScreenFab"),
+            shape = FloatingActionButtonDefaults.largeShape,
+            containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
-              val i = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "")
+              val i = emptyItem
               itemViewModel.updateUiItem(i)
               navigationActions.navigateTo(Route.CREATE_ITEM)
             }) {
-              Icon(Icons.Default.Add, contentDescription = "Create")
+              Icon(
+                  Icons.Default.Add,
+                  modifier = Modifier.size(40.dp),
+                  tint = MaterialTheme.colorScheme.onPrimary,
+                  contentDescription = "Create")
             }
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
@@ -103,14 +118,16 @@ fun InventoryScreen(
                       .fillMaxSize()
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
-                    text = "There is no items in the inventory.",
+                    text =
+                        "There is no items in your inventory, click on the + button to add your first item",
+                    textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(8.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(16.dp, 0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
                       text = "Loan requests",
@@ -153,7 +170,7 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests",
+                              text = "Incoming Requests ($incomingRequests)",
                               color = Color.Black,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -178,7 +195,7 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests",
+                              text = "Outgoing Requests ($outgoingRequests)",
                               color = Color.Black,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -187,45 +204,57 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            ItemListColumn(
-                list = uiState.borrowedItems,
-                users = uiState.usersBor,
-                loan = uiState.loanBor,
-                title = "Borrowed items",
-                corner = uiState.borrowedItems.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = false,
-                isOutgoing = false,
-                isExpandable = false,
-                manageLoanViewModel = manageLoanViewModel,
-                modifier =
-                    Modifier.height(220.dp)
-                        .padding(horizontal = 10.dp)
-                        .testTag("inventoryScreenBorrowedItemList"))
 
-            Spacer(modifier = Modifier.height(8.dp))
-            ItemListColumn(
-                list = uiState.items,
-                users = uiState.users,
-                loan = uiState.loan,
-                title = "Inventory item",
-                corner = uiState.items.size.toString(),
-                onClick = {
-                  itemViewModel.updateUiItem(it)
-                  navigationActions.navigateTo(Route.VIEW_ITEM)
-                },
-                onClickCorner = {},
-                isCornerClickable = false,
-                isClickable = true,
-                isExpandable = false,
-                isOutgoing = false,
-                manageLoanViewModel = manageLoanViewModel,
-                modifier = Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+              ItemListColumn(
+                  list = uiState.borrowedItems,
+                  users = uiState.usersBor,
+                  loan = uiState.loanBor,
+                  title = "Borrowed items",
+                  corner = uiState.borrowedItems.size.toString(),
+                  onClick = {
+                    itemViewModel.updateUiItem(it)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  onClickCorner = {},
+                  isCornerClickable = false,
+                  isClickable = false,
+                  isOutgoing = false,
+                  isExpandable = false,
+                  manageLoanViewModel = manageLoanViewModel,
+                  modifier =
+                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp)
+                          .fillMaxHeight(0.4f)
+                          /*  todo
+                            * .height(220.dp)
+                          .padding(horizontal = 10.dp)
+                          * */
+                          .testTag("inventoryScreenBorrowedItemList"))
+
+              Spacer(modifier = Modifier.height(8.dp))
+              ItemListColumn(
+                  list = uiState.items,
+                  users = uiState.users,
+                  loan = uiState.loan,
+                  title = "Inventory item",
+                  corner = uiState.items.size.toString(),
+                  onClick = {
+                    itemViewModel.updateUiItem(it)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  onClickCorner = {},
+                  isCornerClickable = false,
+                  isClickable = true,
+                  isExpandable = false,
+                  isOutgoing = false,
+                  manageLoanViewModel = manageLoanViewModel,
+                  modifier =
+                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp) /*.padding(horizontal = 10.dp)*/
+                          .testTag("inventoryScreenItemList"))
+            }
           }
         }
       }

@@ -1,7 +1,6 @@
 package com.android.partagix.loan
 
 import android.content.Context
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.SystemClock
@@ -23,6 +22,7 @@ import androidx.compose.ui.test.swipeRight
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.android.partagix.model.Database
 import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanDetails
@@ -48,6 +48,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -63,12 +64,14 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   val grantPermissionRule: GrantPermissionRule =
       GrantPermissionRule.grant(
           android.Manifest.permission.ACCESS_FINE_LOCATION,
-          android.Manifest.permission.ACCESS_COARSE_LOCATION)
+          android.Manifest.permission.ACCESS_COARSE_LOCATION,
+          android.Manifest.permission.POST_NOTIFICATIONS)
 
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockLoanViewModel: LoanViewModel
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
-  @RelaxedMockK lateinit var itemViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockDatabase: Database
 
   private lateinit var loanUIState: MutableStateFlow<LoanUIState>
   private lateinit var userUIStateWithLocation: MutableStateFlow<UserUIState>
@@ -86,13 +89,16 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
 
-    mockLoanViewModel = mockk()
+    mockDatabase = mockk()
+    every { mockDatabase.getUser(any(), any(), any()) } just Runs
+
+    mockLoanViewModel = spyk(LoanViewModel(db = mockDatabase))
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
 
-    mockUserViewModel = mockk()
+    mockUserViewModel = spyk(UserViewModel(db = mockDatabase))
     every { mockUserViewModel.updateLocation(any()) } just Runs
 
-    itemViewModel = mockk()
+    mockItemViewModel = spyk(ItemViewModel(db = mockDatabase))
 
     val item1 =
         Item(
@@ -162,16 +168,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     // Set the mock location
     try {
       locationManager.addTestProvider(
-          LocationManager.GPS_PROVIDER,
-          false,
-          false,
-          false,
-          false,
-          true,
-          true,
-          true,
-          Criteria.POWER_LOW,
-          Criteria.ACCURACY_FINE)
+          LocationManager.GPS_PROVIDER, false, false, false, false, true, true, true, 1, 1)
       locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true)
       locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, mockLocation)
     } catch (e: SecurityException) {
@@ -181,10 +178,15 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
-  fun contentIsDisplayed() {
+  fun contentIsDisplayed1() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -200,10 +202,137 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   }
 
   @Test
+  fun contentIsDisplayed2SearchBar() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { searchBar { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedMaps() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedDistanceFilter() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { distanceFilter { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedQtyFilter() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { qtyFilter { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedItemListView() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { itemListView { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedItemListViewItem() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { itemListViewItem { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedBottomNavBar() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) { bottomNavBar { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun contentIsDisplayedBottomNavBarItemInventory() {
+    every { mockUserViewModel.uiState } returns userUIStateWithLocation
+    composeTestRule.setContent {
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
+    }
+
+    onComposeScreen<LoanScreen>(composeTestRule) {
+      bottomNavBarItemInventory { assertIsDisplayed() }
+    }
+  }
+
+  @Test
   fun userWithoutLocationWorks() {
     every { mockUserViewModel.uiState } returns userUIStateWithoutLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) { maps { assertIsDisplayed() } }
@@ -224,7 +353,12 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     val node = composeTestRule.onNodeWithTag("LoanScreenSearchBar").onChild()
@@ -274,7 +408,12 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun filtersAndItemListAreClickable() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -289,7 +428,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       }
       itemListViewItem {
         assertIsDisplayed()
-        every { itemViewModel.updateUiItem(any()) } just Runs
+        every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
 
@@ -319,7 +458,12 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -367,7 +511,12 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         }
 
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
@@ -393,13 +542,18 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
   fun itemsListIsClickable() {
     every { mockUserViewModel.uiState } returns userUIStateWithLocation
     composeTestRule.setContent {
-      LoanScreen(mockNavActions, mockLoanViewModel, itemViewModel, mockUserViewModel)
+      LoanScreen(
+          mockNavActions,
+          mockLoanViewModel,
+          mockItemViewModel,
+          mockUserViewModel,
+          isMapLoadingOptimized = false)
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
       itemListViewItem {
         assertIsDisplayed()
-        every { itemViewModel.updateUiItem(any()) } just Runs
+        every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
 

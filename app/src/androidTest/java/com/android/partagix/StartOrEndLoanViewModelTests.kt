@@ -8,8 +8,13 @@ import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.notification.Notification
+import com.android.partagix.ui.navigation.Route
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
@@ -19,11 +24,13 @@ class StartOrEndLoanViewModelTests {
   private lateinit var db: Database
 
   private lateinit var startOrEndLoanViewModel: StartOrEndLoanViewModel
+  private val mockFirebaseMessagingService = mockk<FirebaseMessagingService>()
 
   @Before
   fun setup() {
     db = mockk<Database>()
-    startOrEndLoanViewModel = StartOrEndLoanViewModel(db = db)
+    startOrEndLoanViewModel =
+        StartOrEndLoanViewModel(db = db, notificationManager = mockFirebaseMessagingService)
   }
 
   @Test
@@ -38,7 +45,7 @@ class StartOrEndLoanViewModelTests {
   }
 
   @Test
-  fun testOnStart() {
+  fun testOnStartNullBorrowerToken() {
 
     every { db.setLoan(any()) } answers
         {
@@ -49,6 +56,38 @@ class StartOrEndLoanViewModelTests {
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
     startOrEndLoanViewModel.onStart()
     coVerify { db.setLoan(any()) }
+  }
+
+  @Test
+  fun testOnStartValidBorrowerToken() {
+
+    every { db.setLoan(any()) } answers
+        {
+          val loan = firstArg<Loan>()
+          assert(loan.state == LoanState.ONGOING)
+        }
+
+    every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
+
+    val token = "token"
+    val borrower = emptyUser.copy(fcmToken = token)
+    val item = emptyItem.copy(id = "id")
+
+    startOrEndLoanViewModel.update(
+        StartOrEndLoanUIState(emptyLoan, item = item, borrower = borrower, emptyUser))
+
+    startOrEndLoanViewModel.onStart()
+
+    coVerify { db.setLoan(any()) }
+    coVerify {
+      mockFirebaseMessagingService.sendNotification(
+          match {
+            it.title == "Loan started" &&
+                it.type == Notification.Type.NEW_INCOMING_REQUEST &&
+                it.navigationUrl == "${Route.VIEW_ITEM}/${item.id}"
+          },
+          token)
+    }
   }
 
   @Test
