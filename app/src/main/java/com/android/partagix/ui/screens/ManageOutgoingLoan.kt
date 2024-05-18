@@ -104,7 +104,7 @@ fun ManageOutgoingLoan(
                     manageLoanViewModel = manageLoanViewModel,
                     navigationActions = navigationActions,
                     modifier =
-                        Modifier.padding(horizontal = 5.dp)
+                        Modifier.padding(horizontal = 10.dp)
                             .testTag("manageLoanScreenItemListColumn"))
               }
         }
