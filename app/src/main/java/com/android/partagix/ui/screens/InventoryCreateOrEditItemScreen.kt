@@ -68,7 +68,7 @@ fun InventoryCreateOrEditItem(
     mode: String
 ) {
 
-  var dbImage = "empty"
+  var dbImage = "default-image.jpg"
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -127,7 +127,7 @@ fun InventoryCreateOrEditItem(
                       uiImage = localFilePath
                        */
                       // Before this is done, display an empty image while waiting for the upload
-                      uiImage = File.createTempFile("default_image", null)
+                      uiImage = File("res/drawable/default_image.jpg")
                       // in the meantime do nothing and the image will be loaded from the database
                       // later
                       dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()

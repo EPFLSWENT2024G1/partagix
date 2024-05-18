@@ -52,7 +52,7 @@ fun getImageFromFirebaseStorage(
   val prefix: String
   val path: String
   if (p == "users/" || p == "" || p == "default-image.jpg") {
-    onSuccess(File("res/drawable/default_image.jpg"))
+    onSuccess(File("res/drawable/default_image.jpg")) // TODO : make this work
     return
   } else {
     path = "images/$p.jpg"
@@ -87,7 +87,7 @@ fun getImagesFromFirebaseStorage(
 ) {
   val prefix = "real"
   val count = AtomicInteger(0)
-  val res = Array(paths.size) { File("drawable/default_image.jpg") }
+  val res = Array(paths.size) { File("res/drawable/default_image.jpg") } // TODO : make this work
   for (p in paths.indices) {
     val path: String
     if (paths[p] == "users/" || paths[p] == "" || paths[p] == "default-image.jpg") {
