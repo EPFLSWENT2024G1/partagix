@@ -107,9 +107,12 @@ fun OldLoansScreen(
               modifier =
                   modifier
                       .fillMaxWidth()
-                      .fillMaxWidth()
                       .padding(innerPadding)
                       .verticalScroll(rememberScrollState())) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.outlineVariant)
+
                 if (open) {
                   EvaluationPopUp(
                       loan = actualLoan,

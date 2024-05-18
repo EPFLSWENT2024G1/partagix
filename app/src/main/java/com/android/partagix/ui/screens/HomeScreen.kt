@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -145,20 +146,24 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           modifier
               .aspectRatio(1f)
               .size(70.dp)
+              .background(MaterialTheme.colorScheme.onPrimary)
               .border(
                   width = 1.dp,
-                  color = Color.Black,
+                  color = MaterialTheme.colorScheme.outlineVariant,
                   shape = RoundedCornerShape(8.dp)) // Add a rounded border to the button
               .clickable(onClick = onClick),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Spacer(modifier = Modifier.fillMaxHeight(0.15f))
           Icon(imageVector = logo, contentDescription = null, modifier = Modifier.size(32.dp))
-          Spacer(modifier = Modifier.height(8.dp))
+          Spacer(modifier = Modifier.fillMaxHeight(0.1f))
           Text(
               text = text,
               style = MaterialTheme.typography.bodyMedium,
-              color = Color.Black,
+              color = MaterialTheme.colorScheme.onSecondaryContainer,
               textAlign = TextAlign.Center)
+          // Spacers added to insure all icons are at the same height
+          Spacer(modifier = Modifier.fillMaxHeight())
         }
       }
 }

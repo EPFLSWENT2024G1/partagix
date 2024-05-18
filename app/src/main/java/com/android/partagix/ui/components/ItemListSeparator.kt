@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,6 @@ fun ItemListColumn(
               TextStyle(
                   fontSize = 18.sp,
                   fontWeight = FontWeight(800),
-                  color = Color(0xFF000000),
               ),
           modifier = Modifier.fillMaxWidth(0.7f).padding(horizontal = 10.dp))
       Text(
@@ -90,6 +90,10 @@ fun ItemListColumn(
           style = MaterialTheme.typography.bodySmall,
           modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
     } else {
+      HorizontalDivider(
+          color = MaterialTheme.colorScheme.outlineVariant,
+          modifier = Modifier.height(0.5.dp).fillMaxWidth())
+
       ItemList(
           itemList = list,
           users = users,

@@ -36,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -91,30 +90,30 @@ fun ItemUi(
             Modifier.fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF939393),
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(size = 4.dp))
                 .animateContentSize(
                     animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
-                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
                 .clickable(onClick = { expandable = !expandable })
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)) {
+              modifier = Modifier.fillMaxWidth().height(62.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
 
                     Text(
                         text = user.name,
-                        color = Color(0xff49454f),
                         lineHeight = 1.33.em,
                         style =
                             TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight(500),
-                                color = Color(0xFF000000),
                                 textAlign = TextAlign.Left,
                             ),
                         maxLines = 1,
@@ -145,7 +144,6 @@ fun ItemUi(
                           TextStyle(
                               fontSize = 18.sp,
                               fontWeight = FontWeight(500),
-                              color = Color(0xFF000000),
                               textAlign = TextAlign.Right,
                           ),
                       maxLines = 1,
@@ -168,7 +166,9 @@ fun ItemUi(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
               }
 
           if (expandable) {
@@ -217,9 +217,11 @@ fun ItemUi(
             Modifier.fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF939393),
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(size = 4.dp))
-                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
                 .testTag("ItemUiNotExpanded")) {
           Row(
@@ -233,11 +235,9 @@ fun ItemUi(
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
                             text = user.name,
-                            color = Color(0xff49454f),
                             style =
                                 TextStyle(
                                     fontWeight = FontWeight(500),
-                                    color = Color(0xFF000000),
                                     textAlign = TextAlign.Left,
                                 ),
                             maxLines = 1,
@@ -264,11 +264,7 @@ fun ItemUi(
                       Text(
                           text = item.name,
                           textAlign = TextAlign.End,
-                          style =
-                              TextStyle(
-                                  color = Color(0xFF000000),
-                                  textAlign = TextAlign.Right,
-                              ),
+                          style = TextStyle(textAlign = TextAlign.Right),
                           maxLines = 1,
                           overflow = TextOverflow.Ellipsis,
                           modifier = Modifier.fillMaxWidth(.3f).padding(top = 10.dp))
@@ -287,7 +283,9 @@ fun ItemUi(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
               }
         }
   }
