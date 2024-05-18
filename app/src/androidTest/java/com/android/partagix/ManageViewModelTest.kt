@@ -133,6 +133,7 @@ class ManageViewModelTest {
     mockkObject(Authentication)
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    every { db.getFCMToken(any(), any()) } answers { secondArg<(String) -> Unit>().invoke("token") }
 
     val latch = CountDownLatch(1)
     val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
@@ -213,5 +214,17 @@ class ManageViewModelTest {
       assert(manageViewModel.uiState.value.loans == listOf(loan2, loan3))
       assert(manageViewModel.uiState.value.expanded == listOf(false, false))
     }
+  }
+
+  @Test
+  fun testGetInComingRequestCount() {
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.getInComingRequestCount { assert(it == 3) }
+    manageViewModel.getOutGoingRequestCount { assert(it == 1) }
   }
 }

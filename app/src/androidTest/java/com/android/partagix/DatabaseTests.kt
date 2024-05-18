@@ -3,6 +3,7 @@ package com.android.partagix
 import android.location.Location
 import com.android.partagix.model.Database
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -848,5 +849,46 @@ class DatabaseTests {
 
     //  Don't forget to unmock.
     unmockkStatic(::now)
+  }
+
+  @Test
+  fun testUpdateFCMToken() {
+
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val taskCompletionSource = TaskCompletionSource<Void>()
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val documentId = "wkUYnOmKkNVWlo1K8/59SDD/JtCWCf9MvnAgSYx9BbCN8ZbuNU+uSqPWVDuFnVRB"
+    every { mockDocument.id } returns documentId
+
+    every { mockDocument.set(any()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    every { mockDocument.update(any<String>(), any<String>()) } returns
+        taskCompletionSource.task.continueWith(Executors.DIRECT_EXECUTOR, voidErrorTransformer())
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    val database = spyk(Database(mockDb))
+
+    val user = emptyUser.copy(id = "1", fcmToken = "old_token")
+    val newToken = "new_token"
+
+    runBlocking {
+      database.updateFCMToken(user.id, newToken)
+      coVerify(exactly = 1) { database.updateFCMToken(user.id, newToken) }
+      coVerify { mockDocument.update("fcmToken", newToken) }
+    }
   }
 }

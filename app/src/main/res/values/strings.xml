@@ -5,4 +5,15 @@
 
     <string name="default_web_client_id" translatable="false">webClientId.apps.googleusercontent.com</string>
     <string name="title_activity_test_upload">testUpload</string>
+
+    <!-- Notifications -->
+    <string name="incoming_name">Incoming events</string>
+    <string name="incoming_description">Notification channel for incoming events</string>
+
+    <string name="outgoing_name">Outgoing events</string>
+    <string name="outgoing_description">Notification channel for outgoing events</string>
+
+    <string name="social_name">Social events</string>
+    <string name="social_description">Notification channel for social events, like new friends or new comments.</string>
+    <!-- End of Notifications -->
 </resources>

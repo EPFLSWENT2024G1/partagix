@@ -26,6 +26,8 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    context = this
+
     var itemId: String? = null
     if (intent.action == Intent.ACTION_VIEW) {
       val uri: Uri? = intent.data
@@ -48,6 +50,11 @@ class MainActivity : ComponentActivity() {
             }
       }
     }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    context = null
   }
 
   fun myInitializationFunction(route: String) {
@@ -88,6 +95,12 @@ class MainActivity : ComponentActivity() {
 
   companion object {
     private const val TAG = "Main"
+
+    private var context: MainActivity? = null
+
+    fun getContext(): MainActivity? {
+      return context
+    }
   }
 
   @Composable

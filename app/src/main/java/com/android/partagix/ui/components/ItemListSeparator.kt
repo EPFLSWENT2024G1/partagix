@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -88,22 +89,36 @@ fun ItemListColumn(
               })
     }
 
-    ItemList(
-        itemList = list,
-        users = users,
-        loan = loan,
-        onClick =
-            if (isClickable) {
-              onClick
-            } else {
-              {}
-            },
-        isExpandable = isExpandable,
-        wasExpanded = wasExpanded,
-        isOutgoing = isOutgoing,
-        manageLoanViewModel = manageLoanViewModel,
-        modifier = Modifier.fillMaxSize(),
-        expandState = expandState,
-    )
+    if (list.isEmpty()) {
+      val emptyText =
+          if (title.isBlank()) {
+            "Empty"
+          } else {
+            "$title is empty"
+          }
+      Text(
+          text = emptyText,
+          textAlign = TextAlign.Center,
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
+    } else {
+      ItemList(
+          itemList = list,
+          users = users,
+          loan = loan,
+          onClick =
+              if (isClickable) {
+                onClick
+              } else {
+                {}
+              },
+          isExpandable = isExpandable,
+          wasExpanded = wasExpanded,
+          isOutgoing = isOutgoing,
+          manageLoanViewModel = manageLoanViewModel,
+          modifier = Modifier.fillMaxSize(),
+          expandState = expandState,
+      )
+    }
   }
 }

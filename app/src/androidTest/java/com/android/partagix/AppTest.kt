@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.App
 import com.android.partagix.ui.navigation.NavigationActions
@@ -41,9 +42,12 @@ class AppTest {
 
   @Mock private lateinit var mockFirebaseUser: FirebaseUser
 
+  @Mock private lateinit var mockNotificationManager: FirebaseMessagingService
+
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
+  private val newToken = "newToken"
 
   @Before
   fun setup() {
@@ -56,7 +60,9 @@ class AppTest {
     every { mockActivity.attributionTag } returns "testTag"
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
+
     mockDatabase = spyk(Database())
+    every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -65,9 +71,24 @@ class AppTest {
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
 
+    mockNotificationManager = mockk()
+    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+    every { mockNotificationManager.initPermissions() } just Runs
+    every { mockNotificationManager.checkToken(any(), any()) } answers
+        {
+          val callback = secondArg<(String) -> Unit>()
+          callback(newToken)
+        }
+
     mockFusedLocationProviderClient = mockk()
 
-    app = App(mockActivity, mockAuth, mockDatabase, mockFusedLocationProviderClient)
+    app =
+        App(
+            mockActivity,
+            mockAuth,
+            mockDatabase,
+            mockNotificationManager,
+            mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
   }
 
