@@ -1,7 +1,6 @@
 package com.android.partagix.components
 
 import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -20,18 +19,18 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class EvaluationPopUpTest {
   @get:Rule val composeTestRule = createComposeRule()
-  lateinit var evaluationViewModel: EvaluationViewModel
+  lateinit var mockEvaluationViewModel: EvaluationViewModel
   lateinit var db: Database
 
   @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
@@ -89,12 +88,11 @@ class EvaluationPopUpTest {
     every { db.setReview(any(), any(), any(), any()) } answers {}
 
     mockNotificationManager = mockk()
-    every {
-      mockNotificationManager.sendNotification(match { it.title == "New User Review" }, any())
-    } just Runs
 
-    evaluationViewModel =
-        EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager)
+    mockEvaluationViewModel =
+        spyk(EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager))
+
+    every { mockEvaluationViewModel.reviewLoan(any(), any(), any(), any()) } just Runs
   }
 
   /** Test if the content is displayed and works. */
@@ -102,7 +100,7 @@ class EvaluationPopUpTest {
   fun contentIsDisplayedAndWorks() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanEmptyCommentAndRating, userId = "", viewModel = evaluationViewModel)
+          loan = loanEmptyCommentAndRating, userId = "", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       rateText { assertIsDisplayed() }
@@ -125,7 +123,9 @@ class EvaluationPopUpTest {
   fun evaluationWorksForNoPreviousEvaluation() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanEmptyCommentAndRating, userId = "idLender1", viewModel = evaluationViewModel)
+          loan = loanEmptyCommentAndRating,
+          userId = "idLender1",
+          viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       onNode { hasTestTag("star4") }.performClick()
@@ -136,14 +136,15 @@ class EvaluationPopUpTest {
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
     coVerify {
-      evaluationViewModel.reviewLoan(loanEmptyCommentAndRating, 5.0, "comment", "idBorrower1")
+      mockEvaluationViewModel.reviewLoan(loanEmptyCommentAndRating, 5.0, "comment", "idBorrower1")
     }
   }
 
   @Test
   fun evaluationWorksForAlreadyCommentedAndRated() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loanAlreadyRate, userId = "idLender2", viewModel = evaluationViewModel)
+      EvaluationPopUp(
+          loan = loanAlreadyRate, userId = "idLender2", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       composeTestRule.onNodeWithTag("star2").assertHasClickAction()
@@ -160,7 +161,7 @@ class EvaluationPopUpTest {
   fun evaluationWorksForAlreadyRated() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanRatedButNoComment, userId = "idBorrower3", viewModel = evaluationViewModel)
+          loan = loanRatedButNoComment, userId = "idBorrower3", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       composeTestRule.onNodeWithTag("star2").assertHasClickAction()
@@ -171,7 +172,7 @@ class EvaluationPopUpTest {
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
     verify(exactly = 1) {
-      evaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
+      mockEvaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
     }
   }
 }

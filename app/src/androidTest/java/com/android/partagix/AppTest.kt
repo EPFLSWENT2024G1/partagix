@@ -42,14 +42,12 @@ class AppTest {
 
   @Mock private lateinit var mockFirebaseUser: FirebaseUser
 
-  @Mock private lateinit var mockNavigationActions: FirebaseMessagingService
-
   @Mock private lateinit var mockNotificationManager: FirebaseMessagingService
 
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
-  private val new_token = "new_token"
+  private val newToken = "new_token"
 
   @Before
   fun setup() {
@@ -90,7 +88,6 @@ class AppTest {
             mockActivity,
             mockAuth,
             mockDatabase,
-            mockNavigationActions,
             mockNotificationManager,
             mockFusedLocationProviderClient)
     app.navigationActions = mockNavActions
