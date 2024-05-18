@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,13 +18,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -80,7 +81,7 @@ fun ItemUi(
       } else {
         loan.startDate
       }
-  var expandables by remember { mutableStateOf(expandState) }
+  var expandable by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   if (isExpandable) {
     Column(
@@ -89,30 +90,30 @@ fun ItemUi(
             Modifier.fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF939393),
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(size = 4.dp))
                 .animateContentSize(
                     animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
-                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-                .clickable(onClick = { expandables = !expandables })
+                .clickable(onClick = { expandable = !expandable })
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-              modifier = Modifier.fillMaxWidth().height(61.dp)) {
+              modifier = Modifier.fillMaxWidth().height(62.dp)) {
                 Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
                   Row(modifier = Modifier.fillMaxHeight(0.5f)) {
                     Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
 
                     Text(
                         text = user.name,
-                        color = Color(0xff49454f),
                         lineHeight = 1.33.em,
                         style =
                             TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight(500),
-                                color = Color(0xFF000000),
                                 textAlign = TextAlign.Left,
                             ),
                         maxLines = 1,
@@ -121,7 +122,7 @@ fun ItemUi(
                   }
                   Text(
                       text =
-                          if (loan.idItem.equals("")) {
+                          if (loan.idItem == "") {
                             "not borrowed"
                           } else {
                             if (loan.startDate.before(Date())) {
@@ -143,7 +144,6 @@ fun ItemUi(
                           TextStyle(
                               fontSize = 18.sp,
                               fontWeight = FontWeight(500),
-                              color = Color(0xFF000000),
                               textAlign = TextAlign.Right,
                           ),
                       maxLines = 1,
@@ -166,14 +166,13 @@ fun ItemUi(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
               }
-          if (expandables) {
 
-            Text(
-                text = "Stay in touch:",
-                textAlign = TextAlign.Left,
-                modifier = Modifier.fillMaxWidth())
+          if (expandable) {
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
                 modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
@@ -184,25 +183,30 @@ fun ItemUi(
                           Icon(
                               Icons.Default.Check,
                               contentDescription = "validate",
-                              modifier = Modifier,
-                              Color.Green)
-                          Text(text = "validate")
+                              modifier = Modifier)
+                          Spacer(Modifier.width(3.dp))
+                          Text(text = "Validate")
                         },
-                        border = BorderStroke(1.dp, Color.Green),
-                        modifier = Modifier.fillMaxWidth(0.35f))
+                        modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                        contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
                   }
+                  Spacer(modifier = Modifier.width(6.dp))
                   Button(
                       onClick = { manageLoanViewModel.declineLoan(loan, index) },
                       content = {
                         Icon(
-                            Icons.Default.Cancel,
-                            contentDescription = "cancel",
-                            modifier = Modifier,
-                            Color.Red)
-                        Text(text = "cancel")
+                            Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                        Spacer(Modifier.width(2.dp))
+                        Text(text = "Cancel")
                       },
-                      border = BorderStroke(1.dp, Color.Red),
-                      modifier = Modifier.fillMaxWidth(0.5f))
+                      colors =
+                          ButtonColors(
+                              containerColor = MaterialTheme.colorScheme.error,
+                              contentColor = MaterialTheme.colorScheme.onError,
+                              disabledContainerColor = MaterialTheme.colorScheme.error,
+                              disabledContentColor = MaterialTheme.colorScheme.onError),
+                      modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                      contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
                 }
           }
         }
@@ -213,9 +217,11 @@ fun ItemUi(
             Modifier.fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF939393),
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(size = 4.dp))
-                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 4.dp))
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
                 .testTag("ItemUiNotExpanded")) {
           Row(
@@ -229,11 +235,9 @@ fun ItemUi(
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
                             text = user.name,
-                            color = Color(0xff49454f),
                             style =
                                 TextStyle(
                                     fontWeight = FontWeight(500),
-                                    color = Color(0xFF000000),
                                     textAlign = TextAlign.Left,
                                 ),
                             maxLines = 1,
@@ -260,11 +264,7 @@ fun ItemUi(
                       Text(
                           text = item.name,
                           textAlign = TextAlign.End,
-                          style =
-                              TextStyle(
-                                  color = Color(0xFF000000),
-                                  textAlign = TextAlign.Right,
-                              ),
+                          style = TextStyle(textAlign = TextAlign.Right),
                           maxLines = 1,
                           overflow = TextOverflow.Ellipsis,
                           modifier = Modifier.fillMaxWidth(.3f).padding(top = 10.dp))
@@ -283,7 +283,9 @@ fun ItemUi(
                     painter = painterResource(id = R.drawable.mutliprise),
                     contentDescription = "fds",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black))
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
               }
         }
   }
