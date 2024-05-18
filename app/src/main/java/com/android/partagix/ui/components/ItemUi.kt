@@ -3,8 +3,6 @@ package com.android.partagix.ui.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
@@ -162,17 +159,20 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                Box(modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight()
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
-                  AsyncImage(
-                      model = item.imageId.absolutePath,
-                      contentDescription = "fds",
-                      contentScale = ContentScale.Inside,
-                      modifier =
-                      Modifier.fillMaxHeight()
-                          .align(Alignment.Center)
-                          .testTag("ItemUiImage"))
-                }
+                Box(
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .fillMaxHeight()
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+                      AsyncImage(
+                          model = item.imageId.absolutePath,
+                          contentDescription = "fds",
+                          contentScale = ContentScale.Inside,
+                          modifier =
+                              Modifier.fillMaxHeight()
+                                  .align(Alignment.Center)
+                                  .testTag("ItemUiImage"))
+                    }
               }
 
           if (expandable) {
@@ -283,14 +283,20 @@ fun ItemUi(
                           lineHeight = 0.8.em,
                           modifier = Modifier.fillMaxWidth(0.2f).padding(top = 5.dp))
                     }
-                Box(modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight()
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
-                  AsyncImage(
-                      model = item.imageId.absolutePath,
-                      contentDescription = "fds",
-                      contentScale = ContentScale.Inside,
-                      modifier = Modifier.border(1.dp, Color.Black).fillMaxHeight())
-                }
+                Box(
+                    modifier =
+                        Modifier.fillMaxWidth(0.3f)
+                            .fillMaxHeight()
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+                      AsyncImage(
+                          model = item.imageId.absolutePath,
+                          contentDescription = "fds",
+                          contentScale = ContentScale.Inside,
+                          modifier =
+                              Modifier.fillMaxHeight()
+                                  .align(Alignment.Center)
+                                  .testTag("ItemUiImage"))
+                    }
               }
         }
   }

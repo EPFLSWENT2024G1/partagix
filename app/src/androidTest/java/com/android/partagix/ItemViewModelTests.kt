@@ -24,6 +24,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.spyk
+import java.io.File
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -31,10 +32,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import java.io.File
 
 class ItemViewModelTests {
-  val emptyItem = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location(""), "", File("tempFile.tmp"))
+  val emptyItem =
+      Item(
+          "",
+          Category("", ""),
+          "",
+          "",
+          Visibility.PUBLIC,
+          1,
+          Location(""),
+          "",
+          File("tempFile.tmp"))
   val emptyUser = User("", "", "", "", Inventory("", emptyList()), File("tempFile.tmp"))
   val itemWithID =
       Item(
@@ -73,9 +83,10 @@ class ItemViewModelTests {
     assert(itemViewModel.uiState.value.user == emptyUser)
   }
 
-    @Test
-    fun initTest() {
-        val item = Item(
+  @Test
+  fun initTest() {
+    val item =
+        Item(
             "idItem",
             Category("0", "Category 1"),
             "test",
@@ -84,27 +95,27 @@ class ItemViewModelTests {
             1,
             Location(""),
             "idUser",
-            File("tempFile.tmp")
-        )
-        val db = mockk<Database>()
-        mockkStatic(File::class)
-        every { File.createTempFile(any(), any()) } returns File("tempFile.tmp")
-        every { db.getItemWithImage(any(), any()) } answers {
-            val callback = args[1] as (Item) -> Unit
-            callback(item)
+            File("tempFile.tmp"))
+    val db = mockk<Database>()
+    mockkStatic(File::class)
+    every { File.createTempFile(any(), any()) } returns File("tempFile.tmp")
+    every { db.getItemWithImage(any(), any()) } answers
+        {
+          val callback = args[1] as (Item) -> Unit
+          callback(item)
         }
 
-        every { db.getUserWithImage(any(), any(), any()) } answers {
-            val callback = args[2] as (User) -> Unit
-            callback(emptyUser)
+    every { db.getUserWithImage(any(), any(), any()) } answers
+        {
+          val callback = args[2] as (User) -> Unit
+          callback(emptyUser)
         }
 
-        val itemViewModel = ItemViewModel(item, db = db)
+    val itemViewModel = ItemViewModel(item, db = db)
 
-        assertEquals(item, itemViewModel.uiState.value.item)
-        assertEquals(emptyUser, itemViewModel.uiState.value.user)
-
-    }
+    assertEquals(item, itemViewModel.uiState.value.item)
+    assertEquals(emptyUser, itemViewModel.uiState.value.user)
+  }
 
   /**
    * Test the save method Start with an empty item, save it and check it's saved Similar to create

@@ -25,12 +25,12 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 /**
  * InventoryViewModel is a ViewModel that will handle the inventory of the user
@@ -235,10 +235,10 @@ class InventoryViewModel(
    * @param update a function to update the user list
    */
   fun getUsers(list: List<Item>, update: (User) -> Unit) {
-      if (list.isEmpty()) {
-          update(User("", "", "", "", Inventory("", emptyList()), File(""), ""))
-            return
-      }
+    if (list.isEmpty()) {
+      update(User("", "", "", "", Inventory("", emptyList()), File(""), ""))
+      return
+    }
 
     database.getUsers { users ->
       val toUpdate = mutableListOf<Boolean>()
