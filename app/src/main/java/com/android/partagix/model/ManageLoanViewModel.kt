@@ -34,15 +34,10 @@ class ManageLoanViewModel(
    * getInventory is a function that will update the uistate to have the items from your inventory
    * and to have the possible items you borrowed by checking your loans
    */
-  fun getLoanRequests(
-      latch: CountDownLatch = CountDownLatch(1),
-      isOutgoing: Boolean = false,
-      onSuccess: () -> Unit = {}
-  ) {
+  fun getLoanRequests(isOutgoing: Boolean = false, onSuccess: () -> Unit = {}) {
     val user = Authentication.getUser()
     if (user == null) {
       // TODO: Handle error
-      latch.countDown()
       return
     } else {
       database.getItemsWithImages { list ->
@@ -73,8 +68,7 @@ class ManageLoanViewModel(
                   expended.add(false)
                   loans.add(loan)
                 }
-            update(items, users, loans, emptyList())
-            latch.countDown()
+            update(items, users, loans, expended)
             onSuccess()
           }
         }
@@ -82,13 +76,15 @@ class ManageLoanViewModel(
     }
   }
 
-  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
+  // TODO: Fix so the count get the right number
+
+  /*  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
     getLoanRequests(isOutgoing = false, onSuccess = { onSuccess(uiState.value.loans.size) })
   }
 
   fun getOutGoingRequestCount(onSuccess: (Int) -> Unit) {
     getLoanRequests(isOutgoing = true, onSuccess = { onSuccess(uiState.value.loans.size) })
-  }
+  }*/
 
   fun update(
       items: List<Item>,
@@ -100,10 +96,6 @@ class ManageLoanViewModel(
         _uiState.value.copy(items = items, users = users, loans = loan, expanded = expanded)
   }
 
-  private fun updateItems(new: List<Item>) {
-    _uiState.value = _uiState.value.copy(items = new)
-  }
-
   /*private fun setupExpanded (size : Int) {
       val list = mutableListOf<Boolean>()
       for (i in 0 until size) {
@@ -111,17 +103,7 @@ class ManageLoanViewModel(
       }
       _uiState.value = _uiState.value.copy(expanded = list)
   }*/
-  private fun updateUsers(new: User) {
-    _uiState.value = _uiState.value.copy(users = _uiState.value.users.plus(new))
-  }
 
-  private fun updateLoans(new: List<Loan>) {
-    _uiState.value = _uiState.value.copy(loans = new)
-  }
-
-  private fun updateExpandedReset() {
-    _uiState.value = _uiState.value.copy(expanded = _uiState.value.expanded.plus(false))
-  }
   /*fun updateExpanded (index : Int) {
       val list = _uiState.value.expanded.toMutableList()
       list[index] = !list[index]

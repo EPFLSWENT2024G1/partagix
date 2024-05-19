@@ -33,8 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,8 +71,10 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-  var incomingRequests by remember { mutableIntStateOf(0) }
-  var outgoingRequests by remember { mutableIntStateOf(0) }
+
+  // Useful when we will have fix the count
+  /*var incomingRequests by remember { mutableIntStateOf(0) }
+  var outgoingRequests by remember { mutableIntStateOf(0) }*/
 
   /*manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
   manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }*/
@@ -169,7 +169,9 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests ($incomingRequests)",
+                              text = "Incoming Requests " /*($incomingRequests)*/, // TODO: put back
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -191,7 +193,9 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests ($outgoingRequests)",
+                              text = "Outgoing Requests" /*($outgoingRequests)*/, // TODO: put back
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))

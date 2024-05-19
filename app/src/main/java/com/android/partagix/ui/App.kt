@@ -86,17 +86,10 @@ class App(
   private val inventoryViewModel = InventoryViewModel(db = db)
   private val manageViewModelLoan =
       ManageLoanViewModel(db = db, notificationManager = notificationManager)
-  private val manageViewModelStartLoan =
-      ManageLoanViewModel(db = db, notificationManager = notificationManager)
-  private val manageViewModelInventory =
-      ManageLoanViewModel(db = db, notificationManager = notificationManager)
-  private val manageViewModelHome =
+  private val manageViewModelIncoming =
       ManageLoanViewModel(db = db, notificationManager = notificationManager)
   private val manageViewModelOutgoing =
       ManageLoanViewModel(db = db, notificationManager = notificationManager)
-  private val manageViewModelIncoming =
-      ManageLoanViewModel(db = db, notificationManager = notificationManager)
-
   private val loanViewModel = LoanViewModel(db = db)
   private val borrowViewModel = BorrowViewModel(db = db, notificationManager = notificationManager)
   private val itemViewModel =
@@ -299,15 +292,14 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
-        println("--------------------Home")
         inventoryViewModel.getInventory()
-        manageViewModelHome.getLoanRequests(isOutgoing = false)
+        manageViewModelIncoming.getLoanRequests(isOutgoing = false)
         loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
 
         HomeScreen(
             homeViewModel = homeViewModel,
-            manageLoanViewModel = manageViewModelHome,
+            manageLoanViewModel = manageViewModelIncoming,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -333,12 +325,11 @@ class App(
         BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
-        println("--------------------Home")
         inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
-            manageLoanViewModel = manageViewModelInventory,
+            manageLoanViewModel = manageViewModelLoan,
             itemViewModel = itemViewModel)
       }
 
@@ -391,7 +382,6 @@ class App(
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
-        println("--------------------Incoming requests")
         // Fetch the new loan requests first
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
         ManageLoanRequest(
@@ -406,7 +396,6 @@ class App(
             navigationActions = navigationActions)
       }
       composable(Route.MANAGE_OUTGOING_LOAN) {
-        println("--------------------Outgoing requests")
         manageViewModelOutgoing.getLoanRequests(isOutgoing = true)
         ManageOutgoingLoan(
             manageLoanViewModel = manageViewModelOutgoing,
@@ -426,7 +415,7 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            manageLoanViewModel = manageViewModelStartLoan,
+            manageLoanViewModel = manageViewModelLoan,
             itemViewModel = itemViewModel,
             modifier = modifier)
       }

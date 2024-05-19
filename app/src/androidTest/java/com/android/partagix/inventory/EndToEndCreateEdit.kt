@@ -148,8 +148,9 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
 
-    every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs
+    // Useful when we will have fix the count
+    /*every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
+    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs*/
   }
 
   // Navigate from Home screen to Inventory screen
