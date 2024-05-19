@@ -2,6 +2,7 @@ package com.android.partagix.inventory
 
 import android.location.Location
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
@@ -56,6 +57,8 @@ class InventoryCreateOrEditTest :
       Uri.parse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
   val uriList = listOf(uri1, uri2)
 
+  val location = com.android.partagix.model.location.Location(12.0, 12.0, "Someplace")
+
   @Before
   fun testSetup() {
 
@@ -84,6 +87,14 @@ class InventoryCreateOrEditTest :
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.goBack() } just Runs
+
+    mockLocationViewModel = mockk()
+    every { mockLocationViewModel.getLocation(any(), any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          loc.value = location
+        }
+    every { mockLocationViewModel.ourLocationToAndroidLocation(location) } returns Location("")
   }
 
   @Test

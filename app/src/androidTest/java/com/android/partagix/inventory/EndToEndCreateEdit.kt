@@ -333,6 +333,13 @@ class EndToEndCreateEdit {
   // Edit the item
   @Test
   fun testF_EditItem() {
+    mockLocationViewModel = mockk()
+    every { mockLocationViewModel.getLocation(any(), any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          loc.value = loc2
+        }
+    every { mockLocationViewModel.ourLocationToAndroidLocation(loc2) } returns Location("")
     every { mockItemViewModel.uiState } returns mockItemUiState2
     every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
