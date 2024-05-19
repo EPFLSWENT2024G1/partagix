@@ -1,6 +1,8 @@
 package com.android.partagix.inventory
 
+import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.core.os.bundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemUIState
@@ -38,6 +40,8 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
 
+  val mockLocation = mockk<Location>()
+
   private var item1: Item =
       Item(
           id = "id",
@@ -46,7 +50,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
           description = "description1",
           visibility = Visibility.PUBLIC,
           quantity = 1,
-          location = mockk(),
+          location = mockLocation,
           idUser = "id_user")
   val emptyUser = User("", "", "", "", Inventory("", emptyList()))
 
@@ -57,8 +61,11 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   fun testSetup() {
     mockItemViewModel = mockk()
     every { mockItemViewModel.uiState } returns mockUiState
-    every { mockItemViewModel.compareIDs(any(), any()) } returns true
+    every { mockLocation.latitude } returns 0.0
+    every { mockLocation.longitude } returns 0.0
+    every { mockLocation.extras } returns bundleOf("display_name" to "locationName")
 
+    every { mockItemViewModel.compareIDs(any(), any()) } returns true
     mockBorrowViewModel = mockk()
     every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 

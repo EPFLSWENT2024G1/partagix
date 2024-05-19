@@ -376,10 +376,12 @@ class App(
 
       composable(Route.CREATE_ITEM) {
         itemViewModel.getUser()
-        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "create")
+        InventoryCreateOrEditItem(
+            itemViewModel, navigationActions, locationPickerViewModel, mode = "create")
       }
       composable(Route.EDIT_ITEM) {
-        InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
+        InventoryCreateOrEditItem(
+            itemViewModel, navigationActions, locationPickerViewModel, mode = "edit")
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
         // Fetch the new loan requests first
