@@ -117,7 +117,8 @@ fun InventoryCreateOrEditItem(
               Box(
                   contentAlignment = Alignment.Center,
                   modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
-                    val image = File(uiImage.toString().ifEmpty { "default-image.jpg" })
+                    val image =
+                        File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
                     MainImagePicker(listOf(image.toUri())) { uri ->
                       // TODO :  Save the image to a local file to its displayed correctly while
                       // waiting for the upload
@@ -126,12 +127,12 @@ fun InventoryCreateOrEditItem(
                       Missing : save the image to the local file (need a ContentResolver ?)
                       uiImage = localFilePath
                        */
+                      if (uri == image.toUri()) return@MainImagePicker
                       // Before this is done, display an empty image while waiting for the upload
                       uiImage = File("res/drawable/default_image.jpg")
                       // in the meantime do nothing and the image will be loaded from the database
                       // later
                       dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
-
                       uploadImageToFirebaseStorage(uri, imageName = dbImage) {
                         getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
                       }

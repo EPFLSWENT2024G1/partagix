@@ -116,6 +116,12 @@ fun getImagesFromFirebaseStorage(
             onSuccess(res.toList())
           }
         }
-        .addOnFailureListener { onFailure(it) }
+        .addOnFailureListener {
+          res[p] = File("noImage")
+          onFailure(it)
+          if (count.incrementAndGet() == paths.size) {
+            onSuccess(res.toList())
+          }
+        }
   }
 }
