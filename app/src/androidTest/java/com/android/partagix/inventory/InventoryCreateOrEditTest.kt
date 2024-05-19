@@ -13,6 +13,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryCreateOrEditScreen
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
@@ -39,6 +40,7 @@ class InventoryCreateOrEditTest :
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockLocationViewModel: LocationPickerViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<ItemUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ItemUIState>
@@ -80,7 +82,8 @@ class InventoryCreateOrEditTest :
   fun topBarAndEmptyItemAreDisplayed() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
 
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
@@ -119,7 +122,8 @@ class InventoryCreateOrEditTest :
   fun titleOnEdit() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "edit")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       title {
@@ -133,7 +137,8 @@ class InventoryCreateOrEditTest :
   fun titleOnCreate() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       title {
@@ -148,7 +153,8 @@ class InventoryCreateOrEditTest :
     every { mockViewModel.uiState } returns noCategoryMockUiState
 
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       name { performTextReplacement("my object") }

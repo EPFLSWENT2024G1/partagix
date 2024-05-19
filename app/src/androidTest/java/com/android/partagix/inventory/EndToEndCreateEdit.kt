@@ -31,6 +31,7 @@ import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.components.CategoryItems
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
@@ -65,6 +66,7 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
+  @RelaxedMockK lateinit var mockLocationViewModel: LocationPickerViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
   private lateinit var mockUiState2: MutableStateFlow<InventoryUIState>
@@ -204,7 +206,10 @@ class EndToEndCreateEdit {
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
-          itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "create")
+          itemViewModel = mockItemViewModel,
+          navigationActions = mockNavActions,
+          locationViewModel = mockLocationViewModel,
+          mode = "create")
     }
 
     composeTestRule.onNodeWithTag("name").performTextInput("Object 1")
@@ -275,7 +280,10 @@ class EndToEndCreateEdit {
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
-          itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "edit")
+          itemViewModel = mockItemViewModel,
+          navigationActions = mockNavActions,
+          locationViewModel = mockLocationViewModel,
+          mode = "edit")
     }
 
     composeTestRule.onNodeWithTag("name").performTextReplacement("Object 1 edited")
