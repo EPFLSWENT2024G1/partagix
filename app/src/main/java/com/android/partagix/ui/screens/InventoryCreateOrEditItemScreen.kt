@@ -227,6 +227,7 @@ fun InventoryCreateOrEditItem(
                           File(dbImage)))
                   navigationActions.goBack()
                 },
+                enabled = uiName.isNotBlank(),
                 content = {
                   if (mode == "edit") {
                     Text("Save")
