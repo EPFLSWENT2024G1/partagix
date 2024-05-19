@@ -44,6 +44,8 @@ import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
+import com.android.partagix.ui.components.locationPicker.LocationPicker
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 
 /**
@@ -59,11 +61,18 @@ import com.android.partagix.ui.navigation.NavigationActions
 fun InventoryCreateOrEditItem(
     itemViewModel: ItemViewModel,
     navigationActions: NavigationActions,
+    locationViewModel: LocationPickerViewModel,
     modifier: Modifier = Modifier,
     mode: String
 ) {
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
+
+  // Local state variables to hold temporary values for editable fields
+  var tempAddress by remember { mutableStateOf(uiState.user.address) }
+
+  // The field with the actual location
+  val loc = remember { mutableStateOf<com.android.partagix.model.location.Location?>(null) }
 
   Scaffold(
       modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
@@ -99,7 +108,6 @@ fun InventoryCreateOrEditItem(
     var uiDescription by remember { mutableStateOf(i.description) }
     var uiVisibility by remember { mutableStateOf(i.visibility) }
     var uiQuantity by remember { mutableStateOf(i.quantity) }
-    var uiLocation by remember { mutableStateOf(Location(i.location)) }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
@@ -173,13 +181,19 @@ fun InventoryCreateOrEditItem(
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = uiLocation.toString(), // TODO: get default or user's location
-                onValueChange = { it -> uiLocation = Location(it) },
-                label = { Text("Where") },
-                modifier = modifier.fillMaxWidth(),
-                readOnly = false)
+            /*
+                       OutlinedTextField(
+                           value = uiLocation.toString(), // TODO: get default or user's location
+                           onValueChange = { it -> uiLocation = Location(it) },
+                           label = { Text("Where") },
+                           modifier = modifier.fillMaxWidth(),
+                           readOnly = false)
+            */
+            LocationPicker(
+                location = tempAddress,
+                loc = loc.value,
+                onTextChanged = { tempAddress = it },
+                onLocationLookup = { locationViewModel.getLocation(it, loc) })
 
             Button(
                 onClick = {
@@ -195,7 +209,7 @@ fun InventoryCreateOrEditItem(
                           uiDescription,
                           uiVisibility,
                           uiQuantity,
-                          uiLocation,
+                          locationViewModel.ourLocationToAndroidLocation(loc.value),
                           i.idUser,
                       ))
                   navigationActions.goBack()
