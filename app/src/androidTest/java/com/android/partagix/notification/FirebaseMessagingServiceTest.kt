@@ -147,6 +147,8 @@ class FirebaseMessagingServiceTest {
     every { remoteMessage.data } returns mutableMapOf()
     every { remoteMessage.from } returns "sender"
     every { remoteMessage.notification } returns mockk()
+    every { remoteMessage.notification?.title } returns "notification title"
+    every { remoteMessage.notification?.body } returns "notification body"
 
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
@@ -171,6 +173,8 @@ class FirebaseMessagingServiceTest {
     every { remoteMessage.data } returns mutableMapOf()
     every { remoteMessage.from } returns "sender"
     every { remoteMessage.notification } returns mockk()
+    every { remoteMessage.notification?.title } returns "notification title"
+    every { remoteMessage.notification?.body } returns "notification body"
 
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
