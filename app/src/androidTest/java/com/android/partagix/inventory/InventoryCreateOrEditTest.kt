@@ -157,7 +157,7 @@ class InventoryCreateOrEditTest :
 
   @Test
   fun itemCreateTest() {
-    every { mockViewModel.uiState } returns noCategoryMockUiState
+    every { mockViewModel.uiState } returns emptyMockUiState
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
