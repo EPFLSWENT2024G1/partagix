@@ -2,10 +2,10 @@ package com.android.partagix.inventory
 
 import android.location.Location
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -202,7 +202,8 @@ class InventoryCreateOrEditTest :
     every { mockViewModel.uiState } returns nonEmptyMockUiState
 
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "edit")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       composeTestRule.onNodeWithTag("button").assertIsDisplayed()
