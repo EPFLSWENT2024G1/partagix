@@ -9,6 +9,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import java.io.File
 import java.util.*
+import java.util.concurrent.CountDownLatch
+import junit.framework.TestCase
 import org.junit.Test
 
 class FirebaseStorageTest {
@@ -44,9 +46,7 @@ class FirebaseStorageTest {
 
     // Call the function to be tested
     uploadImageToFirebaseStorage(builtUri, firebaseStorage, imageName)
-
     verify { storageReference.child(any()) }
-
     verify { storageReference.putFile(builtUri) }
   }
 
@@ -57,11 +57,11 @@ class FirebaseStorageTest {
     val storageReference = mockk<StorageReference>()
     val fileDownloadTask = mockk<FileDownloadTask>()
 
-    val path = "images/123.jpg"
-    val localFile = File.createTempFile("images", "jpg")
+    val path = "123.jpg"
+    val localFile = File.createTempFile("local", ".tmp")
 
     every { firebaseStorage.reference } returns storageReference
-    every { storageReference.child(path) } returns storageReference
+    every { storageReference.child("images/$path.jpg") } returns storageReference
     every { storageReference.getFile(any<File>()) } returns fileDownloadTask
 
     every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
@@ -69,8 +69,37 @@ class FirebaseStorageTest {
 
     getImageFromFirebaseStorage(path, firebaseStorage)
 
-    verify { storageReference.child(path) }
+    verify { storageReference.child("images/$path.jpg") }
 
     verify { storageReference.getFile(any<File>()) }
+  }
+
+  @Test
+  fun testDownloadFromFirebaseStorageEmptyString() {
+    // Mock FirebaseStorage and StorageReference
+    val firebaseStorage = mockk<FirebaseStorage>()
+    val storageReference = mockk<StorageReference>()
+    val fileDownloadTask = mockk<FileDownloadTask>()
+
+    val path = ""
+    val localFile = File.createTempFile("local", ".tmp")
+
+    val latch = CountDownLatch(1)
+
+    val onSuccessCallback: (File) -> Unit = { res ->
+      // Assert on the returned file
+      TestCase.assertEquals(File("res/drawable/default_image.jpg"), res)
+      latch.countDown()
+    }
+
+    every { firebaseStorage.reference } returns storageReference
+    every { storageReference.child("images/default-image.jpg") } returns storageReference
+    every { storageReference.getFile(any<File>()) } returns fileDownloadTask
+
+    every { fileDownloadTask.addOnSuccessListener(any()) } returns fileDownloadTask
+    every { fileDownloadTask.addOnFailureListener(any()) } returns fileDownloadTask
+
+    getImageFromFirebaseStorage(path, firebaseStorage, onSuccess = onSuccessCallback)
+    latch.await()
   }
 }

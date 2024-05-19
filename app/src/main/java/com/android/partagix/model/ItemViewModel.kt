@@ -49,7 +49,12 @@ class ItemViewModel(
 
   init {
     if (id != null) {
-      database.getItem(id) { newItem -> updateUiItem(newItem) }
+      database.getItemWithImage(id) { newItem ->
+        database.getUserWithImage(newItem.idUser) {
+          updateUiUser(it)
+          updateUiItem(newItem)
+        }
+      }
     } else {
       updateUiItem(item)
     }
@@ -76,7 +81,8 @@ class ItemViewModel(
             new.visibility,
             new.quantity,
             new.location,
-            newUserId)
+            newUserId,
+            new.imageId)
     _uiState.value =
         _uiState.value.copy(
             item = newWithUserId,
@@ -108,7 +114,9 @@ class ItemViewModel(
                 new.description,
                 new.visibility,
                 new.quantity,
-                new.location),
+                new.location,
+                new.idUser,
+                new.imageId),
             onItemCreated)
       }
     } else {

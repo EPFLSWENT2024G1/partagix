@@ -34,6 +34,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StartOrEndLoanViewModel
 import com.android.partagix.ui.components.ItemUi
 import com.android.partagix.ui.navigation.NavigationActions
@@ -43,7 +44,9 @@ import com.android.partagix.ui.navigation.Route
 fun StartLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
-    itemViewModel: ItemViewModel
+    itemViewModel: ItemViewModel,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    modifier: Modifier = Modifier
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -98,7 +101,12 @@ fun StartLoanScreen(
                                         open = false
                                       })
                                   .testTag("item")) {
-                            ItemUi(item = item, user = lender, loan = loan)
+                            ItemUi(
+                                item = item,
+                                user = lender,
+                                loan = loan,
+                                manageLoanViewModel = manageLoanViewModel,
+                            )
                           }
                       Row(
                           modifier = Modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),

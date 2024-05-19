@@ -36,6 +36,7 @@ import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.verify
+import java.io.File
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
@@ -91,6 +92,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
         }
 
     every { mockDatabase.getItems(any()) } just Runs
+    every { mockDatabase.getItemsWithImages(any()) } just Runs
 
     every { mockFirebaseUser.uid } returns "abcd"
     every { mockFirebaseUser.displayName } returns "name"
@@ -114,7 +116,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
             1,
             Location(""),
             "")
-    val borrower = User("abcd", "", "", "", emptyInventory)
+    val borrower = User("abcd", "", "", "", emptyInventory, File("image"))
     val lender = emptyUser
 
     every { mockDatabase.getLoans(any()) } answers
@@ -145,6 +147,23 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(lender)
         }
 
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
+
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
     app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
@@ -190,7 +209,24 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
+
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+
     every { mockDatabase.getUser("1234", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } answers
         {
           val callback = it.invocation.args[2] as (User) -> Unit
           callback(borrower)
@@ -240,8 +276,20 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
-    every { mockDatabase.getUser("1234", any(), any()) } just Runs
+    every { mockDatabase.getUserWithImage("abcd", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(lender)
+        }
 
+    every { mockDatabase.getUserWithImage("", any(), any()) } answers
+        {
+          val callback = it.invocation.args[2] as (User) -> Unit
+          callback(borrower)
+        }
+
+    every { mockDatabase.getUser("1234", any(), any()) } just Runs
+    every { mockDatabase.getUserWithImage("1234", any(), any()) } just Runs
     app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
