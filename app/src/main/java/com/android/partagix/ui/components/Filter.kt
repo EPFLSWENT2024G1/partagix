@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -43,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.android.partagix.R
-import kotlin.jvm.Throws
 
 @Composable
 fun Filter(
@@ -69,7 +67,8 @@ fun Filter(
   val bottomPadding = defaultPaddingValues.calculateBottomPadding()
 
   OutlinedButton(
-      modifier = modifier.fillMaxSize().height(50.dp).background(MaterialTheme.colorScheme.onPrimary),
+      modifier =
+          modifier.fillMaxSize().height(50.dp).background(MaterialTheme.colorScheme.onPrimary),
       onClick = { showDialog = true },
       shape = RoundedCornerShape(12.dp),
       contentPadding =
@@ -120,10 +119,13 @@ fun Filter(
     Dialog(onDismissRequest = { showDialog = false }) {
       Card(
           modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
-          colors = CardColors( containerColor = MaterialTheme.colorScheme.background,
-              contentColor = MaterialTheme.colorScheme.onBackground,
-              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-              disabledContainerColor = MaterialTheme.colorScheme.background,),
+          colors =
+              CardColors(
+                  containerColor = MaterialTheme.colorScheme.background,
+                  contentColor = MaterialTheme.colorScheme.onBackground,
+                  disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                  disabledContainerColor = MaterialTheme.colorScheme.background,
+              ),
           shape = RoundedCornerShape(24.dp),
       ) {
         SliderFilter(
@@ -161,8 +163,7 @@ fun SliderFilter(
     sliderTextValue: (Float) -> String,
     onReset: () -> Unit = {},
 ) {
-  Column(modifier = modifier.padding(16.dp)
-      .background(MaterialTheme.colorScheme.background)) {
+  Column(modifier = modifier.padding(16.dp).background(MaterialTheme.colorScheme.background)) {
     Row {
       Text(
           text = minUnit,

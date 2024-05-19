@@ -139,7 +139,8 @@ fun LoanScreen(
                           .fillMaxWidth()
                           .fillMaxHeight(.65f)
                           .background(
-                              MaterialTheme.colorScheme.background, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                              MaterialTheme.colorScheme.background,
+                              RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                           .border(
                               width = 1.dp,
                               color = Color(0xFF464646),
