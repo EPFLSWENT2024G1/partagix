@@ -19,8 +19,10 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
+import java.io.File
 import java.util.Date
 import java.util.concurrent.CountDownLatch
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -37,7 +39,9 @@ class InventoryViewModelTests {
           Visibility.PUBLIC,
           1,
           Location(""),
-          idUser = "8WuTkKJZLTAr6zs5L7rH")
+          idUser = "8WuTkKJZLTAr6zs5L7rH",
+          imageId = File("image1"))
+
   val item2 =
       Item(
           "item2",
@@ -47,7 +51,8 @@ class InventoryViewModelTests {
           Visibility.PUBLIC,
           32,
           Location(""),
-          idUser = "8WuTkKJZLTAr6zs5L7rH")
+          idUser = "8WuTkKJZLTAr6zs5L7rH",
+          imageId = File("image2"))
   val item3 =
       Item(
           "item3",
@@ -110,25 +115,42 @@ class InventoryViewModelTests {
           "",
           LoanState.ACCEPTED)
   val list: List<Item> = listOf(item1, item2, item3)
+  val loans = listOf(loaned1, loaned2, loaned3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
   var onSuccess: (List<Item>) -> Unit = {}
+  var onSuccess1Item: (Item) -> Unit = {}
   var onSuccessinv: (Inventory) -> Unit = {}
   @RelaxedMockK lateinit var fire: FirebaseAuth
 
   @Before
   fun setUp() {
     fire = mockk()
+    val firebaseUser = mockk<FirebaseUser>()
+    every { firebaseUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    every { fire.currentUser } returns firebaseUser
+    every { this@InventoryViewModelTests.fire.currentUser } returns firebaseUser
     every { db.getUserInventory(any(), any()) } answers
         {
           onSuccessinv = it.invocation.args[1] as (Inventory) -> Unit
-          onSuccessinv(Inventory("", list))
+          onSuccessinv(Inventory("8WuTkKJZLTAr6zs5L7rH", list))
         }
 
-    every { db.getItems(any()) } answers
+    every { db.getItemsWithImages(any()) } answers
         {
           onSuccess = it.invocation.args[0] as (List<Item>) -> Unit
           onSuccess(list)
+        }
+    every { db.getItemWithImage(any(), any()) } answers
+        {
+          onSuccess1Item = it.invocation.args[0] as (Item) -> Unit
+          onSuccess1Item(item1)
+        }
+
+    every { db.getUsers(any()) } answers
+        {
+          val onSuccessUs = it.invocation.args[0] as (List<User>) -> Unit
+          onSuccessUs(listOf(user))
         }
 
     every { db.getUser(any(), any(), any()) } answers
@@ -141,7 +163,8 @@ class InventoryViewModelTests {
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
           onSuccessLoan(listOf(loaned1, loaned2, loaned3))
         }
-    every { fire.currentUser } returns mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+    every { this@InventoryViewModelTests.fire.currentUser } returns
+        mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
   }
 
   @After
@@ -152,7 +175,8 @@ class InventoryViewModelTests {
   @Test
   fun testGetInventory() {
     val latch = CountDownLatch(1)
-    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch, firebaseAuth = fire))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     runBlocking {
       assert(inventoryViewModel.uiState.value.borrowedItems == list)
@@ -173,6 +197,7 @@ class InventoryViewModelTests {
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, firebaseAuth = fire, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
 
     runBlocking {
@@ -186,13 +211,41 @@ class InventoryViewModelTests {
   }
 
   @Test
+  fun testInventoryNullUser() {
+
+    val mockAuthEmptyUser = mockk<FirebaseAuth>()
+    every { mockAuthEmptyUser.currentUser } returns null
+    val latch = CountDownLatch(1)
+    val inventoryViewModel =
+        spyk(InventoryViewModel(db = db, firebaseAuth = mockAuthEmptyUser, latch = latch))
+    inventoryViewModel.getInventory(latch, mockAuthEmptyUser)
+    latch.await()
+
+    runBlocking {
+      assertEquals(
+          emptyList<Item>(),
+          inventoryViewModel.uiState.value.items,
+      )
+      assertEquals(emptyList<User>(), inventoryViewModel.uiState.value.users)
+      assertEquals(emptyList<User>(), inventoryViewModel.uiState.value.users)
+      assertEquals(emptyList<Loan>(), inventoryViewModel.uiState.value.loan)
+      assertEquals(emptyList<Item>(), inventoryViewModel.uiState.value.borrowedItems)
+      assertEquals(emptyList<User>(), inventoryViewModel.uiState.value.usersBor)
+      assertEquals(emptyList<Loan>(), inventoryViewModel.uiState.value.loanBor)
+    }
+  }
+
+  @Test
   fun testFindTime() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
+
     latch.await()
     inventoryViewModel.updateInv(list)
     inventoryViewModel.findTime(
         listOf(item4),
+        loans,
         { assert(it == Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)) })
   }
 
@@ -200,6 +253,7 @@ class InventoryViewModelTests {
   fun testFilterItems() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     inventoryViewModel.updateInv(list)
     inventoryViewModel.filterItems("Category 1")
@@ -219,10 +273,27 @@ class InventoryViewModelTests {
   fun testFilterItemsQuantity() {
     val latch = CountDownLatch(1)
     val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
     latch.await()
     inventoryViewModel.updateInv(list)
     assert(inventoryViewModel.uiState.value.items == list)
     inventoryViewModel.filterItems(3)
     assert(inventoryViewModel.uiState.value.items == listOf(item2, item3))
+  }
+
+  @Test
+  fun getUsersTest() {
+    val latch = CountDownLatch(1)
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
+    latch.await()
+    inventoryViewModel.updateInv(list)
+
+    var updatedList = emptyList<User>()
+
+    val onSuccessCallback: (User) -> Unit = { res -> updatedList = updatedList.plus(res) }
+
+    inventoryViewModel.getUsers(list, onSuccessCallback)
+    assertEquals(listOf(user), updatedList)
   }
 }

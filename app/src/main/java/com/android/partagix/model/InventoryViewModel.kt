@@ -19,11 +19,13 @@ package com.android.partagix.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.filtering.Filtering
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
 import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +68,8 @@ class InventoryViewModel(
   val uiState: StateFlow<InventoryUIState> = _uiState
 
   init {
-    getInventory(firebaseAuth = firebaseAuth, latch = latch)
+    // getInventory(firebaseAuth = firebaseAuth, latch = latch)
+    // This is already done during the navigation
   }
 
   /**
@@ -81,41 +84,63 @@ class InventoryViewModel(
       firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
   ) {
     viewModelScope.launch {
-      val user = firebaseAuth.currentUser
-      if (user != null) {
-        database.getItems { items: List<Item> ->
-          update(emptyList(), emptyList(), emptyList())
-          updateInv(items.filter { it.idUser.equals(user.uid) })
-          getUsers(items.filter { it.idUser.equals(user.uid) }, ::updateUsers)
-          findTime(items.filter { it.idUser.equals(user.uid) }, ::updateLoan)
-          database.getLoans {
-            it.filter { it.idBorrower.equals(user.uid) && it.state == LoanState.ACCEPTED }
+      val newLoanList = mutableListOf<Loan>()
+      val newLoanBorList = mutableListOf<Loan>()
+      val currentUser = firebaseAuth.currentUser
+      if (currentUser != null) {
+        database.getItemsWithImages { items: List<Item> ->
+          database.getLoans { loansList ->
+            findTime(items.filter { it.idUser.equals(currentUser.uid) }, loansList) {
+              newLoanList.add(it)
+            }
+            val lenderUsersIds = mutableListOf<String>()
+            val itemsBor = mutableListOf<Item>()
+            loansList
+                .filter { it.idBorrower.equals(currentUser.uid) && it.state == LoanState.ACCEPTED }
                 .forEach { loan ->
-                  updateBor(items.filter { it.id.equals(loan.idItem) })
-                  getUsers(items.filter { it.id.equals(loan.idItem) }, ::updateUsersBor)
-                  findTime(items.filter { it.id.equals(loan.idItem) }, ::updateLoanBor)
+                  lenderUsersIds.add(loan.idLender)
+                  val itemsBorHere = items.filter { item -> item.id == loan.idItem }
+                  itemsBor.add(itemsBorHere[0])
+                  findTime(items.filter { it.id.equals(loan.idItem) }, loansList) {
+                    newLoanBorList.add(it)
+                  }
                 }
+
+            val lenderUsers = mutableListOf<User>()
+            database.getUsers { users ->
+              lenderUsersIds.forEach { lenderId ->
+                lenderUsers.add(users.filter { it.id.equals(lenderId) }[0])
+              }
+              updateBorrows(itemsBor, newLoanBorList, lenderUsers)
+              updateUser(
+                  users.filter { it.id.equals(currentUser.uid) }[0],
+                  items.filter { it.idUser.equals(currentUser.uid) }.size)
+              newLoanList.forEach { loan -> updateLoan(loan) }
+              updateInv(items.filter { it.idUser.equals(currentUser.uid) })
+            }
           }
         }
       } else {
-        database.getItems {
-          updateBor(it)
-          getUsers(it, ::updateUsersBor)
-          findTime(it, ::updateLoanBor)
-          updateInv(it)
-          getUsers(it, ::updateUsers)
-          findTime(it, ::updateLoan)
+        val emptyItems = emptyList<Item>()
+        updateBor(emptyItems)
+        getUsers(emptyItems) {
+          updateUsersBor(emptyList())
+          updateUser(it, 0)
         }
+        findTime(emptyItems, emptyList(), ::updateLoanBor)
+        updateInv(emptyItems)
+        findTime(emptyItems, emptyList(), ::updateLoan)
       }
       latch.countDown()
     }
   }
 
-  fun update(
+  fun updateBorrows(
       borrowedItems: List<Item>,
       loanBor: List<Loan>,
       usersBor: List<User>,
   ) {
+    fetchedBorrowed = borrowedItems
     _uiState.value =
         _uiState.value.copy(borrowedItems = borrowedItems, loanBor = loanBor, usersBor = usersBor)
   }
@@ -135,17 +160,21 @@ class InventoryViewModel(
    * @param new the new items to update the borrowed items
    */
   fun updateBor(new: List<Item>) {
-    _uiState.value = _uiState.value.copy(borrowedItems = _uiState.value.borrowedItems.plus(new))
-    fetchedBorrowed = fetchedBorrowed.plus(new)
+    _uiState.value = _uiState.value.copy(borrowedItems = new)
+    fetchedBorrowed = new
   }
 
   /**
-   * updateUsers is a function that will update the uiState's user list
+   * updateUser is a function that will update the uiState's user list
    *
    * @param new the new user to update the user list
    */
-  fun updateUsers(new: User) {
-    _uiState.value = _uiState.value.copy(users = uiState.value.users.plus(new))
+  fun updateUser(new: User, count: Int) {
+    val list = mutableListOf<User>()
+    for (i in 0 until count) {
+      list.add(new)
+    }
+    _uiState.value = _uiState.value.copy(users = list)
   }
 
   /**
@@ -153,8 +182,8 @@ class InventoryViewModel(
    *
    * @param new the new user to update the user borrowed list
    */
-  fun updateUsersBor(new: User) {
-    _uiState.value = _uiState.value.copy(usersBor = uiState.value.usersBor.plus(new))
+  fun updateUsersBor(new: List<User>) {
+    _uiState.value = _uiState.value.copy(usersBor = new)
   }
 
   /**
@@ -206,7 +235,27 @@ class InventoryViewModel(
    * @param update a function to update the user list
    */
   fun getUsers(list: List<Item>, update: (User) -> Unit) {
-    list.forEach { database.getUser(it.idUser) { user -> update(user) } }
+    if (list.isEmpty()) {
+      update(User("", "", "", "", Inventory("", emptyList()), File(""), ""))
+      return
+    }
+
+    database.getUsers { users ->
+      val toUpdate = mutableListOf<Boolean>()
+      for (i in users.indices) {
+        toUpdate.add(false)
+        list.forEach { item ->
+          if (users[i].id.equals(item.idUser)) {
+            toUpdate[i] = true
+          }
+        }
+      }
+      for (i in users.indices) {
+        if (toUpdate[i]) {
+          update(users[i])
+        }
+      }
+    }
   }
 
   /**
@@ -215,23 +264,21 @@ class InventoryViewModel(
    * @param items the list of items to find the loans
    * @param update a function to update the loan list
    */
-  fun findTime(items: List<Item>, update: (Loan) -> Unit) {
-    database.getLoans { loan ->
-      items.forEach { item ->
-        val list =
-            loan
+  fun findTime(items: List<Item>, loansList: List<Loan>, update: (Loan) -> Unit) {
+    items.forEach { item ->
+      val list =
+          loansList
+              .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
+              .sortedBy { it.startDate }
+      update(
+          if (list.isEmpty()) {
+            Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+          } else {
+            loansList
                 .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
                 .sortedBy { it.startDate }
-        update(
-            if (list.isEmpty()) {
-              Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-            } else {
-              loan
-                  .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
-                  .sortedBy { it.startDate }
-                  .first()
-            })
-      }
+                .first()
+          })
     }
   }
 

@@ -16,6 +16,10 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
+import getImageFromFirebaseStorage
+import getImagesFromFirebaseStorage
+import java.io.File
 
 class Database(database: FirebaseFirestore = Firebase.firestore) {
 
@@ -45,6 +49,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["addr"] as String,
                       document.data["rank"] as String,
                       Inventory(document.data["id"] as String, listItems),
+                      File("noImage"),
                       document.data["fcmToken"] as String?)
               ret.add(user)
             }
@@ -62,9 +67,44 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the user
    */
   fun getUser(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-    getUsers { users ->
-      val user = users.firstOrNull { it.id == idUser }
-      user?.let { onSuccess(it) } ?: onNoUser()
+    users.document(idUser).get().addOnSuccessListener {
+      val user = it.data
+      if (user != null) {
+        getUserInventory(idUser) { inventory ->
+          val name = user["name"] as String
+          val addr = user["addr"] as String
+          val rank = user["rank"] as String
+          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage")))
+        }
+      } else {
+        onNoUser()
+      }
+    }
+  }
+
+  fun getUserWithImage(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
+    users.document(idUser).get().addOnSuccessListener {
+      val onSuccessImage = { localFile: File ->
+        val user = it.data
+        if (user != null) {
+          getUserInventory(idUser) { inventory ->
+            val name = user["name"] as String
+            val addr = user["addr"] as String
+            val rank = user["rank"] as String
+            onSuccess(User(idUser, name, addr, rank, inventory, localFile))
+          }
+        } else {
+          onNoUser()
+        }
+      }
+      getImageFromFirebaseStorage(
+          "users/$idUser",
+          onFailure = {
+            Log.w("emptyUserImage", "No image found for user $idUser")
+            onSuccessImage(File("noImage"))
+          }) { localFile ->
+            onSuccessImage(localFile)
+          }
     }
   }
 
@@ -85,6 +125,63 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    *
    * @param onSuccess the function to call with the list of items
    */
+  fun getItemsWithImages(onSuccess: (List<Item>) -> Unit) {
+    items
+        .get()
+        .addOnSuccessListener { result ->
+          val paths = mutableListOf<String>()
+          for (document in result) {
+            if (document.data["image_path"] != null && document.data["image_path"] != "") {
+              paths.add(document.data["image_path"] as String)
+            } else {
+              paths.add("default-image.jpg")
+            }
+          }
+          categories
+              .get()
+              .addOnSuccessListener { result2 ->
+                val categories =
+                    result2
+                        .map { document ->
+                          document.data["id"] as String to
+                              Category(
+                                  document.data["id"] as String, document.data["name"] as String)
+                        }
+                        .toMap()
+
+                getImagesFromFirebaseStorage(
+                    paths,
+                    Firebase.storage,
+                    onFailure = { Log.e("error getting images for items", it.toString()) }) {
+                        localFiles ->
+                      val ret = mutableListOf<Item>()
+                      var count = 0
+                      for (document in result) {
+                        val locationMap = document.data["location"] as HashMap<*, *>
+                        val location = toLocation(locationMap)
+
+                        val visibility = (document.data["visibility"] as Long).toInt()
+                        val item =
+                            Item(
+                                document.data["id"] as String,
+                                categories[document.data["id_category"] as String]!!,
+                                document.data["name"] as String,
+                                document.data["description"] as String,
+                                Visibility.values()[visibility],
+                                document.data["quantity"] as Long,
+                                location,
+                                document.data["id_user"] as String,
+                                localFiles[count++])
+                        ret.add(item)
+                      }
+                      onSuccess(ret)
+                    }
+              }
+              .addOnFailureListener { Log.e(TAG, "Error getting categories", it) }
+        }
+        .addOnFailureListener { Log.e(TAG, "Error getting items", it) }
+  }
+
   fun getItems(onSuccess: (List<Item>) -> Unit) {
     items
         .get()
@@ -118,7 +215,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                           document.data["quantity"] as Long,
                           location,
                           document.data["id_user"] as String,
-                      )
+                          File("noImage"))
                   ret.add(item)
                 }
                 onSuccess(ret)
@@ -347,7 +444,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "id_user" to userId,
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
-            "location" to locationToMap(newItem.location))
+            "location" to locationToMap(newItem.location),
+            "image_path" to newItem.imageId.name)
     items.document(idItem).set(data)
     val new =
         Item(
@@ -358,7 +456,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             newItem.visibility,
             newItem.quantity,
             newItem.location,
-            userId)
+            userId,
+            newItem.imageId)
     onSuccess(new)
   }
 
@@ -378,7 +477,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "visibility" to newItem.visibility.ordinal,
             "quantity" to newItem.quantity,
             "location" to locationToMap(newItem.location),
-        )
+            "image_path" to newItem.id)
     items.document(newItem.id).set(data)
   }
 
@@ -455,6 +554,23 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   }
 
   /**
+   * Get an item from the database
+   *
+   * @param id the item's id
+   * @param onSuccess the function to call with the item
+   */
+  fun getItemWithImage(id: String, onSuccess: (Item) -> Unit) {
+    getItems { items ->
+      val item = items.firstOrNull { it.id == id }
+      item?.let {
+        getImageFromFirebaseStorage("images/${it.imageId.absolutePath}") { localFile ->
+          onSuccess(it.copy(imageId = localFile))
+        }
+        onSuccess(it)
+      }
+    }
+  }
+  /**
    * Get the category id from a category name
    *
    * @param nameCategory the name of the category
@@ -472,6 +588,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         }
         .addOnFailureListener { Log.e(TAG, "Error getting idCategory", it) }
   }
+
+  fun getImageFromPath(path: String, onSuccess: (String) -> Unit) {}
 
   /**
    * Create a user in the database
@@ -642,6 +760,49 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       newAverageRank(reviewedUserId)
     }
   }
+
+  /* TODO : uncomment this function is at some point we need to display multiple users with their profile pictures in the app
+   fun getUsersWithImages(onSuccess: (List<User>) -> Unit) {
+     getItems { items ->
+       users
+           .get()
+           .addOnSuccessListener { result ->
+             val ret = mutableListOf<User>()
+             for (document in result) {
+               val listItems = items.filter { it.idUser == document.data["id"] }
+               getImageFromFirebaseStorage(
+                   "users/" + (document.data["id"] as String),
+                   onFailure = {
+                     getImageFromFirebaseStorage("users/default.png") { localFile ->
+                       val user =
+                           User(
+                               document.data["id"] as String,
+                               document.data["name"] as String,
+                               document.data["addr"] as String,
+                               document.data["rank"] as String,
+                               Inventory(document.data["id"] as String, listItems),
+                               localFile)
+                       ret.add(user)
+                     }
+                   }) { localFile ->
+                     val user =
+                         User(
+                             document.data["id"] as String,
+                             document.data["name"] as String,
+                             document.data["addr"] as String,
+                             document.data["rank"] as String,
+                             Inventory(document.data["id"] as String, listItems),
+                             localFile)
+                     ret.add(user)
+                   }
+             }
+             onSuccess(ret)
+           }
+           .addOnFailureListener { Log.e(TAG, "Error getting users", it) }
+     }
+   }
+
+  */
 
   companion object {
     private const val TAG = "Database"

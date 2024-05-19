@@ -92,6 +92,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockDatabase = mockk()
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
+    every { mockDatabase.getUserWithImage(any(), any(), any()) } just Runs
+
     mockLoanViewModel = spyk(LoanViewModel(db = mockDatabase))
     every { mockLoanViewModel.getAvailableLoans(any()) } just Runs
 

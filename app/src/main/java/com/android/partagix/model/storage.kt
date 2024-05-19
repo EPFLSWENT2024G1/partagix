@@ -4,6 +4,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 // Function to upload image to Firebase Storage
 
@@ -20,7 +21,8 @@ Example of Uri :
 fun uploadImageToFirebaseStorage(
     imageUri: Uri,
     storage: FirebaseStorage = Firebase.storage,
-    imageName: String = UUID.randomUUID().toString()
+    imageName: String = UUID.randomUUID().toString(),
+    onSuccess: (List<File>) -> Unit = {},
 ) {
   val storageRef = storage.reference
 
@@ -34,18 +36,29 @@ fun uploadImageToFirebaseStorage(
   uploadTask
       .addOnSuccessListener { taskSnapshot ->
         // Image uploaded successfully
-        println("----- Image uploaded successfully: ${taskSnapshot.metadata?.path}")
+        onSuccess(listOf(File(imageUri.path!!.drop(7))))
       }
       .addOnFailureListener { exception ->
         // Image upload failed
-        println("----- Image upload failed: $exception")
       }
 }
 
 fun getImageFromFirebaseStorage(
-    path: String,
+    p: String,
     storage: FirebaseStorage = Firebase.storage,
+    onFailure: (exception: Exception) -> Unit = {},
+    onSuccess: (localFile: File) -> Unit = {},
 ) {
+  val prefix: String
+  val path: String
+  if (p == "users/" || p == "" || p == "default-image.jpg") {
+    onSuccess(File("res/drawable/default_image.jpg")) // TODO : make this work
+    return
+  } else {
+    path = "images/$p.jpg"
+    prefix = "real"
+  }
+
   // Get the image from Firebase Storage
   val storageRef = storage.reference
 
@@ -53,15 +66,62 @@ fun getImageFromFirebaseStorage(
   val imageRef = storageRef.child(path)
 
   // Download the image to a local file
-  val localFile = File.createTempFile("images", "jpg")
+  val localFile = File.createTempFile(prefix, ".tmp")
   imageRef
       .getFile(localFile)
       .addOnSuccessListener {
         // Local temp file has been created
-        println("----- Image downloaded successfully")
+        onSuccess(localFile)
       }
       .addOnFailureListener {
         // Handle any errors
-        println("----- Image download failed: $it")
+        onFailure(it)
       }
+}
+
+fun getImagesFromFirebaseStorage(
+    paths: List<String>,
+    storage: FirebaseStorage = Firebase.storage,
+    onFailure: (Exception) -> Unit = {},
+    onSuccess: (List<File>) -> Unit = {},
+) {
+  val prefix = "real"
+  val count = AtomicInteger(0)
+  val res = Array(paths.size) { File("res/drawable/default_image.jpg") } // TODO : make this work
+  for (p in paths.indices) {
+    val path: String
+    if (paths[p] == "users/" || paths[p] == "" || paths[p] == "default-image.jpg") {
+      if (count.incrementAndGet() == paths.size) {
+        onSuccess(res.toList())
+      }
+      continue
+    } else {
+      path = "images/${paths[p]}.jpg"
+    }
+
+    // Get the image from Firebase Storage
+    val storageRef = storage.reference
+
+    // Create a reference to the image
+    val imageRef = storageRef.child(path)
+
+    // Download the image to a local file
+    val localFile = File.createTempFile(prefix, ".tmp")
+    imageRef
+        .getFile(localFile)
+        .addOnSuccessListener {
+          // Local temp file has been created
+          res[p] = localFile
+          if (count.incrementAndGet() == paths.size) {
+            onSuccess(res.toList())
+          }
+        }
+        .addOnFailureListener {
+          res[p] = File("noImage")
+          onFailure(it)
+          if (count.incrementAndGet() == paths.size) {
+            onSuccess(res.toList())
+          }
+        }
+  }
 }

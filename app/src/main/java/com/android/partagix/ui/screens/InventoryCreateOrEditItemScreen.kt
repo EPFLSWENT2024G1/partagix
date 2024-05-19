@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
@@ -47,6 +48,10 @@ import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.components.locationPicker.LocationPicker
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
+import getImageFromFirebaseStorage
+import java.io.File
+import java.util.UUID
+import uploadImageToFirebaseStorage
 
 /**
  * Screen to create a new item in user's inventory.
@@ -65,6 +70,8 @@ fun InventoryCreateOrEditItem(
     modifier: Modifier = Modifier,
     mode: String
 ) {
+
+  var dbImage = "default-image.jpg"
 
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -108,6 +115,8 @@ fun InventoryCreateOrEditItem(
     var uiDescription by remember { mutableStateOf(i.description) }
     var uiVisibility by remember { mutableStateOf(i.visibility) }
     var uiQuantity by remember { mutableStateOf(i.quantity) }
+    var uiLocation by remember { mutableStateOf(Location(i.location)) }
+    var uiImage by remember { mutableStateOf(i.imageId) }
 
     Column(
         modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
@@ -117,7 +126,26 @@ fun InventoryCreateOrEditItem(
               Box(
                   contentAlignment = Alignment.Center,
                   modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
-                    MainImagePicker()
+                    val image =
+                        File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
+                    MainImagePicker(listOf(image.toUri())) { uri ->
+                      // TODO :  Save the image to a local file to its displayed correctly while
+                      // waiting for the upload
+                      /*
+                      val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
+                      Missing : save the image to the local file (need a ContentResolver ?)
+                      uiImage = localFilePath
+                       */
+                      if (uri == image.toUri()) return@MainImagePicker
+                      // Before this is done, display an empty image while waiting for the upload
+                      uiImage = File("res/drawable/default_image.jpg")
+                      // in the meantime do nothing and the image will be loaded from the database
+                      // later
+                      dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+                      uploadImageToFirebaseStorage(uri, imageName = dbImage) {
+                        getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
+                      }
+                    }
                   }
 
               Spacer(modifier = modifier.width(8.dp))
@@ -211,7 +239,7 @@ fun InventoryCreateOrEditItem(
                           uiQuantity,
                           locationViewModel.ourLocationToAndroidLocation(loc.value),
                           i.idUser,
-                      ))
+                          File(dbImage)))
                   navigationActions.goBack()
                 },
                 content = {
