@@ -144,6 +144,10 @@ class FirebaseMessagingServiceTest {
     mockedFirebaseMessagingService = spyk(FirebaseMessagingService())
 
     val remoteMessage = mockk<RemoteMessage>()
+    every { remoteMessage.data } returns mutableMapOf()
+    every { remoteMessage.from } returns "sender"
+    every { remoteMessage.notification } returns mockk()
+
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
     verify { mockedFirebaseMessagingService.onMessageReceived(any()) }
@@ -164,6 +168,10 @@ class FirebaseMessagingServiceTest {
     mockedFirebaseMessagingService = spyk(FirebaseMessagingService())
 
     val remoteMessage = mockk<RemoteMessage>()
+    every { remoteMessage.data } returns mutableMapOf()
+    every { remoteMessage.from } returns "sender"
+    every { remoteMessage.notification } returns mockk()
+
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
     verify { mockedFirebaseMessagingService.onMessageReceived(any()) }
