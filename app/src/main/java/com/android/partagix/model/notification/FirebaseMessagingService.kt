@@ -15,6 +15,7 @@ import com.android.partagix.R
 import com.android.partagix.model.Database
 import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
+import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -31,10 +32,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 
-class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
+class FirebaseMessagingService(
+    private val db: Database = Database(),
+    private val navigationActions: NavigationActions? = App.getNavigationActions()
+) : FirebaseMessagingService() {
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
   private var context = MainActivity.getContext()
-  private var navigationActions = App.getNavigationActions()
 
   init {
     Log.d(TAG, "context: $context")
