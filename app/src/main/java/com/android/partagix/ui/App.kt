@@ -84,7 +84,17 @@ class App(
   lateinit var navigationActions: NavigationActions
 
   private val inventoryViewModel = InventoryViewModel(db = db)
-  private val manageViewModel =
+  private val manageViewModelLoan =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
+  private val manageViewModelStartLoan =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
+  private val manageViewModelInventory =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
+  private val manageViewModelHome =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
+  private val manageViewModelOutgoing =
+      ManageLoanViewModel(db = db, notificationManager = notificationManager)
+  private val manageViewModelIncoming =
       ManageLoanViewModel(db = db, notificationManager = notificationManager)
 
   private val loanViewModel = LoanViewModel(db = db)
@@ -289,14 +299,15 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
+        println("--------------------Home")
         inventoryViewModel.getInventory()
-        manageViewModel.getLoanRequests()
+        manageViewModelHome.getLoanRequests(isOutgoing = false)
         loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
 
         HomeScreen(
             homeViewModel = homeViewModel,
-            manageLoanViewModel = manageViewModel,
+            manageLoanViewModel = manageViewModelHome,
             navigationActions = navigationActions)
       }
       composable(Route.LOAN) {
@@ -312,7 +323,7 @@ class App(
               loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
-              manageLoanViewModel = manageViewModel,
+              manageLoanViewModel = manageViewModelLoan,
               modifier = modifier)
         } else {
           navigationActions.navigateTo(Route.HOME)
@@ -322,11 +333,12 @@ class App(
         BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
       }
       composable(Route.INVENTORY) {
+        println("--------------------Home")
         inventoryViewModel.getInventory()
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
-            manageLoanViewModel = manageViewModel,
+            manageLoanViewModel = manageViewModelInventory,
             itemViewModel = itemViewModel)
       }
 
@@ -379,11 +391,11 @@ class App(
         InventoryCreateOrEditItem(itemViewModel, navigationActions, mode = "edit")
       }
       composable(Route.MANAGE_LOAN_REQUEST) {
+        println("--------------------Incoming requests")
         // Fetch the new loan requests first
-        manageViewModel.getLoanRequests()
-
+        manageViewModelIncoming.getLoanRequests(isOutgoing = false)
         ManageLoanRequest(
-            manageLoanViewModel = manageViewModel, navigationActions = navigationActions)
+            manageLoanViewModel = manageViewModelIncoming, navigationActions = navigationActions)
       }
       composable(Route.FINISHED_LOANS) {
         finishedLoansViewModel.getFinishedLoan()
@@ -394,8 +406,10 @@ class App(
             navigationActions = navigationActions)
       }
       composable(Route.MANAGE_OUTGOING_LOAN) {
+        println("--------------------Outgoing requests")
+        manageViewModelOutgoing.getLoanRequests(isOutgoing = true)
         ManageOutgoingLoan(
-            manageLoanViewModel = manageViewModel,
+            manageLoanViewModel = manageViewModelOutgoing,
             navigationActions = navigationActions,
         )
       }
@@ -412,7 +426,7 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            manageLoanViewModel = manageViewModel,
+            manageLoanViewModel = manageViewModelStartLoan,
             itemViewModel = itemViewModel,
             modifier = modifier)
       }

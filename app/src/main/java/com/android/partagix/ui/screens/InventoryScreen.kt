@@ -76,8 +76,8 @@ fun InventoryScreen(
   var incomingRequests by remember { mutableIntStateOf(0) }
   var outgoingRequests by remember { mutableIntStateOf(0) }
 
-  manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
-  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }
+  /*manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
+  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }*/
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -159,11 +159,7 @@ fun InventoryScreen(
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
-                  onClick = {
-                    manageLoanViewModel.getLoanRequests(
-                        isOutgoing = false,
-                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) })
-                  }) {
+                  onClick = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) }) {
                     Column(
                         modifier = modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center) {
@@ -185,11 +181,7 @@ fun InventoryScreen(
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
-                  onClick = {
-                    manageLoanViewModel.getLoanRequests(
-                        isOutgoing = true,
-                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN) })
-                  }) {
+                  onClick = { navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN) }) {
                     Column(
                         modifier = modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center) {
