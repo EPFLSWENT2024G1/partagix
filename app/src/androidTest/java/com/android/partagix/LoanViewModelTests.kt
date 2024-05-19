@@ -140,6 +140,11 @@ class LoanViewModelTests {
 
     every { db.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(mockLoans) }
     every { db.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
+    every { db.getItemsWithImages(any()) } answers
+        {
+          firstArg<(List<Item>) -> Unit>().invoke(items)
+        }
+
     every { db.getUser(any(), any(), any()) } answers
         {
           val userId = firstArg<String>()

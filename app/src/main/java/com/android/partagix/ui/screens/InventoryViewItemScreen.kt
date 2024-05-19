@@ -1,7 +1,9 @@
 package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,10 +35,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.android.partagix.R
+import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -64,6 +66,14 @@ fun InventoryViewItemScreen(
   var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
   val user = uiState.value.user
+
+  var imgBitmap: Bitmap? = null
+  val imgFile = item.imageId
+  if (imgFile.exists()) {
+    // on below line we are creating an image bitmap variable
+    // and adding a bitmap to it from image file.
+    imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+  }
 
   LaunchedEffect(key1 = uiState) { item = itemViewModel.uiState.value.item }
 
@@ -94,15 +104,13 @@ fun InventoryViewItemScreen(
             horizontalAlignment = Alignment.CenterHorizontally) {
               Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-
-                  /*TODO: get photo and display it*/
                   Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
-                    Image(
-                        painter =
-                            painterResource(
-                                id = R.drawable.ic_launcher_background) /*TODO: get item photo*/,
-                        contentDescription = null,
-                        alignment = Alignment.BottomCenter)
+                    AsyncImage(
+                        model = item.imageId.absolutePath,
+                        contentDescription = "fds",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, MaterialTheme.colorScheme.onBackground),
+                        alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
 

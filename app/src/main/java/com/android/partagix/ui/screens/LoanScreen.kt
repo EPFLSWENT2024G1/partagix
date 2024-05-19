@@ -32,6 +32,7 @@ import com.android.partagix.model.FilterAction
 import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.LoanViewModel
+import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.Filter
@@ -58,6 +59,7 @@ fun LoanScreen(
     itemViewModel: ItemViewModel,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isMapLoadingOptimized: Boolean = true,
 ) {
 
@@ -155,6 +157,7 @@ fun LoanScreen(
                             itemViewModel.updateUiItem(it)
                             navigationActions.navigateTo(Route.VIEW_OTHERS_ITEM)
                           },
+                          manageLoanViewModel = manageLoanViewModel,
                           stickyHeader = {
                             FlowRow(
                                 horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),

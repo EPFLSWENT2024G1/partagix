@@ -110,6 +110,10 @@ class ManageViewModelTest {
         {
           firstArg<(List<Item>) -> Unit>().invoke(listOf(item1, itemz, itemz))
         }
+    every { db.getItemsWithImages(any()) } answers
+        {
+          firstArg<(List<Item>) -> Unit>().invoke(listOf(item1, itemz, itemz))
+        }
     every { db.getUser(any(), any(), any()) } answers { thirdArg<(User) -> Unit>().invoke(user) }
     every { db.getLoans(any()) } answers
         {

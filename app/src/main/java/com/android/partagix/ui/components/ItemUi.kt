@@ -1,14 +1,13 @@
 package com.android.partagix.ui.components
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -38,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,7 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.android.partagix.R
+import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -62,7 +60,6 @@ import java.util.Date
  * @param user the user of the item
  * @param loan the possible loan of the item
  */
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ItemUi(
     item: Item,
@@ -162,13 +159,20 @@ fun ItemUi(
                       modifier =
                           Modifier.fillMaxWidth(0.3f).fillMaxHeight(0.5f).padding(top = 5.dp))
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
+                Box(
                     modifier =
                         Modifier.fillMaxWidth(0.3f)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
+                            .fillMaxHeight()
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+                      AsyncImage(
+                          model = item.imageId.absolutePath,
+                          contentDescription = "fds",
+                          contentScale = ContentScale.Inside,
+                          modifier =
+                              Modifier.fillMaxHeight()
+                                  .align(Alignment.Center)
+                                  .testTag("ItemUiImage"))
+                    }
               }
 
           if (expandable) {
@@ -279,13 +283,20 @@ fun ItemUi(
                           lineHeight = 0.8.em,
                           modifier = Modifier.fillMaxWidth(0.2f).padding(top = 5.dp))
                     }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
+                Box(
                     modifier =
                         Modifier.fillMaxWidth(0.3f)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant))
+                            .fillMaxHeight()
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+                      AsyncImage(
+                          model = item.imageId.absolutePath,
+                          contentDescription = "fds",
+                          contentScale = ContentScale.Inside,
+                          modifier =
+                              Modifier.fillMaxHeight()
+                                  .align(Alignment.Center)
+                                  .testTag("ItemUiImage"))
+                    }
               }
         }
   }
