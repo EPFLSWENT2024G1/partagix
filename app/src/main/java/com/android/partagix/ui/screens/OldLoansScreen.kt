@@ -77,7 +77,7 @@ fun OldLoansScreen(
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
-            title = { Text(text = "Old Loans") },
+            title = { Text(text = "Loan Historic") },
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
@@ -107,9 +107,12 @@ fun OldLoansScreen(
               modifier =
                   modifier
                       .fillMaxWidth()
-                      .fillMaxWidth()
                       .padding(innerPadding)
                       .verticalScroll(rememberScrollState())) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.outlineVariant)
+
                 if (open) {
                   EvaluationPopUp(
                       loan = actualLoan,

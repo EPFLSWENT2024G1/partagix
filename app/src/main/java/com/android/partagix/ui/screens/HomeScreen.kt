@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -46,14 +47,10 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 
 private const val quickAccessText = "Quick access"
-
 private const val findItemButtonName = "Find item to borrow"
-
 private const val quickScanButtonName = "Quick scan"
-
-private const val findItemIventoryName = "Find item in inventory"
-
-private const val newBorrowingRequestsText = "New borrowing requests"
+private const val findItemInventoryName = "Find item in inventory"
+private const val incomingRequestsText = "Incoming request"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +90,8 @@ fun HomeScreen(
                   style = MaterialTheme.typography.titleLarge)
               Spacer(modifier = Modifier.height(8.dp))
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                  modifier =
+                      Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
                   horizontalArrangement = Arrangement.SpaceBetween) {
                     BigButton(
                         logo = Icons.Default.PersonSearch,
@@ -109,31 +107,34 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
                         logo = Icons.Default.ImageSearch,
-                        text = findItemIventoryName,
+                        text = findItemInventoryName,
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
-              Text(
-                  text = newBorrowingRequestsText,
-                  modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
-                  style = MaterialTheme.typography.titleLarge)
-              ItemListColumn(
-                  list = uiState.items, // TODO replace this with the actual list of borrowing
-                  // requests
-                  users = uiState.users,
-                  loan = uiState.loans,
-                  title = "",
-                  corner = "see all",
-                  onClick = { /* useless on this list */},
-                  onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
-                  isCornerClickable = true,
-                  isExpandable = true,
-                  isOutgoing = false,
-                  wasExpanded = uiState.expanded,
-                  manageLoanViewModel = manageLoanViewModel,
-                  navigationActions = navigationActions,
-                  isClickable = true,
-                  modifier = Modifier.testTag("homeScreenItemList"))
+
+              Box(modifier = modifier.padding(top = 8.dp)) {
+                Text(
+                    text = incomingRequestsText,
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                    style = MaterialTheme.typography.titleLarge)
+                ItemListColumn(
+                    list = uiState.items,
+                    users = uiState.users,
+                    loan = uiState.loans,
+                    title = "",
+                    corner = "See All",
+                    onClick = { /* useless on this list */},
+                    onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
+                    isCornerClickable = true,
+                    isExpandable = true,
+                    isOutgoing = false,
+                    wasExpanded = uiState.expanded,
+                    manageLoanViewModel = manageLoanViewModel,
+                    isClickable = true,
+                    modifier =
+                        Modifier.padding(start = 10.dp, end = 10.dp, top = 12.dp)
+                            .testTag("homeScreenItemList"))
+              }
             }
       }
 }
@@ -145,20 +146,24 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           modifier
               .aspectRatio(1f)
               .size(70.dp)
+              .background(MaterialTheme.colorScheme.onPrimary)
               .border(
                   width = 1.dp,
-                  color = Color.Black,
+                  color = MaterialTheme.colorScheme.outlineVariant,
                   shape = RoundedCornerShape(8.dp)) // Add a rounded border to the button
               .clickable(onClick = onClick),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Spacer(modifier = Modifier.fillMaxHeight(0.15f))
           Icon(imageVector = logo, contentDescription = null, modifier = Modifier.size(32.dp))
-          Spacer(modifier = Modifier.height(8.dp))
+          Spacer(modifier = Modifier.fillMaxHeight(0.1f))
           Text(
               text = text,
               style = MaterialTheme.typography.bodyMedium,
-              color = Color.Black,
+              color = MaterialTheme.colorScheme.onSecondaryContainer,
               textAlign = TextAlign.Center)
+          // Spacers added to insure all icons are at the same height
+          Spacer(modifier = Modifier.fillMaxHeight())
         }
       }
 }

@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,14 +21,12 @@ import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
-import com.android.partagix.ui.navigation.NavigationActions
-import com.android.partagix.ui.navigation.Route
 
 /**
  * ItemListColumn is a composable function that displays a list of items in a column. which is the
  * function that will be called when we want to see a list of items.
  *
- * @param List a list of items.
+ * @param list a list of items.
  * @param users a list of the users from the items
  * @param loan a list of loans associated to the items
  * @param title a string that represents the title of the column.
@@ -52,9 +51,7 @@ fun ItemListColumn(
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
     isOutgoing: Boolean,
-    canSeeOld: Boolean = false,
     manageLoanViewModel: ManageLoanViewModel,
-    navigationActions: NavigationActions,
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
@@ -66,18 +63,9 @@ fun ItemListColumn(
           style =
               TextStyle(
                   fontSize = 18.sp,
-                  fontWeight = FontWeight(1000),
-                  color = Color(0xFF000000),
+                  fontWeight = FontWeight(800),
               ),
-          modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 10.dp))
-      if (canSeeOld) {
-        Text(
-            text = "see Old",
-            modifier =
-                Modifier.fillMaxWidth(0.5f).clickable {
-                  navigationActions.navigateTo(Route.FINISHED_LOANS)
-                })
-      }
+          modifier = Modifier.fillMaxWidth(0.7f).padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,
@@ -102,6 +90,10 @@ fun ItemListColumn(
           style = MaterialTheme.typography.bodySmall,
           modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
     } else {
+      HorizontalDivider(
+          color = MaterialTheme.colorScheme.outlineVariant,
+          modifier = Modifier.height(0.5.dp).fillMaxWidth())
+
       ItemList(
           itemList = list,
           users = users,

@@ -1,7 +1,7 @@
 package com.android.partagix.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,16 +33,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.android.partagix.R
+import androidx.core.net.toUri
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.location.Location
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.locationPicker.LocationPicker
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import getImageFromFirebaseStorage
+import java.io.File
+import uploadImageToFirebaseStorage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +61,7 @@ fun EditAccount(
   // Local state variables to hold temporary values for editable fields
   var tempUsername by remember { mutableStateOf(user.name) }
   var tempAddress by remember { mutableStateOf(user.address) }
+  var uiImage by remember { mutableStateOf<File?>(user.imageId) }
 
   // The field with the actual location
   val loc = remember { mutableStateOf<Location?>(null) }
@@ -100,9 +104,7 @@ fun EditAccount(
       }) {
         if (user.id !=
             userViewModel.getLoggedUserId()) { // Check if user is editing their own account
-          Text(
-              text = "You can only edit your own account. (this shouldn't be seen)",
-              modifier = Modifier.padding(it).testTag("notYourAccount"))
+          Text(text = "Loading...", modifier = Modifier.padding(it).testTag("notYourAccount"))
         } else {
           Column(
               modifier =
@@ -110,13 +112,33 @@ fun EditAccount(
                       .padding(it)
                       .verticalScroll(rememberScrollState())
                       .testTag("mainContent")) {
-                Image(
-                    painter =
-                        painterResource(
-                            id = R.drawable.ic_launcher_background) /*TODO: get profile picture*/,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().testTag("userImage"),
-                    alignment = Alignment.Center)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        modifier
+                            .width(150.dp)
+                            .height(150.dp)
+                            .padding(8.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .testTag("image")) {
+                      MainImagePicker(listOf(user.imageId.toUri())) { uri ->
+                        // TODO :  Save the image to a local file to its displayed correctly while
+                        // waiting for the upload
+                        /*
+                        val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
+                        Missing : save the image to the local file (need a ContentResolver ?)
+                        uiImage = localFilePath
+                         */
+                        // Before this is done, display an empty image while waiting for the upload
+                        uiImage = File.createTempFile("default_image", null)
+
+                        // in the meantime do nothing and the image will be loaded from the database
+                        // later
+                        uploadImageToFirebaseStorage(uri, imageName = "users/${user.id}") {
+                          getImageFromFirebaseStorage("users/${user.id}") { file -> uiImage = file }
+                        }
+                      }
+                    }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(

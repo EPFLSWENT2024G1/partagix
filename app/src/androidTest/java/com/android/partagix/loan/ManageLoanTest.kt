@@ -146,7 +146,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
       ManageLoanRequest(
           mockManageViewModel,
           mockNavActions,
-          expandables = true,
+          expandable = true,
       )
     }
 

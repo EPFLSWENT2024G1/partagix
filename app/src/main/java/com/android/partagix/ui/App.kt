@@ -66,6 +66,7 @@ import com.android.partagix.ui.screens.ViewAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
+import java.io.File
 import kotlinx.coroutines.launch
 
 class App(
@@ -192,6 +193,7 @@ class App(
                 "Unknown Location",
                 "0",
                 Inventory(user.uid, emptyList()),
+                File("res/drawable/default_image.jpg"),
                 newToken)
         db.getUser(
             user.uid,
@@ -294,7 +296,7 @@ class App(
         homeViewModel.updateUser()
 
         HomeScreen(
-            homeViewModel = HomeViewModel(Database(), activity),
+            homeViewModel = homeViewModel,
             manageLoanViewModel = manageViewModel,
             navigationActions = navigationActions)
       }
@@ -311,6 +313,7 @@ class App(
               loanViewModel = loanViewModel,
               userViewModel = userViewModel,
               itemViewModel = itemViewModel,
+              manageLoanViewModel = manageViewModel,
               modifier = modifier)
         } else {
           navigationActions.navigateTo(Route.HOME)
@@ -342,7 +345,7 @@ class App(
       ) {
         EditAccount(
             navigationActions = navigationActions,
-            userViewModel = UserViewModel(),
+            userViewModel = userViewModel,
             locationViewModel = locationPickerViewModel)
       }
 
@@ -410,7 +413,9 @@ class App(
         StartLoanScreen(
             startOrEndLoanViewModel = startOrEndLoanViewModel,
             navigationActions = navigationActions,
-            itemViewModel = itemViewModel)
+            manageLoanViewModel = manageViewModel,
+            itemViewModel = itemViewModel,
+            modifier = modifier)
       }
       composable(Route.ENDLOAN) {
         EndLoanScreen(

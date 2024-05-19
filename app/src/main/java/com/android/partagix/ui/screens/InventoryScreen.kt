@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +60,8 @@ import com.android.partagix.ui.navigation.Route
  *
  * @param inventoryViewModel a view model to get the inventory.
  * @param navigationActions a class to navigate to different screens.
+ * @param manageLoanViewModel a view model to manage the loan requests.
+ * @param itemViewModel a view model to manage the items.
  * @param modifier a Modifier to apply to this layout.
  */
 @Composable
@@ -109,12 +111,14 @@ fun InventoryScreen(
             }
       }) { innerPadding ->
         Log.w(TAG, "com.android.partagix.model.inventory.Inventory: called")
+
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
                   modifier
                       .padding(innerPadding)
                       .fillMaxSize()
+                      .padding(10.dp)
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
@@ -126,7 +130,7 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(16.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
                       text = "Loan requests",
@@ -134,23 +138,26 @@ fun InventoryScreen(
                           TextStyle(
                               fontSize = 18.sp,
                               fontWeight = FontWeight(1000),
-                              color = Color(0xFF000000),
-                          ))
+                          ),
+                      modifier = modifier.padding(start = 10.dp))
                   Text(
-                      text = "See Old",
+                      text = "Historic",
                       fontSize = 12.sp,
                       modifier =
                           Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })
                 }
             Row(
                 modifier =
-                    Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).fillMaxSize(0.1f),
+                    Modifier.fillMaxWidth()
+                        .padding(start = 10.dp, top = 5.dp, end = 10.dp)
+                        .fillMaxSize(0.1f),
                 horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
             ) {
               Button(
-                  modifier = modifier.fillMaxWidth(0.49f),
-                  colors = buttonColors(Color.White),
-                  border = BorderStroke(width = 1.dp, color = Color.Black),
+                  modifier = modifier.fillMaxWidth(0.49f).requiredHeight(55.dp),
+                  colors = buttonColors(MaterialTheme.colorScheme.onPrimary),
+                  border =
+                      BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
                   onClick = {
                     manageLoanViewModel.getLoanRequests(
@@ -162,20 +169,21 @@ fun InventoryScreen(
                         verticalArrangement = Arrangement.Center) {
                           Icon(
                               Icons.Filled.Download,
-                              tint = Color.Black,
+                              tint = MaterialTheme.colorScheme.onSecondaryContainer,
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Incoming Requests ($incomingRequests)",
-                              color = Color.Black,
+                              color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
                   }
               Button(
-                  modifier = modifier.fillMaxWidth(),
-                  colors = buttonColors(Color.White),
-                  border = BorderStroke(width = 1.dp, color = Color.Black),
+                  modifier = modifier.fillMaxWidth().requiredHeight(55.dp),
+                  colors = buttonColors(MaterialTheme.colorScheme.onPrimary),
+                  border =
+                      BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
                   onClick = {
                     manageLoanViewModel.getLoanRequests(
@@ -187,12 +195,12 @@ fun InventoryScreen(
                         verticalArrangement = Arrangement.Center) {
                           Icon(
                               Icons.Filled.Upload,
-                              tint = Color.Black,
+                              tint = MaterialTheme.colorScheme.onSecondaryContainer,
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Outgoing Requests ($outgoingRequests)",
-                              color = Color.Black,
+                              color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
@@ -220,10 +228,9 @@ fun InventoryScreen(
                   isClickable = false,
                   isOutgoing = false,
                   isExpandable = false,
-                  navigationActions = navigationActions,
                   manageLoanViewModel = manageLoanViewModel,
                   modifier =
-                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp)
+                      Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
                           .testTag("inventoryScreenBorrowedItemList"))
 
@@ -243,10 +250,9 @@ fun InventoryScreen(
                   isClickable = true,
                   isExpandable = false,
                   isOutgoing = false,
-                  navigationActions = navigationActions,
                   manageLoanViewModel = manageLoanViewModel,
                   modifier =
-                      Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp).testTag("inventoryScreenItemList"))
+                      Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }
           }
         }
