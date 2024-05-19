@@ -88,7 +88,10 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     val data = remoteMessage.data
     val notificationBody = remoteMessage.notification
 
-    Log.d(TAG, "From: ${remoteMessage.from}, data: $data, notification: $notificationBody")
+    Log.d(
+        TAG,
+        "From: ${remoteMessage.from}, data: $data, notification: ${notificationBody?.title ?: "empty title"}")
+    Log.d(TAG, "Message data payload: $data")
 
     if (data.isNotEmpty() && notificationBody != null) {
       val date =
@@ -309,8 +312,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
    * @param content The content of the notification.
    * @param to The FCM token of the user to whom the notification is being sent.
    */
-  fun sendNotification(content: Notification, to: String) {
-    if (context == null) {
+  fun sendNotification(content: Notification, to: String?) {
+    if (context == null || to == null) {
       Log.e(TAG, "Context is not set, cannot send notification")
       return
     }

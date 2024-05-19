@@ -49,7 +49,7 @@ class EvaluationViewModel(
             type = Notification.Type.USER_REVIEW,
             navigationUrl = Route.ACCOUNT)
 
-    notificationManager.sendNotification(notification, userId)
+    database.getUser(userId) { notificationManager.sendNotification(notification, it.fcmToken) }
   }
 
   fun getUser(userId: String, onSuccess: (User) -> Unit, onError: () -> Unit) {

@@ -38,11 +38,12 @@ class StartOrEndLoanViewModel(
         )
     db.setLoan(newLoan)
 
-    sendNotification("started", "${Route.VIEW_ITEM}/${_uiState.value.item.id}")
+    sendNotification(
+        "started", "${Route.VIEW_ITEM}/${_uiState.value.item.id}", _uiState.value.lender)
   }
 
   fun onCancel() {
-    sendNotification("cancelled", Route.INVENTORY)
+    sendNotification("cancelled", Route.INVENTORY, _uiState.value.lender)
   }
 
   fun onFinish() {
@@ -54,12 +55,12 @@ class StartOrEndLoanViewModel(
         )
     db.setLoan(newLoan)
 
-    sendNotification("finished", Route.INVENTORY)
+    sendNotification("finished", Route.FINISHED_LOANS, _uiState.value.borrower)
   }
 
-  private fun sendNotification(state: String, route: String) {
-    val borrowerToken = _uiState.value.borrower.fcmToken
-    Log.d(TAG, "$state: $borrowerToken")
+  private fun sendNotification(state: String, route: String, to: User) {
+    val borrowerToken = to.fcmToken
+    Log.d(TAG, "sendNotification: state=$state: $borrowerToken")
 
     if (borrowerToken != null) {
       val notification =

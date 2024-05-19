@@ -38,6 +38,8 @@ class BorrowViewModel(
    * @param item the item to borrow
    */
   fun startBorrow(item: Item, owner: User) {
+    Log.d(TAG, "startBorrow: $owner with token ${owner.fcmToken}")
+
     // Set the item to borrow
     _itemUiState.value = item
 
@@ -87,6 +89,8 @@ class BorrowViewModel(
 
   /** Save the loan in the database aka 'create the loan' */
   fun createLoan() {
+    Log.d(TAG, "createLoan: ")
+
     val loan = _loanUiState.value
 
     database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
