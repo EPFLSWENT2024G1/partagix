@@ -3,7 +3,11 @@ package com.android.partagix.inventory
 import android.location.Location
 import android.net.Uri
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
 import com.android.partagix.model.DEFAULT_CATEGORY_NAME
@@ -24,6 +28,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -79,9 +84,8 @@ class InventoryCreateOrEditTest :
     nonEmptyMockUiState = MutableStateFlow(ItemUIState(item, emptyUser))
     noCategoryMockUiState = MutableStateFlow(ItemUIState(noCategoryItem, emptyUser))
 
-    mockViewModel = mockk()
-    // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    every { mockViewModel.save(capture(savedItem)) } just Runs
+    mockViewModel = mockk(relaxed = true)
+    every { mockViewModel.save(any()) } answers { savedItem.captured = firstArg() }
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -169,22 +173,57 @@ class InventoryCreateOrEditTest :
 
   @Test
   fun itemCreateTest() {
-    every { mockViewModel.uiState } returns noCategoryMockUiState
+    every { mockViewModel.uiState } returns emptyMockUiState
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
+      composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
+
       name { performTextReplacement("my object") }
+      composeTestRule.onNodeWithTag("button").assertIsEnabled()
+
       description { performTextReplacement("what a nice object") }
-      button { performClick() }
+      button {
+        performScrollTo()
+        assertIsDisplayed()
+        performClick()
+      }
       image { performClick() }
+
+      coVerify { mockViewModel.save(any()) }
 
       assert(savedItem.captured.name == "my object")
       assert(savedItem.captured.description == "what a nice object")
       assert(savedItem.captured.category.name == "Category")
       assert(savedItem.captured.visibility == Visibility.PUBLIC)
+    }
+  }
+
+  @Test
+  fun itemEditTest() {
+    every { mockViewModel.uiState } returns nonEmptyMockUiState
+
+    composeTestRule.setContent {
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
+    }
+    onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
+      composeTestRule.onNodeWithTag("button").assertIsEnabled()
+
+      name { performTextReplacement("") }
+      composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
+      name { performTextReplacement("my object2") }
+
+      description { performTextReplacement("what a nice object") }
+      button { performClick() }
+
+      assert(savedItem.captured.name == "my object2")
+      assert(savedItem.captured.description == "what a nice object")
     }
   }
 }

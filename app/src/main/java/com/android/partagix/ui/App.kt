@@ -356,6 +356,10 @@ class App(
         itemViewModel.getUser()
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
+      composable(Route.VIEW_OTHERS_ITEM) {
+        itemViewModel.getUser()
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
+      }
 
       composable(
           Route.VIEW_ITEM + "/{itemId}",

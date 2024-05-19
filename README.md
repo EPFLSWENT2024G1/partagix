@@ -5,7 +5,7 @@
 
 # PartageIx
 #Architecture Diagram
-![image](https://github.com/EPFLSWENT2024G1/partagix/assets/160724066/45a9b15f-82cb-4640-a908-add470b9945c)
+![image](https://github.com/EPFLSWENT2024G1/partagix/assets/90978814/2335a198-afc5-4945-a564-6af6f097c1b7)
 
 ## Links 
 - [Figma](https://www.figma.com/files/team/1350842308169914762/swentg1)
