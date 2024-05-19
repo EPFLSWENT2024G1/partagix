@@ -161,18 +161,14 @@ class InventoryCreateOrEditTest :
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       name { performTextReplacement("my object") }
       description { performTextReplacement("what a nice object") }
-<<<<<<< HEAD
       button {
         performScrollTo()
         assertIsDisplayed()
         performClick()
       }
+      image { performClick() }
 
       coVerify { mockViewModel.save(any()) }
-=======
-      button { performClick() }
-      image { performClick() }
->>>>>>> origin
 
       assert(savedItem.captured.name == "my object")
       assert(savedItem.captured.description == "what a nice object")
