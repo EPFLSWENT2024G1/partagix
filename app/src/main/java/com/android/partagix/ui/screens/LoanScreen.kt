@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -138,7 +139,7 @@ fun LoanScreen(
                           .fillMaxWidth()
                           .fillMaxHeight(.65f)
                           .background(
-                              Color.White, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                              MaterialTheme.colorScheme.background, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                           .border(
                               width = 1.dp,
                               color = Color(0xFF464646),
@@ -160,7 +161,7 @@ fun LoanScreen(
                                     Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
                                 modifier =
                                     modifier
-                                        .background(Color.White)
+                                        .background(MaterialTheme.colorScheme.background)
                                         .padding(PaddingValues(bottom = 10.dp))) {
                                   Filter(
                                       title = "Distance",

@@ -1,5 +1,6 @@
 package com.android.partagix.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.android.partagix.R
+import kotlin.jvm.Throws
 
 @Composable
 fun Filter(
@@ -66,7 +69,7 @@ fun Filter(
   val bottomPadding = defaultPaddingValues.calculateBottomPadding()
 
   OutlinedButton(
-      modifier = modifier.fillMaxSize().height(50.dp),
+      modifier = modifier.fillMaxSize().height(50.dp).background(MaterialTheme.colorScheme.onPrimary),
       onClick = { showDialog = true },
       shape = RoundedCornerShape(12.dp),
       contentPadding =
@@ -88,7 +91,7 @@ fun Filter(
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.roboto)),
                         fontWeight = FontWeight(500),
-                        color = Color(0xFF464646),
+                        color = MaterialTheme.colorScheme.onBackground,
                     ),
             )
             Icon(
@@ -106,7 +109,7 @@ fun Filter(
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(R.font.roboto)),
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF464646),
+                        color = MaterialTheme.colorScheme.onBackground,
                     ),
             )
           }
@@ -117,6 +120,10 @@ fun Filter(
     Dialog(onDismissRequest = { showDialog = false }) {
       Card(
           modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
+          colors = CardColors( containerColor = MaterialTheme.colorScheme.background,
+              contentColor = MaterialTheme.colorScheme.onBackground,
+              disabledContentColor = MaterialTheme.colorScheme.onBackground,
+              disabledContainerColor = MaterialTheme.colorScheme.background,),
           shape = RoundedCornerShape(24.dp),
       ) {
         SliderFilter(
@@ -125,6 +132,7 @@ fun Filter(
             minValue = minValue,
             maxValue = maxValue,
             sliderPosition = sliderPosition,
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             onSliderChange = {
               if (it >= minValue) {
                 selectedValue(it)
@@ -153,7 +161,8 @@ fun SliderFilter(
     sliderTextValue: (Float) -> String,
     onReset: () -> Unit = {},
 ) {
-  Column(modifier = modifier.padding(16.dp)) {
+  Column(modifier = modifier.padding(16.dp)
+      .background(MaterialTheme.colorScheme.background)) {
     Row {
       Text(
           text = minUnit,
@@ -164,7 +173,7 @@ fun SliderFilter(
                   fontSize = 28.sp,
                   fontFamily = FontFamily(Font(R.font.roboto)),
                   fontWeight = FontWeight(500),
-                  color = Color(0xFF464646),
+                  color = MaterialTheme.colorScheme.onBackground,
               ))
       Text(
           text = maxUnit,
@@ -175,7 +184,7 @@ fun SliderFilter(
                   fontSize = 28.sp,
                   fontFamily = FontFamily(Font(R.font.roboto)),
                   fontWeight = FontWeight(500),
-                  color = Color(0xFF464646),
+                  color = MaterialTheme.colorScheme.onBackground,
               ))
     }
     Slider(
@@ -186,7 +195,7 @@ fun SliderFilter(
             SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primary,
-                inactiveTrackColor = Color(0xFFFFFFFF),
+                inactiveTrackColor = MaterialTheme.colorScheme.onBackground,
             ),
         modifier = Modifier.fillMaxWidth().testTag("SliderFilter"))
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
@@ -199,7 +208,7 @@ fun SliderFilter(
                   fontSize = 28.sp,
                   fontFamily = FontFamily(Font(R.font.roboto)),
                   fontWeight = FontWeight(500),
-                  color = Color(0xFF464646),
+                  color = MaterialTheme.colorScheme.onBackground,
               ))
     }
   }

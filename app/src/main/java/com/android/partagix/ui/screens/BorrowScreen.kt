@@ -275,8 +275,8 @@ fun BorrowScreen(
                   modifier = modifier.fillMaxWidth().testTag("saveButton").padding(10.dp),
                   colors =
                       ButtonColors(
-                          containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                          contentColor = MaterialTheme.colorScheme.background,
+                          containerColor = MaterialTheme.colorScheme.onPrimary,
+                          contentColor = MaterialTheme.colorScheme.onBackground,
                           disabledContentColor = MaterialTheme.colorScheme.onBackground,
                           disabledContainerColor = Color.Gray),
                   onClick = {

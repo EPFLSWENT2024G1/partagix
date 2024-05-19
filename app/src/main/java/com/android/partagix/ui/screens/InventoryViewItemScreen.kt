@@ -175,8 +175,8 @@ fun InventoryViewItemScreen(
                       onClick = { navigationActions.navigateTo("${Route.STAMP}/${item.id}") },
                       colors =
                           ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                              contentColor = MaterialTheme.colorScheme.background,
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContainerColor = Color.Gray),
                       content = {
@@ -196,8 +196,8 @@ fun InventoryViewItemScreen(
                       },
                       colors =
                           ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                              contentColor = MaterialTheme.colorScheme.background,
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContainerColor = Color.Gray),
                       content = {
@@ -219,8 +219,8 @@ fun InventoryViewItemScreen(
                       content = { Text("Edit") },
                       colors =
                           ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                              contentColor = MaterialTheme.colorScheme.background,
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContainerColor = Color.Gray),
                       modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
