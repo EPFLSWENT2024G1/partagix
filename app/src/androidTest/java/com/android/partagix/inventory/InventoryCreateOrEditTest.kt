@@ -7,7 +7,6 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
 import com.android.partagix.model.DEFAULT_CATEGORY_NAME
@@ -139,7 +138,6 @@ class InventoryCreateOrEditTest :
         assertIsDisplayed()
         assertTextEquals("Edit item")
       }
-
     }
   }
 
@@ -202,7 +200,6 @@ class InventoryCreateOrEditTest :
 
       assert(savedItem.captured.name == "my object2")
       assert(savedItem.captured.description == "what a nice object")
-
     }
   }
 }
