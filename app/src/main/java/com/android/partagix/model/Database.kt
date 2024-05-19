@@ -2,6 +2,7 @@ package com.android.partagix.model
 
 import android.location.Location
 import android.util.Log
+import androidx.core.os.bundleOf
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -237,10 +238,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   private fun toLocation(locationMap: HashMap<*, *>): Location {
     val latitude = locationMap["latitude"] as Double
     val longitude = locationMap["longitude"] as Double
+    val displayName = locationMap["display_name"] as String?
 
     val location = Location("")
     location.latitude = latitude
     location.longitude = longitude
+    location.extras = bundleOf("display_name" to displayName)
     return location
   }
 
@@ -254,6 +257,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     val locationMap = mutableMapOf<String, Any?>()
     locationMap["latitude"] = location.latitude
     locationMap["longitude"] = location.longitude
+    locationMap["display_name"] = location.extras?.getString("display_name")
     // Add other relevant properties if needed
 
     return locationMap

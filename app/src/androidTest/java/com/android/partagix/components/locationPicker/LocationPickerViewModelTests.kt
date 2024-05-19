@@ -82,4 +82,22 @@ class LocationPickerViewModelTest {
 
     verify(exactly = 0) { locationState.value = any() }
   }
+
+  @Test
+  fun ourLocationToAndroidLocation_NullLocation_ReturnsEmptyAndroidLocation() {
+    val location = null
+    val androidLocation = viewModel.ourLocationToAndroidLocation(location)
+    assert(androidLocation.latitude == 0.0)
+    assert(androidLocation.longitude == 0.0)
+    assert(androidLocation.extras?.getString("display_name") == null)
+  }
+
+  @Test
+  fun ourLocationToAndroidLocation_RealLocation_ReturnsEmptyAndroidLocation() {
+    val location = Location(1.0, 2.0, "RealPlace")
+    val androidLocation = viewModel.ourLocationToAndroidLocation(location)
+    assert(androidLocation.latitude == 1.0)
+    assert(androidLocation.longitude == 2.0)
+    assert(androidLocation.extras?.getString("display_name") == "RealPlace")
+  }
 }

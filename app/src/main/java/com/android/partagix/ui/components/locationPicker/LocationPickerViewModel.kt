@@ -2,6 +2,7 @@ package com.android.partagix.ui.components.locationPicker
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.core.os.bundleOf
 import com.android.partagix.model.location.Location
 import com.android.partagix.model.location.sendRequest
 import com.google.gson.Gson
@@ -39,6 +40,17 @@ class LocationPickerViewModel {
             }
           }
         })
+  }
+
+  fun ourLocationToAndroidLocation(location: Location?): android.location.Location {
+    if (location == null) {
+      return android.location.Location("")
+    }
+    val androidLocation = android.location.Location("")
+    androidLocation.latitude = location.latitude
+    androidLocation.longitude = location.longitude
+    androidLocation.extras = bundleOf("display_name" to location.locationName)
+    return androidLocation
   }
 }
 

@@ -137,7 +137,9 @@ fun InventoryViewItemScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LabeledText(label = "Where", text = item.location.toString())
+                LabeledText(
+                    label = "Where",
+                    text = item.location.extras?.getString("display_name", "Unknown") ?: "Unknown")
 
                 Spacer(modifier = Modifier.height(8.dp))
 

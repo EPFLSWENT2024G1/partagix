@@ -73,8 +73,9 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    every { mockManageLoanViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageLoanViewModel.getOutGoingRequestCount(any()) } just Runs
+    // Useful when we will have fix the count for incoming/outgoing request
+    /* every { mockManageLoanViewModel.getInComingRequestCount(any()) } just Runs
+    every { mockManageLoanViewModel.getOutGoingRequestCount(any()) } just Runs*/
   }
 
   @Test

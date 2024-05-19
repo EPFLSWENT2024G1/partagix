@@ -3,6 +3,7 @@ package com.android.partagix.inventory
 import android.content.Intent
 import android.location.Location
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
+import androidx.core.os.bundleOf
 import com.android.partagix.MainActivity
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
@@ -31,6 +33,7 @@ import com.android.partagix.model.stampDimension.StampDimension
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.ui.components.CategoryItems
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.navigation.TOP_LEVEL_DESTINATIONS
@@ -47,6 +50,9 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
+import java.io.File
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -65,6 +71,7 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
+  @RelaxedMockK lateinit var mockLocationViewModel: LocationPickerViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
   private lateinit var mockUiState2: MutableStateFlow<InventoryUIState>
@@ -78,11 +85,14 @@ class EndToEndCreateEdit {
   val cat1 = Category("1", CategoryItems[1])
   val vis1 = Visibility.FRIENDS
   val loc1 = Location("")
+  val loc2 = com.android.partagix.model.location.Location(12.0, 12.0, "Lausanne")
+  val loc3 = com.android.partagix.model.location.Location(13.0, 13.0, "Paris")
+
   val items = emptyList<Item>()
   val item2 = Item("1234", cat1, "Object 1", "Description 1", vis1, 2, loc1)
   val item3 = Item("1234", cat1, "Object 1 edited", "Description 1 edited", vis1, 3, loc1)
 
-  val user = User("1234", "name", "email", "1234", Inventory("1234", emptyList()))
+  val user = User("1234", "name", "Lausanne", "1234", Inventory("1234", emptyList()))
 
   @Before
   fun setup() {
@@ -116,6 +126,7 @@ class EndToEndCreateEdit {
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
     mockBorrowViewModel = mockk()
+    mockLocationViewModel = mockk()
 
     every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 
@@ -148,8 +159,9 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
 
-    every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs
+    // Useful when we will have fix the count
+    /*every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
+    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs*/
   }
 
   // Navigate from Home screen to Inventory screen
@@ -197,14 +209,56 @@ class EndToEndCreateEdit {
   // Create an item
   @Test
   fun testC_CreateItem() {
+    val savedItem = slot<Item>()
+
     every { mockInventoryViewModel.uiState } returns mockUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
     every { mockItemViewModel.updateUiItem(any()) } just Runs
-    every { mockItemViewModel.save(any()) } just Runs
+    every { mockItemViewModel.save(capture(savedItem)) } just Runs
+
+    val androidLocation2 = Location("")
+    androidLocation2.latitude = 12.0
+    androidLocation2.longitude = 12.0
+    androidLocation2.extras = bundleOf("display_name" to "Lausanne")
+
+    val androidLocation3 = Location("")
+    androidLocation3.latitude = 13.0
+    androidLocation3.longitude = 13.0
+    androidLocation3.extras = bundleOf("display_name" to "Paris")
+
+    val expectedItem =
+        Item(
+            "",
+            Category("", CategoryItems[1]),
+            "Object 1",
+            "Description 1",
+            Visibility.FRIENDS,
+            2,
+            androidLocation3,
+            imageId = File("default-image.jpg"))
+
+    every { mockLocationViewModel.getLocation(any(), any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          println("--- queried Paris")
+          loc.value = loc3
+        }
+
+    every { mockLocationViewModel.getLocation("Lausanne", any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          loc.value = loc2
+        }
+    every { mockLocationViewModel.ourLocationToAndroidLocation(loc2) } returns androidLocation2
+
+    every { mockLocationViewModel.ourLocationToAndroidLocation(loc3) } returns androidLocation3
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
-          itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "create")
+          itemViewModel = mockItemViewModel,
+          navigationActions = mockNavActions,
+          locationViewModel = mockLocationViewModel,
+          mode = "create")
     }
 
     composeTestRule.onNodeWithTag("name").performTextInput("Object 1")
@@ -212,14 +266,25 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithTag("quantity").performTextReplacement("2")
     composeTestRule.onNodeWithTag("visibility").performClick()
     composeTestRule.onNodeWithText("Friends only").performClick()
+
+    composeTestRule.onNodeWithTag("addressField").performScrollTo()
+    composeTestRule.onNodeWithTag("addressField").performClick()
+    composeTestRule.onNodeWithTag("addressField").performTextReplacement("Paris")
+    composeTestRule.onNodeWithTag("category").performClick()
+    composeTestRule.onNodeWithTag("addressField").performClick()
+
+    composeTestRule.onNodeWithTag("category").performScrollTo()
     composeTestRule.onNodeWithTag("category").performClick()
     composeTestRule.onNodeWithText(CategoryItems[1]).performScrollTo()
     composeTestRule.onNodeWithText(CategoryItems[1]).performClick()
+
     composeTestRule.onNodeWithText("Create").performScrollTo()
     composeTestRule.onNodeWithText("Create").performClick()
 
     coVerify(exactly = 1) { mockItemViewModel.save(any()) }
     coVerify(exactly = 1) { mockNavActions.goBack() }
+
+    assertEquals(expectedItem, savedItem.captured)
   }
 
   // Go back to the Inventory screen and check if there is the created item
@@ -269,13 +334,23 @@ class EndToEndCreateEdit {
   // Edit the item
   @Test
   fun testF_EditItem() {
+    mockLocationViewModel = mockk()
+    every { mockLocationViewModel.getLocation(any(), any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          loc.value = loc2
+        }
+    every { mockLocationViewModel.ourLocationToAndroidLocation(loc2) } returns Location("")
     every { mockItemViewModel.uiState } returns mockItemUiState2
     every { mockItemViewModel.updateUiItem(any()) } just Runs
     every { mockItemViewModel.save(any()) } just Runs
 
     composeTestRule.setContent {
       InventoryCreateOrEditItem(
-          itemViewModel = mockItemViewModel, navigationActions = mockNavActions, mode = "edit")
+          itemViewModel = mockItemViewModel,
+          navigationActions = mockNavActions,
+          locationViewModel = mockLocationViewModel,
+          mode = "edit")
     }
 
     composeTestRule.onNodeWithTag("name").performTextReplacement("Object 1 edited")
