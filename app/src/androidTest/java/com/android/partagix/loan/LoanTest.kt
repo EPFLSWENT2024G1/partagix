@@ -88,6 +88,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
+    every { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) } just Runs
 
     mockDatabase = mockk()
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
@@ -434,7 +435,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         // click the first one
         performClick()
 
-        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }
@@ -559,7 +560,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         // click the first one
         performClick()
 
-        verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }
+        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }

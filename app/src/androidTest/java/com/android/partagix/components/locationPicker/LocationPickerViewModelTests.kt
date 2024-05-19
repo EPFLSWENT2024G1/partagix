@@ -57,7 +57,6 @@ class LocationPickerViewModelTest {
     every { locationState.value = capture(locationSlot) } answers
         {
           locationSlot.captured = locationSlot.captured
-          Unit
         }
 
     every { locationState.value } answers { locationSlot.captured }

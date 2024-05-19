@@ -24,6 +24,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -79,9 +80,8 @@ class InventoryCreateOrEditTest :
     nonEmptyMockUiState = MutableStateFlow(ItemUIState(item, emptyUser))
     noCategoryMockUiState = MutableStateFlow(ItemUIState(noCategoryItem, emptyUser))
 
-    mockViewModel = mockk()
-    // every { mockInventoryViewModel.uiState } returns emptyMockUiState
-    every { mockViewModel.save(capture(savedItem)) } just Runs
+    mockViewModel = mockk(relaxed = true)
+    every { mockViewModel.save(any()) } answers { savedItem.captured = firstArg() }
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -178,8 +178,14 @@ class InventoryCreateOrEditTest :
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       name { performTextReplacement("my object") }
       description { performTextReplacement("what a nice object") }
-      button { performClick() }
+      button {
+        performScrollTo()
+        assertIsDisplayed()
+        performClick()
+      }
       image { performClick() }
+
+      coVerify { mockViewModel.save(any()) }
 
       assert(savedItem.captured.name == "my object")
       assert(savedItem.captured.description == "what a nice object")
