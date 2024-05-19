@@ -88,7 +88,7 @@ fun LoanScreen(
 
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
   val mapPadding = screenHeight * 0.1f
-  var mapLoaded by remember { mutableStateOf(!isMapLoadingOptimized) }
+  var mapLoaded by remember { mutableStateOf(!isMapLoadingOptimized || true) }
 
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
