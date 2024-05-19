@@ -6,6 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -180,6 +181,8 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      composeTestRule.waitUntil(5000) { composeTestRule.onNodeWithTag("button").isDisplayed() }
+
       composeTestRule.onNodeWithTag("button").assertIsDisplayed()
       composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
 
@@ -212,7 +215,8 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
+      composeTestRule.waitUntil(5000) { composeTestRule.onNodeWithTag("button").isDisplayed() }
+      composeTestRule.onNodeWithTag("button")
       composeTestRule.onNodeWithTag("button").assertIsEnabled()
 
       name { performTextReplacement("") }
