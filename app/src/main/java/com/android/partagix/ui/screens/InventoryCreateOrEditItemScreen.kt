@@ -209,14 +209,7 @@ fun InventoryCreateOrEditItem(
                 readOnly = false)
 
             Spacer(modifier = modifier.height(8.dp))
-            /*
-                       OutlinedTextField(
-                           value = uiLocation.toString(), // TODO: get default or user's location
-                           onValueChange = { it -> uiLocation = Location(it) },
-                           label = { Text("Where") },
-                           modifier = modifier.fillMaxWidth(),
-                           readOnly = false)
-            */
+
             LocationPicker(
                 location = tempAddress,
                 loc = loc.value,
