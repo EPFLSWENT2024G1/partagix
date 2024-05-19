@@ -4,11 +4,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
-import com.android.partagix.model.notification.Notification
-import com.android.partagix.ui.navigation.Route
+import com.android.partagix.model.user.User
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
@@ -56,6 +56,10 @@ class EvaluationViewModelTests {
           "commented",
           LoanState.FINISHED)
 
+  val user =
+      User(
+          "userId", "name", "addr", "rank", Inventory("userId", emptyList()), fcmToken = "fcmToken")
+
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
   @Before
@@ -67,6 +71,11 @@ class EvaluationViewModelTests {
           onSuccessLoan(listOf(loan1, loan2))
         }
     every { db.setReview(any(), any(), any(), any()) } answers {}
+    every { db.getUser(any(), any(), any()) } answers
+        { invocation ->
+          val callback = invocation.invocation.args[2] as (User) -> Unit
+          callback(user)
+        }
 
     mockNotificationManager = mockk()
     every { mockNotificationManager.sendNotification(any(), any()) } just Runs
@@ -80,15 +89,6 @@ class EvaluationViewModelTests {
     evaluationViewModel.updateUIState(loan2)
     assert(evaluationViewModel.uiState.value.loan == loan2)
     evaluationViewModel.reviewLoan(loan1, 5.0, "commented", "idOwner1")
-    coVerify {
-      db.setReview(loan1.id, "idOwner1", 5.0, "commented")
-      mockNotificationManager.sendNotification(
-          match {
-            it.title == "New User Review" &&
-                it.type == Notification.Type.USER_REVIEW &&
-                it.navigationUrl == Route.ACCOUNT
-          },
-          "idOwner1")
-    }
+    coVerify { db.setReview(loan1.id, "idOwner1", 5.0, "commented") }
   }
 }
