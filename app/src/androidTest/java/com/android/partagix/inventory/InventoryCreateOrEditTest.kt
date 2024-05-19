@@ -2,6 +2,7 @@ package com.android.partagix.inventory
 
 import android.location.Location
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
@@ -14,6 +15,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.InventoryCreateOrEditScreen
+import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.InventoryCreateOrEditItem
@@ -41,6 +43,7 @@ class InventoryCreateOrEditTest :
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockViewModel: ItemViewModel
+  @RelaxedMockK lateinit var mockLocationViewModel: LocationPickerViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<ItemUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ItemUIState>
@@ -54,6 +57,8 @@ class InventoryCreateOrEditTest :
   val uri2 =
       Uri.parse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")
   val uriList = listOf(uri1, uri2)
+
+  val location = com.android.partagix.model.location.Location(12.0, 12.0, "Someplace")
 
   @Before
   fun testSetup() {
@@ -82,13 +87,22 @@ class InventoryCreateOrEditTest :
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.goBack() } just Runs
+
+    mockLocationViewModel = mockk()
+    every { mockLocationViewModel.getLocation(any(), any()) } answers
+        {
+          val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
+          loc.value = location
+        }
+    every { mockLocationViewModel.ourLocationToAndroidLocation(location) } returns Location("")
   }
 
   @Test
   fun topBarAndEmptyItemAreDisplayed() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
 
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
@@ -127,7 +141,8 @@ class InventoryCreateOrEditTest :
   fun titleOnEdit() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "edit")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       title {
@@ -141,7 +156,8 @@ class InventoryCreateOrEditTest :
   fun titleOnCreate() = run {
     every { mockViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       title {
@@ -156,7 +172,8 @@ class InventoryCreateOrEditTest :
     every { mockViewModel.uiState } returns noCategoryMockUiState
 
     composeTestRule.setContent {
-      InventoryCreateOrEditItem(mockViewModel, mockNavActions, mode = "")
+      InventoryCreateOrEditItem(
+          mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
       name { performTextReplacement("my object") }
