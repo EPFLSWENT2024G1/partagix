@@ -334,6 +334,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     body.put("data", data)
     body.put("to", to)
 
+    Log.d(TAG, "Sending notification: $body")
+
     sendPostRequest(FCM_SERVER_URL, body.toString())
   }
 
