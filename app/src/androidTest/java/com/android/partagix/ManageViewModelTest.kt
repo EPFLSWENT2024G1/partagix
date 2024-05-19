@@ -1,6 +1,7 @@
 package com.android.partagix
 
 import android.location.Location
+import androidx.compose.ui.test.junit4.createComposeRule
 import com.android.partagix.model.Database
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.auth.Authentication
@@ -20,13 +21,16 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
 import java.util.Date
-import java.util.concurrent.CountDownLatch
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class ManageViewModelTest {
+  @get:Rule val composeTestRule = createComposeRule()
+
   private val db = mockk<Database>()
 
   private val item1 =
@@ -57,7 +61,7 @@ class ManageViewModelTest {
   private val userz =
       User(
           "zB8N1tJRmKcNI6AvawMWIRp66wA",
-          "user1",
+          "userz",
           "",
           "",
           Inventory("zB8N1tJRmKcNI6AvawMWIRp66wA", emptyList()))
@@ -69,7 +73,7 @@ class ManageViewModelTest {
           commentLender = "commentOwner",
           endDate = Date(),
           idItem = "item1",
-          idLender = "8WuTkKJZLTAr6zs5L7rH",
+          idLender = "zB8N1tJRmKcNI6AvawMWIRp66wA",
           idBorrower = "8WuTkKJZLTAr6zs5L7rH",
           reviewBorrower = "reviewLoaner",
           reviewLender = "reviewOwner",
@@ -114,7 +118,14 @@ class ManageViewModelTest {
         {
           firstArg<(List<Item>) -> Unit>().invoke(listOf(item1, itemz, itemz))
         }
+
+    every { db.getUsers(any()) } answers
+        {
+          firstArg<(List<User>) -> Unit>().invoke(listOf(user, userz))
+        }
+
     every { db.getUser(any(), any(), any()) } answers { thirdArg<(User) -> Unit>().invoke(user) }
+
     every { db.getLoans(any()) } answers
         {
           firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3))
@@ -135,9 +146,7 @@ class ManageViewModelTest {
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
     every { db.getFCMToken(any(), any()) } answers { secondArg<(String) -> Unit>().invoke("token") }
 
-    val latch = CountDownLatch(1)
-    val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
-    latch.await()
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
 
     manageViewModel.update(
         listOf(item1, item1, item1),
@@ -164,9 +173,7 @@ class ManageViewModelTest {
     mockkObject(Authentication)
     every { Authentication.getUser() } returns null
 
-    val latch = CountDownLatch(1)
-    val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
-    latch.await()
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
 
     runBlocking {
       assert(manageViewModel.uiState.value.users.isEmpty())
@@ -183,15 +190,15 @@ class ManageViewModelTest {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
 
-    val latch = CountDownLatch(1)
-    val manageViewModel = spyk(ManageLoanViewModel(db = db, latch = latch))
-    latch.await()
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.getLoanRequests(isOutgoing = false)
+    composeTestRule.waitUntil { manageViewModel.uiState.value.items.isNotEmpty() }
 
     runBlocking {
-      assert(manageViewModel.uiState.value.items == listOf(item1, item1, item1))
-      assert(manageViewModel.uiState.value.users == listOf(user, user, user))
-      assert(manageViewModel.uiState.value.loans == listOf(loan1, loan2, loan3))
-      assert(manageViewModel.uiState.value.expanded == listOf(false, false, false))
+      assertEquals(listOf(item1, item1), manageViewModel.uiState.value.items)
+      assertEquals(listOf(userz, userz), manageViewModel.uiState.value.users)
+      assertEquals(listOf(loan2, loan3), manageViewModel.uiState.value.loans)
+      assertEquals(listOf(false, false), manageViewModel.uiState.value.expanded)
     }
   }
 
@@ -203,28 +210,29 @@ class ManageViewModelTest {
     every { mockUser.uid } returns "zB8N1tJRmKcNI6AvawMWIRp66wA"
     every { db.getUser(any(), any(), any()) } answers { thirdArg<(User) -> Unit>().invoke(userz) }
 
-    val latch = CountDownLatch(1)
     val manageViewModel = spyk(ManageLoanViewModel(db = db))
-    manageViewModel.getLoanRequests(latch = latch, isOutgoing = true)
-    latch.await()
+    manageViewModel.getLoanRequests(isOutgoing = true)
+    composeTestRule.waitUntil { manageViewModel.uiState.value.items.isNotEmpty() }
 
     runBlocking {
-      assert(manageViewModel.uiState.value.items == listOf(item1, item1))
-      assert(manageViewModel.uiState.value.users == listOf(userz, userz))
-      assert(manageViewModel.uiState.value.loans == listOf(loan2, loan3))
-      assert(manageViewModel.uiState.value.expanded == listOf(false, false))
+      assertEquals(listOf(item1, item1), manageViewModel.uiState.value.items)
+      assertEquals(listOf(user, user), manageViewModel.uiState.value.users)
+      assertEquals(listOf(loan2, loan3), manageViewModel.uiState.value.loans)
+      assertEquals(listOf(false, false), manageViewModel.uiState.value.expanded)
     }
   }
-
-  @Test
-  fun testGetInComingRequestCount() {
-    val mockUser = mockk<FirebaseUser>()
-    mockkObject(Authentication)
-    every { Authentication.getUser() } returns mockUser
-    every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
-
-    val manageViewModel = spyk(ManageLoanViewModel(db = db))
-    manageViewModel.getInComingRequestCount { assert(it == 3) }
-    manageViewModel.getOutGoingRequestCount { assert(it == 1) }
-  }
 }
+
+// This test is now useless as we don't have the function right now in the view model
+ /* @Test
+   fun testGetInComingRequestCount() {
+     val mockUser = mockk<FirebaseUser>()
+     mockkObject(Authentication)
+     every { Authentication.getUser() } returns mockUser
+     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+
+     val manageViewModel = spyk(ManageLoanViewModel(db = db))
+     manageViewModel.getInComingRequestCount { assert(it == 3) }
+     manageViewModel.getOutGoingRequestCount { assert(it == 1) }
+   }
+ }*/

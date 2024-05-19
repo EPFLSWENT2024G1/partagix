@@ -33,8 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,11 +71,13 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-  var incomingRequests by remember { mutableIntStateOf(0) }
-  var outgoingRequests by remember { mutableIntStateOf(0) }
 
-  manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
-  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }
+  // Useful when we will have fix the count
+  /*var incomingRequests by remember { mutableIntStateOf(0) }
+  var outgoingRequests by remember { mutableIntStateOf(0) }*/
+
+  /*manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
+  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }*/
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -159,11 +159,7 @@ fun InventoryScreen(
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
-                  onClick = {
-                    manageLoanViewModel.getLoanRequests(
-                        isOutgoing = false,
-                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) })
-                  }) {
+                  onClick = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) }) {
                     Column(
                         modifier = modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center) {
@@ -173,7 +169,9 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests ($incomingRequests)",
+                              text = "Incoming Requests " /*($incomingRequests)*/, // TODO: put back
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -185,11 +183,7 @@ fun InventoryScreen(
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
                   shape = MaterialTheme.shapes.small,
-                  onClick = {
-                    manageLoanViewModel.getLoanRequests(
-                        isOutgoing = true,
-                        onSuccess = { navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN) })
-                  }) {
+                  onClick = { navigationActions.navigateTo(Route.MANAGE_OUTGOING_LOAN) }) {
                     Column(
                         modifier = modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center) {
@@ -199,7 +193,9 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests ($outgoingRequests)",
+                              text = "Outgoing Requests" /*($outgoingRequests)*/, // TODO: put back
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))

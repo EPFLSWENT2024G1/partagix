@@ -21,9 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,9 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
@@ -60,6 +60,7 @@ fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
     borrowViewModel: BorrowViewModel,
+    viewOthersItem: Boolean = false
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
   var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -108,15 +109,23 @@ fun InventoryViewItemScreen(
                         model = item.imageId.absolutePath,
                         contentDescription = "fds",
                         contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, Color.Black),
+                        modifier =
+                            Modifier.fillMaxWidth(0.3f)
+                                .border(1.dp, MaterialTheme.colorScheme.onBackground),
                         alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
 
                   Column {
-                    LabeledText(label = "Object Name", text = item.name)
+                    LabeledText(
+                        label = "Object Name",
+                        text = item.name,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f))
 
-                    LabeledText(label = "Author", text = user.name)
+                    LabeledText(
+                        label = "Author",
+                        text = user.name,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight())
                   }
                 }
               }
@@ -124,14 +133,15 @@ fun InventoryViewItemScreen(
                 LabeledText(label = "Description", text = item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
+                if (!viewOthersItem) {
+                  LabeledText(label = "Category", text = item.category.name)
 
-                LabeledText(label = "Category", text = item.category.name)
+                  Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                  LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
 
-                LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
-
-                Spacer(modifier = Modifier.height(8.dp))
+                  Spacer(modifier = Modifier.height(8.dp))
+                }
 
                 LabeledText(label = "Quantity", text = item.quantity.toString())
 
@@ -147,8 +157,9 @@ fun InventoryViewItemScreen(
                   Column {
                     Text(
                         text = "Availability",
-                        style = TextStyle(color = Color.Gray),
-                        fontSize = 10.sp)
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -156,7 +167,8 @@ fun InventoryViewItemScreen(
                         horizontalArrangement = Arrangement.SpaceBetween) {
                           Text(
                               text = "available", /*TODO: get item disponibility*/
-                              style = TextStyle(color = Color.Black),
+                              style = MaterialTheme.typography.bodyMedium,
+                              color = MaterialTheme.colorScheme.onBackground,
                               modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
                           )
 
@@ -173,19 +185,40 @@ fun InventoryViewItemScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
                       onClick = { navigationActions.navigateTo("${Route.STAMP}/${item.id}") },
-                      content = { Text("Download QR code") },
+                      colors =
+                          ButtonColors(
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContainerColor = Color.Gray),
+                      content = {
+                        Text(
+                            "Download QR code",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                      },
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
-                  if (actualUser != user.id && actualUser != "" && user.id != "") {
-                    Button(
-                        onClick = {
-                          borrowViewModel.startBorrow(item, user)
-                          navigationActions.navigateTo(Route.BORROW)
-                        },
-                        content = { Text("Borrow item") },
-                        modifier = Modifier.fillMaxWidth())
-                  }
+                  Button(
+                      enabled = actualUser != user.id && actualUser != "" && user.id != "",
+                      onClick = {
+                        borrowViewModel.startBorrow(item, user)
+                        navigationActions.navigateTo(Route.BORROW)
+                      },
+                      colors =
+                          ButtonColors(
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContainerColor = Color.Gray),
+                      content = {
+                        Text(
+                            "Borrow item",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                      },
+                      modifier = Modifier.fillMaxWidth())
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -196,6 +229,12 @@ fun InventoryViewItemScreen(
                   Button(
                       onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
                       content = { Text("Edit") },
+                      colors =
+                          ButtonColors(
+                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContainerColor = Color.Gray),
                       modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
                 }
               }
