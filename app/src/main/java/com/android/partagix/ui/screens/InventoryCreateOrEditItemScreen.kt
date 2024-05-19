@@ -118,44 +118,50 @@ fun InventoryCreateOrEditItem(
         var uiLocation by remember { mutableStateOf(Location(i.location)) }
         var uiImage by remember { mutableStateOf(i.imageId) }
         Column(
-        modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-          Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
-            Row(modifier = modifier.fillMaxWidth()) {
-              Box(
-                  contentAlignment = Alignment.Center,
-                  modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)
-                      .border(1.dp, MaterialTheme.colorScheme.onBackground).testTag("image")) {
-                  val image =
-                      File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
-                  MainImagePicker(listOf(image.toUri())) { uri ->
-                      // TODO :  Save the image to a local file to its displayed correctly while
-                      // waiting for the upload
-                      /*
-                      val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
-                      Missing : save the image to the local file (need a ContentResolver ?)
-                      uiImage = localFilePath
-                       */
-                      if (uri == image.toUri()) return@MainImagePicker
-                      // Before this is done, display an empty image while waiting for the upload
-                      uiImage = File("res/drawable/default_image.jpg")
-                      // in the meantime do nothing and the image will be loaded from the database
-                      // later
-                      dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
-                      uploadImageToFirebaseStorage(uri, imageName = dbImage) {
-                          getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
+            modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
+                Row(modifier = modifier.fillMaxWidth()) {
+                  Box(
+                      contentAlignment = Alignment.Center,
+                      modifier =
+                          modifier
+                              .fillMaxHeight()
+                              .fillMaxWidth(.4f)
+                              .border(1.dp, MaterialTheme.colorScheme.onBackground)
+                              .testTag("image")) {
+                        val image =
+                            File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
+                        MainImagePicker(listOf(image.toUri())) { uri ->
+                          // TODO :  Save the image to a local file to its displayed correctly while
+                          // waiting for the upload
+                          /*
+                          val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
+                          Missing : save the image to the local file (need a ContentResolver ?)
+                          uiImage = localFilePath
+                           */
+                          if (uri == image.toUri()) return@MainImagePicker
+                          // Before this is done, display an empty image while waiting for the
+                          // upload
+                          uiImage = File("res/drawable/default_image.jpg")
+                          // in the meantime do nothing and the image will be loaded from the
+                          // database
+                          // later
+                          dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+                          uploadImageToFirebaseStorage(uri, imageName = dbImage) {
+                            getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
+                          }
+                        }
                       }
-                  }
-              }
-                Spacer(modifier = modifier.width(8.dp))
+                  Spacer(modifier = modifier.width(8.dp))
 
-                Column {
+                  Column {
                     OutlinedTextField(
                         value = uiName,
                         onValueChange = { input ->
-                            // Filter out newline characters from the input string
-                            val filteredInput = input.replace("\n", "")
-                            uiName = filteredInput
+                          // Filter out newline characters from the input string
+                          val filteredInput = input.replace("\n", "")
+                          uiName = filteredInput
                         },
                         label = { Text("Object name") },
                         modifier = modifier.testTag("name").fillMaxWidth(),
@@ -235,8 +241,7 @@ fun InventoryCreateOrEditItem(
                               uiQuantity,
                               uiLocation,
                               i.idUser,
-                              File(dbImage)
-                          ))
+                              File(dbImage)))
                       navigationActions.goBack()
                     },
                     colors =
@@ -255,6 +260,5 @@ fun InventoryCreateOrEditItem(
                     modifier = modifier.fillMaxWidth().testTag("button").padding(top = 8.dp))
               }
             }
-          }
-
+      }
 }

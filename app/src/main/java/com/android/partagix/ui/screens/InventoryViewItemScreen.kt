@@ -109,7 +109,9 @@ fun InventoryViewItemScreen(
                         model = item.imageId.absolutePath,
                         contentDescription = "fds",
                         contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.fillMaxWidth(0.3f).border(1.dp, MaterialTheme.colorScheme.onBackground),
+                        modifier =
+                            Modifier.fillMaxWidth(0.3f)
+                                .border(1.dp, MaterialTheme.colorScheme.onBackground),
                         alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
