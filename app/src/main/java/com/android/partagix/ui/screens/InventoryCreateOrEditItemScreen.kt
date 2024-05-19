@@ -253,7 +253,6 @@ fun InventoryCreateOrEditItem(
                       navigationActions.goBack()
                     },
                     enabled = uiName.isNotBlank(),
-
                     colors =
                         ButtonColors(
                             containerColor = MaterialTheme.colorScheme.onPrimary,
