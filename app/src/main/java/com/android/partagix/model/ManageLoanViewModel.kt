@@ -46,7 +46,7 @@ class ManageLoanViewModel(
             val loans = mutableListOf<Loan>()
             val items = mutableListOf<Item>()
             val users = mutableListOf<User>()
-            val expended = mutableListOf<Boolean>()
+            val expended = uiState.value.expanded.toMutableList()
             it.filter { loan ->
                   val id =
                       if (isOutgoing) {
