@@ -181,9 +181,7 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-      composeTestRule.waitUntil(20000) { composeTestRule.onNodeWithTag("button").isDisplayed() }
 
-      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
       composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
 
       name { performTextReplacement("my object") }
@@ -215,8 +213,6 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-      composeTestRule.waitUntil(20000) { composeTestRule.onNodeWithTag("button").isDisplayed() }
-      composeTestRule.onNodeWithTag("button")
       composeTestRule.onNodeWithTag("button").assertIsEnabled()
 
       name { performTextReplacement("") }
