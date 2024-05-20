@@ -351,7 +351,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             }
         val availableItems3 =
             availableItems2.filter { item ->
-              loans.none { loan -> loan.idItem == item.id && (loan.state == LoanState.PENDING) }
+              loans.none { loan ->
+                loan.idItem == item.id &&
+                    loan.state == LoanState.PENDING &&
+                    loan.idBorrower == Authentication.getUser()?.uid
+              }
             }
         onSuccess(availableItems3)
       }

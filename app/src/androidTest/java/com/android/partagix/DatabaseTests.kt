@@ -2,6 +2,7 @@ package com.android.partagix
 
 import android.location.Location
 import com.android.partagix.model.Database
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.inventory.Inventory
@@ -16,6 +17,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.Timestamp
 import com.google.firebase.Timestamp.now
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -35,6 +37,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.spyk
@@ -626,6 +629,258 @@ class DatabaseTests {
 
       coVerify(exactly = 1) { database.createLoan(loan) }
       coVerify(exactly = 1) { database.getAvailableItems(any(), any()) }
+    }
+  }
+
+  @Test
+  fun testGetAvailableItems() {
+    mockkObject(Authentication)
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val mockuser = mockk<FirebaseUser>()
+
+    every { mockuser.uid } returns "myUserId"
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    every { Authentication.getUser() } returns mockuser
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    val availableItemBasic =
+        Item(
+            "availableItemBasic",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"))
+
+    val availableItemInsideCancelLoan =
+        Item(
+            "availableItemInsideCancelLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"))
+
+    val availableItemInsideFinishedLoan =
+        Item(
+            "availableItemInsideFinishedLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"))
+
+    val availableItemInsidePendingLoan =
+        Item(
+            "availableItemInsidePendingLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"))
+
+    val unAvailableItemPrivate =
+        Item(
+            "unAvailableItemPrivate",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PRIVATE,
+            1,
+            Location("location"))
+    val unAvailableItemBelongToCurrentUser =
+        Item(
+            "unAvailableItemBelongToCurrentUser",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"),
+            "myUserId")
+
+    val unAvailableItemInsideAcceptedLoan =
+        Item(
+            "unAvailableItemInsideAcceptedLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"),
+            "")
+
+    val unAvailableItemInsideOnGoingLoan =
+        Item(
+            "unAvailableItemInsideOnGoingLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"))
+
+    val unAvailableItemInsidePendingLoan =
+        Item(
+            "unAvailableItemInsidePendingLoan",
+            Category("id", "name"),
+            "owner",
+            "description",
+            Visibility.PUBLIC,
+            1,
+            Location("location"),
+            "myUserId")
+
+    val items =
+        listOf(
+            availableItemBasic,
+            availableItemInsideCancelLoan,
+            availableItemInsideFinishedLoan,
+            availableItemInsidePendingLoan,
+            unAvailableItemPrivate,
+            unAvailableItemBelongToCurrentUser,
+            unAvailableItemInsideAcceptedLoan,
+            unAvailableItemInsideOnGoingLoan,
+            unAvailableItemInsidePendingLoan)
+
+    every { database.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
+
+    every { database.getItemsWithImages(any()) } answers
+        {
+          firstArg<(List<Item>) -> Unit>().invoke(items)
+        }
+
+    val loan1 =
+        Loan(
+            "loan1",
+            "id_owner",
+            "id_loaner",
+            "availableItemInsideCancelLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.CANCELLED)
+
+    val loan2 =
+        Loan(
+            "loan2",
+            "id_owner",
+            "id_loaner",
+            "availableItemInsideFinishedLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.FINISHED)
+
+    val loan3 =
+        Loan(
+            "loan3",
+            "id_owner",
+            "id_loaner",
+            "availableItemInsidePendingLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.PENDING)
+
+    val loan4 =
+        Loan(
+            "loan4",
+            "id_owner",
+            "id_loaner",
+            "unAvailableItemInsideAcceptedLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ACCEPTED)
+
+    val loan5 =
+        Loan(
+            "loan5",
+            "id_owner",
+            "id_loaner",
+            "unAvailableItemInsideOnGoingLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ONGOING)
+
+    val loan6 =
+        Loan(
+            "loan6",
+            "id_owner",
+            "myUserId",
+            "unAvailableItemInsidePendingLoan",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.PENDING)
+
+    val loan7 =
+        Loan(
+            "loan7",
+            "myUserId",
+            "id_loaner",
+            "unAvailableItemBelongToCurrentUser",
+            Date(0),
+            Date(0),
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.CANCELLED)
+
+    val loans = listOf(loan1, loan2, loan3, loan4, loan5, loan6, loan7)
+    every { database.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(loans) }
+
+    runBlocking {
+      database.getAvailableItems(false) { items ->
+        for (item in items) {
+          println("name: ${item.id}")
+        }
+        assertEquals(
+            listOf(
+                availableItemBasic,
+                availableItemInsideCancelLoan,
+                availableItemInsideFinishedLoan,
+                availableItemInsidePendingLoan),
+            items)
+      }
     }
   }
 
