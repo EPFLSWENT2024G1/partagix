@@ -111,7 +111,23 @@ class ManageLoanViewModel(
   }*/
 
   fun acceptLoan(loan: Loan, index: Int) {
+
+    val loansToDeclineWithIndex = mutableListOf<Pair<Loan, Int>>()
+    var count = 0
+    for (i in 0 until uiState.value.loans.size) {
+      val otherLoan = uiState.value.loans[i]
+      if (loan.idItem == otherLoan.idItem && loan.id != otherLoan.id) {
+        loansToDeclineWithIndex.add(Pair(otherLoan, i - count))
+        count += 1
+      }
+    }
+
+    for (loanToDecline in loansToDeclineWithIndex) {
+      declineLoan(loanToDecline.first, loanToDecline.second)
+    }
+
     UiStateWithoutIndex(index)
+
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
 
     val requester = uiState.value.users.find { it.id == loan.idBorrower }
