@@ -83,7 +83,7 @@ fun ItemList(
                 index = index,
                 isOutgoing = isOutgoing,
                 manageLoanViewModel = manageLoanViewModel,
-                expandState = if (isExpandable) wasExpanded[index] else  expandState,
+                expandState = if (isExpandable) wasExpanded[index] else expandState,
             )
           }
       Spacer(modifier = Modifier.height(8.dp))
