@@ -60,6 +60,7 @@ fun HomeScreen(
     navigationActions: NavigationActions,
     modifier: Modifier = Modifier
 ) {
+  println("----- HomeScreen")
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
   val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(

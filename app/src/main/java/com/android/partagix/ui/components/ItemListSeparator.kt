@@ -54,6 +54,11 @@ fun ItemListColumn(
     manageLoanViewModel: ManageLoanViewModel,
     isExpandable: Boolean,
 ) {
+  println("----- itemListSeparator")
+  println("----- items: $list")
+  println("----- users: $users")
+  println("----- loan: $loan")
+  println("----- wasExpanded: $wasExpanded")
   Column(modifier = modifier) {
     Row(
         modifier = Modifier.fillMaxWidth(),
