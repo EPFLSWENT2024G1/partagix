@@ -49,7 +49,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
     val loc1 = Location("1")
     val items = listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))
-    mockUiState = MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
+    mockUiState = MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), listOf(false)))
 
     mockInventoryViewModel = mockk()
     mockHomeViewModel = mockk()
