@@ -95,7 +95,10 @@ fun ItemUi(
                     color = MaterialTheme.colorScheme.onPrimary,
                     shape = RoundedCornerShape(size = 4.dp))
                 .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-                .clickable(onClick = { expandable = !expandable })
+                .clickable(onClick = {
+                  expandable = !expandable
+                  manageLoanViewModel.updateExpanded(index, expandable)
+                })
                 .testTag("manageLoanScreenItemCard")) {
           Row(
               horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),

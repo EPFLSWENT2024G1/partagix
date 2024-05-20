@@ -140,6 +140,12 @@ class ManageLoanViewModel(
     }
   }
 
+  fun updateExpanded(index: Int, expanded: Boolean) {
+    val list = _uiState.value.expanded.toMutableList()
+    list[index] = !list[index]
+    _uiState.value = _uiState.value.copy(expanded = list)
+  }
+
   private fun sendNotification(state: String, type: Notification.Type, to: String?) {
     if (to != null) {
       val notification =

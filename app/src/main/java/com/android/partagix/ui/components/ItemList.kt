@@ -42,6 +42,7 @@ fun ItemList(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     stickyHeader: @Composable() (() -> Unit)? = null,
 ) {
+  println("----- wasExpanded: $wasExpanded")
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
       stickyHeader { stickyHeader() }
@@ -83,7 +84,7 @@ fun ItemList(
                 index = index,
                 isOutgoing = isOutgoing,
                 manageLoanViewModel = manageLoanViewModel,
-                expandState = expandState,
+                expandState = if (isExpandable) wasExpanded[index] else  expandState,
             )
           }
       Spacer(modifier = Modifier.height(8.dp))
