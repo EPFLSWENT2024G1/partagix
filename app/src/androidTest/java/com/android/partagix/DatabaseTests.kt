@@ -33,8 +33,10 @@ import getImageFromFirebaseStorage
 import getImagesFromFirebaseStorage
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
@@ -603,6 +605,8 @@ class DatabaseTests {
 
     val database = spyk(Database(mockDb), recordPrivateCalls = true)
 
+    every { database.getAvailableItems(any(), any()) } just runs
+
     val loan =
         Loan(
             "id",
@@ -621,6 +625,7 @@ class DatabaseTests {
       database.createLoan(loan)
 
       coVerify(exactly = 1) { database.createLoan(loan) }
+      coVerify(exactly = 1) { database.getAvailableItems(any(), any()) }
     }
   }
 
