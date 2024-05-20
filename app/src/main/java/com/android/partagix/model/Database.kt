@@ -1,8 +1,10 @@
 package com.android.partagix.model
 
+import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
 import androidx.core.os.bundleOf
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -331,6 +333,37 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    }
   */
 
+  fun getAvailableItems(isItemWithImage: Boolean = false, onSuccess: (List<Item>) -> Unit) {
+
+    val itemSuccess: (List<Item>) -> Unit = { items ->
+      getLoans { loans ->
+        val availableItems1 =
+            items.filter { item ->
+              item.visibility == Visibility.PUBLIC && item.idUser != Authentication.getUser()?.uid
+            }
+
+        val availableItems2 =
+            availableItems1.filter { item ->
+              loans.none { loan ->
+                loan.idItem == item.id &&
+                    (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING)
+              }
+            }
+        val availableItems3 =
+            availableItems2.filter { item ->
+              loans.none { loan -> loan.idItem == item.id && (loan.state == LoanState.PENDING) }
+            }
+        onSuccess(availableItems3)
+      }
+    }
+
+    if (isItemWithImage) {
+      getItemsWithImages(itemSuccess)
+    } else {
+      getItems(itemSuccess)
+    }
+  }
+
   private fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
@@ -510,34 +543,43 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call when the loan is created
    */
   fun createLoan(newLoan: Loan, onSuccess: (Loan) -> Unit = {}) {
-    val idLoan = getNewUid(loan)
-    val data5 =
-        hashMapOf(
-            "id_lender" to newLoan.idLender,
-            "id_borrower" to newLoan.idBorrower,
-            "id_item" to newLoan.idItem,
-            "start_date" to newLoan.startDate,
-            "end_date" to newLoan.endDate,
-            "review_lender" to newLoan.reviewLender,
-            "review_borrower" to newLoan.reviewBorrower,
-            "comment_lender" to newLoan.commentLender,
-            "comment_borrower" to newLoan.commentBorrower,
-            "loan_state" to newLoan.state.toString())
-    loan.document(idLoan).set(data5)
-    val new =
-        Loan(
-            idLoan,
-            newLoan.idLender,
-            newLoan.idBorrower,
-            newLoan.idItem,
-            newLoan.startDate,
-            newLoan.endDate,
-            newLoan.reviewLender,
-            newLoan.reviewBorrower,
-            newLoan.commentLender,
-            newLoan.commentBorrower,
-            newLoan.state)
-    onSuccess(new)
+
+    getAvailableItems { items ->
+      val item = items.firstOrNull { it.id == newLoan.idItem }
+      if (item == null) {
+        Log.d(TAG, "Item not found")
+        return@getAvailableItems
+      }
+
+      val idLoan = getNewUid(loan)
+      val data =
+          hashMapOf(
+              "id_lender" to newLoan.idLender,
+              "id_borrower" to newLoan.idBorrower,
+              "id_item" to newLoan.idItem,
+              "start_date" to newLoan.startDate,
+              "end_date" to newLoan.endDate,
+              "review_lender" to newLoan.reviewLender,
+              "review_borrower" to newLoan.reviewBorrower,
+              "comment_lender" to newLoan.commentLender,
+              "comment_borrower" to newLoan.commentBorrower,
+              "loan_state" to newLoan.state.toString())
+      loan.document(idLoan).set(data)
+      val new =
+          Loan(
+              idLoan,
+              newLoan.idLender,
+              newLoan.idBorrower,
+              newLoan.idItem,
+              newLoan.startDate,
+              newLoan.endDate,
+              newLoan.reviewLender,
+              newLoan.reviewBorrower,
+              newLoan.commentLender,
+              newLoan.commentBorrower,
+              newLoan.state)
+      onSuccess(new)
+    }
   }
 
   /**
