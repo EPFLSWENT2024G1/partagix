@@ -69,7 +69,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockInventoryViewModel.filterItems(atLeastQuantity = any()) } just Runs
 
     every { mockManageViewModel.uiState } returns mockUiState
-    every { mockManageViewModel.updateExpanded(any(), any())} just Runs
+    every { mockManageViewModel.updateExpanded(any(), any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
