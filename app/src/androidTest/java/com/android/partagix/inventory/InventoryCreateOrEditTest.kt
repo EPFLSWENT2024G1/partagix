@@ -6,7 +6,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -181,7 +180,6 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
-
       composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
 
       name { performTextReplacement("my object") }
