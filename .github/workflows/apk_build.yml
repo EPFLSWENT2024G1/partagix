@@ -45,11 +45,12 @@ jobs:
       # Load the secrets
       - name: Load secrets
         env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
           DATA: ${{ secrets.SECRETS }}
         run: |
           echo $DATA > secrets.properties
           echo $DATA > local.defaults.properties
-          echo $DATA > secrets.MAPS_API_KEY
+          echo $MAPS_API_KEY > secrets.MAPS_API_KEY
   
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
