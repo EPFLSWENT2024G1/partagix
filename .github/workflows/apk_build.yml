@@ -44,20 +44,20 @@ jobs:
         env:
           DATA: ${{ secrets.KEYSTORE}}
         run: echo $DATA | base64 -di > keystore.properties
+      
+      # Load the secrets
+      - name: Load secrets
+        env:
+          DATA: ${{ secrets.SECRETS }}
+        run: |
+          echo $DATA > secrets.properties
+          echo $DATA > local.defaults.properties
 
       # Load the MAPS API key from the secrets
       - name: Load MAPS API key
         # Load the secrets
         env:
           DATA: ${{ secrets.MAPS_API_KEY }}
-        run: |
-          echo $DATA > secrets.properties
-          echo $DATA > local.defaults.properties
-      
-      # Load the secrets
-      - name: Load secrets
-        env:
-          DATA: ${{ secrets.SECRETS }}
         run: |
           echo $DATA > secrets.properties
           echo $DATA > local.defaults.properties
