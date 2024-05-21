@@ -310,6 +310,7 @@ class App(
               userViewModel.updateLocation(location)
             }
           }
+          loanViewModel.getAvailableLoans()
           LoanScreen(
               navigationActions = navigationActions,
               loanViewModel = loanViewModel,
