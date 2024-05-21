@@ -45,7 +45,7 @@ jobs:
       # Load the secrets
       - name: Load secrets
         env:
-          DATA: ${{ secrets.SECRETS, secrets.MAPS_API_KEY }}
+          DATA: ${{ secrets.SECRETS secrets.MAPS_API_KEY }}
         run: |
           echo $DATA > secrets.properties
           echo $DATA > local.defaults.properties
