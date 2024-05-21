@@ -76,15 +76,10 @@ class ManageLoanViewModel(
     }
   }
 
-  // TODO: Fix so the count get the right number
 
-  /*  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
-    getLoanRequests(isOutgoing = false, onSuccess = { onSuccess(uiState.value.loans.size) })
+   fun getCount(): Int {
+    return uiState.value.loans.size
   }
-
-  fun getOutGoingRequestCount(onSuccess: (Int) -> Unit) {
-    getLoanRequests(isOutgoing = true, onSuccess = { onSuccess(uiState.value.loans.size) })
-  }*/
 
   fun update(
       items: List<Item>,

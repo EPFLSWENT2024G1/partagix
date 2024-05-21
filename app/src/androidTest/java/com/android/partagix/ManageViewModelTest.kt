@@ -221,10 +221,9 @@ class ManageViewModelTest {
       assertEquals(listOf(false, false), manageViewModel.uiState.value.expanded)
     }
   }
-}
 
-// This test is now useless as we don't have the function right now in the view model
- /* @Test
+
+@Test
    fun testGetInComingRequestCount() {
      val mockUser = mockk<FirebaseUser>()
      mockkObject(Authentication)
@@ -232,7 +231,11 @@ class ManageViewModelTest {
      every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
 
      val manageViewModel = spyk(ManageLoanViewModel(db = db))
-     manageViewModel.getInComingRequestCount { assert(it == 3) }
-     manageViewModel.getOutGoingRequestCount { assert(it == 1) }
+     manageViewModel.getLoanRequests(isOutgoing = false)
+     assertEquals(2, manageViewModel.getCount())
+
+     manageViewModel.getLoanRequests(isOutgoing = true)
+     assertEquals(1, manageViewModel.getCount())
    }
- }*/
+ }
+

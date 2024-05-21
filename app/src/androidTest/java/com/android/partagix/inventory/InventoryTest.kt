@@ -35,7 +35,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
-  @RelaxedMockK lateinit var mockManageLoanViewModel: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageLoanViewModelIncoming: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageLoanViewModelOutgoing: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<InventoryUIState>
@@ -57,8 +58,12 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
             InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
 
     mockItemViewModel = mockk()
-    mockManageLoanViewModel = mockk()
+    mockManageLoanViewModelIncoming = mockk()
+    mockManageLoanViewModelOutgoing = mockk()
     mockInventoryViewModel = mockk()
+
+    every{ mockManageLoanViewModelIncoming.getCount()} returns 0
+    every{ mockManageLoanViewModelOutgoing.getCount()} returns 0
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
     every { mockInventoryViewModel.findTime(any(), any(), any()) } just Runs
@@ -83,7 +88,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       InventoryScreen(
-          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModelOutgoing, mockManageLoanViewModelIncoming, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
@@ -104,7 +109,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
       InventoryScreen(
-          mockInventoryViewModel, mockNavActions, mockManageLoanViewModel, mockItemViewModel)
+          mockInventoryViewModel, mockNavActions, mockManageLoanViewModelOutgoing, mockManageLoanViewModelIncoming, mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
