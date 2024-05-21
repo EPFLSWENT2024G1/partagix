@@ -123,7 +123,7 @@ fun InventoryViewItemScreen(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f))
 
                     LabeledText(
-                        label = "Author",
+                        label = "Owner",
                         text = user.name,
                         modifier = Modifier.fillMaxWidth().fillMaxHeight())
                   }

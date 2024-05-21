@@ -180,7 +180,7 @@ fun InventoryCreateOrEditItem(
                     OutlinedTextField(
                         value = uiState.user.name,
                         onValueChange = {},
-                        label = { Text("Author") },
+                        label = { Text("Owner") },
                         modifier = modifier.testTag("idUser").fillMaxWidth(),
                         readOnly = true)
                   }
