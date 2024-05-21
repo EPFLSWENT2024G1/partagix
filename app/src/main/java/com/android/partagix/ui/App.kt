@@ -196,7 +196,8 @@ class App(
                 "0",
                 Inventory(user.uid, emptyList()),
                 File("res/drawable/default_image.jpg"),
-                newToken)
+                newToken,
+                user.email ?: "")
         db.getUser(
             user.uid,
             onNoUser = {
