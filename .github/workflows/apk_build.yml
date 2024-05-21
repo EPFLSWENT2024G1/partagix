@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - vs/fixApk
   workflow_dispatch:
 
 permissions:
@@ -44,10 +45,11 @@ jobs:
       # Load the secrets
       - name: Load secrets
         env:
-          DATA: ${{ secrets.SECRETS }}
+          DATA: ${{ secrets.SECRETS, secrets.MAPS_API_KEY }}
         run: |
           echo $DATA > secrets.properties
           echo $DATA > local.defaults.properties
+          echo $DATA > secrets.MAPS_API_KEY
   
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
