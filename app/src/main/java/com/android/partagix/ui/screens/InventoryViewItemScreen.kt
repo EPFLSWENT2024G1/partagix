@@ -129,10 +129,13 @@ fun InventoryViewItemScreen(
                         label = "Owner",
                         text = user.name,
                         modifier =
-                            Modifier.fillMaxWidth().fillMaxHeight().testTag("ownerField").clickable {
-                              userViewModel.setUser(user)
-                              navigationActions.navigateTo(Route.ACCOUNT)
-                            })
+                            Modifier.fillMaxWidth()
+                                .fillMaxHeight()
+                                .testTag("ownerField")
+                                .clickable {
+                                  userViewModel.setUser(user)
+                                  navigationActions.navigateTo(Route.ACCOUNT)
+                                })
                   }
                 }
               }

@@ -86,7 +86,8 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
 
     composeTestRule.setContent {
-      InventoryViewItemScreen(mockNavActions, mockItemViewModel, mockBorrowViewModel, mockUserViewModel)
+      InventoryViewItemScreen(
+          mockNavActions, mockItemViewModel, mockBorrowViewModel, mockUserViewModel)
     }
   }
 
@@ -117,7 +118,8 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     onComposeScreen<InventoryViewItemScreen>(composeTestRule) {
       ownerField {
         assertIsDisplayed()
-        performClick() }
+        performClick()
+      }
 
       coVerify { mockNavActions.navigateTo(Route.ACCOUNT) }
     }
