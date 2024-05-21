@@ -8,6 +8,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.DEFAULT_CATEGORY_ID
 import com.android.partagix.model.DEFAULT_CATEGORY_NAME
@@ -180,9 +181,13 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      composeTestRule.onNodeWithTag("button").performScrollTo()
+      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
       composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
 
       name { performTextReplacement("my object") }
+      composeTestRule.onNodeWithTag("button").performScrollTo()
+
       composeTestRule.onNodeWithTag("button").assertIsEnabled()
 
       description { performTextReplacement("what a nice object") }
@@ -211,13 +216,18 @@ class InventoryCreateOrEditTest :
           mockViewModel, mockNavActions, locationViewModel = mockLocationViewModel, mode = "edit")
     }
     onComposeScreen<InventoryCreateOrEditScreen>(composeTestRule) {
+      composeTestRule.onNodeWithTag("button").performScrollTo()
+      composeTestRule.onNodeWithTag("button").assertIsDisplayed()
       composeTestRule.onNodeWithTag("button").assertIsEnabled()
 
       name { performTextReplacement("") }
+      composeTestRule.onNodeWithTag("button").performScrollTo()
+
       composeTestRule.onNodeWithTag("button").assertIsNotEnabled()
       name { performTextReplacement("my object2") }
 
       description { performTextReplacement("what a nice object") }
+      composeTestRule.onNodeWithTag("button").performScrollTo()
       button { performClick() }
 
       assert(savedItem.captured.name == "my object2")
