@@ -76,8 +76,7 @@ class ManageLoanViewModel(
     }
   }
 
-
-   fun getCount(): Int {
+  fun getCount(): Int {
     return uiState.value.loans.size
   }
 

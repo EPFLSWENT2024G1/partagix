@@ -62,8 +62,8 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     mockManageLoanViewModelOutgoing = mockk()
     mockInventoryViewModel = mockk()
 
-    every{ mockManageLoanViewModelIncoming.getCount()} returns 0
-    every{ mockManageLoanViewModelOutgoing.getCount()} returns 0
+    every { mockManageLoanViewModelIncoming.getCount() } returns 0
+    every { mockManageLoanViewModelOutgoing.getCount() } returns 0
 
     every { mockInventoryViewModel.getInventory(any()) } just Runs
     every { mockInventoryViewModel.findTime(any(), any(), any()) } just Runs
@@ -88,7 +88,11 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockInventoryViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
       InventoryScreen(
-          mockInventoryViewModel, mockNavActions, mockManageLoanViewModelOutgoing, mockManageLoanViewModelIncoming, mockItemViewModel)
+          mockInventoryViewModel,
+          mockNavActions,
+          mockManageLoanViewModelOutgoing,
+          mockManageLoanViewModelIncoming,
+          mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {
@@ -109,7 +113,11 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockInventoryViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
       InventoryScreen(
-          mockInventoryViewModel, mockNavActions, mockManageLoanViewModelOutgoing, mockManageLoanViewModelIncoming, mockItemViewModel)
+          mockInventoryViewModel,
+          mockNavActions,
+          mockManageLoanViewModelOutgoing,
+          mockManageLoanViewModelIncoming,
+          mockItemViewModel)
     }
 
     onComposeScreen<InventoryScreen>(composeTestRule) {

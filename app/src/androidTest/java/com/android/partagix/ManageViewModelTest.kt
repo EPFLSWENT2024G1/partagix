@@ -222,20 +222,18 @@ class ManageViewModelTest {
     }
   }
 
+  @Test
+  fun testGetInComingRequestCount() {
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
 
-@Test
-   fun testGetInComingRequestCount() {
-     val mockUser = mockk<FirebaseUser>()
-     mockkObject(Authentication)
-     every { Authentication.getUser() } returns mockUser
-     every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.getLoanRequests(isOutgoing = false)
+    assertEquals(2, manageViewModel.getCount())
 
-     val manageViewModel = spyk(ManageLoanViewModel(db = db))
-     manageViewModel.getLoanRequests(isOutgoing = false)
-     assertEquals(2, manageViewModel.getCount())
-
-     manageViewModel.getLoanRequests(isOutgoing = true)
-     assertEquals(1, manageViewModel.getCount())
-   }
- }
-
+    manageViewModel.getLoanRequests(isOutgoing = true)
+    assertEquals(1, manageViewModel.getCount())
+  }
+}

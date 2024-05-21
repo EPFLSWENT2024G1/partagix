@@ -196,7 +196,7 @@ class EndToEndCreateEdit {
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
           manageLoanViewModelIncoming = mockManageViewModelIncoming,
-            manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -301,7 +301,7 @@ class EndToEndCreateEdit {
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
           manageLoanViewModelIncoming = mockManageViewModelIncoming,
-            manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -400,7 +400,7 @@ class EndToEndCreateEdit {
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
           manageLoanViewModelIncoming = mockManageViewModelIncoming,
-            manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 

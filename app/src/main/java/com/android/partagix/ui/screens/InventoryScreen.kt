@@ -77,7 +77,7 @@ fun InventoryScreen(
 
   // Useful when we will have fix the count
   var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
-  var outgoingRequests by remember { mutableIntStateOf( manageLoanViewModelOutgoing.getCount()) }
+  var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
