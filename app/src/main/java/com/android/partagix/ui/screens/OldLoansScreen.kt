@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -172,42 +173,56 @@ fun ExpandableCard(
           }, // This enables the expansion animation
       colors = CardDefaults.outlinedCardColors()) {
         Column(modifier = Modifier.padding(16.dp).fillMaxWidth().testTag("card")) {
-          Row(
-              modifier = modifier.fillMaxWidth().testTag("nameAndDate"),
-              horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier) {
-                  Text(text = item.name, fontSize = 20.sp)
-                  Spacer(modifier.height(8.dp))
-                  val dateFormatter = SimpleDateFormat("dd/MM/yyyy")
-                  Text(
-                      text = "Star Date : ${dateFormatter.format(loan.startDate)}",
-                      fontSize = 15.sp)
-                  Spacer(modifier.height(8.dp))
-                  Text(text = "End Date : ${dateFormatter.format(loan.endDate)}", fontSize = 15.sp)
-                  Spacer(modifier.height(8.dp))
-                  var user by remember { mutableStateOf("Unknown") }
-                  if (item.idUser == Authentication.getUser()?.uid) {
-
-                    evaluationViewModel.getUser(loan.idBorrower, { u -> user = u.name }, {})
+          Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().testTag("nameAndDate"),
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Column(modifier = Modifier.fillMaxWidth(0.65f)) {
                     Text(
-                        text = "Borrower : $user",
-                        fontSize = 15.sp,
-                        modifier = modifier.fillMaxWidth(0.50f))
-                  } else {
-                    evaluationViewModel.getUser(loan.idLender, { u -> user = u.name }, {})
+                        text = "nfdslnfsolnflsdnflknfslndlfnfis", // item.name,
+                        fontSize = 20.sp,
+                        // modifier = modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier.height(8.dp))
+                    val dateFormatter = SimpleDateFormat("dd/MM/yyyy")
                     Text(
-                        text = "Lender : $user",
-                        fontSize = 15.sp,
-                        modifier = modifier.fillMaxWidth(0.50f))
+                        text = "Start Date : ${dateFormatter.format(loan.startDate)}",
+                        fontSize = 15.sp)
+                    Spacer(modifier.height(0.dp))
+                    Text(
+                        text = "End Date : ${dateFormatter.format(loan.endDate)}", fontSize = 15.sp)
+                  }
+                  Box(modifier = modifier.fillMaxWidth().aspectRatio(1f)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.default_image),
+                        contentDescription = "fds",
+                        contentScale = ContentScale.FillBounds,
+                        modifier =
+                            Modifier.border(1.dp, MaterialTheme.colorScheme.scrim).testTag("image"))
                   }
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier =
-                        Modifier.border(1.dp, MaterialTheme.colorScheme.scrim).testTag("image"))
-              }
+          }
+          Spacer(modifier.height(0.dp))
+
+          Row(modifier = modifier.fillMaxWidth()) {
+            var user by remember { mutableStateOf("Unknown") }
+            if (item.idUser == Authentication.getUser()?.uid) {
+
+              evaluationViewModel.getUser(loan.idBorrower, { u -> user = u.name }, {})
+              Text(
+                  text = "Borrower : $user",
+                  fontSize = 15.sp,
+                  //   modifier = modifier.fillMaxWidth(0.70f)
+              )
+            } else {
+              evaluationViewModel.getUser(loan.idLender, { u -> user = u.name }, {})
+              Text(
+                  text = "Lender : $user",
+                  fontSize = 15.sp,
+                  // modifier = modifier.fillMaxWidth(0.70f)
+              )
+            }
+          }
 
           if (expanded) {
             Spacer(modifier = modifier.height(8.dp))
