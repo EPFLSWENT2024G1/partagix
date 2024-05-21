@@ -60,6 +60,7 @@ fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
     borrowViewModel: BorrowViewModel,
+    userViewModel: UserViewModel,
     viewOthersItem: Boolean = false
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
