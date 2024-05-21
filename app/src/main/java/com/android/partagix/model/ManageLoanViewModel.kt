@@ -46,7 +46,7 @@ class ManageLoanViewModel(
             val loans = mutableListOf<Loan>()
             val items = mutableListOf<Item>()
             val users = mutableListOf<User>()
-            val expended = mutableListOf<Boolean>()
+            val expended = uiState.value.expanded.toMutableList()
             it.filter { loan ->
                   val id =
                       if (isOutgoing) {
@@ -138,6 +138,12 @@ class ManageLoanViewModel(
         sendNotification("declined", Notification.Type.LOAN_ACCEPTED, token)
       }
     }
+  }
+
+  fun updateExpanded(index: Int, expanded: Boolean) {
+    val list = _uiState.value.expanded.toMutableList()
+    list[index] = !list[index]
+    _uiState.value = _uiState.value.copy(expanded = list)
   }
 
   private fun sendNotification(state: String, type: Notification.Type, to: String?) {
