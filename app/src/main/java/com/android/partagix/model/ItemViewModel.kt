@@ -38,7 +38,7 @@ class ItemViewModel(
     db: Database = Database(),
     private val onItemSaved: (Item) -> Unit = {},
     private val onItemCreated: (Item) -> Unit = {},
-    user: User = User("", "", "", "", Inventory("", emptyList()))
+    user: User = User("", "", "", "", Inventory("", emptyList()), email = "")
 ) : ViewModel() {
 
   private val database = db

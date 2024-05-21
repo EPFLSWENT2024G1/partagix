@@ -52,7 +52,10 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["rank"] as String,
                       Inventory(document.data["id"] as String, listItems),
                       File("noImage"),
-                      document.data["fcmToken"] as String?)
+                      document.data["fcmToken"] as String?,
+                      document.data["email"] as String,
+                      document.data["phoneNumber"] as String?,
+                      document.data["telegram"] as String?)
               ret.add(user)
             }
             onSuccess(ret)
@@ -76,7 +79,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           val name = user["name"] as String
           val addr = user["addr"] as String
           val rank = user["rank"] as String
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage")))
+          val email = user["email"] as String
+          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), email = email))
         }
       } else {
         onNoUser()
@@ -93,7 +97,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             val name = user["name"] as String
             val addr = user["addr"] as String
             val rank = user["rank"] as String
-            onSuccess(User(idUser, name, addr, rank, inventory, localFile))
+            val email = user["email"] as String
+            onSuccess(User(idUser, name, addr, rank, inventory, localFile, email = email))
           }
         } else {
           onNoUser()

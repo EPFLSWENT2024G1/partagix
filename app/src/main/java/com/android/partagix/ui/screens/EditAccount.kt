@@ -62,6 +62,9 @@ fun EditAccount(
   var tempUsername by remember { mutableStateOf(user.name) }
   var tempAddress by remember { mutableStateOf(user.address) }
   var uiImage by remember { mutableStateOf<File?>(user.imageId) }
+  var email by remember { mutableStateOf(user.email) }
+  var phoneNumber by remember { mutableStateOf(user.phoneNumber?:"") }
+    var telegram by remember { mutableStateOf(user.telegram?:"") }
 
   // The field with the actual location
   val loc = remember { mutableStateOf<Location?>(null) }
@@ -70,6 +73,7 @@ fun EditAccount(
   fun resetTempValues() {
     tempUsername = user.name
     tempAddress = user.address
+
   }
 
   // Set temporary values to real values when the screen is opened
@@ -102,77 +106,109 @@ fun EditAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("bottomNavBar"))
       }) {
-        if (user.id !=
-            userViewModel.getLoggedUserId()) { // Check if user is editing their own account
+      if (user.id !=
+          userViewModel.getLoggedUserId()
+      ) { // Check if user is editing their own account
           Text(text = "Loading...", modifier = Modifier.padding(it).testTag("notYourAccount"))
-        } else {
+      } else {
           Column(
               modifier =
-                  Modifier.fillMaxHeight()
-                      .padding(it)
-                      .verticalScroll(rememberScrollState())
-                      .testTag("mainContent")) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        modifier
-                            .width(150.dp)
-                            .height(150.dp)
-                            .padding(8.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .testTag("image")) {
-                      MainImagePicker(listOf(user.imageId.toUri())) { uri ->
-                        // TODO :  Save the image to a local file to its displayed correctly while
-                        // waiting for the upload
-                        /*
+              Modifier.fillMaxHeight()
+                  .padding(it)
+                  .verticalScroll(rememberScrollState())
+                  .testTag("mainContent")
+          ) {
+              Box(
+                  contentAlignment = Alignment.Center,
+                  modifier =
+                  modifier
+                      .width(150.dp)
+                      .height(150.dp)
+                      .padding(8.dp)
+                      .align(Alignment.CenterHorizontally)
+                      .testTag("image")
+              ) {
+                  MainImagePicker(listOf(user.imageId.toUri())) { uri ->
+                      // TODO :  Save the image to a local file to its displayed correctly while
+                      // waiting for the upload
+                      /*
                         val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
                         Missing : save the image to the local file (need a ContentResolver ?)
                         uiImage = localFilePath
                          */
-                        // Before this is done, display an empty image while waiting for the upload
-                        uiImage = File.createTempFile("default_image", null)
+                      // Before this is done, display an empty image while waiting for the upload
+                      uiImage = File.createTempFile("default_image", null)
 
-                        // in the meantime do nothing and the image will be loaded from the database
-                        // later
-                        uploadImageToFirebaseStorage(uri, imageName = "users/${user.id}") {
+                      // in the meantime do nothing and the image will be loaded from the database
+                      // later
+                      uploadImageToFirebaseStorage(uri, imageName = "users/${user.id}") {
                           getImageFromFirebaseStorage("users/${user.id}") { file -> uiImage = file }
-                        }
                       }
-                    }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
-                    value = tempUsername,
-                    onValueChange = { tempUsername = it },
-                    label = { Text("username") })
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                LocationPicker(
-                    location = tempAddress,
-                    loc = loc.value,
-                    onTextChanged = { tempAddress = it },
-                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
-                    horizontalArrangement = Arrangement.Absolute.Center) {
-                      Spacer(modifier = Modifier.width(8.dp))
-                      Button(
-                          onClick = {
-                            userViewModel.updateUser(
-                                user.copy(
-                                    name = tempUsername,
-                                    address = loc.value?.locationName ?: "Unknown Address"))
-                            navigationActions.goBack()
-                          },
-                          modifier = Modifier.weight(1f).testTag("saveButton")) {
-                            Text("Save changes")
-                          }
-                    }
+                  }
               }
-        }
+              Spacer(modifier = Modifier.height(8.dp))
+
+              TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
+                  value = tempUsername,
+                  onValueChange = { tempUsername = it },
+                  label = { Text("username") })
+
+              Spacer(modifier = Modifier.height(16.dp))
+
+              LocationPicker(
+                  location = tempAddress,
+                  loc = loc.value,
+                  onTextChanged = { tempAddress = it },
+                  onLocationLookup = { locationViewModel.getLocation(it, loc) })
+
+              Spacer(modifier = Modifier.height(16.dp))
+
+              Spacer(modifier = Modifier.height(16.dp))
+              TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("email"),
+                  value = email,
+                  onValueChange = { email = it },
+                  label = { Text("email") })
+
+              Spacer(modifier = Modifier.height(16.dp))
+              TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("phone number"),
+                  value = phoneNumber,
+                  onValueChange = { phoneNumber = it },
+                  label = { Text("phoneNumber") })
+              Spacer(modifier = Modifier.height(16.dp))
+              TextField(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("telegram"),
+                  value = telegram,
+                  onValueChange = { telegram = it },
+                  label = { Text("telegram") })
+
+
+
+
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                  horizontalArrangement = Arrangement.Absolute.Center
+              ) {
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Button(
+                      onClick = {
+                          userViewModel.updateUser(
+                              user.copy(
+                                  name = tempUsername,
+                                  address = loc.value?.locationName ?: "Unknown Address"
+                              )
+                          )
+                          navigationActions.goBack()
+                      },
+                      modifier = Modifier.weight(1f).testTag("saveButton")
+                  ) {
+                      Text("Save changes")
+                  }
+              }
+
+          }
       }
+  }
 }
