@@ -20,9 +20,6 @@ jobs:
 
       - name: Checkout specific branch
         run: git checkout vs/fixApk
-
-      - name: Print current branch
-        run: echo "Current branch is ${{ github.head_ref }}"
   
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -58,12 +55,12 @@ jobs:
           echo $DATA > local.defaults.properties
       
       # Load the secrets
-      # - name: Load secrets
-      #  env:
-      #    DATA: ${{ secrets.SECRETS }}
-      #  run: |
-      #    echo $DATA > secrets.properties
-      #    echo $DATA > local.defaults.properties
+      - name: Load secrets
+        env:
+          DATA: ${{ secrets.SECRETS }}
+        run: |
+          echo $DATA > secrets.properties
+          echo $DATA > local.defaults.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
