@@ -353,11 +353,11 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, userViewModel)
       }
       composable(Route.VIEW_OTHERS_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
+        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, userViewModel, true)
       }
 
       composable(
@@ -371,7 +371,7 @@ class App(
                 itemViewModel.getUser()
               }
 
-              InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+              InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, userViewModel)
             } else {
               // Fail safe defaults principle
               navigationActions.navigateTo(Route.INVENTORY)
