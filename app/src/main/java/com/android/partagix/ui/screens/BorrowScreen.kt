@@ -281,7 +281,7 @@ fun BorrowScreen(
                           disabledContainerColor = Color.Gray),
                   onClick = {
                     viewModel.createLoan()
-                    navigationActions.goBack()
+                    navigationActions.navigateTo(Route.LOAN)
                   },
                   content = { Text(text = "Make request reservation") })
             }

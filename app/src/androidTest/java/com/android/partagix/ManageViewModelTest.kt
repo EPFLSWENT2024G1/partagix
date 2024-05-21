@@ -155,17 +155,10 @@ class ManageViewModelTest {
         listOf(false, false, false))
     manageViewModel.acceptLoan(loan1, 0)
 
-    assert(manageViewModel.uiState.value.items == listOf(item1, item1))
-    assert(manageViewModel.uiState.value.loans == listOf(loan2, loan3))
-    assert(manageViewModel.uiState.value.users == listOf(user, user))
-    assert(manageViewModel.uiState.value.expanded == listOf(false, false))
-
-    manageViewModel.declineLoan(loan3, 1)
-
-    assert(manageViewModel.uiState.value.items == listOf(item1))
-    assert(manageViewModel.uiState.value.loans == listOf(loan2))
-    assert(manageViewModel.uiState.value.users == listOf(user))
-    assert(manageViewModel.uiState.value.expanded == listOf(false))
+    assertEquals(emptyList<Item>(), manageViewModel.uiState.value.items)
+    assertEquals(emptyList<Loan>(), manageViewModel.uiState.value.loans)
+    assertEquals(emptyList<User>(), manageViewModel.uiState.value.users)
+    assertEquals(emptyList<Boolean>(), manageViewModel.uiState.value.expanded)
   }
 
   @Test

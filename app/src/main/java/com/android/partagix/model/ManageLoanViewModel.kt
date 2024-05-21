@@ -46,7 +46,7 @@ class ManageLoanViewModel(
             val loans = mutableListOf<Loan>()
             val items = mutableListOf<Item>()
             val users = mutableListOf<User>()
-            val expended = mutableListOf<Boolean>()
+            val expended = uiState.value.expanded.toMutableList()
             it.filter { loan ->
                   val id =
                       if (isOutgoing) {
@@ -97,7 +97,23 @@ class ManageLoanViewModel(
   }
 
   fun acceptLoan(loan: Loan, index: Int) {
+
+    val loansToDeclineWithIndex = mutableListOf<Pair<Loan, Int>>()
+    var count = 0
+    for (i in 0 until uiState.value.loans.size) {
+      val otherLoan = uiState.value.loans[i]
+      if (loan.idItem == otherLoan.idItem && loan.id != otherLoan.id) {
+        loansToDeclineWithIndex.add(Pair(otherLoan, i - count))
+        count += 1
+      }
+    }
+
+    for (loanToDecline in loansToDeclineWithIndex) {
+      declineLoan(loanToDecline.first, loanToDecline.second)
+    }
+
     UiStateWithoutIndex(index)
+
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
 
     sendNotification(loan, "accepted", Notification.Type.LOAN_ACCEPTED)
@@ -118,6 +134,12 @@ class ManageLoanViewModel(
     } else {
       database.getFCMToken(loan.idBorrower) { token -> sendNotification(state, type, token) }
     }
+  }
+
+  fun updateExpanded(index: Int, expanded: Boolean) {
+    val list = _uiState.value.expanded.toMutableList()
+    list[index] = !list[index]
+    _uiState.value = _uiState.value.copy(expanded = list)
   }
 
   private fun sendNotification(state: String, type: Notification.Type, to: String?) {
