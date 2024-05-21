@@ -179,7 +179,7 @@ fun ExpandableCard(
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Column(modifier = Modifier.fillMaxWidth(0.65f)) {
                     Text(
-                        text = "nfdslnfsolnflsdnflknfslndlfnfis", // item.name,
+                        text = item.name,
                         fontSize = 20.sp,
                         // modifier = modifier.fillMaxWidth()
                     )
