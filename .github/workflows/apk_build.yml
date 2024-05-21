@@ -17,8 +17,9 @@ jobs:
       steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+
+      - name: Checkout specific branch
+        run: git checkout vs/fixApk
 
       - name: Print current branch
         run: echo "Current branch is ${{ github.head_ref }}"
