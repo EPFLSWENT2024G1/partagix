@@ -134,7 +134,7 @@ fun InventoryViewItemScreen(
                                 .testTag("ownerField")
                                 .clickable {
                                   userViewModel.setUser(user)
-                                  navigationActions.navigateTo(Route.ACCOUNT)
+                                  navigationActions.navigateTo(Route.OTHER_ACCOUNT)
                                 })
                   }
                 }
