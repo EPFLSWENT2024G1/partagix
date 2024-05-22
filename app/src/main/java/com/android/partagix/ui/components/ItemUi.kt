@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,11 +21,8 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -46,14 +42,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -66,283 +60,197 @@ import java.util.Date
  */
 @Composable
 fun ItemUi(
-  item: Item,
-  user: User,
-  loan: Loan,
-  isOutgoing: Boolean = false,
-  wasExpanded: Boolean = false,
-  isExpandable: Boolean = false,
-  expandState: Boolean = false,
-  manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-  index: Int = 0,
+    item: Item,
+    user: User,
+    loan: Loan,
+    isOutgoing: Boolean = false,
+    wasExpanded: Boolean = false,
+    isExpandable: Boolean = false,
+    expandState: Boolean = false,
+    onOwnerClick: (Item) -> Unit = {},
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    index: Int = 0,
 ) {
-  val date: Date = if (loan.startDate.before(Date())) {
-    loan.endDate
-  } else {
-    loan.startDate
-  }
-  var expandable by remember { mutableStateOf(expandState) }
+  val date: Date =
+      if (loan.startDate.before(Date())) {
+        loan.endDate
+      } else {
+        loan.startDate
+      }
+  var expanded by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-  val itemHeight = 60.dp
+  val itemHeight = 62.dp
+
+  var ownerModifier = Modifier.fillMaxWidth()
+  if (onOwnerClick != {}) {
+    ownerModifier =
+        ownerModifier.clickable { onOwnerClick } // todo make sure of the type of onOwnerClick
+  }
+
+  var mainColumnModifier =
+      Modifier.fillMaxWidth()
+          .border(
+              width = 1.dp,
+              color = MaterialTheme.colorScheme.outlineVariant,
+              shape = RoundedCornerShape(size = 4.dp))
+          .animateContentSize(
+              animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+          .background(
+              color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 4.dp))
+          .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
+          .testTag("manageLoanScreenItemCard")
 
   if (isExpandable) {
-    Column(horizontalAlignment = Alignment.Start, modifier = Modifier
-      .fillMaxWidth()
-      .border(
-        width = 1.dp,
-        color = MaterialTheme.colorScheme.outlineVariant,
-        shape = RoundedCornerShape(size = 4.dp)
-      )
-      .animateContentSize(
-        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
-      )
-      .background(
-        color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 4.dp)
-      )
-      .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-      .clickable(onClick = {                                                          // todo diff
-        expandable = !expandable
-        manageLoanViewModel.updateExpanded(index, expandable)
-      })
-      .testTag("manageLoanScreenItemCard")
-    ) {
+    mainColumnModifier =
+        mainColumnModifier.clickable(
+            onClick = {
+              expanded = !expanded
+              manageLoanViewModel.updateExpanded(index, expanded)
+            })
+  }
 
-      // Core row
-      Row(
+  //  if (isExpandable) {
+  Column(horizontalAlignment = Alignment.Start, modifier = mainColumnModifier) {
+
+    // Core row
+    Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(itemHeight)
-      ) {
-        val nameFontSize = 18.sp
-        val smallerFontSize = 13.sp
+        modifier = Modifier.fillMaxWidth().height(itemHeight)) {
+          val nameFontSize = 18.sp
+          val smallerFontSize = 13.sp
 
+          Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
 
-        Column(
-          modifier = Modifier
-            .weight(weight = 1f)
-            .fillMaxWidth()
-        ) {
-
-          // Item name
-          Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-              text = item.name,
-              style = TextStyle(
-                fontSize = nameFontSize,
-                fontWeight = FontWeight(500),
-                textAlign = TextAlign.Center,
-              ),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              modifier = Modifier.fillMaxWidth(),
-            )
-          }
-
-          Spacer(modifier = Modifier.height(3.dp))
-
-          // Details
-          Row(modifier = Modifier.fillMaxWidth()) {
-
-            // Now available
-            Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+            // Item name
+            Row(modifier = Modifier.fillMaxWidth()) {
               Text(
-                text = "Now available !", // TODO
-                style = TextStyle(
-                  fontSize = smallerFontSize,
-                  textAlign = TextAlign.Left,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                  text = item.name,
+                  style =
+                      TextStyle(
+                          fontSize = nameFontSize,
+                          fontWeight = FontWeight(500),
+                          textAlign = TextAlign.Center,
+                      ),
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
+                  modifier = Modifier.fillMaxWidth(),
               )
             }
 
-            // Quantity
-            Row(modifier = Modifier
-              .weight(1f)
-              .fillMaxWidth()) {
-              Text(
-                text = "Qty: ${item.quantity}",
-                style = TextStyle(
-                  fontSize = smallerFontSize,
-                  textAlign = TextAlign.Right,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
-              )
-            }
-          }
+            Spacer(modifier = Modifier.height(4.dp))
 
-          Spacer(modifier = Modifier.height(3.dp))
+            // Details
+            Row(modifier = Modifier.fillMaxWidth()) {
 
-          // Owner
-          Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable { }) {
-
-            // Owner name
-            Text(
-              text = user.name,
-              style = TextStyle(
-                fontSize = smallerFontSize,
-                textAlign = TextAlign.Left,
-              ),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-            )
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            // Owner rank
-            Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
-              rankStars(rank = user.rank)
-            }
-          }
-        }
-
-
-
-
-          /*Row(modifier = Modifier.fillMaxHeight(0.5f)) {
-            Text(text = user.rank, modifier = Modifier.fillMaxWidth(0.15f))
-
-            Text(
-              text = user.name,
-              lineHeight = 1.33.em,
-              style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight(500),
-                textAlign = TextAlign.Left,
-              ),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              modifier = Modifier.fillMaxWidth(0.85f)
-            )
-          }
-
-          Text(
-            text = if (loan.idItem == "") {
-              "not borrowed"
-            } else {
-              if (loan.startDate.before(Date())) {
-                "available until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              } else {
-                "borrowed until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              }
-            },
-            lineHeight = 1.43.em,
-            style = TextStyle(fontSize = 13.sp, letterSpacing = 0.25.sp),
-            modifier = Modifier.fillMaxWidth()
-          )
-        }
-
-        Column(modifier = Modifier.requiredHeight(height = 64.dp)) {
-          Text(
-            text = item.name,
-            textAlign = TextAlign.End,
-            lineHeight = 1.45.em,
-            style = TextStyle(
-              fontSize = 18.sp,
-              fontWeight = FontWeight(500),
-              textAlign = TextAlign.Right,
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth(0.3f)
-              .fillMaxHeight(0.5f)
-              .padding(top = 10.dp)
-          )
-
-          Text(
-            text = "Quantity: " + item.quantity.toString(),
-            style = TextStyle(
-              fontSize = 9.sp,
-              textAlign = TextAlign.Right,
-            ),
-            textAlign = TextAlign.End,
-            lineHeight = 0.8.em,
-            modifier = Modifier
-              .fillMaxWidth(0.3f)
-              .fillMaxHeight(0.5f)
-              .padding(top = 5.dp)
-          )
-        }*/
-
-        Box(
-          modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        ) {
-          AsyncImage(
-            model = item.imageId.absolutePath,
-            contentDescription = "fds",
-            contentScale = ContentScale.Inside,
-            modifier = Modifier
-              .height(itemHeight)
-              .width(itemHeight)
-              .fillMaxSize()
-              .align(Alignment.Center)
-              .testTag("ItemUiImage")
-          )
-        }
-      } // End of core row
-
-      if (expandable) {
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-          horizontalArrangement = Arrangement.Absolute.Right,
-          modifier = Modifier
-            .fillMaxWidth()
-            .testTag("manageLoanScreenItemCardExpanded")
-        ) {
-          if (!isOutgoing) {
-            Button(onClick = { manageLoanViewModel.acceptLoan(loan, index) },
-              content = {
-                Icon(
-                  Icons.Default.Check, contentDescription = "validate", modifier = Modifier
+              // Now available
+              Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                Text(
+                    text = "Now available" /*"Unavailable"*/,
+                    // TODO implement the system of availability
+                    style =
+                        TextStyle(
+                            fontSize = smallerFontSize,
+                            textAlign = TextAlign.Left,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(Modifier.width(3.dp))
-                Text(text = "Validate")
-              },
-              modifier = Modifier
-                .requiredWidth(100.dp)
-                .requiredHeight(32.dp),
-              contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp)
-            )
-          }
-          Spacer(modifier = Modifier.width(6.dp))
-          Button(onClick = { manageLoanViewModel.declineLoan(loan, index) },
-            content = {
-              Icon(
-                Icons.Default.Close, contentDescription = "cancel", modifier = Modifier
+              }
+
+              // Quantity
+              Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Text(
+                    text = "Qty: ${item.quantity}",
+                    style =
+                        TextStyle(
+                            fontSize = smallerFontSize,
+                            textAlign = TextAlign.Right,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth())
+              }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Owner
+            Row(modifier = ownerModifier) {
+
+              // Owner name
+              Text(
+                  text = user.name,
+                  style =
+                      TextStyle(
+                          fontSize = smallerFontSize,
+                          textAlign = TextAlign.Left,
+                      ),
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
               )
-              Spacer(Modifier.width(2.dp))
-              Text(text = "Cancel")
-            },
-            colors = ButtonColors(
-              containerColor = MaterialTheme.colorScheme.error,
-              contentColor = MaterialTheme.colorScheme.onError,
-              disabledContainerColor = MaterialTheme.colorScheme.error,
-              disabledContentColor = MaterialTheme.colorScheme.onError
-            ),
-            modifier = Modifier
-              .requiredWidth(100.dp)
-              .requiredHeight(32.dp),
-            contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp)
-          )
-        }
-      }
+
+              Spacer(modifier = Modifier.width(5.dp))
+
+              // Owner rank
+              Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
+                RankStars(rank = user.rank)
+              }
+            }
+          }
+
+          Box(
+              modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant),
+          ) {
+            AsyncImage(
+                model = item.imageId.absolutePath,
+                contentDescription = "fds",
+                contentScale = ContentScale.Inside,
+                modifier =
+                    Modifier.height(itemHeight)
+                        .width(itemHeight)
+                        .fillMaxSize()
+                        .align(Alignment.Center)
+                        .testTag("ItemUiImage"))
+          }
+        } // End of core row
+
+    if (expanded) {
+      Spacer(modifier = Modifier.height(8.dp))
+      Row(
+          horizontalArrangement = Arrangement.Absolute.Right,
+          modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
+            if (!isOutgoing) {
+              Button(
+                  onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                  content = {
+                    Icon(Icons.Default.Check, contentDescription = "validate", modifier = Modifier)
+                    Spacer(Modifier.width(3.dp))
+                    Text(text = "Validate")
+                  },
+                  modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                  contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Button(
+                onClick = { manageLoanViewModel.declineLoan(loan, index) },
+                content = {
+                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                  Spacer(Modifier.width(2.dp))
+                  Text(text = "Cancel")
+                },
+                colors =
+                    ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                        disabledContainerColor = MaterialTheme.colorScheme.error,
+                        disabledContentColor = MaterialTheme.colorScheme.onError),
+                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+          }
     }
-  } else {
+  }
+  /*} else {
     Column(
       horizontalAlignment = Alignment.Start, modifier = Modifier
         .fillMaxWidth()
@@ -450,5 +358,5 @@ fun ItemUi(
         }
       }
     }
-  }
+  }*/
 }
