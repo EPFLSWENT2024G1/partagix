@@ -20,7 +20,7 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
@@ -38,7 +38,7 @@ class ItemViewModel(
     db: Database = Database(),
     private val onItemSaved: (Item) -> Unit = {},
     private val onItemCreated: (Item) -> Unit = {},
-    user: User = User("", "", "", "", Inventory("", emptyList()), email = "")
+    user: User = emptyUser
 ) : ViewModel() {
 
   private val database = db

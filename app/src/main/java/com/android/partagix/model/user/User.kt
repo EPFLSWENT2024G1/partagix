@@ -12,7 +12,8 @@ data class User(
     val imageId: File = File.createTempFile("default_image", null),
     // Can be null if the user has disabled notifications
     val fcmToken: String? = null,
-    val email: String,
+    val email: String? = "Please enter your email",
     val phoneNumber: String? = "",
     val telegram: String? = "",
+    val favorite: List<Boolean>? = listOf(true, false, false)
 )
