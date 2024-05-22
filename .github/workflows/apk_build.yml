@@ -17,9 +17,6 @@ jobs:
       steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Checkout specific branch
-        run: git checkout vs/fixApk
   
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -50,17 +47,8 @@ jobs:
         env:
           DATA: ${{ secrets.SECRETS }}
         run: |
-          echo $DATA > secrets.properties
-          echo $DATA > local.defaults.properties
-
-      # Load the MAPS API key from the secrets
-      - name: Load MAPS API key
-        # Load the secrets
-        env:
-          DATA: ${{ secrets.MAPS_API_KEY }}
-        run: |
-          echo $DATA > secrets.properties
-          echo $DATA > local.defaults.properties
+          echo $DATA | base64 -di > secrets.properties
+          echo $DATA | base64 -di > local.defaults.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
