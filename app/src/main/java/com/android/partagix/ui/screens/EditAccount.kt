@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -92,7 +93,7 @@ fun EditAccount(
   }
 
   // Menu for contact info : open or not
-  var contact by remember { mutableStateOf(false) }
+  var contact by remember { mutableStateOf(true) }
 
   // Set temporary values to real values when the screen is opened
   LaunchedEffect(key1 = user.id) { resetTempValues() }
@@ -185,7 +186,13 @@ fun EditAccount(
                             .testTag("contactInfo"),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Absolute.Left) {
-                      Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+                      if (contact) {
+                        Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
+                      } else {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = null)
+                      }
                       Text("Contact information ")
                     }
 
