@@ -153,7 +153,7 @@ fun LoanScreen(
                           itemList = loans.map { it.item },
                           users = loans.map { it.user },
                           loan = emptyList(),
-                          onClick = {
+                          onItemClick = {
                             itemViewModel.updateUiItem(it)
                             navigationActions.navigateTo(Route.VIEW_OTHERS_ITEM)
                           },
@@ -231,6 +231,7 @@ fun LoanScreen(
                           isExpandable = false,
                           isOutgoing = false,
                           wasExpanded = emptyList(),
+                          onOwnerClick = { /* todo */},
                       )
                     }
                   }

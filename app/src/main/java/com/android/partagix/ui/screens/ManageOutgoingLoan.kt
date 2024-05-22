@@ -103,8 +103,8 @@ fun ManageOutgoingLoan(
                     wasExpanded = uiState.expanded,
                     isOutgoing = true,
                     isClickable = false,
-                    onClick = {},
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
+                    onOwnerClick = { /* todo */ },
                     manageLoanViewModel = manageLoanViewModel,
                     modifier =
                         Modifier.padding(horizontal = 10.dp)

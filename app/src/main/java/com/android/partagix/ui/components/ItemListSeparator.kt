@@ -32,7 +32,7 @@ import com.android.partagix.model.user.User
  * @param title a string that represents the title of the column.
  * @param corner a string that represents the corner of the column.
  * @param isCornerClickable is a boolean that makes the corner text clickable or not
- * @param onClick a function that takes an item and returns a Unit.
+ * @param onItemClick a function that takes an item and returns a Unit.
  * @param onClickCorner a function that returns a Unit.
  * @param modifier a Modifier.
  */
@@ -44,13 +44,16 @@ fun ItemListColumn(
     loan: List<Loan>,
     title: String,
     corner: String,
-    isCornerClickable: Boolean,
-    onClick: (Item) -> Unit,
+    isCornerClickable: Boolean = false,
+    onItemClick: (Item) -> Unit = {},
     isClickable: Boolean,
-    onClickCorner: () -> Unit,
+    onClickCorner: () -> Unit = {},
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
     isOutgoing: Boolean,
+    isOwner: Boolean = false,
+    isLender: Boolean = false,
+    onOwnerClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel,
     isExpandable: Boolean,
 ) {
@@ -65,15 +68,22 @@ fun ItemListColumn(
                   fontSize = 18.sp,
                   fontWeight = FontWeight(800),
               ),
-          modifier = Modifier.fillMaxWidth(0.7f).padding(horizontal = 10.dp))
+          modifier = Modifier
+            .fillMaxWidth(0.7f)
+            .padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,
           modifier =
               if (isCornerClickable) {
-                Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() }
+                Modifier
+                  .fillMaxWidth()
+                  .padding(end = 10.dp)
+                  .clickable { onClickCorner() }
               } else {
-                Modifier.fillMaxWidth().padding(end = 10.dp)
+                Modifier
+                  .fillMaxWidth()
+                  .padding(end = 10.dp)
               })
     }
 
@@ -88,25 +98,32 @@ fun ItemListColumn(
           text = emptyText,
           textAlign = TextAlign.Center,
           style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 10.dp))
     } else {
       HorizontalDivider(
           color = MaterialTheme.colorScheme.outlineVariant,
-          modifier = Modifier.height(0.5.dp).fillMaxWidth())
+          modifier = Modifier
+            .height(0.5.dp)
+            .fillMaxWidth())
 
       ItemList(
           itemList = list,
           users = users,
           loan = loan,
-          onClick =
+          onItemClick =
               if (isClickable) {
-                onClick
+                onItemClick
               } else {
                 {}
               },
           isExpandable = isExpandable,
           wasExpanded = wasExpanded,
           isOutgoing = isOutgoing,
+          isOwner = isOwner,
+          isLender = isLender,
+          onOwnerClick = onOwnerClick,
           manageLoanViewModel = manageLoanViewModel,
           modifier = Modifier.fillMaxSize(),
           expandState = expandState,
