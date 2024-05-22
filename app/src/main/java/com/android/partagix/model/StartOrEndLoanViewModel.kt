@@ -38,10 +38,10 @@ class StartOrEndLoanViewModel(
         )
     db.setLoan(newLoan)
 
-    val borrowerToken = _uiState.value.borrower.fcmToken
-    Log.d(TAG, "onStart: $borrowerToken")
+    val lenderToken = _uiState.value.lender.fcmToken
+    Log.d(TAG, "onStart: $lenderToken")
 
-    if (borrowerToken != null) {
+    if (lenderToken != null) {
       val notification =
           Notification(
               title = "Loan started",
@@ -51,11 +51,35 @@ class StartOrEndLoanViewModel(
               navigationUrl = "${Route.VIEW_ITEM}/${_uiState.value.item.id}",
           )
 
-      notificationManager.sendNotification(notification, borrowerToken)
+      notificationManager.sendNotification(notification, lenderToken)
     }
   }
 
-  fun onCancel() {}
+  fun onCancel() {
+    val loan = _uiState.value.loan
+    val newLoan =
+        loan.copy(
+            state = LoanState.CANCELLED,
+            startDate = Date(),
+        )
+    db.setLoan(newLoan)
+
+    val lenderToken = _uiState.value.lender.fcmToken
+    Log.d(TAG, "onStart: $lenderToken")
+
+    if (lenderToken != null) {
+      val notification =
+          Notification(
+              title = "Loan started",
+              message = "Loan cancelled for ${_uiState.value.item.name}",
+              type = Notification.Type.NEW_INCOMING_REQUEST,
+              creationDate = Date(),
+              navigationUrl = "${Route.VIEW_ITEM}/${_uiState.value.item.id}",
+          )
+
+      notificationManager.sendNotification(notification, lenderToken)
+    }
+  }
 
   fun onFinish() {
     val loan = _uiState.value.loan
