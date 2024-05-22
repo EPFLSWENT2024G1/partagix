@@ -63,10 +63,14 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
+    modifier: Modifier = Modifier, // useful to add a testTag at call
     isOutgoing: Boolean = false,
+    isOwner: Boolean = false,
+    isLender: Boolean = false,
     wasExpanded: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
+    onItemClick: (Item) -> Unit = {},
     onOwnerClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
@@ -82,10 +86,15 @@ fun ItemUi(
 
   val itemHeight = 62.dp
 
-  var ownerModifier = Modifier.fillMaxWidth()
+  var mainRowModifier = Modifier.fillMaxWidth().height(itemHeight)
+  if (!isExpandable && onItemClick != {}) {
+    mainRowModifier = mainRowModifier.clickable { onItemClick(item) }
+  }
+
+  var ownerModifier = Modifier.padding(end = 1.dp)
   if (onOwnerClick != {}) {
     ownerModifier =
-        ownerModifier.clickable { onOwnerClick } // todo make sure of the type of onOwnerClick
+        ownerModifier.clickable { onOwnerClick(item) } // todo make sure of the type of onOwnerClick
   }
 
   var mainColumnModifier =
@@ -102,21 +111,21 @@ fun ItemUi(
           .testTag("manageLoanScreenItemCard")
 
   if (isExpandable) {
-    mainColumnModifier =
-        mainColumnModifier.clickable(
+    mainColumnModifier = mainColumnModifier
+          .testTag("ItemUiNotExpanded")
+          .clickable(
             onClick = {
               expanded = !expanded
               manageLoanViewModel.updateExpanded(index, expanded)
             })
   }
 
-  //  if (isExpandable) {
   Column(horizontalAlignment = Alignment.Start, modifier = mainColumnModifier) {
 
     // Core row
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-        modifier = Modifier.fillMaxWidth().height(itemHeight)) {
+        modifier = mainRowModifier) {
           val nameFontSize = 18.sp
           val smallerFontSize = 13.sp
 
@@ -130,7 +139,7 @@ fun ItemUi(
                       TextStyle(
                           fontSize = nameFontSize,
                           fontWeight = FontWeight(500),
-                          textAlign = TextAlign.Center,
+                          textAlign = TextAlign.Left,
                       ),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
@@ -144,18 +153,20 @@ fun ItemUi(
             Row(modifier = Modifier.fillMaxWidth()) {
 
               // Now available
-              Row(modifier = Modifier.fillMaxWidth(0.7f)) {
-                Text(
+              if (!isLender) {
+                Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                  Text(
                     text = "Now available" /*"Unavailable"*/,
                     // TODO implement the system of availability
                     style =
-                        TextStyle(
-                            fontSize = smallerFontSize,
-                            textAlign = TextAlign.Left,
-                        ),
+                    TextStyle(
+                      fontSize = smallerFontSize,
+                      textAlign = TextAlign.Left,
+                    ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                )
+                  )
+                }
               }
 
               // Quantity
@@ -176,32 +187,32 @@ fun ItemUi(
             Spacer(modifier = Modifier.height(4.dp))
 
             // Owner
-            Row(modifier = ownerModifier) {
+            if (!isOwner) {
+              Row(modifier = ownerModifier) {
 
-              // Owner name
-              Text(
+                // Owner name
+                Text(
                   text = user.name,
                   style =
-                      TextStyle(
-                          fontSize = smallerFontSize,
-                          textAlign = TextAlign.Left,
-                      ),
+                  TextStyle(
+                    fontSize = smallerFontSize,
+                    textAlign = TextAlign.Left,
+                  ),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
-              )
+                )
 
-              Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
-              // Owner rank
-              Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
-                RankStars(rank = user.rank)
+                // Owner rank
+                Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
+                  RankStars(rank = user.rank)
+                }
               }
             }
           }
 
-          Box(
-              modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant),
-          ) {
+          Box {
             AsyncImage(
                 model = item.imageId.absolutePath,
                 contentDescription = "fds",
