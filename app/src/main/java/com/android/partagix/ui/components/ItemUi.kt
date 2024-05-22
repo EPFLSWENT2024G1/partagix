@@ -52,22 +52,32 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 /**
- * Composable function to display an item, in a rectangle form.
+ * Composable function to display an item, as a row.
  *
  * @param item an Item instance to display.
  * @param user the user of the item
  * @param loan the possible loan of the item
+ * @param modifier Modifier only used to add parameters when calling
+ * @param isOutgoing Boolean to know if the loan is outgoing, and set according buttons when
+ *   expanded
+ * @param isOwner Boolean to know if the user is the owner of the item, and hide its name if so
+ * @param isLender Boolean to know if the user is the lender of the item, and hide the availability
+ * @param isExpandable Boolean to know if the item can be expanded
+ * @param expandState Boolean to know if the item is expanded
+ * @param onItemClick Function to be called when the item is clicked
+ * @param onOwnerClick Function to be called when the owner's name is clicked
+ * @param manageLoanViewModel ManageLoanViewModel to handle the loan
+ * @param index Int to know the index of the item
  */
 @Composable
 fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
-    modifier: Modifier = Modifier, // useful to add a testTag at call
+    modifier: Modifier = Modifier, // useful when calling the composable
     isOutgoing: Boolean = false,
     isOwner: Boolean = false,
     isLender: Boolean = false,
-    wasExpanded: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     onItemClick: (Item) -> Unit = {},

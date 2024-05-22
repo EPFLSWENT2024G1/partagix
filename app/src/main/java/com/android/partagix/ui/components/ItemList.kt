@@ -18,12 +18,24 @@ import com.android.partagix.model.user.User
 import java.util.Date
 
 /**
- * ItemList composable to display a scrollable list of items, which can execute the onClick when
- * clicked.
+ * ItemList composable to display a scrollable list of items.
  *
- * @param itemList a list of items to display.
- * @param onClick a lambda to handle item click events.
  * @param modifier Modifier to apply to this layout.
+ * @param itemList a list of items to display.
+ * @param users a list of users linked to an item.
+ * @param loan a list of loans linked to an item.
+ * @param isExpandable a boolean to determine if the item is expandable.
+ * @param isOutgoing a boolean to determine if the item is an outgoing loan and set according
+ *   buttons when expanded.
+ * @param isOwner a boolean to determine if the user is the owner of the item, to hide its name.
+ * @param isLender a boolean to determine if the user is the lender of the item, to hide the
+ *   availability.
+ * @param expandState a boolean to determine if the item is expanded.
+ * @param wasExpanded a list of booleans to determine which item was expanded.
+ * @param onItemClick a lambda to handle item click events.
+ * @param onOwnerClick a lambda to handle owner's name click events.
+ * @param manageLoanViewModel a ManageLoanViewModel to handle loan management.
+ * @param stickyHeader a lambda to display a sticky header.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -34,11 +46,14 @@ fun ItemList(
     loan: List<Loan>,
     isExpandable: Boolean,
     isOutgoing: Boolean,
+    isOwner: Boolean,
+    isLender: Boolean,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
-    onClick: (Item) -> Unit,
+    onItemClick: (Item) -> Unit,
+    onOwnerClick: (Item) -> Unit,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    stickyHeader: @Composable() (() -> Unit)? = null,
+    stickyHeader: @Composable (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
@@ -48,7 +63,6 @@ fun ItemList(
       val item = itemList[index]
 
       ItemUi(
-          isExpandable = isExpandable,
           item = item,
           user =
               if (users.isEmpty()) {
@@ -70,9 +84,13 @@ fun ItemList(
                   loan[index]
                 }
               },
+          isExpandable = isExpandable,
           index = index,
           isOutgoing = isOutgoing,
-          onItemClick = onClick,
+          isOwner = isOwner,
+          isLender = isLender,
+          onItemClick = onItemClick,
+          onOwnerClick = onOwnerClick,
           manageLoanViewModel = manageLoanViewModel,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
           modifier = modifier.testTag("ItemListItem"))
