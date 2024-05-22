@@ -292,9 +292,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
-        inventoryViewModel.getInventory()
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
-        loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
 
         HomeScreen(
