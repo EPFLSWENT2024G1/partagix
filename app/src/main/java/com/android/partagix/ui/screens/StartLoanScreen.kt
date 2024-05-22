@@ -1,9 +1,7 @@
 package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -91,25 +89,23 @@ fun StartLoanScreen(
                                   Icon(imageVector = Icons.Default.Close, contentDescription = "")
                                 }
                           }
-                      Box(
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .clickable(
-                                      onClick = {
-                                        itemViewModel.updateUiItem(item)
-                                        navigationActions.navigateTo(Route.VIEW_ITEM)
-                                        open = false
-                                      })
-                                  .testTag("item")) {
-                            ItemUi(
-                                item = item,
-                                user = lender,
-                                loan = loan,
-                                manageLoanViewModel = manageLoanViewModel,
-                            )
-                          }
+
+                      ItemUi(
+                          item = item,
+                          user = lender,
+                          loan = loan,
+                          manageLoanViewModel = manageLoanViewModel,
+                          isLender = true,
+                          modifier = Modifier.fillMaxWidth().testTag("item"),
+                          onItemClick = {
+                            itemViewModel.updateUiItem(item)
+                            navigationActions.navigateTo(Route.VIEW_ITEM)
+                            open = false
+                          },
+                          onOwnerClick = { /* todo add functions similarly to other screens */})
+
                       Row(
-                          modifier = Modifier.fillMaxWidth().padding(0.dp, 35.dp, 0.dp, 6.dp),
+                          modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 6.dp),
                           horizontalArrangement = Arrangement.Center) {
                             Button(
                                 modifier = Modifier.fillMaxWidth(0.5f).testTag("startButton"),

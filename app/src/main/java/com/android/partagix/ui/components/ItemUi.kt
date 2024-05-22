@@ -111,13 +111,14 @@ fun ItemUi(
           .testTag("manageLoanScreenItemCard")
 
   if (isExpandable) {
-    mainColumnModifier = mainColumnModifier
-          .testTag("ItemUiNotExpanded")
-          .clickable(
-            onClick = {
-              expanded = !expanded
-              manageLoanViewModel.updateExpanded(index, expanded)
-            })
+    mainColumnModifier =
+        mainColumnModifier
+            .testTag("ItemUiNotExpanded")
+            .clickable(
+                onClick = {
+                  expanded = !expanded
+                  manageLoanViewModel.updateExpanded(index, expanded)
+                })
   }
 
   Column(horizontalAlignment = Alignment.Start, modifier = mainColumnModifier) {
@@ -156,15 +157,15 @@ fun ItemUi(
               if (!isLender) {
                 Row(modifier = Modifier.fillMaxWidth(0.7f)) {
                   Text(
-                    text = "Now available" /*"Unavailable"*/,
-                    // TODO implement the system of availability
-                    style =
-                    TextStyle(
-                      fontSize = smallerFontSize,
-                      textAlign = TextAlign.Left,
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                      text = "Now available" /*"Unavailable"*/,
+                      // TODO implement the system of availability
+                      style =
+                          TextStyle(
+                              fontSize = smallerFontSize,
+                              textAlign = TextAlign.Left,
+                          ),
+                      maxLines = 1,
+                      overflow = TextOverflow.Ellipsis,
                   )
                 }
               }
@@ -192,14 +193,14 @@ fun ItemUi(
 
                 // Owner name
                 Text(
-                  text = user.name,
-                  style =
-                  TextStyle(
-                    fontSize = smallerFontSize,
-                    textAlign = TextAlign.Left,
-                  ),
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
+                    text = user.name,
+                    style =
+                        TextStyle(
+                            fontSize = smallerFontSize,
+                            textAlign = TextAlign.Left,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Spacer(modifier = Modifier.width(5.dp))

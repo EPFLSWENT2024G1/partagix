@@ -1,9 +1,7 @@
 package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -88,22 +86,21 @@ fun EndLoanScreen(
                                 }
                           }
 
-                      Box(
-                          modifier =
-                              Modifier.fillMaxWidth()
-                                  .padding(bottom = 35.dp)
-                                  .testTag("item")
-                                  .clickable(
-                                      onClick = {
-                                        itemViewModel.updateUiItem(item)
-                                        navigationActions.navigateTo(Route.VIEW_ITEM)
-                                        open = false
-                                      })) {
-                            ItemUi(item = item, user = lender, loan = loan)
-                          }
+                      ItemUi(
+                          item = item,
+                          user = lender,
+                          loan = loan,
+                          isOwner = true,
+                          modifier = Modifier.fillMaxWidth().testTag("item"),
+                          onItemClick = {
+                            itemViewModel.updateUiItem(item)
+                            navigationActions.navigateTo(Route.VIEW_ITEM)
+                            open = false
+                          })
 
                       Button(
-                          modifier = Modifier.fillMaxWidth().testTag("endLoanButton"),
+                          modifier =
+                              Modifier.fillMaxWidth().padding(top = 20.dp).testTag("endLoanButton"),
                           colors =
                               ButtonColors(
                                   containerColor = MaterialTheme.colorScheme.error,

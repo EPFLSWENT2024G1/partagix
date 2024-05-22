@@ -75,8 +75,7 @@ fun ItemList(
           onItemClick = onClick,
           manageLoanViewModel = manageLoanViewModel,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
-          modifier = modifier.testTag("ItemListItem")
-      )
+          modifier = modifier.testTag("ItemListItem"))
 
       Spacer(modifier = Modifier.height(8.dp))
     }
