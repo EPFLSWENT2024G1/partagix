@@ -98,8 +98,8 @@ jobs:
         env:
           DATA: ${{ secrets.SECRETS }}
         run: |
-          echo $DATA > secrets.properties
-          echo $DATA > local.defaults.properties
+          echo $DATA | base64 -di > secrets.properties
+          echo $DATA | base64 -di > local.defaults.properties
 
       - name: Grant execute permission for gradlew
         run: |
