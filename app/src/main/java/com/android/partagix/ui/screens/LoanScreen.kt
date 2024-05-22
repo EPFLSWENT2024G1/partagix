@@ -231,7 +231,7 @@ fun LoanScreen(
                           isExpandable = false,
                           isOutgoing = false,
                           wasExpanded = emptyList(),
-                          onOwnerClick = { /* todo */},
+                          onUserClick = { /* todo */},
                       )
                     }
                   }

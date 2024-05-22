@@ -125,7 +125,7 @@ fun HomeScreen(
                     corner = "See All",
                     isCornerClickable = true,
                     onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
-                    onOwnerClick = { /* todo */},
+                    onUserClick = { /* todo */},
                     isExpandable = true,
                     isOutgoing = false,
                     wasExpanded = uiState.expanded,

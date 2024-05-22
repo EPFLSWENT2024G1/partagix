@@ -104,7 +104,7 @@ fun ManageOutgoingLoan(
                     isOutgoing = true,
                     isClickable = false,
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
-                    onOwnerClick = { /* todo */ },
+                    onUserClick = { /* todo */},
                     manageLoanViewModel = manageLoanViewModel,
                     modifier =
                         Modifier.padding(horizontal = 10.dp)

@@ -53,7 +53,7 @@ fun ItemListColumn(
     isOutgoing: Boolean,
     isOwner: Boolean = false,
     isLender: Boolean = false,
-    onOwnerClick: (Item) -> Unit = {},
+    onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel,
     isExpandable: Boolean,
 ) {
@@ -68,22 +68,15 @@ fun ItemListColumn(
                   fontSize = 18.sp,
                   fontWeight = FontWeight(800),
               ),
-          modifier = Modifier
-            .fillMaxWidth(0.7f)
-            .padding(horizontal = 10.dp))
+          modifier = Modifier.fillMaxWidth(0.7f).padding(horizontal = 10.dp))
       Text(
           text = corner,
           textAlign = TextAlign.Right,
           modifier =
               if (isCornerClickable) {
-                Modifier
-                  .fillMaxWidth()
-                  .padding(end = 10.dp)
-                  .clickable { onClickCorner() }
+                Modifier.fillMaxWidth().padding(end = 10.dp).clickable { onClickCorner() }
               } else {
-                Modifier
-                  .fillMaxWidth()
-                  .padding(end = 10.dp)
+                Modifier.fillMaxWidth().padding(end = 10.dp)
               })
     }
 
@@ -98,15 +91,11 @@ fun ItemListColumn(
           text = emptyText,
           textAlign = TextAlign.Center,
           style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 10.dp))
+          modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 10.dp))
     } else {
       HorizontalDivider(
           color = MaterialTheme.colorScheme.outlineVariant,
-          modifier = Modifier
-            .height(0.5.dp)
-            .fillMaxWidth())
+          modifier = Modifier.height(0.5.dp).fillMaxWidth())
 
       ItemList(
           itemList = list,
@@ -123,7 +112,7 @@ fun ItemListColumn(
           isOutgoing = isOutgoing,
           isOwner = isOwner,
           isLender = isLender,
-          onOwnerClick = onOwnerClick,
+          onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           modifier = Modifier.fillMaxSize(),
           expandState = expandState,

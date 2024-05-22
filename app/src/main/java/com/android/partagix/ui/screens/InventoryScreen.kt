@@ -219,7 +219,7 @@ fun InventoryScreen(
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onOwnerClick = { /* todo */ },
+                  onUserClick = { /* todo */},
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = false,

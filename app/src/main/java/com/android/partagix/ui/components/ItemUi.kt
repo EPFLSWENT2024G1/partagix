@@ -65,7 +65,7 @@ import java.util.Date
  * @param isExpandable Boolean to know if the item can be expanded
  * @param expandState Boolean to know if the item is expanded
  * @param onItemClick Function to be called when the item is clicked
- * @param onOwnerClick Function to be called when the owner's name is clicked
+ * @param onUserClick Function to be called when the owner's name is clicked
  * @param manageLoanViewModel ManageLoanViewModel to handle the loan
  * @param index Int to know the index of the item
  */
@@ -81,7 +81,7 @@ fun ItemUi(
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     onItemClick: (Item) -> Unit = {},
-    onOwnerClick: (Item) -> Unit = {},
+    onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
 ) {
@@ -102,9 +102,9 @@ fun ItemUi(
   }
 
   var ownerModifier = Modifier.padding(end = 1.dp)
-  if (onOwnerClick != {}) {
+  if (onUserClick != {}) {
     ownerModifier =
-        ownerModifier.clickable { onOwnerClick(item) } // todo make sure of the type of onOwnerClick
+        ownerModifier.clickable { onUserClick(item) } // todo make sure of the type of onUserClick
   }
 
   var mainColumnModifier =

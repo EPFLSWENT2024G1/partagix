@@ -91,7 +91,7 @@ fun EndLoanScreen(
                           user = lender,
                           loan = loan,
                           modifier = Modifier.fillMaxWidth().testTag("item"),
-                          onOwnerClick = { /* todo */ },
+                          onUserClick = { /* todo */},
                           onItemClick = {
                             itemViewModel.updateUiItem(item)
                             navigationActions.navigateTo(Route.VIEW_ITEM)

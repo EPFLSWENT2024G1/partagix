@@ -33,7 +33,7 @@ import java.util.Date
  * @param expandState a boolean to determine if the item is expanded.
  * @param wasExpanded a list of booleans to determine which item was expanded.
  * @param onItemClick a lambda to handle item click events.
- * @param onOwnerClick a lambda to handle owner's name click events.
+ * @param onUserClick a lambda to handle owner's name click events.
  * @param manageLoanViewModel a ManageLoanViewModel to handle loan management.
  * @param stickyHeader a lambda to display a sticky header.
  */
@@ -51,7 +51,7 @@ fun ItemList(
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onItemClick: (Item) -> Unit,
-    onOwnerClick: (Item) -> Unit = {},
+    onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     stickyHeader: @Composable (() -> Unit)? = null,
 ) {
@@ -90,7 +90,7 @@ fun ItemList(
           isOwner = isOwner,
           isLender = isLender,
           onItemClick = onItemClick,
-          onOwnerClick = onOwnerClick,
+          onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
           modifier = modifier.testTag("ItemListItem"))

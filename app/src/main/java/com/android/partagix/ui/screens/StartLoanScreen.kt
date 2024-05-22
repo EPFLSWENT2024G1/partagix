@@ -102,7 +102,7 @@ fun StartLoanScreen(
                             navigationActions.navigateTo(Route.VIEW_ITEM)
                             open = false
                           },
-                          onOwnerClick = { /* todo */})
+                          onUserClick = { /* todo */})
 
                       Row(
                           modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 6.dp),
