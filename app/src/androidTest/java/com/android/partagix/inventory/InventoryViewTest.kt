@@ -121,7 +121,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
         performClick()
       }
 
-      coVerify { mockNavActions.navigateTo(Route.ACCOUNT) }
+      coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
     }
   }
 }
