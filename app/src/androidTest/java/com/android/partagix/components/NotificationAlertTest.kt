@@ -13,6 +13,8 @@ import com.android.partagix.ui.components.notificationAlert
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import io.mockk.mockk
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,11 +36,15 @@ class NotificationAlertTest {
 
     val navigationActions = mockk<NavigationActions>()
 
+    val latch = CountDownLatch(1)
+
     activityRule.scenario.onActivity { activity ->
       activity.myInitializationFunction(Route.ACCOUNT)
       notificationAlert(activity, notification, navigationActions)
+      activity.runOnUiThread { latch.countDown() }
     }
 
+    latch.await(5, TimeUnit.SECONDS)
     onView(withText("Test Title")).check(matches(isDisplayed()))
     onView(withText("Test Message")).check(matches(isDisplayed()))
   }
