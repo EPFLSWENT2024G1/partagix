@@ -2,10 +2,12 @@ package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,8 +45,8 @@ fun StartLoanScreen(
     startOrEndLoanViewModel: StartOrEndLoanViewModel,
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
+    modifier: Modifier = Modifier, // needed for testTags
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    modifier: Modifier = Modifier
 ) {
   val uiState by startOrEndLoanViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -67,7 +69,7 @@ fun StartLoanScreen(
                 Column(
                     modifier =
                         Modifier.fillMaxWidth()
-                            .padding(10.dp, 0.dp)
+                            .padding(10.dp, 0.dp) // todo maybe
                             .background(MaterialTheme.colorScheme.background)) {
                       Row(
                           horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,19 +92,21 @@ fun StartLoanScreen(
                                 }
                           }
 
-                      ItemUi(
-                          item = item,
-                          user = lender,
-                          loan = loan,
-                          manageLoanViewModel = manageLoanViewModel,
-                          isLender = true,
-                          modifier = Modifier.fillMaxWidth().testTag("item"),
-                          onItemClick = {
-                            itemViewModel.updateUiItem(item)
-                            navigationActions.navigateTo(Route.VIEW_ITEM)
-                            open = false
-                          },
-                          onUserClick = { /* todo */})
+                      Box(modifier = Modifier.height(62.dp)) {
+                        ItemUi(
+                            item = item,
+                            user = lender,
+                            loan = loan,
+                            manageLoanViewModel = manageLoanViewModel,
+                            isLender = true,
+                            modifier = Modifier.fillMaxWidth().testTag("item"),
+                            onItemClick = {
+                              itemViewModel.updateUiItem(item)
+                              navigationActions.navigateTo(Route.VIEW_ITEM)
+                              open = false
+                            },
+                            onUserClick = { /* todo */})
+                      }
 
                       Row(
                           modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 6.dp),

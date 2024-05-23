@@ -2,10 +2,12 @@ package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -86,17 +88,19 @@ fun EndLoanScreen(
                                 }
                           }
 
-                      ItemUi(
-                          item = item,
-                          user = lender,
-                          loan = loan,
-                          modifier = Modifier.fillMaxWidth().testTag("item"),
-                          onUserClick = { /* todo */},
-                          onItemClick = {
-                            itemViewModel.updateUiItem(item)
-                            navigationActions.navigateTo(Route.VIEW_ITEM)
-                            open = false
-                          })
+                      Box(modifier = Modifier.height(62.dp)) {
+                        ItemUi(
+                            item = item,
+                            user = lender,
+                            loan = loan,
+                            modifier = Modifier.fillMaxWidth().testTag("item"),
+                            onUserClick = { /* todo */},
+                            onItemClick = {
+                              itemViewModel.updateUiItem(item)
+                              navigationActions.navigateTo(Route.VIEW_ITEM)
+                              open = false
+                            })
+                      }
 
                       Button(
                           modifier =

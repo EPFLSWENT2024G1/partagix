@@ -86,7 +86,7 @@ fun ItemUi(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
 ) {
-  val modifier = modifier
+  //  val modifier = modifier
   val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
@@ -104,7 +104,7 @@ fun ItemUi(
   }
 
   if (isLender) {
-    availability = "Loan accepted but not started"
+    availability = "Accepted but not started"
   }
   if (isLender && (loan.state == LoanState.ONGOING)) { // normal case of borrowed item
     availability = ""
@@ -112,7 +112,7 @@ fun ItemUi(
 
   val itemHeight = 62.dp
 
-  var mainRowModifier = Modifier.fillMaxWidth().height(itemHeight)
+  var mainRowModifier = modifier.fillMaxWidth().height(itemHeight)
   if (!isExpandable && onItemClick != {}) {
     mainRowModifier = mainRowModifier.clickable { onItemClick(item) }
   }
@@ -124,7 +124,10 @@ fun ItemUi(
   }
 
   var mainColumnModifier =
-      Modifier.fillMaxWidth()
+      modifier
+          //          .fillMaxWidth()
+          //          .requiredHeight(itemHeight)
+          .fillMaxSize()
           .border(
               width = 1.dp,
               color = MaterialTheme.colorScheme.outlineVariant,
