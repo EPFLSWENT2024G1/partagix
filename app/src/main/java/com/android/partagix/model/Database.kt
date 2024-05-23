@@ -12,6 +12,7 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.utils.stripTime
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.auth
@@ -22,6 +23,8 @@ import com.google.firebase.storage.storage
 import getImageFromFirebaseStorage
 import getImagesFromFirebaseStorage
 import java.io.File
+import java.util.Calendar
+import java.util.Date
 
 class Database(database: FirebaseFirestore = Firebase.firestore) {
 
@@ -337,27 +340,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
     val itemSuccess: (List<Item>) -> Unit = { items ->
       getLoans { loans ->
-        val availableItems1 =
+        val availableItems =
             items.filter { item ->
               item.visibility == Visibility.PUBLIC && item.idUser != Authentication.getUser()?.uid
             }
-
-        val availableItems2 =
-            availableItems1.filter { item ->
-              loans.none { loan ->
-                loan.idItem == item.id &&
-                    (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING)
-              }
-            }
-        val availableItems3 =
-            availableItems2.filter { item ->
-              loans.none { loan ->
-                loan.idItem == item.id &&
-                    loan.state == LoanState.PENDING &&
-                    loan.idBorrower == Authentication.getUser()?.uid
-              }
-            }
-        onSuccess(availableItems3)
+        onSuccess(availableItems)
       }
     }
 
@@ -368,6 +355,37 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     }
   }
 
+  fun getItemUnavailability(itemId: String, onSuccess: (List<Date>) -> Unit) {
+    val myId = Authentication.getUser()?.uid
+    getLoans { loans ->
+      val itemLoans = loans.filter {it.idItem == itemId && it.idLender != myId}
+      val onGoingOrAcceptedLoans = itemLoans.filter {it.state == LoanState.ONGOING || it.state == LoanState.ACCEPTED}
+      val pendingAndMineLoan = itemLoans.filter {it.state == LoanState.PENDING && it.idBorrower == Authentication.getUser()?.uid}
+
+      val dates = mutableListOf<Date>()
+      for (loan in onGoingOrAcceptedLoans) {
+        dates.addAll(generateDatesBetween(loan.startDate, loan.endDate))
+      }
+
+      for (loan in pendingAndMineLoan) {
+        dates.addAll(generateDatesBetween(loan.startDate, loan.endDate))
+      }
+
+      onSuccess(dates)
+    }
+  }
+  fun generateDatesBetween(startDate: Date, endDate: Date): List<Date> {
+    val dates = mutableListOf<Date>()
+    val calendar = Calendar.getInstance()
+    calendar.time = startDate
+
+    while (!calendar.time.after(endDate)) {
+      dates.add(stripTime(calendar.time))
+      calendar.add(Calendar.DAY_OF_MONTH, 1)
+    }
+
+    return dates
+  }
   private fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id
