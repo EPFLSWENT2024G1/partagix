@@ -209,7 +209,8 @@ fun EditAccount(
                             verticalAlignment = Alignment.CenterVertically) {
                               Checkbox(
                                   checked = favorite[0],
-                                  onCheckedChange = { favorite[0] = !favorite[0] })
+                                  onCheckedChange = { favorite[0] = !favorite[0] },
+                                  modifier = Modifier.testTag("emailCheckbox"))
                               Text("Email", fontSize = 12.sp)
                             }
                         Spacer(modifier = Modifier.width(2.dp))
@@ -218,7 +219,8 @@ fun EditAccount(
                             verticalAlignment = Alignment.CenterVertically) {
                               Checkbox(
                                   checked = favorite[1],
-                                  onCheckedChange = { favorite[1] = !favorite[1] })
+                                  onCheckedChange = { favorite[1] = !favorite[1] },
+                                  modifier = Modifier.testTag("phoneNumberCheckbox"))
                               Text("Phone number", fontSize = 12.sp)
                             }
                         Spacer(modifier = Modifier.width(2.dp))
@@ -227,7 +229,8 @@ fun EditAccount(
                             verticalAlignment = Alignment.CenterVertically) {
                               Checkbox(
                                   checked = favorite[2],
-                                  onCheckedChange = { favorite[2] = !favorite[2] })
+                                  onCheckedChange = { favorite[2] = !favorite[2] },
+                                  modifier = Modifier.testTag("telegramCheckbox"))
                               Text("Telegram", fontSize = 12.sp)
                             }
                       }
@@ -244,7 +247,7 @@ fun EditAccount(
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
                       modifier =
-                          Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("phone number"),
+                          Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("phoneNumber"),
                       value = phoneNumber,
                       onValueChange = { phoneNumber = it },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
