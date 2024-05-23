@@ -16,6 +16,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -38,10 +39,13 @@ class StartOrEndLoanViewModelTests {
 
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
-    assert(startOrEndLoanViewModel.uiState.value.loan == emptyLoan)
-    assert(startOrEndLoanViewModel.uiState.value.item == emptyItem)
-    assert(startOrEndLoanViewModel.uiState.value.borrower == emptyUser)
-    assert(startOrEndLoanViewModel.uiState.value.lender == emptyUser)
+    assertEquals(
+        emptyLoan,
+        startOrEndLoanViewModel.uiState.value.loan,
+    )
+    assertEquals(emptyItem, startOrEndLoanViewModel.uiState.value.item)
+    assertEquals(emptyUser, startOrEndLoanViewModel.uiState.value.borrower)
+    assertEquals(emptyUser, startOrEndLoanViewModel.uiState.value.lender)
   }
 
   @Test
@@ -50,7 +54,7 @@ class StartOrEndLoanViewModelTests {
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.ONGOING)
+          assertEquals(LoanState.ONGOING, loan.state)
         }
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
@@ -64,7 +68,7 @@ class StartOrEndLoanViewModelTests {
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.ONGOING)
+          assertEquals(LoanState.ONGOING, loan.state)
         }
 
     every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
@@ -96,7 +100,7 @@ class StartOrEndLoanViewModelTests {
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.FINISHED)
+          assertEquals(LoanState.FINISHED, loan.state)
         }
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
