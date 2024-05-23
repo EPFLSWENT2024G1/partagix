@@ -352,10 +352,12 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
+        itemViewModel.getAvailabilityDates()
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
       }
       composable(Route.VIEW_OTHERS_ITEM) {
         itemViewModel.getUser()
+        itemViewModel.getAvailabilityDates()
         InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
       }
 
@@ -369,7 +371,7 @@ class App(
                 itemViewModel.updateUiItem(item)
                 itemViewModel.getUser()
               }
-
+              itemViewModel.getAvailabilityDates()
               InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
             } else {
               // Fail safe defaults principle
