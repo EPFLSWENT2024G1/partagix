@@ -198,7 +198,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       distanceFilter { assertIsDisplayed() }
       qtyFilter { assertIsDisplayed() }
       itemListView { assertIsDisplayed() }
-      itemListViewItem { assertIsDisplayed() }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
     }
@@ -291,7 +290,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           isMapLoadingOptimized = false)
     }
 
-    onComposeScreen<LoanScreen>(composeTestRule) { itemListViewItem { assertIsDisplayed() } }
+    onComposeScreen<LoanScreen>(composeTestRule) { itemListView { assertIsDisplayed() } }
   }
 
   @Test
@@ -429,7 +428,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         assertIsDisplayed()
         performClick()
       }
-      itemListViewItem {
+        itemListView {
         assertIsDisplayed()
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
@@ -554,7 +553,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
-      itemListViewItem {
+        itemListView {
         assertIsDisplayed()
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
