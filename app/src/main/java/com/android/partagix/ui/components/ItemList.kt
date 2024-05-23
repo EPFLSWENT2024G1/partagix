@@ -66,10 +66,10 @@ fun ItemList(
           item = item,
           user =
               if (users.isEmpty()) {
-                User("", "noname", "", "norank", Inventory("", emptyList()))
+                User("", "noname", "", "0", Inventory("", emptyList()))
               } else {
                 if (users.size <= index) {
-                  User("", "noname", "", "norank", Inventory("", emptyList()))
+                  User("", "noname", "", "0", Inventory("", emptyList()))
                 } else {
                   users[index]
                 }

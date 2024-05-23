@@ -86,6 +86,7 @@ fun ItemUi(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
 ) {
+  val modifier = modifier
   val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
@@ -271,7 +272,7 @@ fun ItemUi(
                 content = {
                   Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
                   Spacer(Modifier.width(2.dp))
-                  Text(text = "Cancel")
+                  Text(text = "Reject")
                 },
                 colors =
                     ButtonColors(
