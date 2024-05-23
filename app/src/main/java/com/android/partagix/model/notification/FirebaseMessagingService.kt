@@ -15,6 +15,7 @@ import com.android.partagix.R
 import com.android.partagix.model.Database
 import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
+import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -31,10 +32,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 
-class FirebaseMessagingService(private val db: Database = Database()) : FirebaseMessagingService() {
+class FirebaseMessagingService(
+    private val db: Database = Database(),
+    private val navigationActions: NavigationActions? = App.getNavigationActions()
+) : FirebaseMessagingService() {
   private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
   private var context = MainActivity.getContext()
-  private var navigationActions = App.getNavigationActions()
 
   init {
     Log.d(TAG, "context: $context")
@@ -88,7 +91,10 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     val data = remoteMessage.data
     val notificationBody = remoteMessage.notification
 
-    Log.d(TAG, "From: ${remoteMessage.from}, data: $data, notification: $notificationBody")
+    Log.d(
+        TAG,
+        "From: ${remoteMessage.from}, data: $data, notification: ${notificationBody?.title ?: "empty title"}")
+    Log.d(TAG, "Message data payload: $data")
 
     if (data.isNotEmpty() && notificationBody != null) {
       val date =
@@ -309,8 +315,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
    * @param content The content of the notification.
    * @param to The FCM token of the user to whom the notification is being sent.
    */
-  fun sendNotification(content: Notification, to: String) {
-    if (context == null) {
+  fun sendNotification(content: Notification, to: String?) {
+    if (context == null || to == null) {
       Log.e(TAG, "Context is not set, cannot send notification")
       return
     }
@@ -333,6 +339,8 @@ class FirebaseMessagingService(private val db: Database = Database()) : Firebase
     body.put("notification", notificationField)
     body.put("data", data)
     body.put("to", to)
+
+    Log.d(TAG, "Sending notification: $body")
 
     sendPostRequest(FCM_SERVER_URL, body.toString())
   }

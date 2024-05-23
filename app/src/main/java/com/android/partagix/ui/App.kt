@@ -101,7 +101,8 @@ class App(
       )
   private val userViewModel = UserViewModel(db = db)
   private val otherUserViewModel = UserViewModel(db = db)
-  private val evaluationViewModel = EvaluationViewModel(db = db)
+  private val evaluationViewModel =
+      EvaluationViewModel(db = db, notificationManager = notificationManager)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel =
       StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
@@ -294,9 +295,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
-        inventoryViewModel.getInventory()
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
-        loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
 
         HomeScreen(
@@ -312,6 +311,7 @@ class App(
               userViewModel.updateLocation(location)
             }
           }
+          loanViewModel.getAvailableLoans()
           LoanScreen(
               navigationActions = navigationActions,
               loanViewModel = loanViewModel,
