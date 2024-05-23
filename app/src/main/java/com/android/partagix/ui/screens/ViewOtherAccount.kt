@@ -57,7 +57,11 @@ fun ViewOtherAccount(
         TopAppBar(
             modifier = Modifier.fillMaxWidth().testTag("topBar"),
             title = {
-              Text(user.name + "'s Profile", modifier = Modifier.fillMaxWidth().testTag("title"), maxLines = 1, overflow = TextOverflow.Ellipsis)
+              Text(
+                  user.name + "'s Profile",
+                  modifier = Modifier.fillMaxWidth().testTag("title"),
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis)
             },
             navigationIcon = {
               IconButton(
