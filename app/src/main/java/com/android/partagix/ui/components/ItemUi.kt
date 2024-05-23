@@ -47,6 +47,7 @@ import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
+import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -93,6 +94,20 @@ fun ItemUi(
       }
   var expanded by remember { mutableStateOf(expandState) }
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+  val available = true // TODO
+  var availability = "Now available"
+
+  if (!available) {
+    availability = "Unavailable"
+  }
+
+  if (isLender) {
+    availability = "Loan accepted but not started"
+  }
+  if (isLender && (loan.state == LoanState.ONGOING)) { // normal case of borrowed item
+    availability = ""
+  }
 
   val itemHeight = 62.dp
 
@@ -163,21 +178,18 @@ fun ItemUi(
             // Details
             Row(modifier = Modifier.fillMaxWidth()) {
 
-              // Now available
-              if (!isLender) {
-                Row(modifier = Modifier.fillMaxWidth(0.7f)) {
-                  Text(
-                      text = "Now available" /*"Unavailable"*/,
-                      // TODO implement the system of availability
-                      style =
-                          TextStyle(
-                              fontSize = smallerFontSize,
-                              textAlign = TextAlign.Left,
-                          ),
-                      maxLines = 1,
-                      overflow = TextOverflow.Ellipsis,
-                  )
-                }
+              // Availability
+              Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+                Text(
+                    text = availability,
+                    style =
+                        TextStyle(
+                            fontSize = smallerFontSize,
+                            textAlign = TextAlign.Left,
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
               }
 
               // Quantity
