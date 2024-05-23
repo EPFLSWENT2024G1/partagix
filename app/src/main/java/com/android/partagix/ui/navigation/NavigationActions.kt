@@ -21,6 +21,7 @@ object Route {
   const val LOAN = "Loan"
   const val BORROW = "Borrow"
   const val ACCOUNT = "Account"
+  const val OTHER_ACCOUNT = "OtherAccount"
   const val EDIT_ACCOUNT = "EditAccount"
   const val CREATE_ITEM = "CreateItem"
   const val EDIT_ITEM = "EditItem"

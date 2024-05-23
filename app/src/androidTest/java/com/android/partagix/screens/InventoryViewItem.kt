@@ -11,4 +11,5 @@ class InventoryViewItemScreen(semanticsProvider: SemanticsNodeInteractionsProvid
 
   val topBar: KNode = onNode { hasTestTag("inventoryViewItemTopBar") }
   val bottomBar: KNode = onNode { hasTestTag("inventoryViewItemBottomBar") }
+  val ownerField: KNode = onNode { hasTestTag("ownerField") }
 }
