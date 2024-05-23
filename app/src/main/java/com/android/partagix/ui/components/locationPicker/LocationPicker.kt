@@ -36,7 +36,7 @@ fun LocationPicker(
       onValueChange = { onTextChanged(it) },
       label = { Text(text = "Location", color = MaterialTheme.colorScheme.onBackground) },
       modifier =
-          Modifier.fillMaxWidth().padding(8.dp).testTag("addressField").onFocusChanged {
+          Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("addressField").onFocusChanged {
             focused = it.isFocused
             if (!focused) {
               onTextChanged(loc?.locationName ?: location)

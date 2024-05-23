@@ -165,7 +165,8 @@ fun EditAccount(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("usernameField"),
                     value = tempUsername,
                     onValueChange = { tempUsername = it },
                     label = { Text("username") })
@@ -178,10 +179,10 @@ fun EditAccount(
                     onTextChanged = { tempAddress = it },
                     onLocationLookup = { locationViewModel.getLocation(it, loc) })
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier =
-                        Modifier.padding(8.dp)
+                        Modifier.padding(16.dp, 0.dp)
                             .clickable { contact = !contact }
                             .testTag("contactInfo"),
                     verticalAlignment = Alignment.CenterVertically,
@@ -197,11 +198,11 @@ fun EditAccount(
                     }
 
                 if (contact) {
-                  Spacer(modifier = Modifier.height(4.dp))
-                  Text(text = "Favorite contact methods", modifier = Modifier.padding(8.dp, 0.dp))
+                  Spacer(modifier = Modifier.height(8.dp))
+                  Text(text = "Favorite contact methods", modifier = Modifier.padding(16.dp, 0.dp))
                   Spacer(modifier = Modifier.height(4.dp))
                   Row(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp),
+                      modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp),
                       horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
                         Row(
                             horizontalArrangement = Arrangement.Absolute.Left,
@@ -231,32 +232,36 @@ fun EditAccount(
                             }
                       }
 
-                  Spacer(modifier = Modifier.height(8.dp))
+                  Spacer(modifier = Modifier.height(10.dp))
 
                   TextField(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("email"),
+                      modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("email"),
                       value = email,
                       onValueChange = { email = it },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                       label = { Text("email") })
 
-                  Spacer(modifier = Modifier.height(8.dp))
+                  Spacer(modifier = Modifier.height(10.dp))
                   TextField(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("phone number"),
+                      modifier =
+                          Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("phone number"),
                       value = phoneNumber,
                       onValueChange = { phoneNumber = it },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                       label = { Text("phoneNumber") })
-                  Spacer(modifier = Modifier.height(8.dp))
+                  Spacer(modifier = Modifier.height(10.dp))
                   TextField(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("telegram"),
+                      modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("telegram"),
                       value = telegram,
                       onValueChange = { telegram = it },
                       label = { Text("telegram") })
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("actionButtons"),
                     horizontalArrangement = Arrangement.Absolute.Center) {
                       Spacer(modifier = Modifier.width(8.dp))
                       Button(
