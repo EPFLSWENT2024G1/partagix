@@ -90,9 +90,30 @@ class UserViewModel(
     return FirebaseAuth.getInstance().currentUser?.uid
   }
 
+  /** Get the user's comments from the database and update the UI state when done */
+  fun getComments() {
+    database.getComments(_uiState.value.user.id) { comments ->
+      _uiState.value =
+          _uiState.value.copy(
+              comments = comments,
+          )
+    }
+  }
+
   companion object {
     private const val TAG = "UserViewModel"
   }
 }
 
-data class UserUIState(val user: User, val location: Location? = null)
+/**
+ * UI state for the user
+ *
+ * @param user the user
+ * @param location the location of the user
+ * @param comments the comments of the user, in the form: (comment's author, message)
+ */
+data class UserUIState(
+    val user: User,
+    val location: Location? = null,
+    val comments: List<Pair<User, String>> = emptyList()
+)

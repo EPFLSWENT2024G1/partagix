@@ -703,10 +703,10 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    *
    * @param userId the user's id
    * @param onSuccess the function that will be called with the resulting list containing pairs
-   *   (comment's author name, comment)
+   *   (comment's author, comment)
    */
-  fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
-    val ret = mutableListOf<Pair<String, String>>()
+  fun getComments(userId: String, onSuccess: (List<Pair<User, String>>) -> Unit) {
+    val ret = mutableListOf<Pair<User, String>>()
 
     getUsers { users ->
       getLoans { loans ->
@@ -728,12 +728,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
         loanBorrower.forEach { loan ->
           val user = users.first { it.id == loan.idLender }
-          ret.add(Pair(user.name, loan.commentBorrower))
+          ret.add(Pair(user, loan.commentBorrower))
         }
 
         loanLender.forEach { loan ->
           val user = users.first { it.id == loan.idBorrower }
-          ret.add(Pair(user.name, loan.commentLender))
+          ret.add(Pair(user, loan.commentLender))
         }
         onSuccess(ret)
       }

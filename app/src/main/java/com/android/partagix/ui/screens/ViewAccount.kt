@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -37,6 +38,7 @@ import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
+import com.android.partagix.ui.components.UserComment
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
@@ -168,13 +170,19 @@ fun ViewAccount(
                         modifier = Modifier.weight(1f).testTag("inventoryButton")) {
                           Text("See inventory")
                         }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = { /*TODO: friends*/},
-                        modifier = Modifier.weight(1f).testTag("friendButton")) {
-                          Text("Add Friends [not yet implemented]")
-                        }
                   }
+              Spacer(modifier = Modifier.height(16.dp))
+              val commentList = uiState.value.comments
+              if (commentList.isEmpty()) {
+                Text("No comments yet", modifier = Modifier.testTag("noComments"))
+              } else {
+                LazyColumn {
+                  items(commentList.size) { index ->
+                    val comment = commentList[index]
+                    UserComment(comment.first, comment.second, userViewModel, navigationActions)
+                  }
+                }
+              }
             }
       }
 }
