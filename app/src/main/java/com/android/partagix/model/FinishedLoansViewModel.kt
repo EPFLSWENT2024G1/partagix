@@ -34,7 +34,7 @@ class FinishedLoansViewModel(db: Database = Database()) : ViewModel() {
   }
 
   fun getFinishedLoan() {
-    
+
     val user = Authentication.getUser()
 
     if (user == null) {
