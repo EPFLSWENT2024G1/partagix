@@ -33,7 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -141,7 +140,7 @@ fun InventoryScreen(
                           ),
                       modifier = modifier.padding(start = 10.dp))
                   Text(
-                      text = "Historic",
+                      text = "History",
                       fontSize = 12.sp,
                       modifier =
                           Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })

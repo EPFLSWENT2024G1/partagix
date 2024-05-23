@@ -78,7 +78,7 @@ fun OldLoansScreen(
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
-            title = { Text(text = "Loan Historic") },
+            title = { Text(text = "Loan History") },
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
