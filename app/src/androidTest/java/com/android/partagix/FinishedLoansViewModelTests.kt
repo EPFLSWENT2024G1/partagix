@@ -151,4 +151,14 @@ class FinishedLoansViewModelTests {
     // check that the loans are empty when there is no user
     assert(finishedLoansViewModel.uiState.value.loans.isEmpty())
   }
+
+  @Test
+  fun updateLoan() {
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "Cedric"
+    val loan1modified = loan1.copy(commentBorrower = "new comment")
+    finishedLoansViewModel.getFinishedLoan()
+    finishedLoansViewModel.updateLoan(loan1modified)
+    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, emptyItem)))
+  }
 }
