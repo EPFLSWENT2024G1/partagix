@@ -83,6 +83,7 @@ fun ViewOtherAccount(
                     .padding(it)
                     .verticalScroll(rememberScrollState())
                     .testTag("mainContent")) {
+              Spacer(modifier = Modifier.height(16.dp))
               Box(
                   modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
                   contentAlignment = Alignment.Center) {
