@@ -65,12 +65,12 @@ class StartOrEndLoanViewModel(
     db.setLoan(newLoan)
 
     val lenderToken = _uiState.value.lender.fcmToken
-    Log.d(TAG, "onStart: $lenderToken")
+    Log.d(TAG, "onCancel: $lenderToken")
 
     if (lenderToken != null) {
       val notification =
           Notification(
-              title = "Loan started",
+              title = "Loan cancelled",
               message = "Loan cancelled for ${_uiState.value.item.name}",
               type = Notification.Type.NEW_INCOMING_REQUEST,
               creationDate = Date(),
