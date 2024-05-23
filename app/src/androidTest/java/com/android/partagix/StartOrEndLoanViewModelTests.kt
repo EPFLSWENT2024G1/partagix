@@ -45,7 +45,7 @@ class StartOrEndLoanViewModelTests {
   }
 
   @Test
-  fun testOnStartNullBorrowerToken() {
+  fun testOnStartNullLenderToken() {
 
     every { db.setLoan(any()) } answers
         {
@@ -59,7 +59,7 @@ class StartOrEndLoanViewModelTests {
   }
 
   @Test
-  fun testOnStartValidBorrowerToken() {
+  fun testOnStartValidLenderToken() {
 
     every { db.setLoan(any()) } answers
         {
@@ -70,11 +70,11 @@ class StartOrEndLoanViewModelTests {
     every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
 
     val token = "token"
-    val borrower = emptyUser.copy(fcmToken = token)
+    val lender = emptyUser.copy(fcmToken = token)
     val item = emptyItem.copy(id = "id")
 
     startOrEndLoanViewModel.update(
-        StartOrEndLoanUIState(emptyLoan, item = item, borrower = borrower, emptyUser))
+        StartOrEndLoanUIState(emptyLoan, item = item, borrower = emptyUser, lender = lender))
 
     startOrEndLoanViewModel.onStart()
 
