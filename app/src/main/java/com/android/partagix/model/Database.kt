@@ -72,11 +72,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     users.document(idUser).get().addOnSuccessListener {
       val user = it.data
       if (user != null) {
+        Log.d(TAG, user.toString())
         getUserInventory(idUser) { inventory ->
           val name = user["name"] as String
           val addr = user["addr"] as String
           val rank = user["rank"] as String
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage")))
+          val fcmToken = user["fcmToken"] as String?
+          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), fcmToken))
         }
       } else {
         onNoUser()
@@ -89,11 +91,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       val onSuccessImage = { localFile: File ->
         val user = it.data
         if (user != null) {
+          Log.d(TAG, user.toString())
           getUserInventory(idUser) { inventory ->
             val name = user["name"] as String
             val addr = user["addr"] as String
             val rank = user["rank"] as String
-            onSuccess(User(idUser, name, addr, rank, inventory, localFile))
+            val fcmToken = user["fcmToken"] as String?
+            onSuccess(User(idUser, name, addr, rank, inventory, localFile, fcmToken))
           }
         } else {
           onNoUser()

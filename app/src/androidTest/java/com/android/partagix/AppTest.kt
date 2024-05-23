@@ -47,7 +47,7 @@ class AppTest {
   @Mock private lateinit var mockFusedLocationProviderClient: FusedLocationProviderClient
 
   private lateinit var app: App
-  private val newToken = "newToken"
+  private val newToken = "new_token"
 
   @Before
   fun setup() {
@@ -62,6 +62,7 @@ class AppTest {
     mockAuth = spyk(Authentication(mockActivity, mockk()))
 
     mockDatabase = spyk(Database())
+    every { mockDatabase.createUser(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
