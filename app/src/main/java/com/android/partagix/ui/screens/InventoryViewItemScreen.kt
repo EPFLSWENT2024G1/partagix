@@ -56,7 +56,6 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.utils.stripTime
 import com.google.firebase.auth.FirebaseAuth
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -81,18 +80,18 @@ fun InventoryViewItemScreen(
   val unavailableDates = uiState.value.unavailableDates
   val datePickerState =
       DatePickerState(
-        locale = Locale.getDefault(),
-        selectableDates = object : SelectableDates {
-          override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            val currentDate = stripTime(Date(utcTimeMillis))
-            return unavailableDates.none { stripTime(it) == currentDate }
-          }
+          locale = Locale.getDefault(),
+          selectableDates =
+              object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                  val currentDate = stripTime(Date(utcTimeMillis))
+                  return unavailableDates.none { stripTime(it) == currentDate }
+                }
 
-          override fun isSelectableYear(year: Int): Boolean {
-            return true
-          }
-        }
-      )
+                override fun isSelectableYear(year: Int): Boolean {
+                  return true
+                }
+              })
 
   var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
@@ -205,7 +204,6 @@ fun InventoryViewItemScreen(
 
                           IconButton(
                               onClick = { isCalendarVisible = true },
-
                               content = {
                                 Icon(Icons.Default.DateRange, contentDescription = null)
                               })
@@ -271,30 +269,22 @@ fun InventoryViewItemScreen(
                 }
               }
             }
-    if (isCalendarVisible) {
-      DatePickerDialog(
-        modifier = Modifier.testTag("endDatePicker"),
-        onDismissRequest = { isCalendarVisible = false },
-        confirmButton = {
-          TextButton(
-            modifier = Modifier.testTag("endDateOk"),
-            onClick = {
-
-            }) {
-            Text("OK")
-          }
-        },
-        dismissButton = {
-          TextButton(
-            modifier = Modifier.testTag("endDateCancel"),
-            onClick = { isCalendarVisible = false }) {
-            Text("Cancel")
-          }
-        }) {
-        DatePicker(datePickerState)
+        if (isCalendarVisible) {
+          DatePickerDialog(
+              modifier = Modifier.testTag("endDatePicker"),
+              onDismissRequest = { isCalendarVisible = false },
+              confirmButton = {
+                TextButton(modifier = Modifier.testTag("endDateOk"), onClick = {}) { Text("OK") }
+              },
+              dismissButton = {
+                TextButton(
+                    modifier = Modifier.testTag("endDateCancel"),
+                    onClick = { isCalendarVisible = false }) {
+                      Text("Cancel")
+                    }
+              }) {
+                DatePicker(datePickerState)
+              }
+        }
       }
-    }
-
-  }
 }
-

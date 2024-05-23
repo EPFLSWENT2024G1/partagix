@@ -119,10 +119,7 @@ class ManageLoanViewModel(
       val otherLoan = uiState.value.loans[i]
       val otherLoanDates = database.generateDatesBetween(otherLoan.startDate, otherLoan.endDate)
       val intersection = loanDates.intersect(otherLoanDates.toSet())
-      if (
-        loan.idItem == otherLoan.idItem &&
-        loan.id != otherLoan.id &&
-        intersection.isNotEmpty()){
+      if (loan.idItem == otherLoan.idItem && loan.id != otherLoan.id && intersection.isNotEmpty()) {
 
         loansToDeclineWithIndex.add(Pair(otherLoan, i - count))
         count += 1

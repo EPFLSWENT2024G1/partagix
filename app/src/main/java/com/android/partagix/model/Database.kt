@@ -358,9 +358,13 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun getItemUnavailability(itemId: String, onSuccess: (List<Date>) -> Unit) {
     val myId = Authentication.getUser()?.uid
     getLoans { loans ->
-      val itemLoans = loans.filter {it.idItem == itemId && it.idLender != myId}
-      val onGoingOrAcceptedLoans = itemLoans.filter {it.state == LoanState.ONGOING || it.state == LoanState.ACCEPTED}
-      val pendingAndMineLoan = itemLoans.filter {it.state == LoanState.PENDING && it.idBorrower == Authentication.getUser()?.uid}
+      val itemLoans = loans.filter { it.idItem == itemId && it.idLender != myId }
+      val onGoingOrAcceptedLoans =
+          itemLoans.filter { it.state == LoanState.ONGOING || it.state == LoanState.ACCEPTED }
+      val pendingAndMineLoan =
+          itemLoans.filter {
+            it.state == LoanState.PENDING && it.idBorrower == Authentication.getUser()?.uid
+          }
 
       val dates = mutableListOf<Date>()
       for (loan in onGoingOrAcceptedLoans) {
@@ -374,6 +378,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       onSuccess(dates)
     }
   }
+
   fun generateDatesBetween(startDate: Date, endDate: Date): List<Date> {
     val dates = mutableListOf<Date>()
     val calendar = Calendar.getInstance()
@@ -386,6 +391,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
 
     return dates
   }
+
   private fun getNewUid(collection: CollectionReference): String {
     val uidDocument = collection.document()
     return uidDocument.id

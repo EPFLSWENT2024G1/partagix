@@ -26,9 +26,9 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.util.Date
 
 const val DEFAULT_CATEGORY_ID = "GpWpDVqb1ep8gm2rb1WL"
 const val DEFAULT_CATEGORY_NAME = "Others"
@@ -141,15 +141,13 @@ class ItemViewModel(
     }
   }
 
-
-
-
   companion object {
     private const val TAG = "ItemViewModel"
   }
 }
 
 data class ItemUIState(
-  val item: Item,
-  val user: User,
-  val unavailableDates: List<Date> = emptyList())
+    val item: Item,
+    val user: User,
+    val unavailableDates: List<Date> = emptyList()
+)
