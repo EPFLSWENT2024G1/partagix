@@ -193,11 +193,18 @@ class LoanViewModelTests {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "user1"
 
+    val availableItems = listOf(item5)
+
+    every { db.getAvailableItems(any(), any()) } answers
+        {
+          secondArg<(List<Item>) -> Unit>().invoke(availableItems)
+        }
+
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
 
-    verify { db.getLoans(any()) }
+    verify { db.getAvailableItems(any(), any()) }
 
     assert(loanViewModel.uiState.value.availableLoans.size == 1)
     assert(loanViewModel.uiState.value.availableLoans.any { it.item == item5 })
@@ -205,6 +212,14 @@ class LoanViewModelTests {
 
   @Test
   fun testGetAvailableLoansWithUser5() {
+
+    val availableItems = listOf(item1)
+
+    every { db.getAvailableItems(any(), any()) } answers
+        {
+          secondArg<(List<Item>) -> Unit>().invoke(availableItems)
+        }
+
     val mockUser = mockk<FirebaseUser>()
 
     mockkObject(Authentication.Companion)
@@ -214,7 +229,7 @@ class LoanViewModelTests {
     loanViewModel.getAvailableLoans(latch = latch)
     latch.await()
 
-    verify { db.getLoans(any()) }
+    verify { db.getAvailableItems(any(), any()) }
 
     Log.d(TAG, loanViewModel.uiState.value.availableLoans.toString())
     assert(loanViewModel.uiState.value.availableLoans.size == 1)

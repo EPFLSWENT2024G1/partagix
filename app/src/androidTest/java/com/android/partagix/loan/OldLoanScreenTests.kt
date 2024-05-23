@@ -19,13 +19,17 @@ import com.android.partagix.model.category.Category
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.visibility.Visibility
 import com.android.partagix.screens.OldLoansScreen
 import com.android.partagix.ui.screens.ExpandableCard
 import com.android.partagix.ui.screens.OldLoansScreen
 import com.google.firebase.auth.FirebaseUser
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import java.util.Date
@@ -41,6 +45,9 @@ class OldLoanScreenTests {
   lateinit var evaluationViewModel: EvaluationViewModel
   lateinit var db: Database
   lateinit var mockUser: FirebaseUser
+
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
+
   val loan1 =
       Loan(
           "",
@@ -90,10 +97,14 @@ class OldLoanScreenTests {
 
     every { db.getUser(any(), any(), any()) } returns Unit
 
+    mockNotificationManager = mockk()
+    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+
     finishedLoansViewModel = FinishedLoansViewModel(db)
     finishedLoansViewModel.getFinishedLoan()
 
-    evaluationViewModel = EvaluationViewModel(db = db)
+    evaluationViewModel =
+        EvaluationViewModel(db = db, notificationManager = mockNotificationManager)
   }
 
   @Test
@@ -114,6 +125,7 @@ class OldLoanScreenTests {
       composeTestRule.onNodeWithText("Infos").assertHasClickAction()
       composeTestRule.onNodeWithText("Evaluate").assertIsDisplayed()
       composeTestRule.onNodeWithText("Evaluate").assertHasClickAction()
+      composeTestRule.onNodeWithText("Evaluate").performClick()
     }
   }
 

@@ -141,7 +141,7 @@ fun InventoryScreen(
                           ),
                       modifier = modifier.padding(start = 10.dp))
                   Text(
-                      text = "Historic",
+                      text = "History",
                       fontSize = 12.sp,
                       modifier =
                           Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })

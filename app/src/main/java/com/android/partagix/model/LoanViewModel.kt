@@ -6,9 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
-import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
-import com.android.partagix.model.visibility.Visibility
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +21,6 @@ class LoanViewModel(
   val uiState: StateFlow<LoanUIState> = _uiState
 
   private var filterState = FilterState()
-
-  init {
-    getAvailableLoans()
-  }
 
   /**
    * Update the UI state with the available items for a loan, fetched from the database.
@@ -49,30 +43,17 @@ class LoanViewModel(
       return
     } else {
       viewModelScope.launch {
-        db.getLoans { loans: List<Loan> ->
-          db.getItemsWithImages { itemList: List<Item> ->
-            val newItems =
-                itemList.filter { item ->
-                  // item is not owned by the current user
-                  item.idUser != user.uid &&
-                      // item is not already borrowed by someone
-                      loans.all { it.idItem != item.id } &&
-                      // item's visibility is either PUBLIC, or FRIENDS if the current user is a
-                      // friend of the item's owner
-                      item.visibility == Visibility.PUBLIC // TODO: check also with FRIENDS
-                }
+        db.getAvailableItems(true) { newItems: List<Item> ->
+          availableLoans = emptyList()
 
-            availableLoans = emptyList()
-
-            for (item in newItems) {
-              db.getUser(item.idUser) { user: User ->
-                availableLoans += LoanDetails(item, user)
-                applyFilters(uiState.value.filterState)
-              }
+          for (item in newItems) {
+            db.getUser(item.idUser) { user: User ->
+              availableLoans += LoanDetails(item, user)
+              applyFilters(uiState.value.filterState)
             }
-
-            latch.countDown()
           }
+
+          latch.countDown()
         }
       }
     }
