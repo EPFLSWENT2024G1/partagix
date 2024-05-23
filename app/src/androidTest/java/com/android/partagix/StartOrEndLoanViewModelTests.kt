@@ -95,6 +95,50 @@ class StartOrEndLoanViewModelTests {
   }
 
   @Test
+  fun testOnCancelNullLenderToken() {
+    every { db.setLoan(any()) } answers
+        {
+          val loan = firstArg<Loan>()
+          assertEquals(LoanState.CANCELLED, loan.state)
+        }
+    startOrEndLoanViewModel.update(
+        StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
+    startOrEndLoanViewModel.onCancel()
+    coVerify { db.setLoan(any()) }
+  }
+
+  @Test
+  fun testOnCancelValidLenderToken() {
+    every { db.setLoan(any()) } answers
+        {
+          val loan = firstArg<Loan>()
+          assertEquals(LoanState.CANCELLED, loan.state)
+        }
+
+    every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
+
+    val token = "token"
+    val lender = emptyUser.copy(fcmToken = token)
+    val item = emptyItem.copy(id = "id")
+
+    startOrEndLoanViewModel.update(
+        StartOrEndLoanUIState(emptyLoan, item = item, borrower = emptyUser, lender = lender))
+
+    startOrEndLoanViewModel.onCancel()
+
+    coVerify { db.setLoan(any()) }
+    coVerify {
+      mockFirebaseMessagingService.sendNotification(
+          match {
+            it.title == "Loan cancelled" &&
+                it.type == Notification.Type.NEW_INCOMING_REQUEST &&
+                it.navigationUrl == "${Route.VIEW_ITEM}/${item.id}"
+          },
+          token)
+    }
+  }
+
+  @Test
   fun testOnFinish() {
 
     every { db.setLoan(any()) } answers
