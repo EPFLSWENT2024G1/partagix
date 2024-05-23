@@ -96,7 +96,7 @@ fun ManageOutgoingLoan(
                     users = uiState.users,
                     loan = uiState.loans,
                     title = "Outgoing requests",
-                    corner = "Historic",
+                    corner = "History",
                     isCornerClickable = true,
                     isExpandable = true,
                     expandState = expandable,
