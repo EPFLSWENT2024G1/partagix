@@ -112,11 +112,18 @@ class ManageLoanViewModel(
 
   fun acceptLoan(loan: Loan, index: Int) {
 
+    val loanDates = database.generateDatesBetween(loan.startDate, loan.endDate)
     val loansToDeclineWithIndex = mutableListOf<Pair<Loan, Int>>()
     var count = 0
     for (i in 0 until uiState.value.loans.size) {
       val otherLoan = uiState.value.loans[i]
-      if (loan.idItem == otherLoan.idItem && loan.id != otherLoan.id) {
+      val otherLoanDates = database.generateDatesBetween(otherLoan.startDate, otherLoan.endDate)
+      val intersection = loanDates.intersect(otherLoanDates.toSet())
+      if (
+        loan.idItem == otherLoan.idItem &&
+        loan.id != otherLoan.id &&
+        intersection.isNotEmpty()){
+
         loansToDeclineWithIndex.add(Pair(otherLoan, i - count))
         count += 1
       }
