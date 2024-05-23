@@ -28,6 +28,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.Date
 
 const val DEFAULT_CATEGORY_ID = "GpWpDVqb1ep8gm2rb1WL"
 const val DEFAULT_CATEGORY_NAME = "Others"
@@ -134,9 +135,21 @@ class ItemViewModel(
     return id == userId
   }
 
+  fun getAvailabilityDates() {
+    database.getItemUnavailability(uiState.value.item.id) { dates ->
+      _uiState.value = _uiState.value.copy(unavailableDates = dates)
+    }
+  }
+
+
+
+
   companion object {
     private const val TAG = "ItemViewModel"
   }
 }
 
-data class ItemUIState(val item: Item, val user: User)
+data class ItemUIState(
+  val item: Item,
+  val user: User,
+  val unavailableDates: List<Date> = emptyList())
