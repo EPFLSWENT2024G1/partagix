@@ -81,7 +81,9 @@ fun InventoryViewItemScreen(
       topBar = {
         TopAppBar(
             title = { Text("Back to selection") },
-            modifier = Modifier.fillMaxWidth().testTag("inventoryViewItemTopBar"),
+            modifier = Modifier
+              .fillMaxWidth()
+              .testTag("inventoryViewItemTopBar"),
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
@@ -98,11 +100,19 @@ fun InventoryViewItemScreen(
             selectedDestination = "Inventory",
             navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
       },
-      modifier = Modifier.fillMaxWidth().testTag("inventoryViewItem")) {
+      modifier = Modifier
+        .fillMaxWidth()
+        .testTag("inventoryViewItem")) {
         Column(
-            modifier = Modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
+            modifier = Modifier
+              .padding(it)
+              .fillMaxSize()
+              .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
-              Box(modifier = Modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
+              Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(140.dp)
+                .padding(8.dp)) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
                     AsyncImage(
@@ -110,8 +120,9 @@ fun InventoryViewItemScreen(
                         contentDescription = "fds",
                         contentScale = ContentScale.FillWidth,
                         modifier =
-                            Modifier.fillMaxWidth(0.3f)
-                                .border(1.dp, MaterialTheme.colorScheme.onBackground),
+                        Modifier
+                          .fillMaxWidth(0.3f)
+                          .border(1.dp, MaterialTheme.colorScheme.onBackground),
                         alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
@@ -120,16 +131,23 @@ fun InventoryViewItemScreen(
                     LabeledText(
                         label = "Object Name",
                         text = item.name,
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f))
+                        modifier = Modifier
+                          .fillMaxWidth()
+                          .fillMaxHeight(0.5f))
 
                     LabeledText(
                         label = "Author",
                         text = user.name,
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight())
+                        modifier = Modifier
+                          .fillMaxWidth()
+                          .fillMaxHeight())
                   }
                 }
               }
-              Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+              Column(
+                Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 8.dp)) {
                 LabeledText(label = "Description", text = item.description)
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -235,9 +253,12 @@ fun InventoryViewItemScreen(
                               contentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContentColor = MaterialTheme.colorScheme.onBackground,
                               disabledContainerColor = Color.Gray),
-                      modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                      modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("editItemButton"))
                 }
               }
+              Spacer(modifier = Modifier.height(8.dp))
             }
       }
 }
