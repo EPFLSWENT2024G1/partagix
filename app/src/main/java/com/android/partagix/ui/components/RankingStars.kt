@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import kotlin.math.round
 
@@ -99,7 +100,10 @@ fun RankStars(rank: String) {
         Icon(Icons.Default.Star, contentDescription = "Full rank")
         Icon(Icons.Default.Star, contentDescription = "Full rank")
       }
-      else -> {}
+      else -> {
+        Text("Not ranked yet")
+      }
     }
   }
+  Text("Not ranked yet")
 }
