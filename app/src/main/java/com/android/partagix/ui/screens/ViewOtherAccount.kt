@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
+import com.android.partagix.ui.components.UserComment
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
@@ -157,6 +158,20 @@ fun ViewOtherAccount(
                 LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
               }
               Spacer(modifier = Modifier.height(16.dp))
+
+              val commentList = uiState.value.comments
+              val otherUserViewModel = UserViewModel(db = userViewModel.db)
+
+              if (commentList.isEmpty()) {
+                Text("No comments yet", modifier = Modifier.testTag("noComments"))
+              } else {
+                Column {
+                  commentList.forEach { comment ->
+                    UserComment(
+                        comment.first, comment.second, otherUserViewModel, navigationActions)
+                  }
+                }
+              }
             }
       }
 }

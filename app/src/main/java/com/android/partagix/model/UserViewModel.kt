@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
     user: User = User("", "", "", "", Inventory("", emptyList())),
-    db: Database = Database()
+    val db: Database = Database()
 ) : ViewModel() {
 
   // private val user = user
@@ -59,6 +60,7 @@ class UserViewModel(
         _uiState.value.copy(
             user = new,
         )
+    getComments()
   }
 
   fun setUser(user: User) {
@@ -97,6 +99,7 @@ class UserViewModel(
           _uiState.value.copy(
               comments = comments,
           )
+      Log.d(TAG, "getComments: comments: $comments on user: ${_uiState.value.user.id}")
     }
   }
 

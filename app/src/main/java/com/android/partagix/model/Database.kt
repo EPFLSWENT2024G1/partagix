@@ -714,7 +714,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             loans.filter { loan ->
               loan.state == LoanState.FINISHED &&
                   loan.idBorrower == userId &&
-                  loan.reviewBorrower.toDouble() != 0.0 &&
+                  try {
+                    loan.reviewLender.toDouble() != 0.0
+                  } catch (e: NumberFormatException) {
+                    false
+                  } &&
                   loan.commentBorrower != ""
             }
 
@@ -722,7 +726,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             loans.filter { loan ->
               loan.state == LoanState.FINISHED &&
                   loan.idLender == userId &&
-                  loan.reviewLender.toDouble() != 0.0 &&
+                  try {
+                    loan.reviewLender.toDouble() != 0.0
+                  } catch (e: NumberFormatException) {
+                    false
+                  } &&
                   loan.commentLender != ""
             }
 
