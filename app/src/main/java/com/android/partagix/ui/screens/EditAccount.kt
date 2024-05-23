@@ -72,7 +72,7 @@ fun EditAccount(
   var tempUsername by remember { mutableStateOf(user.name) }
   var tempAddress by remember { mutableStateOf(user.address) }
   var uiImage by remember { mutableStateOf<File?>(user.imageId) }
-  var email by remember { mutableStateOf(user.email ?: "Please enter your email") }
+  var email by remember { mutableStateOf(user.email ?: "Please enter an email address") }
   var phoneNumber by remember { mutableStateOf(user.phoneNumber ?: "") }
   var telegram by remember { mutableStateOf(user.telegram ?: "") }
   var favorite: SnapshotStateList<Boolean> = remember {
@@ -86,7 +86,7 @@ fun EditAccount(
   fun resetTempValues() {
     tempUsername = user.name
     tempAddress = user.address
-    email = user.email ?: "Please enter your email"
+    email = user.email ?: "Please enter an email address"
     phoneNumber = user.phoneNumber ?: ""
     telegram = user.telegram ?: ""
     // favorite = user.favorite?.toMutableStateList()?: mutableStateListOf(false, false, false)
