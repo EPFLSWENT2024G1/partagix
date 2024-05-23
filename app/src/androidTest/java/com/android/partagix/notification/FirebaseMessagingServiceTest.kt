@@ -6,12 +6,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.registerForActivityResult
 import androidx.core.content.ContextCompat
+import androidx.test.rule.GrantPermissionRule
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
 import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
-import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
 import com.android.partagix.ui.navigation.NavigationActions
 import com.google.android.gms.tasks.Task
@@ -32,6 +32,7 @@ import java.sql.Date
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class FirebaseMessagingServiceTest {
@@ -46,17 +47,19 @@ class FirebaseMessagingServiceTest {
 
   private lateinit var mockedFirebaseMessagingService: FirebaseMessagingService
 
+  @get:Rule
+  val grantPermissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(android.Manifest.permission.POST_NOTIFICATIONS)
+
   @Before
   fun setup() {
     mockkStatic(MainActivity::class)
     every { MainActivity.getContext() } returns mockedMainActivity
 
-    mockkStatic(App::class)
-    every { App.getNavigationActions() } returns mockedNavigationActions
-
     every { mockedDB.getCurrentUser(any()) } just runs
 
-    mockedFirebaseMessagingService = spyk(FirebaseMessagingService(db = mockedDB))
+    mockedFirebaseMessagingService =
+        spyk(FirebaseMessagingService(db = mockedDB, navigationActions = mockedNavigationActions))
 
     mockedFirebaseMessagingService.onCreate()
     mockedFirebaseMessagingService.onNewToken(FIREBASE_PUSH_TOKEN)
@@ -141,6 +144,12 @@ class FirebaseMessagingServiceTest {
     mockedFirebaseMessagingService = spyk(FirebaseMessagingService())
 
     val remoteMessage = mockk<RemoteMessage>()
+    every { remoteMessage.data } returns mutableMapOf()
+    every { remoteMessage.from } returns "sender"
+    every { remoteMessage.notification } returns mockk()
+    every { remoteMessage.notification?.title } returns "notification title"
+    every { remoteMessage.notification?.body } returns "notification body"
+
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
     verify { mockedFirebaseMessagingService.onMessageReceived(any()) }
@@ -149,7 +158,11 @@ class FirebaseMessagingServiceTest {
 
   @Test
   fun testOnMessageReceivedNavigationActionsNull() {
-    every { App.getNavigationActions() } returns null
+    mockedFirebaseMessagingService =
+        spyk(FirebaseMessagingService(db = mockedDB, navigationActions = null))
+
+    mockedFirebaseMessagingService.onCreate()
+    mockedFirebaseMessagingService.onNewToken(FIREBASE_PUSH_TOKEN)
 
     mockkStatic("com.android.partagix.ui.components.NotificationAlertKt")
     every { notificationAlert(any(), any(), any()) } just Runs
@@ -157,6 +170,12 @@ class FirebaseMessagingServiceTest {
     mockedFirebaseMessagingService = spyk(FirebaseMessagingService())
 
     val remoteMessage = mockk<RemoteMessage>()
+    every { remoteMessage.data } returns mutableMapOf()
+    every { remoteMessage.from } returns "sender"
+    every { remoteMessage.notification } returns mockk()
+    every { remoteMessage.notification?.title } returns "notification title"
+    every { remoteMessage.notification?.body } returns "notification body"
+
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
     verify { mockedFirebaseMessagingService.onMessageReceived(any()) }
@@ -177,6 +196,8 @@ class FirebaseMessagingServiceTest {
     every { remoteMessage.data } returns data
     every { remoteMessage.from } returns sender
     every { remoteMessage.notification } returns notification
+    every { notification.title } returns "notification title"
+    every { notification.body } returns "notification body"
 
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
@@ -197,6 +218,8 @@ class FirebaseMessagingServiceTest {
     every { remoteMessage.data } returns data
     every { remoteMessage.from } returns sender
     every { remoteMessage.notification } returns null
+    every { remoteMessage.notification?.title } returns "notification title"
+    every { remoteMessage.notification?.body } returns "notification body"
 
     mockedFirebaseMessagingService.onMessageReceived(remoteMessage)
 
