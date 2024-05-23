@@ -7,6 +7,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.UserUIState
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -21,6 +23,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -39,6 +42,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
+  @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
 
   val mockLocation = mockk<Location>()
 
@@ -57,6 +61,9 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
   private var _uiState = MutableStateFlow(ItemUIState(item1, emptyUser))
   private var mockUiState: StateFlow<ItemUIState> = _uiState
 
+  private var _userUiState = MutableStateFlow(UserUIState(emptyUser))
+  private var mockUserUiState: StateFlow<UserUIState> = _userUiState
+
   @Before
   fun testSetup() {
     mockItemViewModel = mockk()
@@ -69,12 +76,18 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     mockBorrowViewModel = mockk()
     every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 
+    mockUserViewModel = mockk()
+    every { mockUserViewModel.uiState } returns mockUserUiState
+    every { mockUserViewModel.setUser(any()) } just Runs
+
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) } just Runs
 
     composeTestRule.setContent {
-      InventoryViewItemScreen(mockNavActions, mockItemViewModel, mockBorrowViewModel)
+      InventoryViewItemScreen(
+          mockNavActions, mockItemViewModel, mockBorrowViewModel, mockUserViewModel)
     }
   }
 
@@ -83,6 +96,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     onComposeScreen<InventoryViewItemScreen>(composeTestRule) {
       topBar { assertIsDisplayed() }
       bottomBar { assertIsDisplayed() }
+      ownerField { assertIsDisplayed() }
 
       // Change the item name to trigger 'onValueChange' event to verify there is no erros
       item1 =
@@ -96,6 +110,18 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
               location = mockk(),
               idUser = "id_user")
       assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun clickOwnerField() = run {
+    onComposeScreen<InventoryViewItemScreen>(composeTestRule) {
+      ownerField {
+        assertIsDisplayed()
+        performClick()
+      }
+
+      coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
     }
   }
 }
