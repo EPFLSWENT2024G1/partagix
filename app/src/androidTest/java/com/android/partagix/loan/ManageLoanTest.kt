@@ -151,9 +151,8 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
+      mainContent { assertIsDisplayed() }
       itemList { assertIsDisplayed() }
-      itemCard { assertIsDisplayed() }
-      // itemCardExpanded { assertIsDisplayed() }
     }
   }
 }

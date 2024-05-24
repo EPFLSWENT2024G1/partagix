@@ -217,8 +217,9 @@ fun InventoryScreen(
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
                   onUserClick = {
-//                    userViewModel.setUser(user)
-                    navigationActions.navigateTo(Route.OTHER_ACCOUNT) },
+                    //                    userViewModel.setUser(user)
+                    navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                  },
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = false,
