@@ -210,6 +210,7 @@ fun EditAccount(
                               Checkbox(
                                   checked = favorite[0],
                                   onCheckedChange = { favorite[0] = !favorite[0] },
+                                  enabled = email.contains("@"),
                                   modifier = Modifier.testTag("emailCheckbox"))
                               Text("Email", fontSize = 12.sp)
                             }
@@ -220,6 +221,7 @@ fun EditAccount(
                               Checkbox(
                                   checked = favorite[1],
                                   onCheckedChange = { favorite[1] = !favorite[1] },
+                                  enabled = phoneNumber.isNotEmpty(),
                                   modifier = Modifier.testTag("phoneNumberCheckbox"))
                               Text("Phone number", fontSize = 12.sp)
                             }
@@ -230,6 +232,7 @@ fun EditAccount(
                               Checkbox(
                                   checked = favorite[2],
                                   onCheckedChange = { favorite[2] = !favorite[2] },
+                                  enabled = telegram.isNotEmpty(),
                                   modifier = Modifier.testTag("telegramCheckbox"))
                               Text("Telegram", fontSize = 12.sp)
                             }
