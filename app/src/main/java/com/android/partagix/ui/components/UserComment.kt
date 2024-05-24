@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.android.partagix.model.user.User
@@ -28,7 +29,7 @@ fun UserComment(
   Surface(
       shape = RoundedCornerShape(12.dp),
       border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-      modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+      modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("userComment_${author.id}")) {
         Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.Start) {
           Text(
               text = author.name,

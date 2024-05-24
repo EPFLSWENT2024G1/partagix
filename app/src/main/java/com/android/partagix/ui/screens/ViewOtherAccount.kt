@@ -169,7 +169,7 @@ fun ViewOtherAccount(
               if (commentList.isEmpty()) {
                 Text("No comments yet", modifier = Modifier.testTag("noComments"))
               } else {
-                Column(modifier = Modifier.padding(12.dp, 0.dp)) {
+                Column(modifier = Modifier.padding(12.dp, 0.dp).testTag("comments")) {
                   Text(text = "Comments", modifier = Modifier.testTag("commentsTitle"))
                   commentList.forEach { comment ->
                     val onClick: (User) -> Unit =

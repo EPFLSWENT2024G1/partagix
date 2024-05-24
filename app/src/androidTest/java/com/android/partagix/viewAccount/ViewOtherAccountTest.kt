@@ -37,9 +37,11 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
 
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
+  @RelaxedMockK lateinit var mockOtherUserViewModel: UserViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
+  private lateinit var otherUserMockUIState: MutableStateFlow<UserUIState>
 
   private val cat1 = Category("1", "Category 1")
   private val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
@@ -51,15 +53,33 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
           "id1",
           "name1",
           "address1",
-          "rank1",
+          "1",
           Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
+
+  private val otherUser: User =
+      User(
+          "id2",
+          "name2",
+          "address2",
+          "2",
+          Inventory("id2", listOf(Item("2", cat1, "Name 2", "Description 2", vis1, 2, loc1))))
+
+  private val comments =
+      listOf(
+          Pair(otherUser, "comment1"),
+      )
 
   @Before
   fun testSetup() {
     emptyMockUiState = MutableStateFlow(UserUIState(emptyUser))
-    nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne))
+    nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne, comments = comments))
+    otherUserMockUIState = MutableStateFlow(UserUIState(userOne))
 
     mockUserViewModel = mockk()
+    mockOtherUserViewModel = mockk()
+
+    every { mockOtherUserViewModel.uiState } returns otherUserMockUIState
+
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
@@ -75,8 +95,9 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
     composeTestRule.setContent {
       ViewOtherAccount(
           modifier = Modifier,
+          navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          otherUserViewModel = mockOtherUserViewModel)
     }
 
     onComposeScreen<ViewOtherAccount>(composeTestRule) {
@@ -96,8 +117,9 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
     composeTestRule.setContent {
       ViewOtherAccount(
           modifier = Modifier,
+          navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
-          navigationActions = mockNavActions)
+          otherUserViewModel = mockOtherUserViewModel)
     }
 
     onComposeScreen<ViewOtherAccount>(composeTestRule) {
@@ -110,7 +132,7 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
       // username
       username { assertIsDisplayed() }
       usernameText { assertIsDisplayed() }
-      val username = mockUserViewModel.uiState.value.user.name
+      val username = mockOtherUserViewModel.uiState.value.user.name
       usernameText { assertTextEquals("$username's profile") }
 
       //    editButton
@@ -120,14 +142,12 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
         composeTestRule.setContent {
           ViewOtherAccount(
               modifier = Modifier,
+              navigationActions = mockNavActions,
               userViewModel = mockUserViewModel,
-              navigationActions = mockNavActions)
+              otherUserViewModel = mockOtherUserViewModel)
         }
 
-        onComposeScreen<ViewOtherAccount>(composeTestRule) {
-          editButton { assertIsDisplayed() }
-          friendButton { assertIsDisplayed() }
-        }
+        onComposeScreen<ViewOtherAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
       }
 
       @Test
@@ -136,17 +156,14 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
         composeTestRule.setContent {
           ViewOtherAccount(
               modifier = Modifier,
+              navigationActions = mockNavActions,
               userViewModel = mockUserViewModel,
-              navigationActions = mockNavActions)
+              otherUserViewModel = mockOtherUserViewModel)
         }
 
         onComposeScreen<ViewOtherAccount>(composeTestRule) {
           editButton { assertIsDisplayed() }
           editButton { performClick() }
-
-          // friend button
-          friendButton { assertIsDisplayed() }
-          friendButton { performClick() }
         }
       }
     }

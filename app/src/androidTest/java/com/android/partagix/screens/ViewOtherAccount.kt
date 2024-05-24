@@ -24,5 +24,8 @@ class ViewOtherAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val address: KNode = child { hasTestTag("address") } // textfield
   val rating: KNode = child { hasTestTag("rating") } // textfield
   val editButton: KNode = child { hasTestTag("editButton") } // button
-  val friendButton: KNode = child { hasTestTag("friendButton") } // button
+
+  val noCommentsText: KNode = child { hasTestTag("noComments") } // text
+  val commentsSection: KNode = child { hasTestTag("comments") } // column
+  val commentsTitle: KNode = commentsSection.child { hasTestTag("commentsTitle") } // text
 }
