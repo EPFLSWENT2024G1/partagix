@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,12 +36,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.components.UserComment
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
+
+private const val TAG = "ViewOtherAccount"
 
 // @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,8 +53,9 @@ fun ViewOtherAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
+    otherUserViewModel: UserViewModel,
 ) {
-  val uiState = userViewModel.uiState.collectAsState()
+  val uiState = otherUserViewModel.uiState.collectAsState()
   val user = uiState.value.user
   Scaffold(
       modifier = Modifier.fillMaxSize().testTag("viewAccount"),
@@ -160,15 +165,30 @@ fun ViewOtherAccount(
               Spacer(modifier = Modifier.height(16.dp))
 
               val commentList = uiState.value.comments
-              val otherUserViewModel = UserViewModel(db = userViewModel.db)
 
               if (commentList.isEmpty()) {
                 Text("No comments yet", modifier = Modifier.testTag("noComments"))
               } else {
-                Column {
+                Column(modifier = Modifier.padding(12.dp, 0.dp)) {
+                  Text(text = "Comments", modifier = Modifier.testTag("commentsTitle"))
                   commentList.forEach { comment ->
-                    UserComment(
-                        comment.first, comment.second, otherUserViewModel, navigationActions)
+                    val onClick: (User) -> Unit =
+                        if (comment.first.id != userViewModel.getLoggedUserId()) {
+                          // When the author of the comment is different from the current user
+                          {
+                            Log.d(TAG, "UserComment (other user): $comment")
+                            otherUserViewModel.setUser(comment.first)
+                            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                          }
+                        } else {
+                          // When the author of the comment is the current user
+                          {
+                            Log.d(TAG, "UserComment (current user): $comment")
+                            navigationActions.navigateTo(Route.ACCOUNT)
+                          }
+                        }
+
+                    UserComment(comment.first, comment.second, onClick)
                   }
                 }
               }

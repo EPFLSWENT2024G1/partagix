@@ -1,6 +1,8 @@
 package com.android.partagix.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,16 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.user.User
-import com.android.partagix.ui.navigation.NavigationActions
+
+private const val TAG = "UserComment"
 
 @Composable
 fun UserComment(
     author: User,
     comment: String,
-    userViewModel: UserViewModel,
-    navigationActions: NavigationActions
+    onAuthorClick: (User) -> Unit = {},
 ) {
   Surface(
       shape = RoundedCornerShape(12.dp),
@@ -32,7 +33,11 @@ fun UserComment(
           Text(
               text = author.name,
               style = MaterialTheme.typography.bodyLarge,
-              modifier = Modifier.padding(bottom = 8.dp))
+              modifier =
+                  Modifier.padding(bottom = 8.dp).clickable {
+                    Log.d(TAG, "UserComment: $author")
+                    onAuthorClick(author)
+                  })
           Text(
               text = comment,
               style = MaterialTheme.typography.bodyMedium,

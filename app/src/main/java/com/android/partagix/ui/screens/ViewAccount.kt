@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.components.UserComment
@@ -49,6 +50,7 @@ fun ViewAccount(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
+    otherUserViewModel: UserViewModel,
 ) {
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
@@ -173,16 +175,26 @@ fun ViewAccount(
               Spacer(modifier = Modifier.height(16.dp))
 
               val commentList = uiState.value.comments
-              val otherUserViewModel = UserViewModel(db = userViewModel.db)
 
               if (commentList.isEmpty()) {
                 Text("No comments yet", modifier = Modifier.testTag("noComments"))
               } else {
-                Column(modifier = Modifier.padding(8.dp, 0.dp)) {
+                Column(modifier = Modifier.padding(12.dp, 0.dp)) {
                   Text(text = "Comments", modifier = Modifier.testTag("commentsTitle"))
                   commentList.forEach { comment ->
-                    UserComment(
-                        comment.first, comment.second, otherUserViewModel, navigationActions)
+                    // When the author of the comment is different from the current user
+                    val onClick: (User) -> Unit =
+                        if (comment.first.id != user.id) {
+                          {
+                            otherUserViewModel.setUser(comment.first)
+                            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                          }
+                        } else {
+                          // When the author of the comment is the current user
+                          { navigationActions.navigateTo(Route.ACCOUNT) }
+                        }
+
+                    UserComment(comment.first, comment.second, onClick)
                   }
                 }
               }
