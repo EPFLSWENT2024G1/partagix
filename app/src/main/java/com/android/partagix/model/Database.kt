@@ -76,26 +76,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
     users.document(idUser).get().addOnSuccessListener {
       val user = it.data
       if (user != null) {
+        Log.d(TAG, user.toString())
         getUserInventory(idUser) { inventory ->
           val name = user["name"] as String
           val addr = user["addr"] as String
           val rank = user["rank"] as String
-          val email = user["email"] as? String ?: "Please enter an email address"
-          val phoneNumber = user["phoneNumber"] as? String ?: ""
-          val telegram = user["telegram"] as? String ?: ""
-          val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
-          onSuccess(
-              User(
-                  idUser,
-                  name,
-                  addr,
-                  rank,
-                  inventory,
-                  File("noImage"),
-                  email = email,
-                  phoneNumber = phoneNumber,
-                  telegram = telegram,
-                  favorite = favorite))
+          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage")))
         }
       } else {
         onNoUser()
@@ -108,6 +94,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
       val onSuccessImage = { localFile: File ->
         val user = it.data
         if (user != null) {
+          Log.d(TAG, user.toString())
           getUserInventory(idUser) { inventory ->
             val name = user["name"] as String
             val addr = user["addr"] as String

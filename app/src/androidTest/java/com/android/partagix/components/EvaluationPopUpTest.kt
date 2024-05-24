@@ -1,7 +1,6 @@
 package com.android.partagix.components
 
 import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -10,12 +9,18 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.screens.EvaluationPopUp
 import com.android.partagix.ui.components.EvaluationPopUp
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
@@ -25,8 +30,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class EvaluationPopUpTest {
   @get:Rule val composeTestRule = createComposeRule()
-  lateinit var evaluationViewModel: EvaluationViewModel
+  lateinit var mockEvaluationViewModel: EvaluationViewModel
   lateinit var db: Database
+
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
+
   val loanEmptyCommentAndRating =
       Loan(
           "",
@@ -78,7 +86,13 @@ class EvaluationPopUpTest {
           onSuccessLoan(listOf(loanEmptyCommentAndRating, loanAlreadyRate, loanRatedButNoComment))
         }
     every { db.setReview(any(), any(), any(), any()) } answers {}
-    evaluationViewModel = EvaluationViewModel(loanEmptyCommentAndRating, db)
+
+    mockNotificationManager = mockk()
+
+    mockEvaluationViewModel =
+        spyk(EvaluationViewModel(loanEmptyCommentAndRating, db, mockNotificationManager))
+
+    every { mockEvaluationViewModel.reviewLoan(any(), any(), any(), any()) } just Runs
   }
 
   /** Test if the content is displayed and works. */
@@ -86,7 +100,7 @@ class EvaluationPopUpTest {
   fun contentIsDisplayedAndWorks() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanEmptyCommentAndRating, userId = "", viewModel = evaluationViewModel)
+          loan = loanEmptyCommentAndRating, userId = "", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       rateText { assertIsDisplayed() }
@@ -109,7 +123,9 @@ class EvaluationPopUpTest {
   fun evaluationWorksForNoPreviousEvaluation() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanEmptyCommentAndRating, userId = "idLender1", viewModel = evaluationViewModel)
+          loan = loanEmptyCommentAndRating,
+          userId = "idLender1",
+          viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       onNode { hasTestTag("star4") }.performClick()
@@ -120,14 +136,15 @@ class EvaluationPopUpTest {
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
     coVerify {
-      evaluationViewModel.reviewLoan(loanEmptyCommentAndRating, 5.0, "comment", "idBorrower1")
+      mockEvaluationViewModel.reviewLoan(loanEmptyCommentAndRating, 5.0, "comment", "idBorrower1")
     }
   }
 
   @Test
   fun evaluationWorksForAlreadyCommentedAndRated() {
     composeTestRule.setContent {
-      EvaluationPopUp(loan = loanAlreadyRate, userId = "idLender2", viewModel = evaluationViewModel)
+      EvaluationPopUp(
+          loan = loanAlreadyRate, userId = "idLender2", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       composeTestRule.onNodeWithTag("star2").assertHasClickAction()
@@ -144,7 +161,7 @@ class EvaluationPopUpTest {
   fun evaluationWorksForAlreadyRated() {
     composeTestRule.setContent {
       EvaluationPopUp(
-          loan = loanRatedButNoComment, userId = "idBorrower3", viewModel = evaluationViewModel)
+          loan = loanRatedButNoComment, userId = "idBorrower3", viewModel = mockEvaluationViewModel)
     }
     onComposeScreen<EvaluationPopUp>(composeTestRule) {
       composeTestRule.onNodeWithTag("star2").assertHasClickAction()
@@ -154,8 +171,8 @@ class EvaluationPopUpTest {
       evaluateButton { performClick() }
     }
     composeTestRule.onNodeWithTag("evaluationPopUp").assertDoesNotExist()
-    coVerify(exactly = 1) {
-      evaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
+    verify(exactly = 1) {
+      mockEvaluationViewModel.reviewLoan(loanRatedButNoComment, 5.0, "comment", "idLender3")
     }
   }
 }

@@ -61,6 +61,10 @@ class UserViewModel(
         )
   }
 
+  fun setUser(user: User) {
+    updateUIState(user)
+  }
+
   fun updateLocation(location: Location) {
     _uiState.value =
         _uiState.value.copy(

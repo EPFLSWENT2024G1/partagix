@@ -96,7 +96,8 @@ class InventoryViewModel(
             val lenderUsersIds = mutableListOf<String>()
             val itemsBor = mutableListOf<Item>()
             loansList
-                .filter { it.idBorrower.equals(currentUser.uid) && it.state == LoanState.ACCEPTED }
+                .filter { it.idBorrower.equals(currentUser.uid) }
+                .filter { it.state == LoanState.ACCEPTED || it.state == LoanState.ONGOING }
                 .forEach { loan ->
                   lenderUsersIds.add(loan.idLender)
                   val itemsBorHere = items.filter { item -> item.id == loan.idItem }

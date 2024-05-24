@@ -4,10 +4,16 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
 import com.android.partagix.model.EvaluationViewModel
+import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
+import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.user.User
+import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
 import io.mockk.mockk
 import java.util.Date
 import org.junit.Before
@@ -18,8 +24,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class EvaluationViewModelTests {
   @get:Rule val composeTestRule = createComposeRule()
-  lateinit var evaluationViewModel: EvaluationViewModel
-  lateinit var db: Database
+  private lateinit var evaluationViewModel: EvaluationViewModel
+  private lateinit var db: Database
+
+  @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
+
   val loan1 =
       Loan(
           "",
@@ -47,6 +56,10 @@ class EvaluationViewModelTests {
           "commented",
           LoanState.FINISHED)
 
+  val user =
+      User(
+          "userId", "name", "addr", "rank", Inventory("userId", emptyList()), fcmToken = "fcmToken")
+
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
   @Before
@@ -58,7 +71,16 @@ class EvaluationViewModelTests {
           onSuccessLoan(listOf(loan1, loan2))
         }
     every { db.setReview(any(), any(), any(), any()) } answers {}
-    evaluationViewModel = EvaluationViewModel(loan1, db)
+    every { db.getUser(any(), any(), any()) } answers
+        { invocation ->
+          val callback = invocation.invocation.args[2] as (User) -> Unit
+          callback(user)
+        }
+
+    mockNotificationManager = mockk()
+    every { mockNotificationManager.sendNotification(any(), any()) } just Runs
+
+    evaluationViewModel = EvaluationViewModel(loan1, db, mockNotificationManager)
   }
 
   @Test

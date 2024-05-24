@@ -63,6 +63,7 @@ import com.android.partagix.ui.screens.QrScanScreen
 import com.android.partagix.ui.screens.StampScreen
 import com.android.partagix.ui.screens.StartLoanScreen
 import com.android.partagix.ui.screens.ViewAccount
+import com.android.partagix.ui.screens.ViewOtherAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
@@ -99,7 +100,9 @@ class App(
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
   private val userViewModel = UserViewModel(db = db)
-  private val evaluationViewModel = EvaluationViewModel(db = db)
+  private val otherUserViewModel = UserViewModel(db = db)
+  private val evaluationViewModel =
+      EvaluationViewModel(db = db, notificationManager = notificationManager)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)
   private val startOrEndLoanViewModel =
       StartOrEndLoanViewModel(db = db, notificationManager = notificationManager)
@@ -293,9 +296,7 @@ class App(
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
       composable(Route.HOME) {
-        inventoryViewModel.getInventory()
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
-        loanViewModel.getAvailableLoans()
         homeViewModel.updateUser()
 
         HomeScreen(
@@ -345,6 +346,12 @@ class App(
       }
 
       composable(
+          Route.OTHER_ACCOUNT,
+      ) {
+        ViewOtherAccount(navigationActions = navigationActions, userViewModel = otherUserViewModel)
+      }
+
+      composable(
           Route.EDIT_ACCOUNT,
       ) {
         EditAccount(
@@ -355,11 +362,13 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+        InventoryViewItemScreen(
+            navigationActions, itemViewModel, borrowViewModel, otherUserViewModel)
       }
       composable(Route.VIEW_OTHERS_ITEM) {
         itemViewModel.getUser()
-        InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel, true)
+        InventoryViewItemScreen(
+            navigationActions, itemViewModel, borrowViewModel, otherUserViewModel, true)
       }
 
       composable(
@@ -373,7 +382,8 @@ class App(
                 itemViewModel.getUser()
               }
 
-              InventoryViewItemScreen(navigationActions, itemViewModel, borrowViewModel)
+              InventoryViewItemScreen(
+                  navigationActions, itemViewModel, borrowViewModel, otherUserViewModel)
             } else {
               // Fail safe defaults principle
               navigationActions.navigateTo(Route.INVENTORY)
