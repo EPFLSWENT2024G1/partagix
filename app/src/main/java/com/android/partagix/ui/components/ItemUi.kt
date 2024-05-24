@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -255,37 +256,87 @@ fun ItemUi(
 
     if (expanded) {
       Spacer(modifier = Modifier.height(8.dp))
-      Row(
-          horizontalArrangement = Arrangement.Absolute.Right,
-          modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
-            if (!isOutgoing) {
+      Column(modifier = Modifier.fillMaxWidth()) {
+        if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
+          var user = emptyUser
+          if (loan.idLender == user.id)
+              manageLoanViewModel.getUser(
+                  loan.idBorrower,
+              ) {
+                user = it
+              }
+          else manageLoanViewModel.getUser(loan.idLender) { user = it }
+          Text(
+              "Preferred contact: " +
+                  if (user.favorite != listOf(false, false, false)) {
+                    val email = if (user.favorite?.get(0) == true) "Email : ${user.email}" else ""
+                    val phone =
+                        if (user.favorite?.get(1) == true && user.phoneNumber?.isNotEmpty() == true)
+                            "Phone : ${user.phoneNumber}"
+                        else ""
+                    val telegram =
+                        if (user.favorite?.get(2) == true && user.telegram?.isNotEmpty() == true)
+                            "Telegram : ${user.telegram}"
+                        else ""
+                    listOf(email, phone, telegram).filter { it.isNotEmpty() }.joinToString(" ")
+                  } else {
+                    "No preffered contact"
+                  })
+
+          Spacer(modifier = Modifier.height(4.dp))
+          Text(
+              "Other contact : " +
+                  if (user.favorite != listOf(true, true, true)) {
+                    val email = if (user.favorite?.get(0) == false) "Email : ${user.email}" else ""
+                    val phone =
+                        if (user.favorite?.get(1) == false &&
+                            user.phoneNumber?.isNotEmpty() == true)
+                            "Phone : ${user.phoneNumber}"
+                        else ""
+                    val telegram =
+                        if (user.favorite?.get(2) == false && user.telegram?.isNotEmpty() == true)
+                            "Telegram : ${user.telegram}"
+                        else ""
+                    listOf(email, phone, telegram).filter { it.isNotEmpty() }.joinToString(" ")
+                  } else {
+                    "No other contact"
+                  })
+          Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Absolute.Right,
+            modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
+              if (!isOutgoing) {
+                Button(
+                    onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                    content = {
+                      Icon(
+                          Icons.Default.Check, contentDescription = "validate", modifier = Modifier)
+                      Spacer(Modifier.width(3.dp))
+                      Text(text = "Validate")
+                    },
+                    modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                    contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+              }
+              Spacer(modifier = Modifier.width(6.dp))
               Button(
-                  onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                  onClick = { manageLoanViewModel.declineLoan(loan, index) },
                   content = {
-                    Icon(Icons.Default.Check, contentDescription = "validate", modifier = Modifier)
-                    Spacer(Modifier.width(3.dp))
-                    Text(text = "Validate")
+                    Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                    Spacer(Modifier.width(2.dp))
+                    Text(text = "Reject")
                   },
+                  colors =
+                      ButtonColors(
+                          containerColor = MaterialTheme.colorScheme.error,
+                          contentColor = MaterialTheme.colorScheme.onError,
+                          disabledContainerColor = MaterialTheme.colorScheme.error,
+                          disabledContentColor = MaterialTheme.colorScheme.onError),
                   modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
-            Spacer(modifier = Modifier.width(6.dp))
-            Button(
-                onClick = { manageLoanViewModel.declineLoan(loan, index) },
-                content = {
-                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
-                  Spacer(Modifier.width(2.dp))
-                  Text(text = "Reject")
-                },
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        disabledContainerColor = MaterialTheme.colorScheme.error,
-                        disabledContentColor = MaterialTheme.colorScheme.onError),
-                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
-                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
-          }
+      }
     }
   }
   /*} else {

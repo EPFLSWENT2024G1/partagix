@@ -76,6 +76,10 @@ class ManageLoanViewModel(
     }
   }
 
+  fun getUser(id: String, onSuccess: (User) -> Unit) {
+    database.getUser(id, {}, onSuccess)
+  }
+
   // TODO: Fix so the count get the right number
 
   /*  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
