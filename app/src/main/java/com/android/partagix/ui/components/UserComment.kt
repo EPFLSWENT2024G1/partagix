@@ -35,10 +35,12 @@ fun UserComment(
               text = author.name,
               style = MaterialTheme.typography.bodyLarge,
               modifier =
-                  Modifier.padding(bottom = 8.dp).clickable {
-                    Log.d(TAG, "UserComment: $author")
-                    onAuthorClick(author)
-                  })
+                  Modifier.padding(bottom = 8.dp)
+                      .clickable {
+                        Log.d(TAG, "UserComment: $author")
+                        onAuthorClick(author)
+                      }
+                      .testTag("userCommentAuthor_${author.id}"))
           Text(
               text = comment,
               style = MaterialTheme.typography.bodyMedium,

@@ -2,7 +2,10 @@ package com.android.partagix.viewAccount
 
 import android.location.Location
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.UserUIState
 import com.android.partagix.model.UserViewModel
@@ -11,9 +14,11 @@ import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.screens.ViewAccount
+import com.android.partagix.screens.ViewOtherAccount
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.ViewAccount
+import com.android.partagix.ui.screens.ViewOtherAccount
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -23,6 +28,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +47,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
   private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
+  private lateinit var otherUserMockUIState: MutableStateFlow<UserUIState>
 
   private val cat1 = Category("1", "Category 1")
   private val vis1 = com.android.partagix.model.visibility.Visibility.PUBLIC
@@ -52,20 +59,37 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           "id1",
           "name1",
           "address1",
-          "rank1",
+          "2.5",
           Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
+
+  private val otherUser: User =
+      User(
+          "id2",
+          "name2",
+          "address2",
+          "2",
+          Inventory("id2", listOf(Item("2", cat1, "Name 2", "Description 2", vis1, 2, loc1))))
+
+  private val comments =
+      listOf(
+          Pair(otherUser, "comment1"),
+      )
 
   @Before
   fun testSetup() {
     emptyMockUiState = MutableStateFlow(UserUIState(emptyUser))
-    nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne))
+    nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne, comments = comments))
+    otherUserMockUIState = MutableStateFlow(UserUIState(userOne))
 
     mockUserViewModel = mockk()
     mockOtherUserViewModel = mockk()
 
+    every { mockOtherUserViewModel.uiState } returns otherUserMockUIState
+
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.EDIT_ACCOUNT) } just Runs
@@ -95,6 +119,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       rating { assertIsDisplayed() }
       actionButtons { assertIsDisplayed() }
       inventoryButton { assertIsDisplayed() }
+      noCommentsText { assertIsDisplayed() }
     }
   }
 
@@ -161,5 +186,35 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       editButton { assertIsDisplayed() }
       editButton { performClick() }
     }
+  }
+
+  @Test
+  fun commentsWorks() = run {
+    every { mockUserViewModel.uiState } returns nonEmptyMockUiState
+    every { mockOtherUserViewModel.getLoggedUserId() } returns "id1"
+    every { mockUserViewModel.setUser(any()) } just Runs
+
+    composeTestRule.setContent {
+      ViewOtherAccount(
+          modifier = Modifier,
+          navigationActions = mockNavActions,
+          userViewModel = mockOtherUserViewModel,
+          otherUserViewModel = mockUserViewModel)
+    }
+
+    onComposeScreen<ViewOtherAccount>(composeTestRule) {
+      commentsSection { assertIsDisplayed() }
+      commentsTitle { assertIsDisplayed() }
+      commentsTitle { assertTextEquals("Comments") }
+    }
+
+    val node = composeTestRule.onNodeWithTag("userComment_id2")
+    node.assertIsDisplayed()
+
+    val author = composeTestRule.onNodeWithTag("userCommentAuthor_id2")
+    author.assertIsDisplayed()
+    author.performClick()
+
+    verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
   }
 }

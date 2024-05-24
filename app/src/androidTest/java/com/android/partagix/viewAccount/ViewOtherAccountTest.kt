@@ -2,7 +2,10 @@ package com.android.partagix.viewAccount
 
 import android.location.Location
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.UserUIState
 import com.android.partagix.model.UserViewModel
@@ -23,6 +26,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -83,6 +87,7 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.EDIT_ACCOUNT) } just Runs
@@ -108,6 +113,7 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
       username { assertIsDisplayed() }
       address { assertIsDisplayed() }
       rating { assertIsDisplayed() }
+      noCommentsText { assertIsDisplayed() }
     }
   }
 
@@ -134,38 +140,36 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
       usernameText { assertIsDisplayed() }
       val username = mockOtherUserViewModel.uiState.value.user.name
       usernameText { assertTextEquals("$username's profile") }
-
-      //    editButton
-      @Test
-      fun editAndFriendButtonIsDisplayed() = run {
-        every { mockUserViewModel.uiState } returns emptyMockUiState
-        composeTestRule.setContent {
-          ViewOtherAccount(
-              modifier = Modifier,
-              navigationActions = mockNavActions,
-              userViewModel = mockUserViewModel,
-              otherUserViewModel = mockOtherUserViewModel)
-        }
-
-        onComposeScreen<ViewOtherAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
-      }
-
-      @Test
-      fun editAndFriendButtonWorks() = run {
-        every { mockUserViewModel.uiState } returns emptyMockUiState
-        composeTestRule.setContent {
-          ViewOtherAccount(
-              modifier = Modifier,
-              navigationActions = mockNavActions,
-              userViewModel = mockUserViewModel,
-              otherUserViewModel = mockOtherUserViewModel)
-        }
-
-        onComposeScreen<ViewOtherAccount>(composeTestRule) {
-          editButton { assertIsDisplayed() }
-          editButton { performClick() }
-        }
-      }
     }
+  }
+
+  @Test
+  fun commentsWorks() = run {
+    every { mockUserViewModel.uiState } returns nonEmptyMockUiState
+    every { mockOtherUserViewModel.getLoggedUserId() } returns "id1"
+    every { mockUserViewModel.setUser(any()) } just Runs
+
+    composeTestRule.setContent {
+      ViewOtherAccount(
+          modifier = Modifier,
+          navigationActions = mockNavActions,
+          userViewModel = mockOtherUserViewModel,
+          otherUserViewModel = mockUserViewModel)
+    }
+
+    onComposeScreen<ViewOtherAccount>(composeTestRule) {
+      commentsSection { assertIsDisplayed() }
+      commentsTitle { assertIsDisplayed() }
+      commentsTitle { assertTextEquals("Comments") }
+    }
+
+    val node = composeTestRule.onNodeWithTag("userComment_id2")
+    node.assertIsDisplayed()
+
+    val author = composeTestRule.onNodeWithTag("userCommentAuthor_id2")
+    author.assertIsDisplayed()
+    author.performClick()
+
+    verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
   }
 }
