@@ -86,7 +86,6 @@ fun ItemUi(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
 ) {
-  //  val modifier = modifier
   val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
@@ -125,8 +124,6 @@ fun ItemUi(
 
   var mainColumnModifier =
       modifier
-          //          .fillMaxWidth()
-          //          .requiredHeight(itemHeight)
           .fillMaxSize()
           .border(
               width = 1.dp,
