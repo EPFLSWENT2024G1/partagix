@@ -15,6 +15,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.Route
 import java.util.Date
 
 /**
@@ -61,19 +62,28 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
+      val user =
+        if (users.isEmpty()) {
+          User("", "noname", "", "0", Inventory("", emptyList()))
+        } else {
+          if (users.size <= index) {
+            User("", "noname", "", "0", Inventory("", emptyList()))
+          } else {
+          users[index]
+        }
+      }
+
+/*      val onUserClick = {
+        if (user.id.isNotEmpty()) {
+          userViewModel.setUser(user)
+          navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+        }
+      }*/
 
       ItemUi(
           item = item,
-          user =
-              if (users.isEmpty()) {
-                User("", "noname", "", "0", Inventory("", emptyList()))
-              } else {
-                if (users.size <= index) {
-                  User("", "noname", "", "0", Inventory("", emptyList()))
-                } else {
-                  users[index]
-                }
-              },
+          user = user
+              ,
           loan =
               if (loan.isEmpty()) {
                 Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
@@ -90,7 +100,10 @@ fun ItemList(
           isOwner = isOwner,
           isLender = isLender,
           onItemClick = onItemClick,
-          onUserClick = onUserClick,
+          onUserClick = {
+//            userViewModel.setUser(user)
+//            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+          },
           manageLoanViewModel = manageLoanViewModel,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
           modifier = modifier.testTag("ItemListItem"))
