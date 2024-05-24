@@ -68,7 +68,8 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
-  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageViewModelIncoming: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageViewModelOutgoing: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
@@ -123,7 +124,8 @@ class EndToEndCreateEdit {
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
-    mockManageViewModel = mockk()
+    mockManageViewModelIncoming = mockk()
+    mockManageViewModelOutgoing = mockk()
 
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
@@ -162,22 +164,21 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
 
-    // Useful when we will have fix the count
-    /*every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs*/
+    every { mockManageViewModelIncoming.getCount() } returns 0
+    every { mockManageViewModelOutgoing.getCount() } returns 0
   }
 
   // Navigate from Home screen to Inventory screen
   @Test
   fun testA_goFromHomeToInventory() {
-    every { mockManageViewModel.uiState } returns mockManageUiState
+    every { mockManageViewModelIncoming.uiState } returns mockManageUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
     every { mockHomeViewModel.uiState } returns mockHomeUiState
 
     composeTestRule.setContent {
       HomeScreen(
           homeViewModel = mockHomeViewModel,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModel = mockManageViewModelIncoming,
           navigationActions = mockNavActions)
     }
 
@@ -196,7 +197,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -300,7 +302,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -400,7 +403,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
