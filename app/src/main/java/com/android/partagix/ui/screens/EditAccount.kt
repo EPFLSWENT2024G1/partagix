@@ -202,8 +202,8 @@ fun EditAccount(
                   Text(text = "Favorite contact methods", modifier = Modifier.padding(16.dp, 0.dp))
                   Spacer(modifier = Modifier.height(4.dp))
                   Row(
-                      modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp),
-                      horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
+                      modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 32.dp),
+                      horizontalArrangement = Arrangement.Absolute.SpaceEvenly) {
                         Row(
                             horizontalArrangement = Arrangement.Absolute.Left,
                             verticalAlignment = Alignment.CenterVertically) {
