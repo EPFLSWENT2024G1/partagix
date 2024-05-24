@@ -55,8 +55,8 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["fcmToken"] as String?,
                       document.data["email"] as? String ?: "Please enter an email address",
                       document.data["phoneNumber"] as String?,
-                      document.data["telegram"] as String?)
-              document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+                      document.data["telegram"] as String?,
+              document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false))
               ret.add(user)
             }
             onSuccess(ret)
@@ -81,7 +81,12 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           val name = user["name"] as String
           val addr = user["addr"] as String
           val rank = user["rank"] as String
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage")))
+          val fcmToken = user["fcmToken"] as String?
+          val email = user["email"] as? String ?: "Please enter an email address"
+          val phoneNumber = user["phoneNumber"] as? String ?: ""
+          val telegram = user["telegram"] as? String ?: ""
+          val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), fcmToken, email, phoneNumber, telegram, favorite))
         }
       } else {
         onNoUser()
@@ -99,6 +104,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             val name = user["name"] as String
             val addr = user["addr"] as String
             val rank = user["rank"] as String
+            val fcmToken = user["fcmToken"] as String?
             val email = user["email"] as? String ?: "Please enter an email address"
             val phoneNumber = user["phoneNumber"] as? String ?: ""
             val telegram = user["telegram"] as? String ?: ""
@@ -111,10 +117,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                     rank,
                     inventory,
                     localFile,
-                    email = email,
-                    phoneNumber = phoneNumber,
-                    telegram = telegram,
-                    favorite = favorite))
+                    fcmToken,
+                    email,
+                    phoneNumber,
+                    telegram,
+                    favorite))
           }
         } else {
           onNoUser()
