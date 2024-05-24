@@ -33,6 +33,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -65,18 +68,16 @@ import com.android.partagix.ui.navigation.Route
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigationActions: NavigationActions,
-    manageLoanViewModel: ManageLoanViewModel,
+    manageLoanViewModelOutgoing: ManageLoanViewModel,
+    manageLoanViewModelIncoming: ManageLoanViewModel,
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
   // Useful when we will have fix the count
-  /*var incomingRequests by remember { mutableIntStateOf(0) }
-  var outgoingRequests by remember { mutableIntStateOf(0) }*/
-
-  /*manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
-  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }*/
+  var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
+  var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -168,7 +169,7 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests " /*($incomingRequests)*/, // TODO: put back
+                              text = "Incoming Requests ($incomingRequests)",
                               // when we fix the
                               // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -192,7 +193,7 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests" /*($outgoingRequests)*/, // TODO: put back
+                              text = "Outgoing Requests ($outgoingRequests)",
                               // when we fix the
                               // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -223,7 +224,6 @@ fun InventoryScreen(
                   isClickable = false,
                   isOutgoing = false,
                   isExpandable = false,
-                  manageLoanViewModel = manageLoanViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
@@ -245,7 +245,6 @@ fun InventoryScreen(
                   isClickable = true,
                   isExpandable = false,
                   isOutgoing = false,
-                  manageLoanViewModel = manageLoanViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

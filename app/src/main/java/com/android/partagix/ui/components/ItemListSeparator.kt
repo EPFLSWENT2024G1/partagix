@@ -51,7 +51,7 @@ fun ItemListColumn(
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
     isOutgoing: Boolean,
-    manageLoanViewModel: ManageLoanViewModel,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {

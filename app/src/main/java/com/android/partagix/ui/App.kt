@@ -328,10 +328,13 @@ class App(
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
+        manageViewModelIncoming.getLoanRequests(isOutgoing = false)
+        manageViewModelOutgoing.getLoanRequests(isOutgoing = true)
         InventoryScreen(
             inventoryViewModel = inventoryViewModel,
             navigationActions = navigationActions,
-            manageLoanViewModel = manageViewModelLoan,
+            manageLoanViewModelOutgoing = manageViewModelOutgoing,
+            manageLoanViewModelIncoming = manageViewModelIncoming,
             itemViewModel = itemViewModel)
       }
 
