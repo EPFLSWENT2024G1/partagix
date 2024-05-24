@@ -272,7 +272,11 @@ fun ItemUi(
                 content = {
                   Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
                   Spacer(Modifier.width(2.dp))
-                  Text(text = "Reject")
+                  if (loan.state == LoanState.PENDING && isLender) {
+                    Text(text = "Cancel")
+                  } else {
+                    Text(text = "Reject")
+                  }
                 },
                 colors =
                     ButtonColors(
@@ -285,113 +289,4 @@ fun ItemUi(
           }
     }
   }
-  /*} else {
-    Column(
-      horizontalAlignment = Alignment.Start, modifier = Modifier
-        .fillMaxWidth()
-        .border(
-          width = 1.dp,
-          color = MaterialTheme.colorScheme.outlineVariant,
-          shape = RoundedCornerShape(size = 4.dp)
-        )
-        .background(
-          color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 4.dp)
-        )
-        .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-        .testTag("ItemUiNotExpanded")
-    ) {
-      Row(
-        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(61.dp)
-      ) {
-        Column(
-          modifier = Modifier
-            .weight(weight = 1f)
-            .fillMaxWidth()
-        ) {
-          Row(
-            modifier = Modifier.fillMaxHeight(0.5f), verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(text = user.rank, style = TextStyle(fontWeight = FontWeight(500)))
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-              text = user.name,
-              style = TextStyle(
-                fontWeight = FontWeight(500),
-                textAlign = TextAlign.Left,
-              ),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              modifier = Modifier.fillMaxWidth(0.95f)
-            )
-          }
-          Text(
-            text = if (loan.idItem == "") {
-              "not borrowed"
-            } else {
-              if (loan.startDate.before(Date())) {
-                "available until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              } else {
-                "borrowed until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              }
-            },
-            style = TextStyle(fontSize = 12.sp, letterSpacing = 0.25.sp),
-            modifier = Modifier.fillMaxWidth()
-          )
-        }
-        Column(
-          modifier = Modifier.requiredHeight(height = 64.dp), horizontalAlignment = Alignment.End
-        ) {
-          Text(
-            text = item.name,
-            textAlign = TextAlign.End,
-            style = TextStyle(textAlign = TextAlign.Right),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth(.3f)
-              .padding(top = 10.dp)
-          )
-          Text(
-            text = "Quantity: " + item.quantity.toString(),
-            style = TextStyle(
-              fontSize = 11.sp,
-              textAlign = TextAlign.Right,
-            ),
-            textAlign = TextAlign.End,
-            lineHeight = 0.8.em,
-            modifier = Modifier
-              .fillMaxWidth(0.2f)
-              .padding(top = 5.dp)
-          )
-        }
-        Box(
-          modifier = Modifier
-            .fillMaxWidth(0.3f)
-            .fillMaxHeight()
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
-        ) {
-          AsyncImage(
-            model = item.imageId.absolutePath,
-            contentDescription = "fds",
-            contentScale = ContentScale.Inside,
-            modifier = Modifier
-              .fillMaxHeight()
-              .align(Alignment.Center)
-              .testTag("ItemUiImage")
-          )
-        }
-      }
-    }
-  }*/
 }
