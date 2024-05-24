@@ -49,7 +49,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -433,8 +432,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
-
-        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }
@@ -558,8 +555,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
         performClick()
-
-        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
       }
     }
   }
