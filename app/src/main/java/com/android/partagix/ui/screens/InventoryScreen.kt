@@ -214,14 +214,15 @@ fun InventoryScreen(
                   loan = uiState.loanBor,
                   title = "Borrowed items",
                   corner = uiState.borrowedItems.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
+                  onUserClick = { /* todo */},
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = false,
+                  isLender = true,
                   isExpandable = false,
                   manageLoanViewModel = manageLoanViewModel,
                   modifier =
@@ -236,15 +237,15 @@ fun InventoryScreen(
                   loan = uiState.loan,
                   title = "Inventory item",
                   corner = uiState.items.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
                   isCornerClickable = false,
                   isClickable = true,
                   isExpandable = false,
                   isOutgoing = false,
+                  isOwner = true,
                   manageLoanViewModel = manageLoanViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))

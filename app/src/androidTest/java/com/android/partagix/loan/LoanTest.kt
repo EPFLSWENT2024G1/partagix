@@ -133,10 +133,10 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
                 },
             idUser = "id_user2")
 
-    val user = User("id_user", "name", "addr", "rank", mockk())
+    val user = User("id_user", "name", "addr", "0.48", mockk())
 
-    val user1 = User("id_user1", "name1", "addr1", "rank1", mockk())
-    val user2 = User("id_user2", "name2", "addr2", "rank2", mockk())
+    val user1 = User("id_user1", "name1", "addr1", "2.123445", mockk())
+    val user2 = User("id_user2", "name2", "addr2", "4.99999", mockk())
 
     // Position link: https://maps.app.goo.gl/kXxVHqw8NQ63jczBA
     val location =
@@ -198,7 +198,6 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
       distanceFilter { assertIsDisplayed() }
       qtyFilter { assertIsDisplayed() }
       itemListView { assertIsDisplayed() }
-      itemListViewItem { assertIsDisplayed() }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
     }
@@ -291,7 +290,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           isMapLoadingOptimized = false)
     }
 
-    onComposeScreen<LoanScreen>(composeTestRule) { itemListViewItem { assertIsDisplayed() } }
+    onComposeScreen<LoanScreen>(composeTestRule) { itemListView { assertIsDisplayed() } }
   }
 
   @Test
@@ -429,7 +428,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         assertIsDisplayed()
         performClick()
       }
-      itemListViewItem {
+      itemListView {
         assertIsDisplayed()
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
@@ -554,7 +553,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     }
 
     onComposeScreen<LoanScreen>(composeTestRule) {
-      itemListViewItem {
+      itemListView {
         assertIsDisplayed()
         every { mockItemViewModel.updateUiItem(any()) } just Runs
         // click the first one
