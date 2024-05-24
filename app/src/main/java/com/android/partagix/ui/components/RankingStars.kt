@@ -104,6 +104,7 @@ fun RankStars(rank: String) {
         Text("Not ranked yet")
       }
     }
+  } else {
+    Text("Not ranked yet")
   }
-  Text("Not ranked yet")
 }
