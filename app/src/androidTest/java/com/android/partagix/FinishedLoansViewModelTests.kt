@@ -7,6 +7,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -115,6 +116,14 @@ class FinishedLoansViewModelTests {
           onSuccessLoan = invocation.invocation.args[0] as (List<Loan>) -> Unit
           onSuccessLoan(listOf(loan1, loan2, loan3, loan4, loan5))
         }
+
+    every { db.getItem(any(), any()) } answers
+        { invocation ->
+          val id = invocation.invocation.args[0] as String
+          val onSuccess = invocation.invocation.args[1] as (Item) -> Unit
+          onSuccess(emptyItem)
+        }
+
     finishedLoansViewModel = FinishedLoansViewModel(db)
 
     mockUser = mockk<FirebaseUser>()
@@ -130,7 +139,9 @@ class FinishedLoansViewModelTests {
     finishedLoansViewModel.getFinishedLoan()
     // check that the correct loans are fetched
     assert(finishedLoansViewModel.uiState.value.loans.size == 2)
-    assert(finishedLoansViewModel.uiState.value.loans.containsAll(listOf(loan1, loan2)))
+    assert(
+        finishedLoansViewModel.uiState.value.loans.containsAll(
+            listOf(Pair(loan1, emptyItem), Pair(loan2, emptyItem))))
   }
 
   @Test
@@ -142,16 +153,12 @@ class FinishedLoansViewModelTests {
   }
 
   @Test
-  fun getItemTests() {
+  fun updateLoan() {
     every { Authentication.getUser() } returns mockUser
     every { mockUser.uid } returns "Cedric"
-    every { db.getItem("item1", any()) } answers
-        { invocation ->
-          val onSuccessItem = invocation.invocation.args[1] as (Item) -> Unit
-          onSuccessItem(item)
-        }
-    finishedLoansViewModel.getItem("item1")
-    // check that the correct item is fetched
-    assert(finishedLoansViewModel.uiItem.value == item)
+    val loan1modified = loan1.copy(commentBorrower = "new comment")
+    finishedLoansViewModel.getFinishedLoan()
+    finishedLoansViewModel.updateLoan(loan1modified)
+    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, emptyItem)))
   }
 }
