@@ -56,7 +56,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["email"] as? String ?: "Please enter an email address",
                       document.data["phoneNumber"] as String?,
                       document.data["telegram"] as String?,
-              document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false))
+                      document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false))
               ret.add(user)
             }
             onSuccess(ret)
@@ -86,7 +86,19 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           val phoneNumber = user["phoneNumber"] as? String ?: ""
           val telegram = user["telegram"] as? String ?: ""
           val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), fcmToken, email, phoneNumber, telegram, favorite))
+          onSuccess(
+              User(
+                  idUser,
+                  name,
+                  addr,
+                  rank,
+                  inventory,
+                  File("noImage"),
+                  fcmToken,
+                  email,
+                  phoneNumber,
+                  telegram,
+                  favorite))
         }
       } else {
         onNoUser()
