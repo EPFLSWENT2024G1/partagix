@@ -222,10 +222,12 @@ fun InventoryScreen(
                   onUserClick = { /* todo */},
                   isCornerClickable = false,
                   isClickable = false,
-                  isOutgoing = false,
+                  isOutgoing = true,
                   isLender = true,
-                  isExpandable = false,
-                  manageLoanViewModel = manageLoanViewModel,
+                  isExpandable = true,
+                  expandState = false,
+                  wasExpanded = List(uiState.borrowedItems.size) { false },
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
@@ -247,7 +249,7 @@ fun InventoryScreen(
                   isExpandable = false,
                   isOutgoing = false,
                   isOwner = true,
-                  manageLoanViewModel = manageLoanViewModel,
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

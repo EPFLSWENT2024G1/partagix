@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
@@ -112,6 +113,8 @@ fun ItemUi(
   }
 
   val itemHeight = 62.dp
+  val nameFontSize = 18.sp
+  val smallerFontSize = 13.sp
 
   var mainRowModifier = modifier.fillMaxWidth().height(itemHeight)
   if (!isExpandable && onItemClick != {}) {
@@ -157,9 +160,6 @@ fun ItemUi(
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         modifier = mainRowModifier) {
-          val nameFontSize = 18.sp
-          val smallerFontSize = 13.sp
-
           Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
 
             // Item name
@@ -255,54 +255,57 @@ fun ItemUi(
         } // End of core row
 
     if (expanded) {
-      Spacer(modifier = Modifier.height(8.dp))
-      Column(modifier = Modifier.fillMaxWidth()) {
-        if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
-          var user = emptyUser
-          if (loan.idLender == user.id)
-              manageLoanViewModel.getUser(
-                  loan.idBorrower,
-              ) {
-                user = it
-              }
-          else manageLoanViewModel.getUser(loan.idLender) { user = it }
-          Text(
-              "Preferred contact: " +
-                  if (user.favorite != listOf(false, false, false)) {
-                    val email = if (user.favorite?.get(0) == true) "Email : ${user.email}" else ""
-                    val phone =
-                        if (user.favorite?.get(1) == true && user.phoneNumber?.isNotEmpty() == true)
-                            "Phone : ${user.phoneNumber}"
-                        else ""
-                    val telegram =
-                        if (user.favorite?.get(2) == true && user.telegram?.isNotEmpty() == true)
-                            "Telegram : ${user.telegram}"
-                        else ""
-                    listOf(email, phone, telegram).filter { it.isNotEmpty() }.joinToString(" ")
-                  } else {
-                    "No preffered contact"
-                  })
+      Spacer(modifier = Modifier.height(2.dp))
 
-          Spacer(modifier = Modifier.height(4.dp))
-          Text(
-              "Other contact : " +
-                  if (user.favorite != listOf(true, true, true)) {
-                    val email = if (user.favorite?.get(0) == false) "Email : ${user.email}" else ""
-                    val phone =
-                        if (user.favorite?.get(1) == false &&
-                            user.phoneNumber?.isNotEmpty() == true)
-                            "Phone : ${user.phoneNumber}"
-                        else ""
-                    val telegram =
-                        if (user.favorite?.get(2) == false && user.telegram?.isNotEmpty() == true)
-                            "Telegram : ${user.telegram}"
-                        else ""
-                    listOf(email, phone, telegram).filter { it.isNotEmpty() }.joinToString(" ")
-                  } else {
-                    "No other contact"
-                  })
-          Spacer(modifier = Modifier.height(8.dp))
+      if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
+        var user by remember { mutableStateOf(emptyUser) }
+        if (loan.idLender == user.id)
+            manageLoanViewModel.getUser(
+                loan.idBorrower,
+            ) {
+              user = it
+            }
+        else manageLoanViewModel.getUser(loan.idLender) { user = it }
+        Text("Preferred contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
+        if (user.favorite != listOf(false, false, false)) {
+          val email = if (user.favorite?.get(0) == true) "Email : ${user.email}" else ""
+          val phone = if (user.favorite?.get(1) == true) "Phone : ${user.phoneNumber}" else ""
+          val telegram = if (user.favorite?.get(2) == true) "Telegram : ${user.telegram}" else ""
+          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
+              Text("No preferred contact", fontSize = smallerFontSize, lineHeight = 1.3.em)
+          else {
+            listOf(email, phone, telegram)
+                .filter { it.isNotEmpty() }
+                .forEach { contact -> Text(contact, fontSize = 11.sp, lineHeight = 1.3.em) }
+          }
+        } else {
+          Text("No preferred contact", fontSize = 11.sp, lineHeight = 1.3.em)
         }
+        Spacer(modifier = Modifier.height(2.dp))
+        Text("Other contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
+        if (user.favorite != listOf(false, false, false)) {
+          val email =
+              if (user.favorite?.get(0) == false && user.email != "") "Email : ${user.email}"
+              else ""
+          val phone =
+              if (user.favorite?.get(1) == false && user.phoneNumber != "")
+                  "Phone : ${user.phoneNumber}"
+              else ""
+          val telegram =
+              if (user.favorite?.get(2) == false && user.telegram != "")
+                  "Telegram : ${user.telegram}"
+              else ""
+          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
+              Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)
+          else {
+            listOf(email, phone, telegram)
+                .filter { it.isNotEmpty() }
+                .forEach { contact -> Text(contact, fontSize = 11.sp, lineHeight = 1.3.em) }
+          }
+        } else {
+          Text("No other contact", fontSize = smallerFontSize)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
 
         Row(
             horizontalArrangement = Arrangement.Absolute.Right,

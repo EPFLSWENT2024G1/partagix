@@ -80,9 +80,9 @@ class ManageLoanViewModel(
     return uiState.value.loans.size
   }
 
-  fun getOutGoingRequestCount(onSuccess: (Int) -> Unit) {
-    getLoanRequests(isOutgoing = true, onSuccess = { onSuccess(uiState.value.loans.size) })
-  }*/
+  fun getUser(id: String, onSuccess: (User) -> Unit) {
+    database.getUser(id, {}, onSuccess)
+  }
 
   fun update(
       items: List<Item>,
@@ -136,7 +136,7 @@ class ManageLoanViewModel(
 
   fun updateExpanded(index: Int, expanded: Boolean) {
     val list = _uiState.value.expanded.toMutableList()
-    list[index] = !list[index]
+    list[index] = expanded
     _uiState.value = _uiState.value.copy(expanded = list)
   }
 
