@@ -92,7 +92,7 @@ fun ManageLoanRequest(
                     users = uiState.users,
                     loan = uiState.loans,
                     title = "Incoming requests",
-                    corner = "Historic",
+                    corner = "History",
                     isCornerClickable = true,
                     isExpandable = true,
                     expandState = expandable,
