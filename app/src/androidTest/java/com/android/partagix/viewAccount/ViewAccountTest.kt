@@ -79,7 +79,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   fun testSetup() {
     emptyMockUiState = MutableStateFlow(UserUIState(emptyUser))
     nonEmptyMockUiState = MutableStateFlow(UserUIState(userOne, comments = comments))
-    otherUserMockUIState = MutableStateFlow(UserUIState(userOne))
+    otherUserMockUIState = MutableStateFlow(UserUIState(userOne, comments = comments))
 
     mockUserViewModel = mockk()
     mockOtherUserViewModel = mockk()
@@ -191,15 +191,15 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @Test
   fun commentsWorks() = run {
     every { mockUserViewModel.uiState } returns nonEmptyMockUiState
-    every { mockOtherUserViewModel.getLoggedUserId() } returns "id1"
+    every { mockUserViewModel.getLoggedUserId() } returns "id2"
     every { mockUserViewModel.setUser(any()) } just Runs
 
     composeTestRule.setContent {
       ViewOtherAccount(
           modifier = Modifier,
           navigationActions = mockNavActions,
-          userViewModel = mockOtherUserViewModel,
-          otherUserViewModel = mockUserViewModel)
+          userViewModel = mockUserViewModel,
+          otherUserViewModel = mockOtherUserViewModel)
     }
 
     onComposeScreen<ViewOtherAccount>(composeTestRule) {
@@ -215,6 +215,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     author.assertIsDisplayed()
     author.performClick()
 
-    verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
+    verify { mockNavActions.navigateTo(Route.ACCOUNT) }
   }
 }
