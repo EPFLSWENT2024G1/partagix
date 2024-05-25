@@ -230,7 +230,7 @@ fun ItemUi(
 
                 // Owner rank
                 Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
-                  RankStars(rank = user.rank)
+                  RankingStars(rank = user.rank)
                 }
               }
             }
