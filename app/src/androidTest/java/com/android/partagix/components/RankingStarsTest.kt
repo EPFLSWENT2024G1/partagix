@@ -1,10 +1,6 @@
 package com.android.partagix.components
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.ui.components.RankingStars
 import com.kaspersky.components.composesupport.config.withComposeSupport
@@ -20,61 +16,86 @@ class RankingStarsTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompo
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
-  fun everyValuesRankingStarsIsDisplayed() = run {
-    composeTestRule.setContent {
-      //      RankingStars("")
-      Spacer(modifier = Modifier.height(10.dp))
-      //      RankingStars("0.0")
-      Spacer(modifier = Modifier.height(10.dp))
-      //      RankingStars("else")
-      Spacer(modifier = Modifier.height(10.dp))
-      RankingStars("0.1")
-      Spacer(modifier = Modifier.height(10.dp))
-
-      RankingStars("0.6")
-      Spacer(modifier = Modifier.height(10.dp))
-
-      RankingStars("1.1")
-      Spacer(modifier = Modifier.height(10.dp))
-
-      RankingStars("1.4")
-      RankingStars("1.8")
-      RankingStars("2.3")
-      RankingStars("3.0")
-      RankingStars("3.5")
-      RankingStars("3.9999999")
-      RankingStars("4.51111111111111")
-      RankingStars("4.78")
-    }
-    //    onComposeScreen<RankingStars>(composeTestRule) { stars_empty { assertIsDisplayed() } }
-
-    //    composeTestRule.setContent { RankingStars("0.0") }
+  fun emptyRatingWorks() = run {
+    composeTestRule.setContent { RankingStars("") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_empty { assertIsDisplayed() } }
+  }
 
-    //    composeTestRule.setContent { RankingStars("else") }
-    onComposeScreen<RankingStars>(composeTestRule) { stars_else { assertIsDisplayed() } }
+  @Test
+  fun randomTextWorks() = run {
+    composeTestRule.setContent { RankingStars("else") }
+    onComposeScreen<RankingStars>(composeTestRule) { stars_empty { assertIsDisplayed() } }
+  }
 
-    //    composeTestRule.setContent { RankingStars("0.1") }
+  @Test
+  fun illegalRatingWorks() = run {
+    composeTestRule.setContent { RankingStars("10") }
+    onComposeScreen<RankingStars>(composeTestRule) { stars_wrong_rating { assertIsDisplayed() } }
+  }
+
+  @Test
+  fun rating0Works() = run {
+    composeTestRule.setContent { RankingStars("0.1") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_0 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("0.6") }
+  }
+
+  @Test
+  fun rating0_5Works() = run {
+    composeTestRule.setContent { RankingStars("0.7") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_0_5 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("1.1") }
+  }
+
+  @Test
+  fun rating1Works() = run {
+    composeTestRule.setContent { RankingStars("1.01") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_1 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("1.4") }
+  }
+
+  @Test
+  fun rating1_5Works() = run {
+    composeTestRule.setContent { RankingStars("1.5") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_1_5 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("1.8") }
+  }
+
+  @Test
+  fun rating2Works() = run {
+    composeTestRule.setContent { RankingStars("2.25") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_2 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("2.3") }
+  }
+
+  @Test
+  fun rating2_5Works() = run {
+    composeTestRule.setContent { RankingStars("2.7") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_2_5 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("3.0") }
+  }
+
+  @Test
+  fun rating3Works() = run {
+    composeTestRule.setContent { RankingStars("3.0") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_3 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("3.5") }
+  }
+
+  @Test
+  fun rating3_5Works() = run {
+    composeTestRule.setContent { RankingStars("3.6") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_3_5 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("3.9999999") }
+  }
+
+  @Test
+  fun rating4Works() = run {
+    composeTestRule.setContent { RankingStars("4.0") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_4 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("4.51111111111111") }
+  }
+
+  @Test
+  fun rating4_5Works() = run {
+    composeTestRule.setContent { RankingStars("4.5") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_4_5 { assertIsDisplayed() } }
-    //    composeTestRule.setContent { RankingStars("4.78") }
+  }
+
+  @Test
+  fun rating5Works() = run {
+    composeTestRule.setContent { RankingStars("5.0") }
     onComposeScreen<RankingStars>(composeTestRule) { stars_5 { assertIsDisplayed() } }
   }
 }

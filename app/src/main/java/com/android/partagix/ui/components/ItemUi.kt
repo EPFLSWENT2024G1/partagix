@@ -229,9 +229,8 @@ fun ItemUi(
                 Spacer(modifier = Modifier.width(5.dp))
 
                 // Owner rank
-                Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
-                  RankingStars(rank = user.rank)
-                }
+                RankingStars(
+                    rank = user.rank, modifier = Modifier.padding(top = 1.dp).height(13.dp))
               }
             }
           }

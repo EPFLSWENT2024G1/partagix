@@ -19,6 +19,6 @@ class RankingStars(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val stars_4: KNode = onNode { hasTestTag("stars_4") }
   val stars_4_5: KNode = onNode { hasTestTag("stars_4_5") }
   val stars_5: KNode = onNode { hasTestTag("stars_5") }
-  val stars_else: KNode = onNode { hasTestTag("stars_else") }
+  val stars_wrong_rating: KNode = onNode { hasTestTag("stars_wrong_rating") }
   val stars_empty: KNode = onNode { hasTestTag("stars_empty") }
 }
