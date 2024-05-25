@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -109,7 +110,6 @@ fun ViewAccount(
                         alignment = Alignment.Center,
                     )
                   }
-              Spacer(modifier = Modifier.height(8.dp))
               Row(
                   modifier = Modifier.fillMaxWidth().testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
@@ -165,9 +165,8 @@ fun ViewAccount(
                     modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("rating"))
                 LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
               }
-              Spacer(modifier = Modifier.height(16.dp))
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
+                  modifier = Modifier.fillMaxWidth().padding(12.dp, 0.dp).testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
@@ -180,10 +179,15 @@ fun ViewAccount(
               val commentList = uiState.value.comments
 
               if (commentList.isEmpty()) {
-                Text("No comments yet", modifier = Modifier.testTag("noComments"))
+                Text(
+                    "No comments yet",
+                    modifier = Modifier.padding(12.dp, 0.dp).testTag("noComments"))
               } else {
                 Column(modifier = Modifier.padding(12.dp, 0.dp).testTag("comments")) {
-                  Text(text = "Comments", modifier = Modifier.testTag("commentsTitle"))
+                  Text(
+                      text = "Comments",
+                      style = MaterialTheme.typography.titleMedium,
+                      modifier = Modifier.testTag("commentsTitle"))
                   commentList.forEach { comment ->
                     val onClick: (User) -> Unit =
                         if (comment.first.id != userViewModel.getLoggedUserId()) {
@@ -204,6 +208,7 @@ fun ViewAccount(
                     UserComment(comment.first, comment.second, onClick)
                   }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
               }
             }
       }

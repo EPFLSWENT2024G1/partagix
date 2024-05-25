@@ -28,14 +28,17 @@ fun UserComment(
 ) {
   Surface(
       shape = RoundedCornerShape(12.dp),
-      border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
-      modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("userComment_${author.id}")) {
+      border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+      modifier =
+          Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 6.dp)
+              .fillMaxWidth()
+              .testTag("userComment_${author.id}")) {
         Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.Start) {
           Text(
               text = author.name,
               style = MaterialTheme.typography.bodyLarge,
               modifier =
-                  Modifier.padding(bottom = 8.dp)
+                  Modifier.padding(start = 4.dp, bottom = 6.dp)
                       .clickable {
                         Log.d(TAG, "UserComment: $author")
                         onAuthorClick(author)
@@ -44,7 +47,8 @@ fun UserComment(
           Text(
               text = comment,
               style = MaterialTheme.typography.bodyMedium,
-              minLines = 3,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              minLines = 1,
               maxLines = 5,
               overflow = TextOverflow.Ellipsis)
         }
