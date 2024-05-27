@@ -287,7 +287,7 @@ fun BorrowScreen(
                     viewModel.createLoan()
                     navigationActions.navigateTo(Route.LOAN)
                   },
-                  content = { Text(text = "Make request reservation") })
+                  content = { Text(text = "Request reservation") })
             }
       }
 }
