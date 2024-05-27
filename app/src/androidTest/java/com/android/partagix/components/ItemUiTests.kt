@@ -1,10 +1,8 @@
 package com.android.partagix.components
 
-import android.content.Context
 import android.location.Location
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.core.app.ApplicationProvider
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyInventory
