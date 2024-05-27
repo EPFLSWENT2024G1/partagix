@@ -2,6 +2,7 @@ package com.android.partagix.borrow
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.core.os.bundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.category.Category
@@ -44,7 +45,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
 
   val cat1 = Category("1", "Category 1")
   val vis1 = Visibility.PUBLIC
-  val loc1 = Location("1")
+  val loc1 = mockk<Location>()
   val item = Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1)
   val loan = Loan("1", "1", "1", "1", Date(), Date(), "1", "1", "1", "1", LoanState.PENDING)
   val user = User("1", "Name 1", "Email 1", "Phone 1", Inventory("1", emptyList()))
@@ -54,6 +55,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockLoanUiState = MutableStateFlow(loan)
     mockItemUiState = MutableStateFlow(item)
     mockUserUiState = MutableStateFlow(user)
+
+    every { loc1.latitude } returns 1.0
+    every { loc1.longitude } returns 1.0
+    every { loc1.extras } returns bundleOf("display_name" to "Location 1")
 
     mockViewModel = mockk()
     every { mockViewModel.loanUiState } returns mockLoanUiState
@@ -89,7 +94,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
       itemName { assertIsDisplayed() }
       itemOwner { assertIsDisplayed() }
       description { assertIsDisplayed() }
-      location { assertIsDisplayed() }
+      location {
+        assertIsDisplayed()
+        assertTextContains("Location 1")
+      }
       startDate { assertIsDisplayed() }
       startDateButton {
         assertIsDisplayed()
