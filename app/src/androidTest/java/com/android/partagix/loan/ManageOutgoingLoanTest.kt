@@ -2,6 +2,7 @@ package com.android.partagix.loan
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.category.Category
@@ -36,6 +37,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
 
   private lateinit var emptyMockUiState: MutableStateFlow<ManagerUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ManagerUIState>
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   @Before
   fun testSetup() {
@@ -70,6 +72,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     val boolean = listOf(true)
     nonEmptyMockUiState = MutableStateFlow(ManagerUIState(items, users, loan, boolean))
 
+    mockItemViewModel = mockk()
     mockManageViewModel = mockk()
 
     every { mockManageViewModel.getLoanRequests() } just Runs
@@ -82,6 +85,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
       ManageOutgoingLoan(
           mockManageViewModel,
           mockNavActions,
+          mockItemViewModel,
       )
     }
 
@@ -97,6 +101,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
       ManageOutgoingLoan(
           mockManageViewModel,
           mockNavActions,
+          mockItemViewModel,
       )
     }
 
@@ -115,6 +120,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
       ManageOutgoingLoan(
           mockManageViewModel,
           mockNavActions,
+          mockItemViewModel,
       )
     }
 
@@ -130,6 +136,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
       ManageOutgoingLoan(
           mockManageViewModel,
           mockNavActions,
+          mockItemViewModel,
       )
     }
 
@@ -146,6 +153,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
           mockManageViewModel,
           mockNavActions,
           expandable = true,
+          itemViewModel = mockItemViewModel,
       )
     }
 
