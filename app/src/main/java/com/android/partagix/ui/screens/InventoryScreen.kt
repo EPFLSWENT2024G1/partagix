@@ -134,7 +134,7 @@ fun InventoryScreen(
                 modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Loan requests",
+                      text = "Loan Requests",
                       style =
                           TextStyle(
                               fontSize = 18.sp,
@@ -210,7 +210,7 @@ fun InventoryScreen(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
-                  title = "Borrowed items",
+                  title = "Borrowed",
                   corner = uiState.borrowedItems.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)
@@ -235,7 +235,7 @@ fun InventoryScreen(
                   list = uiState.items,
                   users = uiState.users,
                   loan = uiState.loan,
-                  title = "Inventory item",
+                  title = "My Inventory",
                   corner = uiState.items.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)
