@@ -258,19 +258,19 @@ fun ItemUi(
       Spacer(modifier = Modifier.height(2.dp))
 
       if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
-        var user by remember { mutableStateOf(emptyUser) }
+        var u by remember { mutableStateOf(emptyUser) }
         if (loan.idLender == user.id)
             manageLoanViewModel.getUser(
-                loan.idBorrower,
+                loan.idLender,
             ) {
-              user = it
+              u = it
             }
-        else manageLoanViewModel.getUser(loan.idLender) { user = it }
+        else manageLoanViewModel.getUser(loan.idBorrower) { u = it }
         Text("Preferred contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
-        if (user.favorite != listOf(false, false, false)) {
-          val email = if (user.favorite?.get(0) == true) "Email : ${user.email}" else ""
-          val phone = if (user.favorite?.get(1) == true) "Phone : ${user.phoneNumber}" else ""
-          val telegram = if (user.favorite?.get(2) == true) "Telegram : ${user.telegram}" else ""
+        if (u.favorite != listOf(false, false, false)) {
+          val email = if (u.favorite?.get(0) == true) "Email : ${u.email}" else ""
+          val phone = if (u.favorite?.get(1) == true) "Phone : ${u.phoneNumber}" else ""
+          val telegram = if (u.favorite?.get(2) == true) "Telegram : ${u.telegram}" else ""
           if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
               Text("No preferred contact", fontSize = smallerFontSize, lineHeight = 1.3.em)
           else {
@@ -283,17 +283,13 @@ fun ItemUi(
         }
         Spacer(modifier = Modifier.height(2.dp))
         Text("Other contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
-        if (user.favorite != listOf(false, false, false)) {
-          val email =
-              if (user.favorite?.get(0) == false && user.email != "") "Email : ${user.email}"
-              else ""
+        if (u.favorite != listOf(false, false, false)) {
+          val email = if (u.favorite?.get(0) == false && u.email != "") "Email : ${u.email}" else ""
           val phone =
-              if (user.favorite?.get(1) == false && user.phoneNumber != "")
-                  "Phone : ${user.phoneNumber}"
+              if (u.favorite?.get(1) == false && u.phoneNumber != "") "Phone : ${user.phoneNumber}"
               else ""
           val telegram =
-              if (user.favorite?.get(2) == false && user.telegram != "")
-                  "Telegram : ${user.telegram}"
+              if (u.favorite?.get(2) == false && u.telegram != "") "Telegram : ${user.telegram}"
               else ""
           if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
               Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)

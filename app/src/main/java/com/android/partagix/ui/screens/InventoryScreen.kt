@@ -74,7 +74,6 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-
   // Useful when we will have fix the count
   var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
   var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
@@ -224,7 +223,7 @@ fun InventoryScreen(
                   isClickable = false,
                   isOutgoing = true,
                   isLender = true,
-                  isExpandable = true,
+                  isExpandable = manageLoanViewModelOutgoing.getCount() > 0,
                   expandState = false,
                   wasExpanded = List(uiState.borrowedItems.size) { false },
                   manageLoanViewModel = manageLoanViewModelOutgoing,

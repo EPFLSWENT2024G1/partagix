@@ -199,46 +199,6 @@ fun EditAccount(
 
                 if (contact) {
                   Spacer(modifier = Modifier.height(8.dp))
-                  Text(text = "Favorite contact methods", modifier = Modifier.padding(16.dp, 0.dp))
-                  Spacer(modifier = Modifier.height(4.dp))
-                  Row(
-                      modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 32.dp),
-                      horizontalArrangement = Arrangement.Absolute.SpaceEvenly) {
-                        Row(
-                            horizontalArrangement = Arrangement.Absolute.Left,
-                            verticalAlignment = Alignment.CenterVertically) {
-                              Checkbox(
-                                  checked = favorite[0],
-                                  onCheckedChange = { favorite[0] = !favorite[0] },
-                                  enabled = email.contains("@"),
-                                  modifier = Modifier.testTag("emailCheckbox"))
-                              Text("Email", fontSize = 11.sp)
-                            }
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.Absolute.Left,
-                            verticalAlignment = Alignment.CenterVertically) {
-                              Checkbox(
-                                  checked = favorite[1],
-                                  onCheckedChange = { favorite[1] = !favorite[1] },
-                                  enabled = phoneNumber.isNotEmpty(),
-                                  modifier = Modifier.testTag("phoneNumberCheckbox"))
-                              Text("Phone number", fontSize = 11.sp)
-                            }
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.Absolute.Left,
-                            verticalAlignment = Alignment.CenterVertically) {
-                              Checkbox(
-                                  checked = favorite[2],
-                                  onCheckedChange = { favorite[2] = !favorite[2] },
-                                  enabled = telegram.isNotEmpty(),
-                                  modifier = Modifier.testTag("telegramCheckbox"))
-                              Text("Telegram", fontSize = 11.sp)
-                            }
-                      }
-
-                  Spacer(modifier = Modifier.height(10.dp))
 
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("email"),
@@ -270,9 +230,54 @@ fun EditAccount(
                         if (telegram == "") favorite[2] = false
                       },
                       label = { Text("telegram") })
+
+                  Spacer(modifier = Modifier.height(16.dp))
+                  Text(
+                      text = " Favorite contact methods",
+                      fontSize = 15.sp,
+                      modifier = Modifier.padding(16.dp, 0.dp))
+                  Spacer(modifier = Modifier.height(4.dp))
+                  Row(
+                      modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
+                      horizontalArrangement = Arrangement.Absolute.SpaceEvenly,
+                      verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            horizontalArrangement = Arrangement.Absolute.Left,
+                            verticalAlignment = Alignment.CenterVertically) {
+                              Checkbox(
+                                  checked = favorite[0],
+                                  onCheckedChange = { favorite[0] = !favorite[0] },
+                                  enabled = email.contains("@"),
+                                  modifier = Modifier.testTag("emailCheckbox"))
+                              Text("Email", fontSize = 11.sp)
+                            }
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.Absolute.Left,
+                            verticalAlignment = Alignment.CenterVertically) {
+                              Checkbox(
+                                  checked = favorite[1],
+                                  onCheckedChange = { favorite[1] = !favorite[1] },
+                                  enabled = phoneNumber.isNotEmpty(),
+                                  modifier = Modifier.testTag("phoneNumberCheckbox"))
+                              Text("Phone number", fontSize = 11.sp)
+                            }
+
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.Absolute.Left,
+                            verticalAlignment = Alignment.CenterVertically) {
+                              Checkbox(
+                                  checked = favorite[2],
+                                  onCheckedChange = { favorite[2] = !favorite[2] },
+                                  enabled = telegram.isNotEmpty(),
+                                  modifier = Modifier.testTag("telegramCheckbox"))
+                              Text("Telegram", fontSize = 11.sp)
+                            }
+                      }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
                     modifier =
