@@ -204,7 +204,7 @@ class EndToEndCreateEdit {
 
     composeTestRule
         .onNodeWithText(
-            "There is no items in your inventory, click on the + button to add your first item")
+            "You have no items in your inventory, click on the + button to add your first item")
         .assertIsDisplayed()
     composeTestRule.onNodeWithTag("inventoryScreenFab").performClick()
 

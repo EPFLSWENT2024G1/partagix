@@ -91,7 +91,8 @@ fun BorrowScreen(
 
         val loanItemName by remember { mutableStateOf(item.name) }
         val loanItemOwnerName by remember { mutableStateOf(user.name) }
-        var loanDescription by remember { mutableStateOf("")
+        var loanDescription by remember {
+          mutableStateOf("")
         } // TODO: edit Loan type to include description
         val loanLocation by remember { mutableStateOf(item.location) }
         val loanQuantity by remember { mutableStateOf(item.quantity) }
