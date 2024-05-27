@@ -60,7 +60,8 @@ import com.android.partagix.ui.navigation.Route
  *
  * @param inventoryViewModel a view model to get the inventory.
  * @param navigationActions a class to navigate to different screens.
- * @param manageLoanViewModel a view model to manage the loan requests.
+ * @param manageLoanViewModelIncoming a view model to manage the incoming loan requests.
+ * @param manageLoanViewModelOutgoing a view model to manage the outgoing loan requests.
  * @param itemViewModel a view model to manage the items.
  * @param modifier a Modifier to apply to this layout.
  */
@@ -74,7 +75,8 @@ fun InventoryScreen(
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
-  // Useful when we will have fix the count
+
+  // These variables should stay var otherwise the counts are outdated in some cases
   var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
   var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
 
@@ -169,8 +171,6 @@ fun InventoryScreen(
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Incoming Requests ($incomingRequests)",
-                              // when we fix the
-                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -218,7 +218,10 @@ fun InventoryScreen(
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onUserClick = { /* todo */},
+                  onUserClick = {
+                    //                    userViewModel.setUser(user)
+                    navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                  },
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = true,

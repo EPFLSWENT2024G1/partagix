@@ -93,7 +93,6 @@ fun ItemUi(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     index: Int = 0,
 ) {
-  //  val modifier = modifier
   val date: Date =
       if (loan.startDate.before(Date())) {
         loan.endDate
@@ -134,8 +133,6 @@ fun ItemUi(
 
   var mainColumnModifier =
       modifier
-          //          .fillMaxWidth()
-          //          .requiredHeight(itemHeight)
           .fillMaxSize()
           .border(
               width = 1.dp,
@@ -168,7 +165,7 @@ fun ItemUi(
           Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
 
             // Item name
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().height(23.dp)) {
               Text(
                   text = item.name,
                   style =
@@ -183,10 +180,10 @@ fun ItemUi(
               )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.weight(1f).height(1.dp))
 
             // Details
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().height(15.dp)) {
 
               // Availability
               Row(modifier = Modifier.fillMaxWidth(0.7f)) {
@@ -217,11 +214,11 @@ fun ItemUi(
               }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(1.dp).weight(1f))
 
             // Owner
             if (!isOwner) {
-              Row(modifier = ownerModifier) {
+              Row(modifier = ownerModifier.height(15.dp)) {
 
                 // Owner name
                 Text(
@@ -238,9 +235,8 @@ fun ItemUi(
                 Spacer(modifier = Modifier.width(5.dp))
 
                 // Owner rank
-                Row(modifier = Modifier.padding(top = 1.dp).height(13.dp)) {
-                  RankStars(rank = user.rank)
-                }
+                RankingStars(
+                    rank = user.rank, modifier = Modifier.padding(top = 3.dp).height(13.dp))
               }
             }
           }
@@ -343,6 +339,42 @@ fun ItemUi(
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
       }
+      Spacer(modifier = Modifier.height(8.dp))
+      Row(
+          horizontalArrangement = Arrangement.Absolute.Right,
+          modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
+            if (!isOutgoing) {
+              Button(
+                  onClick = { manageLoanViewModel.acceptLoan(loan, index) },
+                  content = {
+                    Icon(Icons.Default.Check, contentDescription = "validate", modifier = Modifier)
+                    Spacer(Modifier.width(3.dp))
+                    Text(text = "Validate")
+                  },
+                  modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                  contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Button(
+                onClick = { manageLoanViewModel.declineLoan(loan, index) },
+                content = {
+                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                  Spacer(Modifier.width(2.dp))
+                  if (loan.state == LoanState.PENDING && isLender) {
+                    Text(text = "Cancel")
+                  } else {
+                    Text(text = "Reject")
+                  }
+                },
+                colors =
+                    ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                        disabledContainerColor = MaterialTheme.colorScheme.error,
+                        disabledContentColor = MaterialTheme.colorScheme.onError),
+                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+          }
     }
   }
   /*} else {

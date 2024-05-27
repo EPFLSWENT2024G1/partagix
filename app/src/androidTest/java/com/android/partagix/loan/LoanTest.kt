@@ -418,6 +418,8 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           isMapLoadingOptimized = false)
     }
 
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
+
     onComposeScreen<LoanScreen>(composeTestRule) {
       distanceFilter {
         assertIsDisplayed()
@@ -428,15 +430,15 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         assertIsDisplayed()
         performClick()
       }
-      itemListView {
-        assertIsDisplayed()
-        every { mockItemViewModel.updateUiItem(any()) } just Runs
-        // click the first one
-        performClick()
-
-        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
-      }
+      itemListView { assertIsDisplayed() }
     }
+
+    // look for the item "cat" within itemListView and click on it
+    val catItem = composeTestRule.onNode(hasText("cat"))
+    catItem.assertIsDisplayed()
+    catItem.performClick()
+
+    verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
   }
 
   @Test
@@ -551,17 +553,16 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
           mockUserViewModel,
           isMapLoadingOptimized = false)
     }
+    every { mockItemViewModel.updateUiItem(any()) } just Runs
 
-    onComposeScreen<LoanScreen>(composeTestRule) {
-      itemListView {
-        assertIsDisplayed()
-        every { mockItemViewModel.updateUiItem(any()) } just Runs
-        // click the first one
-        performClick()
+    onComposeScreen<LoanScreen>(composeTestRule) { itemListView { assertIsDisplayed() } }
 
-        verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
-      }
-    }
+    // look for the item "cat" within itemListView and click on it
+    val catItem = composeTestRule.onNode(hasText("cat"))
+    catItem.assertIsDisplayed()
+    catItem.performClick()
+
+    verify { mockNavActions.navigateTo(Route.VIEW_OTHERS_ITEM) }
   }
 
   companion object {

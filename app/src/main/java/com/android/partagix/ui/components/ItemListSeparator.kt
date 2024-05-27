@@ -54,7 +54,7 @@ fun ItemListColumn(
     isOwner: Boolean = false,
     isLender: Boolean = false,
     onUserClick: (Item) -> Unit = {},
-    manageLoanViewModel: ManageLoanViewModel,
+    manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
