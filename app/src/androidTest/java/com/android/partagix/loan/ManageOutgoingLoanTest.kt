@@ -103,7 +103,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     ComposeScreen.onComposeScreen<ManageOutgoingLoanScreen>(composeTestRule) {
       noItemText {
         assertIsDisplayed()
-        assertTextEquals("There is no outgoing loan request.")
+        assertTextEquals("You have no outgoing loan request.")
       }
     }
   }

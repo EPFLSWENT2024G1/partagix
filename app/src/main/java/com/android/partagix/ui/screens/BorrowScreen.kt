@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import java.text.DateFormat
@@ -139,19 +140,17 @@ fun BorrowScreen(
                   Spacer(modifier = modifier.width(8.dp))
 
                   Column {
-                    OutlinedTextField(
-                        value = loanItemName,
-                        onValueChange = {},
-                        label = { Text("Item name") },
-                        modifier = modifier.testTag("itemName").fillMaxWidth(),
-                        maxLines = 1, // Ensure only one line is displayed
-                        readOnly = true)
-                    OutlinedTextField(
-                        value = loanItemOwnerName,
-                        onValueChange = {},
-                        label = { Text("Owner") },
-                        modifier = modifier.testTag("itemOwner").fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText(
+                        label = "Object Name",
+                        text = loanItemName,
+                        modifier = modifier.fillMaxWidth().fillMaxHeight(0.5f).testTag("itemName"))
+
+                    LabeledText(
+                        label = "Owner",
+                        text = loanItemOwnerName,
+                        modifier = modifier.fillMaxWidth().testTag("itemOwner")
+                        //                        .clickable { /* todo */ }
+                        )
                   }
                 }
               }
@@ -163,6 +162,11 @@ fun BorrowScreen(
                     modifier = modifier.fillMaxWidth().testTag("description"),
                     minLines = 5,
                     readOnly = true)
+
+                /*                LabeledText(
+                modifier = modifier.fillMaxWidth().testTag("description"),
+                label = "Description",
+                text = loanDescription)*/
 
                 Spacer(modifier = modifier.height(8.dp))
 

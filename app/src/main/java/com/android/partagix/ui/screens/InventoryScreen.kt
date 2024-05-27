@@ -123,7 +123,7 @@ fun InventoryScreen(
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
-                        "There is no items in your inventory, click on the + button to add your first item",
+                        "You have no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
