@@ -1,6 +1,7 @@
 package com.android.partagix
 
 import android.location.Location
+import androidx.core.os.bundleOf
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
@@ -279,6 +280,10 @@ class DatabaseTests {
     val categoryName = "catName"
 
     val userId = "userId"
+    val mockLocation = mockk<Location>()
+    every { mockLocation.latitude } returns 0.0
+    every { mockLocation.longitude } returns 0.0
+    every { mockLocation.extras } returns bundleOf("display_name" to "itemLocation")
 
     val item =
         Item(
@@ -288,7 +293,7 @@ class DatabaseTests {
             "itemDescription",
             Visibility.PUBLIC,
             1234,
-            Location(""),
+            mockLocation,
         )
 
     every { mockDb.collection(any()) } returns mockItemsCollection
@@ -387,9 +392,12 @@ class DatabaseTests {
       assertEquals(1, items.size)
       // Add your assertions here based on the expected behavior
     }
-    database.getItems(onSuccessCallback)
 
-    database.getItemsWithImages(onSuccessCallback)
+    runBlocking {
+      database.getItems(onSuccessCallback)
+
+      database.getItemsWithImages(onSuccessCallback)
+    }
 
     // Verify that the Firestore collections were accessed correctly
     verify(exactly = 2) { mockItemsCollection.get() }
@@ -428,6 +436,10 @@ class DatabaseTests {
 
     val userId = "userId"
 
+    val mockLocation = mockk<Location>()
+    every { mockLocation.latitude } returns 0.0
+    every { mockLocation.longitude } returns 0.0
+    every { mockLocation.extras } returns bundleOf("display_name" to "itemLocation")
     val item =
         Item(
             "itemId",
@@ -436,7 +448,7 @@ class DatabaseTests {
             "itemDescription",
             Visibility.PUBLIC,
             1234,
-            Location(""),
+            mockLocation,
         )
 
     every { mockDb.collection(any()) } returns mockItemsCollection
@@ -528,6 +540,7 @@ class DatabaseTests {
       database.getItem("itemId", onSuccessCallback)
       database.getItemWithImage("itemId", onSuccessCallback)
     }
+
     // Unmock static function
     unmockkStatic(::now)
   }
