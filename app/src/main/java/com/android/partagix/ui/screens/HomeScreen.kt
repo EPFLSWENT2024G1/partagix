@@ -143,16 +143,15 @@ fun HomeScreen(
 fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
   Box(
       modifier =
-        modifier
-          .aspectRatio(1f)
-          .size(70.dp)
-          .border(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant,
-            shape = RoundedCornerShape(8.dp)
-          ) // Add a rounded border to the button
-          .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(8.dp))
-          .clickable(onClick = onClick),
+          modifier
+              .aspectRatio(1f)
+              .size(70.dp)
+              .border(
+                  width = 1.dp,
+                  color = MaterialTheme.colorScheme.outlineVariant,
+                  shape = RoundedCornerShape(8.dp)) // Add a rounded border to the button
+              .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(8.dp))
+              .clickable(onClick = onClick),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           Spacer(modifier = Modifier.fillMaxHeight(0.15f))
