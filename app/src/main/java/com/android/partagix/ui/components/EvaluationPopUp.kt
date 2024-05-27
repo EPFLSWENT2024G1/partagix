@@ -169,6 +169,7 @@ fun EvaluationPopUp(
                               .padding(10.dp, 0.dp)
                               .testTag("commentField"),
                       minLines = 8,
+                      maxLines = 10,
                       textStyle = TextStyle(fontSize = 16.sp))
 
                   Spacer(modifier.height(16.dp))

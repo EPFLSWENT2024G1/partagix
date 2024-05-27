@@ -248,6 +248,7 @@ fun InventoryViewItemScreen(
                       modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
                 }
               }
+              Spacer(modifier = Modifier.height(8.dp))
             }
       }
 }

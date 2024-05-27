@@ -13,12 +13,10 @@ class LoanScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val maps: KNode = onNode { hasTestTag("LoanScreenMaps") }
 
   val distanceFilter: KNode = onNode { hasTestTag("LoanScreenDistanceFilter") }
-  val distanceSlider: KNode = distanceFilter.child { hasTestTag("SliderFilter") }
 
   val qtyFilter: KNode = onNode { hasTestTag("LoanScreenQtyFilter") }
 
   val itemListView: KNode = onNode { hasTestTag("LoanScreenItemListView") }
-  val itemListViewItem: KNode = itemListView.child { hasTestTag("ItemListItem") }
 
   val bottomNavBar: KNode = onNode { hasTestTag("LoanScreenBottomNavBar") }
   val bottomNavBarItemInventory: KNode = bottomNavBar.child { hasTestTag("bottomNavBarItem-Loan") }
