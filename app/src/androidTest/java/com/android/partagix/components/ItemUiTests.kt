@@ -25,7 +25,6 @@ class ItemUiTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
-  private val context = ApplicationProvider.getApplicationContext<Context>()
   private lateinit var viewModel: ManageLoanViewModel
   private lateinit var item: Item
   private lateinit var user: User
