@@ -70,10 +70,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           "2",
           Inventory("id2", listOf(Item("2", cat1, "Name 2", "Description 2", vis1, 2, loc1))))
 
-  private val comments =
-      listOf(
-          Pair(otherUser, "comment1"),
-      )
+  private val comments = listOf(Pair(otherUser, "comment1"), Pair(userOne, "comment2"))
 
   @Before
   fun testSetup() {
