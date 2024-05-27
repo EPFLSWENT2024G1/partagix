@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -68,7 +69,6 @@ fun OldLoansScreen(
     finishedLoansViewModel: FinishedLoansViewModel
 ) {
   val uiState by finishedLoansViewModel.uiState.collectAsStateWithLifecycle()
-  val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
   var open by remember { mutableStateOf(false) }
   var actualLoan by remember { mutableStateOf(emptyLoan) }
 
@@ -77,7 +77,7 @@ fun OldLoansScreen(
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("homeScreenTopAppBar"),
-            title = { Text(text = "Loan Historic") },
+            title = { Text(text = "Loan History") },
             navigationIcon = {
               IconButton(
                   onClick = { navigationActions.goBack() },
@@ -124,16 +124,15 @@ fun OldLoansScreen(
                       })
                 }
                 for (loan in uiState.loans) {
-                  finishedLoansViewModel.getItem(loan.idItem)
                   ExpandableCard(
                       modifier = modifier.testTag("expandableCard"),
-                      loan = loan,
-                      item = item,
+                      loan = loan.first,
+                      item = loan.second,
                       navigationActions = navigationActions,
                       itemViewModel = itemViewModel,
                       evaluationViewModel = evaluationViewModel,
                       setOpen = {
-                        actualLoan = loan
+                        actualLoan = loan.first
                         open = it
                       })
                 }
@@ -171,89 +170,109 @@ fun ExpandableCard(
             expanded = !expanded
           }, // This enables the expansion animation
       colors = CardDefaults.outlinedCardColors()) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth().testTag("card")) {
-          Row(
-              modifier = modifier.fillMaxWidth().testTag("nameAndDate"),
-              horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier) {
-                  Text(text = item.name, fontSize = 20.sp)
-                  Spacer(modifier.height(8.dp))
-                  val dateFormatter = SimpleDateFormat("dd/MM/yyyy")
-                  Text(
-                      text = "Star Date : ${dateFormatter.format(loan.startDate)}",
-                      fontSize = 15.sp)
-                  Spacer(modifier.height(8.dp))
-                  Text(text = "End Date : ${dateFormatter.format(loan.endDate)}", fontSize = 15.sp)
-                  Spacer(modifier.height(8.dp))
-                  var user by remember { mutableStateOf("Unknown") }
-                  if (item.idUser == Authentication.getUser()?.uid) {
+        Column(
+            modifier =
+                Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
+                    .fillMaxWidth()
+                    .testTag("card")) {
+              Box(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().testTag("nameAndDate"),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                      Column(modifier = Modifier.fillMaxWidth(0.65f)) {
+                        Text(
+                            text = item.name,
+                            fontSize = 20.sp,
+                        )
+                        Spacer(modifier.height(8.dp))
+                        val dateFormatter = SimpleDateFormat("dd/MM/yyyy")
+                        Text(
+                            text = "Start Date : ${dateFormatter.format(loan.startDate)}",
+                            fontSize = 15.sp)
+                        Spacer(modifier.height(2.dp))
+                        Text(
+                            text = "End Date : ${dateFormatter.format(loan.endDate)}",
+                            fontSize = 15.sp)
+                      }
+                      Box(modifier = modifier.fillMaxWidth().aspectRatio(1f)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.default_image),
+                            contentDescription = "fds",
+                            contentScale = ContentScale.FillBounds,
+                            modifier =
+                                Modifier.border(1.dp, MaterialTheme.colorScheme.scrim)
+                                    .testTag("image"))
+                      }
+                    }
+              }
+              Spacer(modifier.height(3.dp))
 
-                    evaluationViewModel.getUser(loan.idBorrower, { u -> user = u.name }, {})
-                    Text(
-                        text = "Borrower : $user",
-                        fontSize = 15.sp,
-                        modifier = modifier.fillMaxWidth(0.50f))
-                  } else {
-                    evaluationViewModel.getUser(loan.idLender, { u -> user = u.name }, {})
-                    Text(
-                        text = "Lender : $user",
-                        fontSize = 15.sp,
-                        modifier = modifier.fillMaxWidth(0.50f))
-                  }
+              Row(modifier = modifier.fillMaxWidth()) {
+                var user by remember { mutableStateOf("Unknown") }
+                if (item.idUser == Authentication.getUser()?.uid) {
+
+                  evaluationViewModel.getUser(loan.idBorrower, { u -> user = u.name }, {})
+                  Text(
+                      text = "Borrower : $user",
+                      fontSize = 15.sp,
+                  )
+                } else {
+                  evaluationViewModel.getUser(loan.idLender, { u -> user = u.name }, {})
+                  Text(
+                      text = "Lender : $user",
+                      fontSize = 15.sp,
+                  )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.mutliprise),
-                    contentDescription = "fds",
-                    contentScale = ContentScale.FillBounds,
-                    modifier =
-                        Modifier.border(1.dp, MaterialTheme.colorScheme.scrim).testTag("image"))
               }
 
-          if (expanded) {
-            Spacer(modifier = modifier.height(8.dp))
-            Row(modifier = modifier.fillMaxWidth(0.70f), horizontalArrangement = Arrangement.End) {
-              IconButton(
-                  modifier = modifier.fillMaxWidth(0.43f).testTag("infoButton"),
-                  colors =
-                      IconButtonColors(
-                          containerColor = MaterialTheme.colorScheme.secondary,
-                          contentColor = MaterialTheme.colorScheme.onSecondary,
-                          disabledContentColor = MaterialTheme.colorScheme.onSecondary,
-                          disabledContainerColor = MaterialTheme.colorScheme.secondary),
-                  onClick = {
-                    expanded = false
-                    itemViewModel.updateUiItem(item)
-                    navigationActions.navigateTo(Route.VIEW_ITEM)
-                  }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                      Icon(imageVector = Icons.Default.Info, contentDescription = "info")
-                      Spacer(modifier = modifier.width(8.dp))
-                      Text("Infos")
-                    }
-                  }
-              Spacer(modifier = modifier.width(10.dp))
+              if (expanded) {
+                Spacer(modifier = modifier.height(6.dp))
+                Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                  IconButton(
+                      modifier = modifier.fillMaxWidth(0.3f).testTag("infoButton"),
+                      colors =
+                          IconButtonColors(
+                              containerColor = MaterialTheme.colorScheme.secondary,
+                              contentColor = MaterialTheme.colorScheme.onSecondary,
+                              disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                              disabledContainerColor = MaterialTheme.colorScheme.secondary),
+                      onClick = {
+                        expanded = false
+                        itemViewModel.updateUiItem(item)
+                        navigationActions.navigateTo(Route.VIEW_ITEM)
+                      }) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                          Icon(imageVector = Icons.Default.Info, contentDescription = "info")
+                          Spacer(modifier = modifier.width(5.dp))
+                          Text("Infos")
+                          Spacer(modifier = modifier.width(2.dp))
+                        }
+                      }
+                  Spacer(modifier = modifier.width(10.dp))
 
-              IconButton(
-                  modifier = modifier.fillMaxWidth(),
-                  colors =
-                      IconButtonColors(
-                          containerColor = MaterialTheme.colorScheme.primary,
-                          contentColor = MaterialTheme.colorScheme.onPrimary,
-                          disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                          disabledContainerColor = MaterialTheme.colorScheme.primary),
-                  onClick = {
-                    evaluationViewModel.updateUIState(loan)
-                    setOpen(true)
-                    expanded = false
-                  }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                      Icon(imageVector = Icons.Default.Star, contentDescription = "rate")
-                      Spacer(modifier = modifier.width(8.dp))
-                      Text("Evaluate")
-                    }
-                  }
+                  IconButton(
+                      modifier = modifier.fillMaxWidth(0.6f),
+                      colors =
+                          IconButtonColors(
+                              containerColor = MaterialTheme.colorScheme.primary,
+                              contentColor = MaterialTheme.colorScheme.onPrimary,
+                              disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                              disabledContainerColor = MaterialTheme.colorScheme.primary),
+                      onClick = {
+                        evaluationViewModel.updateUIState(loan)
+                        setOpen(true)
+                        expanded = false
+                      }) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                          Icon(imageVector = Icons.Default.Star, contentDescription = "rate")
+                          Spacer(modifier = modifier.width(5.dp))
+                          Text("Evaluate")
+                          Spacer(modifier = modifier.width(2.dp))
+                        }
+                      }
+                  Spacer(modifier = modifier.fillMaxWidth())
+                }
+              }
             }
-          }
-        }
       }
 }

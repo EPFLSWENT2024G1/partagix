@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
@@ -52,6 +53,7 @@ class ItemViewModel(
     if (id != null) {
       database.getItemWithImage(id) { newItem ->
         database.getUserWithImage(newItem.idUser) {
+          Log.d(TAG, "init: $it")
           updateUiUser(it)
           updateUiItem(newItem)
         }
@@ -73,6 +75,8 @@ class ItemViewModel(
       newUserId = user.uid
     }
 
+    Log.d(TAG, "updateUiItem: $newUserId with item $new")
+
     val newWithUserId =
         Item(
             new.id,
@@ -91,6 +95,7 @@ class ItemViewModel(
   }
 
   fun updateUiUser(new: User) {
+    Log.d(TAG, "updateUiUser: $new")
     _uiState.value =
         _uiState.value.copy(
             user = new,
