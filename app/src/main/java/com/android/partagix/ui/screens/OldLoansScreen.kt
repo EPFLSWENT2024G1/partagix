@@ -69,7 +69,6 @@ fun OldLoansScreen(
     finishedLoansViewModel: FinishedLoansViewModel
 ) {
   val uiState by finishedLoansViewModel.uiState.collectAsStateWithLifecycle()
-  val item by finishedLoansViewModel.uiItem.collectAsStateWithLifecycle()
   var open by remember { mutableStateOf(false) }
   var actualLoan by remember { mutableStateOf(emptyLoan) }
 
@@ -125,16 +124,15 @@ fun OldLoansScreen(
                       })
                 }
                 for (loan in uiState.loans) {
-                  finishedLoansViewModel.getItem(loan.idItem)
                   ExpandableCard(
                       modifier = modifier.testTag("expandableCard"),
-                      loan = loan,
-                      item = item,
+                      loan = loan.first,
+                      item = loan.second,
                       navigationActions = navigationActions,
                       itemViewModel = itemViewModel,
                       evaluationViewModel = evaluationViewModel,
                       setOpen = {
-                        actualLoan = loan
+                        actualLoan = loan.first
                         open = it
                       })
                 }
