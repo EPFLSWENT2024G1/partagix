@@ -142,7 +142,7 @@ class FinishedLoansViewModelTests {
           onSuccessLoan(listOf(loan1, loan2, loan3, loan4, loan5))
         }
 
-    every { db.getItem(any(), any()) } answers
+    every { db.getItemWithImage(any(), any()) } answers
         { invocation ->
           val id = invocation.invocation.args[0] as String
           val onSuccess = invocation.invocation.args[1] as (Item) -> Unit

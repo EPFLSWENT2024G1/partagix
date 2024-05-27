@@ -54,7 +54,8 @@ class ItemViewModelTests {
           "test",
           Visibility.PUBLIC,
           1,
-          Location(""))
+          Location(""),
+          imageId = File("noImage"))
 
   val itemWithIDmodified =
       Item(
@@ -64,7 +65,8 @@ class ItemViewModelTests {
           "modified",
           Visibility.FRIENDS,
           3,
-          Location(""))
+          Location(""),
+          imageId = File("noImage"))
   val itemNoID =
       Item("", Category("0", "Category 1"), "test", "test", Visibility.PUBLIC, 1, Location(""))
 
@@ -79,8 +81,8 @@ class ItemViewModelTests {
 
     itemViewModel.updateUiItem(itemWithID)
     itemViewModel.updateUiUser(emptyUser)
-    assert(itemViewModel.uiState.value.item == itemWithID)
-    assert(itemViewModel.uiState.value.user == emptyUser)
+    assertEquals(itemWithID, itemViewModel.uiState.value.item)
+    assertEquals(emptyUser, itemViewModel.uiState.value.user)
   }
 
   @Test

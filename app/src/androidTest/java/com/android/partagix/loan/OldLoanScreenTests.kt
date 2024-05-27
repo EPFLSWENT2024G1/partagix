@@ -85,7 +85,7 @@ class OldLoanScreenTests {
           onSuccessLoan(listOf(loan1))
         }
 
-    every { db.getItem(any(), any()) } answers
+    every { db.getItemWithImage(any(), any()) } answers
         {
           val id = invocation.args[0] as String
           val onSuccess: (Item) -> Unit = invocation.args[1] as (Item) -> Unit
