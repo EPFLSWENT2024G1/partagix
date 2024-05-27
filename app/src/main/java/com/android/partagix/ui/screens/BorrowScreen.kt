@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -90,8 +91,7 @@ fun BorrowScreen(
 
         val loanItemName by remember { mutableStateOf(item.name) }
         val loanItemOwnerName by remember { mutableStateOf(user.name) }
-        var loanDescription by remember {
-          mutableStateOf("")
+        var loanDescription by remember { mutableStateOf("")
         } // TODO: edit Loan type to include description
         val loanLocation by remember { mutableStateOf(item.location) }
         val loanQuantity by remember { mutableStateOf(item.quantity) }
@@ -155,18 +155,13 @@ fun BorrowScreen(
                 }
               }
               Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                OutlinedTextField(
+                TextField(
                     value = loanDescription,
                     onValueChange = { loanDescription = it },
                     label = { Text("Description") },
                     modifier = modifier.fillMaxWidth().testTag("description"),
                     minLines = 5,
                     readOnly = true)
-
-                /*                LabeledText(
-                modifier = modifier.fillMaxWidth().testTag("description"),
-                label = "Description",
-                text = loanDescription)*/
 
                 Spacer(modifier = modifier.height(8.dp))
 

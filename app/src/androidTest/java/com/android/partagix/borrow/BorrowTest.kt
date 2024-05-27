@@ -126,6 +126,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockViewModel.startBorrow(item, user)
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
+      description { performTextInput("test description") }
       startDateButton { performClick() }
       startDateOk { performClick() }
       endDateButton { performClick() }
