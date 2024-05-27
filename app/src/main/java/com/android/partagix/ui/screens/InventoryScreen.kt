@@ -205,7 +205,6 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            println("-------------------------size: ${uiState.borrowedItems.size}")
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
