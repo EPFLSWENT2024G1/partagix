@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -51,12 +52,15 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -92,6 +96,8 @@ fun ItemUi(
     onItemClick: (Item) -> Unit = {},
     onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel = ItemViewModel(),
     index: Int = 0,
 ) {
   val date: Date =
@@ -321,26 +327,45 @@ fun ItemUi(
                   modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
+            if (loan.state == LoanState.ONGOING || loan.state == LoanState.ACCEPTED) {
+              Button(
+                  onClick = {
+                    itemViewModel.updateUiItem(item)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  content = {
+                    Icon(Icons.Default.Info, contentDescription = "see item", modifier = Modifier)
+                    Spacer(Modifier.width(3.dp))
+                    Text(text = "Infos")
+                  },
+                  modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                  contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            }
             Spacer(modifier = Modifier.width(6.dp))
-            Button(
-                onClick = { manageLoanViewModel.declineLoan(loan, index) },
-                content = {
-                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
-                  Spacer(Modifier.width(2.dp))
-                  if (loan.state == LoanState.PENDING && isLender) {
-                    Text(text = "Cancel")
-                  } else {
-                    Text(text = "Reject")
-                  }
-                },
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        disabledContainerColor = MaterialTheme.colorScheme.error,
-                        disabledContentColor = MaterialTheme.colorScheme.onError),
-                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
-                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            print(
+                "----------------userid : ${user.id}, borrowerid : ${loan.idBorrower}, lenderid : ${loan.idLender}")
+            if (loan.state != LoanState.ONGOING &&
+                !(loan.state == LoanState.ACCEPTED && user.id == loan.idBorrower))
+                Button(
+                    onClick = { manageLoanViewModel.declineLoan(loan, index) },
+                    content = {
+                      Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                      Spacer(Modifier.width(2.dp))
+                      if ((loan.state == LoanState.PENDING && isLender) ||
+                          loan.state == LoanState.ACCEPTED) {
+                        Text(text = "Cancel")
+                      } else {
+                        Text(text = "Reject")
+                      }
+                    },
+                    colors =
+                        ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError,
+                            disabledContainerColor = MaterialTheme.colorScheme.error,
+                            disabledContentColor = MaterialTheme.colorScheme.onError),
+                    modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                    contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
           }
     }
   }

@@ -82,7 +82,9 @@ class ItemUiTest {
           loan = loan,
           manageLoanViewModel = viewModel,
           isExpandable = true,
-          expandState = false)
+          expandState = false,
+          navigationActions = mockk(),
+      )
     }
 
     composeTestRule.onNodeWithText("Test Item").assertIsDisplayed().performClick()

@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.NavigationActions
 import java.util.Date
 
 /**
@@ -53,6 +55,8 @@ fun ItemList(
     onItemClick: (Item) -> Unit,
     onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    itemViewModel: ItemViewModel = ItemViewModel(),
+    navigationActions: NavigationActions,
     stickyHeader: @Composable (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -103,6 +107,8 @@ fun ItemList(
             //            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
           },
           manageLoanViewModel = manageLoanViewModel,
+          itemViewModel = itemViewModel,
+          navigationActions = navigationActions,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
           modifier = modifier.testTag("ItemListItem"))
 

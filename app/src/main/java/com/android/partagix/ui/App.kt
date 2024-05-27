@@ -406,7 +406,9 @@ class App(
         // Fetch the new loan requests first
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
         ManageLoanRequest(
-            manageLoanViewModel = manageViewModelIncoming, navigationActions = navigationActions)
+            manageLoanViewModel = manageViewModelIncoming,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
       }
       composable(Route.FINISHED_LOANS) {
         finishedLoansViewModel.getFinishedLoan()
@@ -421,7 +423,7 @@ class App(
         ManageOutgoingLoan(
             manageLoanViewModel = manageViewModelOutgoing,
             navigationActions = navigationActions,
-        )
+            itemViewModel = itemViewModel)
       }
       composable(
           Route.STAMP + "/{itemId}",

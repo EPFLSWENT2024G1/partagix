@@ -203,7 +203,7 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
+            println("-------------------------size: ${uiState.borrowedItems.size}")
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -230,6 +230,8 @@ fun InventoryScreen(
                   expandState = false,
                   wasExpanded = List(uiState.borrowedItems.size) { false },
                   manageLoanViewModel = manageLoanViewModelOutgoing,
+                  navigationActions = navigationActions,
+                  itemViewModel = itemViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
@@ -252,6 +254,8 @@ fun InventoryScreen(
                   isOutgoing = false,
                   isOwner = true,
                   manageLoanViewModel = manageLoanViewModelOutgoing,
+                  itemViewModel = itemViewModel,
+                  navigationActions = navigationActions,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

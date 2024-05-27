@@ -135,6 +135,7 @@ class ManageLoanViewModel(
   }
 
   fun updateExpanded(index: Int, expanded: Boolean) {
+    println("--------- index: $index, expanded: ${uiState.value.expanded}")
     val list = _uiState.value.expanded.toMutableList()
     list[index] = expanded
     _uiState.value = _uiState.value.copy(expanded = list)
