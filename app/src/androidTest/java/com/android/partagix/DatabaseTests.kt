@@ -280,10 +280,10 @@ class DatabaseTests {
     val categoryName = "catName"
 
     val userId = "userId"
-    val mockLocation = mockk<Location>()
-    every { mockLocation.latitude } returns 0.0
-    every { mockLocation.longitude } returns 0.0
-    every { mockLocation.extras } returns bundleOf("display_name" to "itemLocation")
+    val location = Location("")
+    location.latitude = 0.0
+    location.longitude = 0.0
+    location.extras = bundleOf("display_name" to "itemLocation")
 
     val item =
         Item(
@@ -293,7 +293,7 @@ class DatabaseTests {
             "itemDescription",
             Visibility.PUBLIC,
             1234,
-            mockLocation,
+            location,
         )
 
     every { mockDb.collection(any()) } returns mockItemsCollection
@@ -436,10 +436,10 @@ class DatabaseTests {
 
     val userId = "userId"
 
-    val mockLocation = mockk<Location>()
-    every { mockLocation.latitude } returns 0.0
-    every { mockLocation.longitude } returns 0.0
-    every { mockLocation.extras } returns bundleOf("display_name" to "itemLocation")
+    val location = Location("")
+    location.latitude = 0.0
+    location.longitude = 0.0
+    location.extras = bundleOf("display_name" to "itemLocation")
     val item =
         Item(
             "itemId",
@@ -448,8 +448,9 @@ class DatabaseTests {
             "itemDescription",
             Visibility.PUBLIC,
             1234,
-            mockLocation,
-        )
+            location,
+            "userId",
+            File("noImage"))
 
     every { mockDb.collection(any()) } returns mockItemsCollection
 
@@ -461,7 +462,6 @@ class DatabaseTests {
         {
           val listener = arg<OnSuccessListener<DocumentSnapshot>>(0)
           val mockDocument = mockk<DocumentSnapshot>()
-          val mockQueryDocument = mockk<QueryDocumentSnapshot>()
           every { mockDocument.data } returns
               mapOf(
                   "id" to item.id,
