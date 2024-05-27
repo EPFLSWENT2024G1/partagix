@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,6 +47,7 @@ import com.android.partagix.model.visibility.getVisibility
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.components.locationPicker.LocationPicker
@@ -135,7 +137,10 @@ fun InventoryCreateOrEditItem(
                           modifier
                               .fillMaxHeight()
                               .fillMaxWidth(.4f)
-                              .border(1.dp, MaterialTheme.colorScheme.onBackground)
+                              .border(
+                                  1.dp,
+                                  MaterialTheme.colorScheme.outline,
+                                  shape = RoundedCornerShape(4.dp))
                               .testTag("image")) {
                         val image =
                             File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
@@ -175,12 +180,8 @@ fun InventoryCreateOrEditItem(
                         maxLines = 1, // Ensure only one line is displayed
                         readOnly = false)
 
-                    OutlinedTextField(
-                        value = uiState.user.name,
-                        onValueChange = {},
-                        label = { Text("Owner") },
-                        modifier = modifier.testTag("idUser").fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText(
+                        modifier.testTag("idUser").fillMaxWidth(), "Owner", uiState.user.name)
                   }
                 }
               }

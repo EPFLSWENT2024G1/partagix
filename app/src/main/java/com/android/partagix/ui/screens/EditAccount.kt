@@ -149,17 +149,18 @@ fun EditAccount(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LocationPicker(
-                    location = tempAddress,
-                    loc = loc.value,
-                    onTextChanged = { tempAddress = it },
-                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                  LocationPicker(
+                      location = tempAddress,
+                      loc = loc.value,
+                      onTextChanged = { tempAddress = it },
+                      onLocationLookup = { locationViewModel.getLocation(it, loc) })
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp, 0.dp).testTag("actionButtons"),
                     horizontalArrangement = Arrangement.Absolute.Center) {
-                      Spacer(modifier = Modifier.width(8.dp))
                       Button(
                           onClick = {
                             userViewModel.updateUser(

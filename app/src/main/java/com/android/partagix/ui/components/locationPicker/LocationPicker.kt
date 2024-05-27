@@ -1,7 +1,6 @@
 package com.android.partagix.ui.components.locationPicker
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import com.android.partagix.model.location.Location
 import kotlinx.coroutines.delay
 
@@ -36,7 +34,7 @@ fun LocationPicker(
       onValueChange = { onTextChanged(it) },
       label = { Text(text = "Location", color = MaterialTheme.colorScheme.onBackground) },
       modifier =
-          Modifier.fillMaxWidth().padding(8.dp).testTag("addressField").onFocusChanged {
+          Modifier.fillMaxWidth() /*.padding(8.dp)*/.testTag("addressField").onFocusChanged {
             focused = it.isFocused
             if (!focused) {
               onTextChanged(loc?.locationName ?: location)
