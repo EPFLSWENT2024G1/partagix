@@ -152,7 +152,7 @@ fun InventoryViewItemScreen(
                 LabeledText(label = "Quantity", text = item.quantity.toString())
 
                 LabeledText(
-                    label = "Where",
+                    label = "Location",
                     text = item.location.extras?.getString("display_name", "Unknown") ?: "Unknown")
 
                 Row(modifier = Modifier.fillMaxWidth()) {
