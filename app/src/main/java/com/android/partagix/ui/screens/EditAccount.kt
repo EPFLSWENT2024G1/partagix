@@ -212,7 +212,7 @@ fun EditAccount(
                                   onCheckedChange = { favorite[0] = !favorite[0] },
                                   enabled = email.contains("@"),
                                   modifier = Modifier.testTag("emailCheckbox"))
-                              Text("Email", fontSize = 12.sp)
+                              Text("Email", fontSize = 11.sp)
                             }
                         Spacer(modifier = Modifier.width(2.dp))
                         Row(
@@ -223,7 +223,7 @@ fun EditAccount(
                                   onCheckedChange = { favorite[1] = !favorite[1] },
                                   enabled = phoneNumber.isNotEmpty(),
                                   modifier = Modifier.testTag("phoneNumberCheckbox"))
-                              Text("Phone number", fontSize = 12.sp)
+                              Text("Phone number", fontSize = 11.sp)
                             }
                         Spacer(modifier = Modifier.width(2.dp))
                         Row(
@@ -234,7 +234,7 @@ fun EditAccount(
                                   onCheckedChange = { favorite[2] = !favorite[2] },
                                   enabled = telegram.isNotEmpty(),
                                   modifier = Modifier.testTag("telegramCheckbox"))
-                              Text("Telegram", fontSize = 12.sp)
+                              Text("Telegram", fontSize = 11.sp)
                             }
                       }
 
@@ -243,7 +243,10 @@ fun EditAccount(
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("email"),
                       value = email,
-                      onValueChange = { email = it },
+                      onValueChange = {
+                        email = it
+                        if (email == "") favorite[0] = false
+                      },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                       label = { Text("email") })
 
@@ -252,14 +255,20 @@ fun EditAccount(
                       modifier =
                           Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("phoneNumber"),
                       value = phoneNumber,
-                      onValueChange = { phoneNumber = it },
+                      onValueChange = {
+                        phoneNumber = it
+                        if (phoneNumber == "") favorite[1] = false
+                      },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                       label = { Text("phoneNumber") })
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("telegram"),
                       value = telegram,
-                      onValueChange = { telegram = it },
+                      onValueChange = {
+                        telegram = it
+                        if (telegram == "") favorite[2] = false
+                      },
                       label = { Text("telegram") })
                 }
 
