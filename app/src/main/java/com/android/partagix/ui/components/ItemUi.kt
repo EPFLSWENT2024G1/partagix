@@ -1,5 +1,7 @@
 package com.android.partagix.ui.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -36,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.emptyConst.emptyUser
@@ -276,7 +280,11 @@ fun ItemUi(
           else {
             listOf(email, phone, telegram)
                 .filter { it.isNotEmpty() }
-                .forEach { contact -> Text(contact, fontSize = 11.sp, lineHeight = 1.3.em) }
+              listOf(email, phone, telegram)
+                  .filter { it.isNotEmpty() }
+                  .forEach { contact ->
+                      ClickableText(contact)
+                  }
           }
         } else {
           Text("No preferred contact", fontSize = 11.sp, lineHeight = 1.3.em)
@@ -296,7 +304,11 @@ fun ItemUi(
           else {
             listOf(email, phone, telegram)
                 .filter { it.isNotEmpty() }
-                .forEach { contact -> Text(contact, fontSize = 11.sp, lineHeight = 1.3.em) }
+              listOf(email, phone, telegram)
+                  .filter { it.isNotEmpty() }
+                  .forEach { contact ->
+                      ClickableText(contact)
+                  }
           }
         } else {
           Text("No other contact", fontSize = smallerFontSize)
@@ -447,4 +459,29 @@ fun ItemUi(
       }
     }
   }*/
+}
+@Composable
+fun ClickableText(contact: String) {
+    val context = LocalContext.current
+    Text(
+        text = contact,
+        fontSize = 11.sp,
+        lineHeight = 1.3.em,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.clickable {
+            val intent = when {
+                contact.startsWith("Email :") -> Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("mailto:${contact.substringAfter("Email : ")}")
+                }
+                contact.startsWith("Phone :") -> Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
+                }
+                contact.startsWith("Telegram :") -> Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("https://t.me/${contact.substringAfter("Telegram : ")}")
+                }
+                else -> null
+            }
+            intent?.let { ContextCompat.startActivity(context, it, null) }
+        }
+    )
 }
