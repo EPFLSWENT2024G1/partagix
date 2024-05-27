@@ -7,7 +7,6 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -16,12 +15,12 @@ import com.google.firebase.auth.FirebaseUser
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import java.io.File
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class FinishedLoansViewModelTests {
@@ -108,29 +107,29 @@ class FinishedLoansViewModelTests {
           Location(""),
           imageId = File("image_item_1.jpg"))
 
-    val item2 =
-        Item(
-            "item2",
-            Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
-            "",
-            "",
-            Visibility.PRIVATE,
-            0,
-            Location(""),
-            imageId = File("image_item_2.jpg"))
+  val item2 =
+      Item(
+          "item2",
+          Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+          "",
+          "",
+          Visibility.PRIVATE,
+          0,
+          Location(""),
+          imageId = File("image_item_2.jpg"))
 
-    val item3 =
-        Item(
-            "item3",
-            Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
-            "",
-            "",
-            Visibility.PRIVATE,
-            0,
-            Location(""),
-            imageId = File("image_item_3.jpg"))
+  val item3 =
+      Item(
+          "item3",
+          Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+          "",
+          "",
+          Visibility.PRIVATE,
+          0,
+          Location(""),
+          imageId = File("image_item_3.jpg"))
 
-    val items = listOf(item1, item2, item3)
+  val items = listOf(item1, item2, item3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
@@ -150,11 +149,11 @@ class FinishedLoansViewModelTests {
           onSuccess(items.first { it.id == id })
         }
 
-      every { db.getItemsWithImages(any()) } answers
-              {
-                  val onSuccess: (List<Item>) -> Unit = invocation.args[0] as (List<Item>) -> Unit
-                  onSuccess(items)
-              }
+    every { db.getItemsWithImages(any()) } answers
+        {
+          val onSuccess: (List<Item>) -> Unit = invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(items)
+        }
 
     finishedLoansViewModel = FinishedLoansViewModel(db)
 
