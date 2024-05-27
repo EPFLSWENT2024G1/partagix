@@ -194,6 +194,7 @@ fun InventoryViewItemScreen(
                   }
                 }
               }
+              Spacer(modifier = Modifier.height(8.dp))
             }
       }
 }
