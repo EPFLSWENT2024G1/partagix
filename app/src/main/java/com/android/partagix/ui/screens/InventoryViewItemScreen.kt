@@ -1,8 +1,6 @@
 package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,14 +67,6 @@ fun InventoryViewItemScreen(
   var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
   val user = uiState.value.user
-
-  var imgBitmap: Bitmap? = null
-  val imgFile = item.imageId
-  if (imgFile.exists()) {
-    // on below line we are creating an image bitmap variable
-    // and adding a bitmap to it from image file.
-    imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-  }
 
   LaunchedEffect(key1 = uiState) { item = itemViewModel.uiState.value.item }
 
