@@ -43,6 +43,7 @@ import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -210,42 +211,37 @@ fun InventoryViewItemScreen(
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
-                  Button(
-                      enabled = actualUser != user.id && actualUser != "" && user.id != "",
-                      onClick = {
-                        borrowViewModel.startBorrow(item, user)
-                        navigationActions.navigateTo(Route.BORROW)
-                      },
-                      colors =
-                          ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onPrimary,
-                              contentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContainerColor = Color.Gray),
-                      content = {
-                        Text(
-                            "Borrow item",
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                      },
-                      modifier = Modifier.fillMaxWidth())
-                }
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // This should be displayed only if the user is the owner of the item
-                if (itemViewModel.compareIDs(
-                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
-                  Button(
-                      onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
-                      content = { Text("Edit") },
-                      colors =
-                          ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onPrimary,
-                              contentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContainerColor = Color.Gray),
-                      modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                  if (itemViewModel.compareIDs(item.idUser, Authentication.getUser()?.uid)) {
+                    // Edit can only be displayed if the user is the owner of the item
+                    Button(
+                        onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContainerColor = Color.Gray),
+                        modifier = Modifier.fillMaxWidth().testTag("editItemButton")) {
+                          Text("Edit", style = MaterialTheme.typography.bodyMedium)
+                        }
+                  } else {
+                    // Borrow can only be displayed if the user is not the owner of the item
+                    Button(
+                        onClick = {
+                          borrowViewModel.startBorrow(item, user)
+                          navigationActions.navigateTo(Route.BORROW)
+                        },
+                        colors =
+                            ButtonColors(
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                                disabledContainerColor = Color.Gray),
+                        modifier = Modifier.fillMaxWidth()) {
+                          Text(text = "Borrow item", style = MaterialTheme.typography.bodyMedium)
+                        }
+                  }
                 }
               }
               Spacer(modifier = Modifier.height(8.dp))
