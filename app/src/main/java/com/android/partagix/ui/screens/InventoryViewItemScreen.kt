@@ -185,7 +185,6 @@ fun InventoryViewItemScreen(
                         modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
                   } else {
                     Button(
-                        enabled = actualUser != user.id && actualUser != "" && user.id != "",
                         onClick = {
                           borrowViewModel.startBorrow(item, user)
                           navigationActions.navigateTo(Route.BORROW)
