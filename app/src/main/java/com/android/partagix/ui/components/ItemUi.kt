@@ -278,13 +278,10 @@ fun ItemUi(
           if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
               Text("No preferred contact", fontSize = smallerFontSize, lineHeight = 1.3.em)
           else {
+            listOf(email, phone, telegram).filter { it.isNotEmpty() }
             listOf(email, phone, telegram)
                 .filter { it.isNotEmpty() }
-              listOf(email, phone, telegram)
-                  .filter { it.isNotEmpty() }
-                  .forEach { contact ->
-                      ClickableText(contact)
-                  }
+                .forEach { contact -> ClickableText(contact) }
           }
         } else {
           Text("No preferred contact", fontSize = 11.sp, lineHeight = 1.3.em)
@@ -302,13 +299,10 @@ fun ItemUi(
           if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
               Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)
           else {
+            listOf(email, phone, telegram).filter { it.isNotEmpty() }
             listOf(email, phone, telegram)
                 .filter { it.isNotEmpty() }
-              listOf(email, phone, telegram)
-                  .filter { it.isNotEmpty() }
-                  .forEach { contact ->
-                      ClickableText(contact)
-                  }
+                .forEach { contact -> ClickableText(contact) }
           }
         } else {
           Text("No other contact", fontSize = smallerFontSize)
@@ -460,28 +454,33 @@ fun ItemUi(
     }
   }*/
 }
+
 @Composable
 fun ClickableText(contact: String) {
-    val context = LocalContext.current
-    Text(
-        text = contact,
-        fontSize = 11.sp,
-        lineHeight = 1.3.em,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.clickable {
-            val intent = when {
-                contact.startsWith("Email :") -> Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:${contact.substringAfter("Email : ")}")
+  val context = LocalContext.current
+  Text(
+      text = contact,
+      fontSize = 11.sp,
+      lineHeight = 1.3.em,
+      fontWeight = FontWeight.Bold,
+      modifier =
+          Modifier.clickable {
+            val intent =
+                when {
+                  contact.startsWith("Email :") ->
+                      Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:${contact.substringAfter("Email : ")}")
+                      }
+                  contact.startsWith("Phone :") ->
+                      Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
+                      }
+                  contact.startsWith("Telegram :") ->
+                      Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse("https://t.me/${contact.substringAfter("Telegram : ")}")
+                      }
+                  else -> null
                 }
-                contact.startsWith("Phone :") -> Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
-                }
-                contact.startsWith("Telegram :") -> Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("https://t.me/${contact.substringAfter("Telegram : ")}")
-                }
-                else -> null
-            }
             intent?.let { ContextCompat.startActivity(context, it, null) }
-        }
-    )
+          })
 }
