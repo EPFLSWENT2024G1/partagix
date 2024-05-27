@@ -131,7 +131,7 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
                       text = "Loan requests",
