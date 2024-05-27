@@ -57,6 +57,9 @@ fun ItemList(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     itemViewModel: ItemViewModel = ItemViewModel(),
     navigationActions: NavigationActions,
+    updateExpanded: (Int, Boolean) -> Unit = { i, expanded ->
+      manageLoanViewModel.updateExpanded(i, expanded)
+    },
     stickyHeader: @Composable (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -110,6 +113,7 @@ fun ItemList(
           itemViewModel = itemViewModel,
           navigationActions = navigationActions,
           expandState = if (isExpandable) wasExpanded[index] else expandState,
+          updateExpanded = updateExpanded,
           modifier = modifier.testTag("ItemListItem"))
 
       Spacer(modifier = Modifier.height(8.dp))

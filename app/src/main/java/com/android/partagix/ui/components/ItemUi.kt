@@ -98,6 +98,9 @@ fun ItemUi(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel = ItemViewModel(),
+    updateExpanded: (Int, Boolean) -> Unit = { i, expanded ->
+      manageLoanViewModel.updateExpanded(i, expanded)
+    },
     index: Int = 0,
 ) {
   val date: Date =
@@ -159,7 +162,7 @@ fun ItemUi(
             .clickable(
                 onClick = {
                   expanded = !expanded
-                  manageLoanViewModel.updateExpanded(index, expanded)
+                  updateExpanded(index, expanded)
                 })
   }
 

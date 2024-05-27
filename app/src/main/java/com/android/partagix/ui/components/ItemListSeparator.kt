@@ -59,6 +59,9 @@ fun ItemListColumn(
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     itemViewModel: ItemViewModel = ItemViewModel(),
     navigationActions: NavigationActions,
+    updateExpanded: (Int, Boolean) -> Unit = { i, expanded ->
+      manageLoanViewModel.updateExpanded(i, expanded)
+    },
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
@@ -121,6 +124,7 @@ fun ItemListColumn(
           modifier = Modifier.fillMaxSize(),
           expandState = expandState,
           navigationActions = navigationActions,
+          updateExpanded = updateExpanded,
           itemViewModel = itemViewModel)
     }
   }

@@ -34,8 +34,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -208,6 +210,13 @@ fun InventoryScreen(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+              var expendedBor: SnapshotStateList<Boolean> = remember {
+                mutableStateListOf<Boolean>().apply {
+                  for (i in 0 until uiState.borrowedItems.size) {
+                    add(false)
+                  }
+                }
+              }
               ItemListColumn(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
@@ -226,9 +235,10 @@ fun InventoryScreen(
                   isClickable = false,
                   isOutgoing = true,
                   isLender = true,
-                  isExpandable = manageLoanViewModelOutgoing.getCount() > 0,
+                  isExpandable = true,
                   expandState = false,
-                  wasExpanded = List(uiState.borrowedItems.size) { false },
+                  wasExpanded = expendedBor,
+                  updateExpanded = { i, e -> expendedBor[i] = e },
                   manageLoanViewModel = manageLoanViewModelOutgoing,
                   navigationActions = navigationActions,
                   itemViewModel = itemViewModel,
