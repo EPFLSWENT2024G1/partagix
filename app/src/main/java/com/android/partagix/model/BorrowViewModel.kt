@@ -92,8 +92,12 @@ class BorrowViewModel(
     Log.d(TAG, "createLoan: ")
 
     val loan = _loanUiState.value
+    val unavailableDates = database.getItemUnavailability(_itemUiState.value.id,{
 
-    database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
+        
+        database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
+    })
+
 
     // Send notification if the user has enabled notifications
     val ownerToken = _userUiState.value.fcmToken

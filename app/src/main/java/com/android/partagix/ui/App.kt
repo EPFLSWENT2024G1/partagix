@@ -324,7 +324,7 @@ class App(
         }
       }
       composable(Route.BORROW) {
-        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
+        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions, itemViewModel = itemViewModel)
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()

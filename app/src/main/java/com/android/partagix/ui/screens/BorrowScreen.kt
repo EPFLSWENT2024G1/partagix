@@ -27,10 +27,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,11 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.android.partagix.utils.stripTime
 import java.text.DateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +61,7 @@ import java.util.Locale
 fun BorrowScreen(
     viewModel: BorrowViewModel,
     modifier: Modifier = Modifier,
+    itemViewModel: ItemViewModel,
     navigationActions: NavigationActions
 ) {
   Scaffold(
@@ -83,6 +89,7 @@ fun BorrowScreen(
         val loanUiState = viewModel.loanUiState.collectAsStateWithLifecycle()
         val itemUIState = viewModel.itemUiState.collectAsStateWithLifecycle()
         val userUIState = viewModel.userUiState.collectAsStateWithLifecycle()
+        val uiState = itemViewModel.uiState.collectAsState()
         val loan = loanUiState.value
         val item = itemUIState.value
         val user = userUIState.value
@@ -95,10 +102,23 @@ fun BorrowScreen(
         val loanLocation by remember { mutableStateOf(item.location) }
         val loanQuantity by remember { mutableStateOf(item.quantity) }
 
+        val unavailableDates = uiState.value.unavailableDates
+
         var isStartDatePickerVisible by remember { mutableStateOf(false) }
-        val startDatePickerState by remember {
-          mutableStateOf(DatePickerState(locale = Locale.getDefault()))
-        }
+        val startDatePickerState =
+            DatePickerState(
+                locale = Locale.getDefault(),
+                selectableDates =
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        val currentDate = stripTime(Date(utcTimeMillis))
+                        return unavailableDates.none { stripTime(it) == currentDate }
+                    }
+
+                    override fun isSelectableYear(year: Int): Boolean {
+                        return true
+                    }
+                })
         startDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanStartDate by remember(loan, loanUiState) { mutableStateOf(loan.startDate) }
         val loanStartDateString by
@@ -107,9 +127,20 @@ fun BorrowScreen(
             }
 
         var isEndDatePickerVisible by remember { mutableStateOf(false) }
-        val endDatePickerState by remember {
-          mutableStateOf(DatePickerState(locale = Locale.getDefault()))
-        }
+        val endDatePickerState =
+      DatePickerState(
+          locale = Locale.getDefault(),
+          selectableDates =
+          object : SelectableDates {
+              override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                  val currentDate = stripTime(Date(utcTimeMillis))
+                  return unavailableDates.none { stripTime(it) == currentDate }
+              }
+
+              override fun isSelectableYear(year: Int): Boolean {
+                  return true
+              }
+          })
         endDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanEndDate by remember(loan, loanUiState) { mutableStateOf(loan.endDate) }
         val loanEndDateString by
