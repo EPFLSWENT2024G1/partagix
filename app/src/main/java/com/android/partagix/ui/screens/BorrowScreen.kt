@@ -17,19 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -91,9 +87,7 @@ fun BorrowScreen(
 
         val loanItemName by remember { mutableStateOf(item.name) }
         val loanItemOwnerName by remember { mutableStateOf(user.name) }
-        var loanDescription by remember {
-          mutableStateOf("")
-        } // TODO: edit Loan type to include description
+        val loanDescription by remember { mutableStateOf(item.description) }
         val loanLocation by remember { mutableStateOf(item.location) }
         val loanQuantity by remember { mutableStateOf(item.quantity) }
 
@@ -156,13 +150,10 @@ fun BorrowScreen(
                 }
               }
               Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                TextField(
-                    value = loanDescription,
-                    onValueChange = { loanDescription = it },
-                    label = { Text("Description") },
+                LabeledText(
                     modifier = modifier.fillMaxWidth().testTag("description"),
-                    minLines = 5,
-                    readOnly = true)
+                    label = "Description",
+                    text = loanDescription)
 
                 Spacer(modifier = modifier.height(8.dp))
 
@@ -263,22 +254,14 @@ fun BorrowScreen(
                 }
                 Spacer(modifier = modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = loanQuantity.toString(),
-                    onValueChange = {},
-                    label = { Text("Quantity") },
+                LabeledText(
                     modifier = modifier.fillMaxWidth(),
-                    readOnly = false)
+                    label = "Quantity",
+                    text = loanQuantity.toString())
               }
 
               Button(
                   modifier = modifier.fillMaxWidth().testTag("saveButton").padding(10.dp),
-                  colors =
-                      ButtonColors(
-                          containerColor = MaterialTheme.colorScheme.onPrimary,
-                          contentColor = MaterialTheme.colorScheme.onBackground,
-                          disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                          disabledContainerColor = Color.Gray),
                   onClick = {
                     viewModel.createLoan()
                     navigationActions.navigateTo(Route.LOAN)

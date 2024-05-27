@@ -65,6 +65,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.goBack() } just Runs
   }
@@ -126,7 +127,6 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockViewModel.startBorrow(item, user)
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
-      description { performTextInput("test description") }
       startDateButton { performClick() }
       startDateOk { performClick() }
       endDateButton { performClick() }
