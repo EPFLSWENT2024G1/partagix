@@ -157,12 +157,10 @@ fun BorrowScreen(
 
                 Spacer(modifier = modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = loanLocation.toString(),
-                    onValueChange = {},
-                    label = { Text("Location") },
+                LabeledText(
                     modifier = modifier.fillMaxWidth().testTag("location"),
-                    readOnly = true)
+                    label = "Location",
+                    text = loanLocation.toString())
 
                 Spacer(modifier = modifier.height(8.dp))
 
