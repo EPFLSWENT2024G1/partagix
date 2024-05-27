@@ -375,7 +375,6 @@ class DatabaseTests {
     val firebaseStorage = mockk<FirebaseStorage>()
     val storageReference = mockk<StorageReference>()
     val uploadTask = mockk<UploadTask>()
-    val downloadTask = mockk<FileDownloadTask>()
 
     every { firebaseStorage.reference } returns storageReference
     every { storageReference.child("imageId") } returns storageReference
@@ -513,7 +512,6 @@ class DatabaseTests {
     val firebaseStorage = mockk<FirebaseStorage>()
     val storageReference = mockk<StorageReference>()
     val uploadTask = mockk<UploadTask>()
-    val downloadTask = mockk<FileDownloadTask>()
 
     every { firebaseStorage.reference } returns storageReference
     every { storageReference.child("imageId") } returns storageReference
