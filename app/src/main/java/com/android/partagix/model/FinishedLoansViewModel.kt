@@ -43,18 +43,22 @@ class FinishedLoansViewModel(db: Database = Database()) : ViewModel() {
       return
     } else {
       database.getLoans { loans ->
-        val list = mutableListOf<Pair<Loan, Item>>()
-        loans
-            .filter { loan ->
-              loan.state == LoanState.FINISHED &&
-                  (loan.idLender == user.uid || loan.idBorrower == user.uid)
-            }
-            .forEach { loan ->
-              database.getItem(loan.idItem) { item ->
-                list.add(Pair(loan, item))
-                updateLoans(list)
+        database.getItemsWithImages { items ->
+          val list = mutableListOf<Pair<Loan, Item>>()
+          loans
+              .filter { loan ->
+                loan.state == LoanState.FINISHED &&
+                    (loan.idLender == user.uid || loan.idBorrower == user.uid)
               }
-            }
+              .forEach { loan ->
+                items
+                    .first() { it.id == loan.idItem }
+                    .let { item ->
+                      list.add(Pair(loan, item))
+                      updateLoans(list)
+                    }
+              }
+        }
       }
     }
   }

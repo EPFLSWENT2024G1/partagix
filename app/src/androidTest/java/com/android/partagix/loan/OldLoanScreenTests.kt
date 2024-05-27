@@ -32,6 +32,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import java.io.File
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
@@ -70,7 +71,8 @@ class OldLoanScreenTests {
           "description",
           Visibility.PRIVATE,
           0,
-          Location(""))
+          Location(""),
+          imageId = File("image_item_1.jpg"))
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
@@ -88,6 +90,11 @@ class OldLoanScreenTests {
           val id = invocation.args[0] as String
           val onSuccess: (Item) -> Unit = invocation.args[1] as (Item) -> Unit
           onSuccess(item1)
+        }
+    every { db.getItemsWithImages(any()) } answers
+        {
+          val onSuccess: (List<Item>) -> Unit = invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(listOf(item1))
         }
 
     mockUser = mockk<FirebaseUser>()

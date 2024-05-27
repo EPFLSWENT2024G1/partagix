@@ -612,11 +612,17 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   fun getItemWithImage(id: String, onSuccess: (Item) -> Unit) {
     getItems { items ->
       val item = items.firstOrNull { it.id == id }
-      item?.let {
-        getImageFromFirebaseStorage("images/${it.imageId.absolutePath}") { localFile ->
-          onSuccess(it.copy(imageId = localFile))
-        }
-        onSuccess(it)
+      item?.let { item_ ->
+        getImageFromFirebaseStorage(
+            "images/${item_.imageId.absolutePath}",
+            onFailure = {
+              Log.w("emptyItemImage", "No image found for item $item_")
+              onSuccess(item_)
+            }) { localFile ->
+              println("got image for : $item_")
+              onSuccess(item_.copy(imageId = localFile))
+            }
+        // onSuccess(item_)
       }
     }
   }
