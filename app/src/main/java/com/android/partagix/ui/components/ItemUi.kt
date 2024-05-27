@@ -1,6 +1,7 @@
 package com.android.partagix.ui.components
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -475,12 +476,41 @@ fun ClickableText(contact: String) {
                       Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
                       }
-                  contact.startsWith("Telegram :") ->
-                      Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse("https://t.me/${contact.substringAfter("Telegram : ")}")
+                  contact.startsWith("Phone :") ->
+                      Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
                       }
+                  contact.startsWith("Telegram :") -> {
+                    var telegramUsername = contact.substringAfter("Telegram : ")
+                    if (telegramUsername.startsWith("@")) {
+                      telegramUsername = telegramUsername.removePrefix("@")
+                    }
+                    val telegramAppUri = Uri.parse("tg://resolve?domain=$telegramUsername")
+                    val telegramWebUri = Uri.parse("https://t.me/$telegramUsername")
+
+                    // Try to open the Telegram app
+                    val telegramIntent = Intent(Intent.ACTION_VIEW, telegramAppUri)
+                    if (isAppInstalled(context, "org.telegram.messenger")) {
+                      telegramIntent.setPackage("org.telegram.messenger")
+                    } else {
+                      // Fallback to web if Telegram app is not installed
+                      telegramIntent.data = telegramWebUri
+                    }
+                    telegramIntent
+                  }
                   else -> null
                 }
             intent?.let { ContextCompat.startActivity(context, it, null) }
           })
+}
+
+// Utility function to check if an app is installed
+fun isAppInstalled(context: android.content.Context, packageName: String): Boolean {
+  val packageManager: PackageManager = context.packageManager
+  return try {
+    packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+    true
+  } catch (e: PackageManager.NameNotFoundException) {
+    false
+  }
 }
