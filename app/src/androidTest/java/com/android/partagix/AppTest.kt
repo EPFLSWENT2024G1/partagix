@@ -4,6 +4,7 @@ import androidx.activity.result.registerForActivityResult
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.notification.FirebaseMessagingService
@@ -38,6 +39,8 @@ class AppTest {
 
   @Mock private lateinit var mockDatabase: Database
 
+  @Mock private lateinit var mockStorageV2: StorageV2
+
   @Mock private lateinit var mockNavActions: NavigationActions
 
   @Mock private lateinit var mockFirebaseUser: FirebaseUser
@@ -61,7 +64,11 @@ class AppTest {
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
 
-    mockDatabase = spyk(Database())
+    mockStorageV2 = mockk()
+    every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } just Runs
+    every { mockStorageV2.getImagesFromFirebaseStorage(any(), any(), any(), any()) } just Runs
+
+    mockDatabase = spyk(Database(imageStorage = mockStorageV2))
     every { mockDatabase.createUser(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
 
@@ -72,7 +79,7 @@ class AppTest {
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
 
-    mockNotificationManager = mockk()
+    mockNotificationManager = spyk(FirebaseMessagingService(mockDatabase, mockNavActions))
     every { mockNotificationManager.sendNotification(any(), any()) } just Runs
     every { mockNotificationManager.initPermissions() } just Runs
     every { mockNotificationManager.checkToken(any(), any()) } answers
@@ -83,19 +90,23 @@ class AppTest {
 
     mockFusedLocationProviderClient = mockk()
 
+    println("---------- yoo")
     app =
         App(
             mockActivity,
             mockAuth,
+            mockStorageV2,
             mockDatabase,
             mockNotificationManager,
             mockFusedLocationProviderClient)
+    println("---------- yoo2")
     app.navigationActions = mockNavActions
   }
 
   @After
   fun tearDown() {
     clearAllMocks()
+    Thread.sleep(5000)
   }
 
   @Test

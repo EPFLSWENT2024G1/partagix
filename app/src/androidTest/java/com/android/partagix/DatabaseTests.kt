@@ -2,6 +2,7 @@ package com.android.partagix
 
 import android.location.Location
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyUser
@@ -258,10 +259,11 @@ class DatabaseTests {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
 
-    mockkStatic(::getImagesFromFirebaseStorage)
-    every { getImagesFromFirebaseStorage(any(), any()) } answers
+    val mockImageStorage = mockk<StorageV2>()
+
+    every { mockImageStorage.getImagesFromFirebaseStorage(any(), any(), any(), any()) } answers
         {
-          val onSuccess = arg<(List<File>) -> Unit>(4)
+          val onSuccess = arg<(List<File>) -> Unit>(3)
           onSuccess(listOf(File("imageId")))
         }
 
@@ -378,7 +380,7 @@ class DatabaseTests {
     every { uploadTask.addOnFailureListener(any()) } returns uploadTask
 
     // Create Database instance
-    val database = Database(mockDb)
+    val database = Database(mockDb, mockImageStorage)
 
     // Perform the function call
     val onSuccessCallback: (List<Item>) -> Unit = { items ->
@@ -451,14 +453,18 @@ class DatabaseTests {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
 
-    mockkStatic(::getImageFromFirebaseStorage)
-    every { getImageFromFirebaseStorage("users/userId", any(), any(), any()) } answers
+    val mockImageStorage = mockk<StorageV2>()
+    every {
+      mockImageStorage.getImageFromFirebaseStorage("users/userId", any(), any(), any())
+    } answers
         {
           val onSuccess = arg<(File) -> Unit>(3)
           onSuccess((File("imageId")))
         }
 
-    every { getImageFromFirebaseStorage("users/userId2", any(), any(), any()) } answers
+    every {
+      mockImageStorage.getImageFromFirebaseStorage("users/userId2", any(), any(), any())
+    } answers
         {
           val onFailure = arg<(java.lang.Exception) -> Unit>(2)
           onFailure(Exception("Error"))
@@ -562,7 +568,7 @@ class DatabaseTests {
     val onSuccessInvalidImageCallback: (User) -> Unit = { res -> assertEquals(user2, res) }
 
     val onNoUserCallback: () -> Unit = { assert(false) }
-    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+    val database = spyk(Database(mockDb, mockImageStorage), recordPrivateCalls = true)
 
     every { database.getUserInventory(any(), any()) } answers
         {
@@ -577,6 +583,7 @@ class DatabaseTests {
     runBlocking {
       database.getUserWithImage(userId2, onNoUserCallback, onSuccessInvalidImageCallback)
     }
+
     //  Don't forget to unmock.
     unmockkStatic(::now)
   }
