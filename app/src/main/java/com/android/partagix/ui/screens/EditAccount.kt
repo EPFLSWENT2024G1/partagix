@@ -73,6 +73,7 @@ fun EditAccount(
   var tempAddress by remember { mutableStateOf(user.address) }
   var uiImage by remember { mutableStateOf<File?>(user.imageId) }
   var email by remember { mutableStateOf(user.email ?: "Please enter an email address") }
+  val defaultEmail = "Please enter an email address"
   var phoneNumber by remember { mutableStateOf(user.phoneNumber ?: "") }
   var telegram by remember { mutableStateOf(user.telegram ?: "") }
   var favorite: SnapshotStateList<Boolean> = remember {
@@ -203,8 +204,13 @@ fun EditAccount(
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("email"),
                       value = email,
-                      onValueChange = {
-                        email = it
+                      onValueChange = { value ->
+                        email =
+                            if (value.contains(defaultEmail.dropLast(1))) {
+                              ""
+                            } else {
+                              value
+                            }
                         if (email == "") favorite[0] = false
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -299,7 +305,7 @@ fun EditAccount(
                                     favorite = favorite))
                             navigationActions.goBack()
                           },
-                          enabled = favorite.contains(true),
+                          enabled = favorite.contains(true) && email != defaultEmail,
                           modifier = Modifier.weight(1f).testTag("saveButton"),
                       ) {
                         Text("Save changes")
