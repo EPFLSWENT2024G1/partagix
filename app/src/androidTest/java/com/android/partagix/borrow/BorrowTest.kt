@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -37,6 +38,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockViewModel: BorrowViewModel
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   private lateinit var mockLoanUiState: MutableStateFlow<Loan>
   private lateinit var mockItemUiState: MutableStateFlow<Item>
@@ -61,7 +63,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     every { mockViewModel.userUiState } returns mockUserUiState
     every { mockViewModel.startBorrow(any(), any()) } just Runs
     every { mockViewModel.updateLoan(any()) } just Runs
-    every { mockViewModel.createLoan() } just Runs
+    every { mockViewModel.createLoan(any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -72,7 +74,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun testIsDisplayed() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
+      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
     }
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
@@ -120,7 +122,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun editAndSave() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
+      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
     }
 
     mockViewModel.startBorrow(item, user)

@@ -13,6 +13,7 @@ class BorrowScreen(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val backText: KNode = topBar.child { hasTestTag("backText") }
   val backButton: KNode = topBar.child { hasTestTag("backButton") }
 
+  val popup : KNode = onNode { hasTestTag("popup") }
   val itemImage: KNode = onNode { hasTestTag("itemImage") }
   val itemName: KNode = onNode { hasTestTag("itemName") }
   val itemOwner: KNode = onNode { hasTestTag("itemOwner") }
