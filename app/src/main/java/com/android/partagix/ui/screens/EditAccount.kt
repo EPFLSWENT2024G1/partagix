@@ -296,6 +296,7 @@ fun EditAccount(
                                     favorite = favorite))
                             navigationActions.goBack()
                           },
+                          enabled = favorite.contains(true),
                           modifier = Modifier.weight(1f).testTag("saveButton"),
                       ) {
                         Text("Save changes")
