@@ -125,6 +125,7 @@ class OldLoanScreenTests {
       composeTestRule.onNodeWithText("Infos").assertHasClickAction()
       composeTestRule.onNodeWithText("Evaluate").assertIsDisplayed()
       composeTestRule.onNodeWithText("Evaluate").assertHasClickAction()
+      composeTestRule.onNodeWithText("Evaluate").performClick()
     }
   }
 

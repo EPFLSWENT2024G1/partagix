@@ -34,41 +34,44 @@ class FinishedLoansViewModel(db: Database = Database()) : ViewModel() {
   }
 
   fun getFinishedLoan() {
+
     val user = Authentication.getUser()
 
     if (user == null) {
       _uiState.value = _uiState.value.copy(loans = emptyList())
       // TODO: Handle error
-
       return
     } else {
-      database.getLoans {
-        _uiState.value = _uiState.value.copy(loans = emptyList())
-        it.filter { loan ->
+      database.getLoans { loans ->
+        val list = mutableListOf<Pair<Loan, Item>>()
+        loans
+            .filter { loan ->
               loan.state == LoanState.FINISHED &&
                   (loan.idLender == user.uid || loan.idBorrower == user.uid)
             }
-            .forEach { loan -> updateLoans(loan) }
+            .forEach { loan ->
+              database.getItem(loan.idItem) { item ->
+                list.add(Pair(loan, item))
+                updateLoans(list)
+              }
+            }
       }
     }
   }
 
-  fun getItem(itemId: String) {
-    database.getItem(itemId) { _uiItem.value = it }
-  }
-
   fun updateLoan(loan: Loan) {
-    var index = _uiState.value.loans.indexOfFirst { it.id == loan.id }
-    var list = _uiState.value.loans.toMutableList()
+    val index = _uiState.value.loans.indexOfFirst { it.first.id == loan.id }
+    val item = _uiState.value.loans[index].second
     if (index != -1) {
-      list[index] = loan
+      val list = _uiState.value.loans.toMutableList()
+      list[index] = Pair(loan, item)
       _uiState.value = _uiState.value.copy(loans = list)
     }
   }
 
-  private fun updateLoans(new: Loan) {
-    _uiState.value = _uiState.value.copy(loans = _uiState.value.loans.plus(new))
+  private fun updateLoans(list: List<Pair<Loan, Item>>) {
+    _uiState.value = _uiState.value.copy(loans = list)
   }
 }
 
-data class FinishedUIState(val loans: List<Loan>)
+data class FinishedUIState(val loans: List<Pair<Loan, Item>>)

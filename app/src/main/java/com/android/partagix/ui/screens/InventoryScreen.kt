@@ -33,6 +33,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +60,8 @@ import com.android.partagix.ui.navigation.Route
  *
  * @param inventoryViewModel a view model to get the inventory.
  * @param navigationActions a class to navigate to different screens.
- * @param manageLoanViewModel a view model to manage the loan requests.
+ * @param manageLoanViewModelIncoming a view model to manage the incoming loan requests.
+ * @param manageLoanViewModelOutgoing a view model to manage the outgoing loan requests.
  * @param itemViewModel a view model to manage the items.
  * @param modifier a Modifier to apply to this layout.
  */
@@ -66,18 +69,16 @@ import com.android.partagix.ui.navigation.Route
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel,
     navigationActions: NavigationActions,
-    manageLoanViewModel: ManageLoanViewModel,
+    manageLoanViewModelOutgoing: ManageLoanViewModel,
+    manageLoanViewModelIncoming: ManageLoanViewModel,
     itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
-  // Useful when we will have fix the count
-  /*var incomingRequests by remember { mutableIntStateOf(0) }
-  var outgoingRequests by remember { mutableIntStateOf(0) }*/
-
-  /*manageLoanViewModel.getInComingRequestCount { incomingRequests = it }
-  manageLoanViewModel.getOutGoingRequestCount { outgoingRequests = it }*/
+  // These variables should stay var otherwise the counts are outdated in some cases
+  var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
+  var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
 
   Scaffold(
       modifier = modifier.testTag("inventoryScreen"),
@@ -141,7 +142,7 @@ fun InventoryScreen(
                           ),
                       modifier = modifier.padding(start = 10.dp))
                   Text(
-                      text = "Historic",
+                      text = "History",
                       fontSize = 12.sp,
                       modifier =
                           Modifier.clickable { navigationActions.navigateTo(Route.FINISHED_LOANS) })
@@ -169,9 +170,7 @@ fun InventoryScreen(
                               contentDescription = "incoming requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Incoming Requests " /*($incomingRequests)*/, // TODO: put back
-                              // when we fix the
-                              // count
+                              text = "Incoming Requests ($incomingRequests)",
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -193,9 +192,7 @@ fun InventoryScreen(
                               contentDescription = "outgoing requests",
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
-                              text = "Outgoing Requests" /*($outgoingRequests)*/, // TODO: put back
-                              // when we fix the
-                              // count
+                              text = "Outgoing Requests ($outgoingRequests)",
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -215,16 +212,19 @@ fun InventoryScreen(
                   loan = uiState.loanBor,
                   title = "Borrowed items",
                   corner = uiState.borrowedItems.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
+                  onUserClick = {
+                    //                    userViewModel.setUser(user)
+                    navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                  },
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = false,
+                  isLender = true,
                   isExpandable = false,
-                  manageLoanViewModel = manageLoanViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
@@ -237,16 +237,16 @@ fun InventoryScreen(
                   loan = uiState.loan,
                   title = "Inventory item",
                   corner = uiState.items.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
                   isCornerClickable = false,
                   isClickable = true,
                   isExpandable = false,
                   isOutgoing = false,
-                  manageLoanViewModel = manageLoanViewModel,
+                  isOwner = true,
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

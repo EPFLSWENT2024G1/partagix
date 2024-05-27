@@ -72,8 +72,6 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     mockManageViewModel = mockk()
 
     every { mockManageViewModel.getLoanRequests() } just Runs
-    // every { mockManageViewModel.updateExpanded(any()) } just Runs
-
   }
 
   @Test
@@ -151,9 +149,8 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
+      mainContent { assertIsDisplayed() }
       itemList { assertIsDisplayed() }
-      itemCard { assertIsDisplayed() }
-      // itemCardExpanded { assertIsDisplayed() }
     }
   }
 }
