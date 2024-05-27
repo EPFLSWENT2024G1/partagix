@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -145,7 +146,8 @@ fun EditAccount(
                     modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("usernameField"),
                     value = tempUsername,
                     onValueChange = { tempUsername = it },
-                    label = { Text("username") })
+                    label = { Text("username") },
+                    colors = OutlinedTextFieldDefaults.colors())
 
                 Spacer(modifier = Modifier.height(16.dp))
 

@@ -211,7 +211,7 @@ fun InventoryCreateOrEditItem(
                   }
                 }
 
-                Spacer(modifier = modifier.height(8.dp))
+                //                Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
                     value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
