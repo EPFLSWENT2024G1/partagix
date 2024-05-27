@@ -1,6 +1,5 @@
 package com.android.partagix.model
 
-import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
 import androidx.core.os.bundleOf
@@ -610,20 +609,42 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the item
    */
   fun getItemWithImage(id: String, onSuccess: (Item) -> Unit) {
-    getItems { items ->
-      val item = items.firstOrNull { it.id == id }
-      item?.let { item_ ->
-        getImageFromFirebaseStorage(
-            "images/${item_.imageId.absolutePath}",
-            onFailure = {
-              Log.w("emptyItemImage", "No image found for item $item_")
-              onSuccess(item_)
-            }) { localFile ->
-              println("got image for : $item_")
-              onSuccess(item_.copy(imageId = localFile))
-            }
-        // onSuccess(item_)
+    items.document(id).get().addOnSuccessListener {
+      val onSuccessImage = { localFile: File ->
+        val item = it.data
+        if (item != null) {
+          val locationMap = item["location"] as HashMap<*, *>
+          val location = toLocation(locationMap)
+
+          val visibility = (item["visibility"] as Long).toInt()
+
+          val newItem =
+              Item(
+                  item["id"] as String,
+                  Category(item["id_category"] as String, ""),
+                  item["name"] as String,
+                  item["description"] as String,
+                  Visibility.values()[visibility],
+                  item["quantity"] as Long,
+                  location,
+                  item["id_user"] as String,
+                  localFile)
+          onSuccess(newItem)
+        }
       }
+
+      val path = it.data?.get("image_path") as String
+
+      getImageFromFirebaseStorage(
+          "images/$path",
+          onFailure = {
+            Log.w("emptyItemImage", "No image found")
+            onSuccessImage(File("noImage"))
+          }) { localFile ->
+            onSuccessImage(localFile)
+          }
+      // onSuccess(item_)
+
     }
   }
   /**
