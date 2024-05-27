@@ -21,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class FinishedLoansViewModelTests {
@@ -96,7 +97,7 @@ class FinishedLoansViewModelTests {
           "commented",
           "commented",
           LoanState.ACCEPTED)
-  val item =
+  val item1 =
       Item(
           "item1",
           Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
@@ -104,7 +105,32 @@ class FinishedLoansViewModelTests {
           "",
           Visibility.PRIVATE,
           0,
-          Location(""))
+          Location(""),
+          imageId = File("image_item_1.jpg"))
+
+    val item2 =
+        Item(
+            "item2",
+            Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+            "",
+            "",
+            Visibility.PRIVATE,
+            0,
+            Location(""),
+            imageId = File("image_item_2.jpg"))
+
+    val item3 =
+        Item(
+            "item3",
+            Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+            "",
+            "",
+            Visibility.PRIVATE,
+            0,
+            Location(""),
+            imageId = File("image_item_3.jpg"))
+
+    val items = listOf(item1, item2, item3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
@@ -121,8 +147,14 @@ class FinishedLoansViewModelTests {
         { invocation ->
           val id = invocation.invocation.args[0] as String
           val onSuccess = invocation.invocation.args[1] as (Item) -> Unit
-          onSuccess(emptyItem)
+          onSuccess(items.first { it.id == id })
         }
+
+      every { db.getItemsWithImages(any()) } answers
+              {
+                  val onSuccess: (List<Item>) -> Unit = invocation.args[0] as (List<Item>) -> Unit
+                  onSuccess(items)
+              }
 
     finishedLoansViewModel = FinishedLoansViewModel(db)
 
@@ -141,7 +173,7 @@ class FinishedLoansViewModelTests {
     assert(finishedLoansViewModel.uiState.value.loans.size == 2)
     assert(
         finishedLoansViewModel.uiState.value.loans.containsAll(
-            listOf(Pair(loan1, emptyItem), Pair(loan2, emptyItem))))
+            listOf(Pair(loan1, item1), Pair(loan2, item2))))
   }
 
   @Test
@@ -159,6 +191,6 @@ class FinishedLoansViewModelTests {
     val loan1modified = loan1.copy(commentBorrower = "new comment")
     finishedLoansViewModel.getFinishedLoan()
     finishedLoansViewModel.updateLoan(loan1modified)
-    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, emptyItem)))
+    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, item1)))
   }
 }
