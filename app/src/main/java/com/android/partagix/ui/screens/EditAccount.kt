@@ -208,6 +208,7 @@ fun EditAccount(
                         if (email == "") favorite[0] = false
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                      singleLine = true,
                       label = { Text("email") })
 
                   Spacer(modifier = Modifier.height(10.dp))
@@ -220,6 +221,7 @@ fun EditAccount(
                         if (phoneNumber == "") favorite[1] = false
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                      singleLine = true,
                       label = { Text("phoneNumber") })
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
@@ -229,6 +231,7 @@ fun EditAccount(
                         telegram = it
                         if (telegram == "") favorite[2] = false
                       },
+                        singleLine = true,
                       label = { Text("telegram") })
 
                   Spacer(modifier = Modifier.height(16.dp))
