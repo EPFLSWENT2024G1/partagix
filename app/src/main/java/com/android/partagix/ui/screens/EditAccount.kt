@@ -209,7 +209,7 @@ fun EditAccount(
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                       singleLine = true,
-                      label = { Text("email") })
+                      label = { Text("Email") })
 
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
@@ -222,7 +222,7 @@ fun EditAccount(
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                       singleLine = true,
-                      label = { Text("phoneNumber") })
+                      label = { Text("Phone Number") })
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("telegram"),
@@ -231,8 +231,8 @@ fun EditAccount(
                         telegram = it
                         if (telegram == "") favorite[2] = false
                       },
-                        singleLine = true,
-                      label = { Text("telegram") })
+                      singleLine = true,
+                      label = { Text("Telegram") })
 
                   Spacer(modifier = Modifier.height(16.dp))
                   Text(

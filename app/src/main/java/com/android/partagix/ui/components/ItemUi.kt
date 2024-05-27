@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -256,8 +257,7 @@ fun ItemUi(
         } // End of core row
 
     if (expanded) {
-      Spacer(modifier = Modifier.height(2.dp))
-
+      Spacer(modifier = Modifier.height(8.dp))
       if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
         var u by remember { mutableStateOf(emptyUser) }
         if (loan.idLender == user.id)
@@ -293,9 +293,9 @@ fun ItemUi(
           val telegram =
               if (u.favorite?.get(2) == false && u.telegram != "") "Telegram : ${user.telegram}"
               else ""
-          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
-              Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)
-          else {
+          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty()) {
+            Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)
+          } else {
             listOf(email, phone, telegram).filter { it.isNotEmpty() }
             listOf(email, phone, telegram)
                 .filter { it.isNotEmpty() }
@@ -327,7 +327,11 @@ fun ItemUi(
                   content = {
                     Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
                     Spacer(Modifier.width(2.dp))
-                    Text(text = "Reject")
+                    if (loan.state == LoanState.PENDING && isLender) {
+                      Text(text = "Cancel")
+                    } else {
+                      Text(text = "Reject")
+                    }
                   },
                   colors =
                       ButtonColors(
@@ -339,153 +343,8 @@ fun ItemUi(
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
       }
-      Spacer(modifier = Modifier.height(8.dp))
-      Row(
-          horizontalArrangement = Arrangement.Absolute.Right,
-          modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
-            if (!isOutgoing) {
-              Button(
-                  onClick = { manageLoanViewModel.acceptLoan(loan, index) },
-                  content = {
-                    Icon(Icons.Default.Check, contentDescription = "validate", modifier = Modifier)
-                    Spacer(Modifier.width(3.dp))
-                    Text(text = "Validate")
-                  },
-                  modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
-                  contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
-            }
-            Spacer(modifier = Modifier.width(6.dp))
-            Button(
-                onClick = { manageLoanViewModel.declineLoan(loan, index) },
-                content = {
-                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
-                  Spacer(Modifier.width(2.dp))
-                  if (loan.state == LoanState.PENDING && isLender) {
-                    Text(text = "Cancel")
-                  } else {
-                    Text(text = "Reject")
-                  }
-                },
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        disabledContainerColor = MaterialTheme.colorScheme.error,
-                        disabledContentColor = MaterialTheme.colorScheme.onError),
-                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
-                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
-          }
     }
   }
-  /*} else {
-    Column(
-      horizontalAlignment = Alignment.Start, modifier = Modifier
-        .fillMaxWidth()
-        .border(
-          width = 1.dp,
-          color = MaterialTheme.colorScheme.outlineVariant,
-          shape = RoundedCornerShape(size = 4.dp)
-        )
-        .background(
-          color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 4.dp)
-        )
-        .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
-        .testTag("ItemUiNotExpanded")
-    ) {
-      Row(
-        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(61.dp)
-      ) {
-        Column(
-          modifier = Modifier
-            .weight(weight = 1f)
-            .fillMaxWidth()
-        ) {
-          Row(
-            modifier = Modifier.fillMaxHeight(0.5f), verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(text = user.rank, style = TextStyle(fontWeight = FontWeight(500)))
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-              text = user.name,
-              style = TextStyle(
-                fontWeight = FontWeight(500),
-                textAlign = TextAlign.Left,
-              ),
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              modifier = Modifier.fillMaxWidth(0.95f)
-            )
-          }
-          Text(
-            text = if (loan.idItem == "") {
-              "not borrowed"
-            } else {
-              if (loan.startDate.before(Date())) {
-                "available until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              } else {
-                "borrowed until ${
-                  LocalDateTime.ofInstant(
-                    date.toInstant(), java.time.ZoneId.systemDefault()
-                  ).format(formatter)
-                }"
-              }
-            },
-            style = TextStyle(fontSize = 12.sp, letterSpacing = 0.25.sp),
-            modifier = Modifier.fillMaxWidth()
-          )
-        }
-        Column(
-          modifier = Modifier.requiredHeight(height = 64.dp), horizontalAlignment = Alignment.End
-        ) {
-          Text(
-            text = item.name,
-            textAlign = TextAlign.End,
-            style = TextStyle(textAlign = TextAlign.Right),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-              .fillMaxWidth(.3f)
-              .padding(top = 10.dp)
-          )
-          Text(
-            text = "Quantity: " + item.quantity.toString(),
-            style = TextStyle(
-              fontSize = 11.sp,
-              textAlign = TextAlign.Right,
-            ),
-            textAlign = TextAlign.End,
-            lineHeight = 0.8.em,
-            modifier = Modifier
-              .fillMaxWidth(0.2f)
-              .padding(top = 5.dp)
-          )
-        }
-        Box(
-          modifier = Modifier
-            .fillMaxWidth(0.3f)
-            .fillMaxHeight()
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
-        ) {
-          AsyncImage(
-            model = item.imageId.absolutePath,
-            contentDescription = "fds",
-            contentScale = ContentScale.Inside,
-            modifier = Modifier
-              .fillMaxHeight()
-              .align(Alignment.Center)
-              .testTag("ItemUiImage")
-          )
-        }
-      }
-    }
-  }*/
 }
 
 @Composable
