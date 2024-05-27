@@ -23,7 +23,7 @@ import getImageFromFirebaseStorage
 import getImagesFromFirebaseStorage
 import java.io.File
 
-class Database(database: FirebaseFirestore = Firebase.firestore) {
+class Database(database: FirebaseFirestore = Firebase.firestore, imageStorage: StorageV2 = StorageV2()) {
 
   private val db = database
   private val users = db.collection("users")

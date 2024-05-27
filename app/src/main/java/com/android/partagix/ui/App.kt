@@ -36,6 +36,7 @@ import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.StartOrEndLoanUIState
 import com.android.partagix.model.StartOrEndLoanViewModel
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -73,7 +74,8 @@ import kotlinx.coroutines.launch
 class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
-    private val db: Database = Database(),
+    private val imageStorage: StorageV2 = StorageV2(),
+    private val db: Database = Database(imageStorage = imageStorage),
     private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db),
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(activity)
