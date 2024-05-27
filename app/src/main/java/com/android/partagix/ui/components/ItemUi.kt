@@ -159,7 +159,7 @@ fun ItemUi(
           Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
 
             // Item name
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().height(23.dp)) {
               Text(
                   text = item.name,
                   style =
@@ -174,10 +174,10 @@ fun ItemUi(
               )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.weight(1f).height(1.dp))
 
             // Details
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().height(15.dp)) {
 
               // Availability
               Row(modifier = Modifier.fillMaxWidth(0.7f)) {
@@ -208,11 +208,11 @@ fun ItemUi(
               }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(1.dp).weight(1f))
 
             // Owner
             if (!isOwner) {
-              Row(modifier = ownerModifier) {
+              Row(modifier = ownerModifier.height(15.dp)) {
 
                 // Owner name
                 Text(
@@ -230,7 +230,7 @@ fun ItemUi(
 
                 // Owner rank
                 RankingStars(
-                    rank = user.rank, modifier = Modifier.padding(top = 1.dp).height(13.dp))
+                    rank = user.rank, modifier = Modifier.padding(top = 3.dp).height(13.dp))
               }
             }
           }
