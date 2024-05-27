@@ -1,4 +1,5 @@
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -118,6 +119,9 @@ fun getImagesFromFirebaseStorage(
         }
         .addOnFailureListener {
           res[p] = File("noImage")
+          Log.d(
+              "getImagesFromFirebaseStorage",
+              "Failed to get image from Firebase Storage : ${paths[p]}")
           onFailure(it)
           if (count.incrementAndGet() == paths.size) {
             onSuccess(res.toList())

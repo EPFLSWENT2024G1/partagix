@@ -66,6 +66,8 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
+
     every { mockNavActions.goBack() } just Runs
   }
 

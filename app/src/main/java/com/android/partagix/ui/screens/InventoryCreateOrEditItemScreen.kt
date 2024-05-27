@@ -149,7 +149,8 @@ fun InventoryCreateOrEditItem(
                           Missing : save the image to the local file (need a ContentResolver ?)
                           uiImage = localFilePath
                            */
-                          if (uri == image.toUri()) return@MainImagePicker
+                          if (uri.toString().isEmpty() || uri == image.toUri())
+                              return@MainImagePicker
                           // Before this is done, display an empty image while waiting for the
                           // upload
                           uiImage = File("res/drawable/default_image.jpg")

@@ -1,6 +1,6 @@
 package com.android.partagix.ui.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,11 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.android.partagix.R
+import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.navigation.NavigationActions
@@ -124,16 +124,15 @@ fun BorrowScreen(
                 Row(modifier = modifier.fillMaxWidth()) {
                   Box(
                       contentAlignment = Alignment.Center,
-                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("itemImage")) {
-                        Image(
-                            painter =
-                                painterResource(
-                                    id =
-                                        R.drawable
-                                            .ic_launcher_background), // TODO replace with actual
-                            // image
-                            contentDescription = "Item image",
-                            modifier = modifier.fillMaxSize())
+                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)) {
+                        AsyncImage(
+                            model = item.imageId.absolutePath,
+                            contentDescription = "fds",
+                            contentScale = ContentScale.FillWidth,
+                            modifier =
+                                Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground)
+                                    .testTag("itemImage"),
+                            alignment = Alignment.Center)
                       }
 
                   Spacer(modifier = modifier.width(8.dp))
