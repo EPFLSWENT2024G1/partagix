@@ -2,6 +2,7 @@ package com.android.partagix.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
@@ -41,8 +42,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -56,6 +60,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.navigation.NavigationActions
@@ -77,10 +82,12 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
+    onQrScanned: (String, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
   val uiState by manageLoanViewModel.uiState.collectAsStateWithLifecycle()
   val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+  var cameraOpen by remember { mutableStateOf(false) }
   Scaffold(
       modifier = modifier.testTag("homeScreen"),
       topBar = {
@@ -109,7 +116,6 @@ fun HomeScreen(
                   style = MaterialTheme.typography.titleLarge)
               Spacer(modifier = Modifier.height(8.dp))
 
-              CameraScreen()
 
               Row(
                   modifier =
@@ -124,7 +130,14 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = { homeViewModel.openQrScanner() },
+                        onClick = {
+                          cameraOpen = !cameraOpen
+                          val user = Authentication.getUser()
+                          if(user != null) {
+                            //onQrScanned("MHlgRWlehFcHRweZaeGZ", user.uid)
+                            //homeViewModel.openQrScanner()
+                          }
+                        },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
@@ -133,6 +146,9 @@ fun HomeScreen(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
+            if(cameraOpen){
+              CameraScreen(onQrScanned)
+            }
 
               Box(modifier = modifier.padding(top = 8.dp)) {
                 Text(
@@ -190,16 +206,23 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
       }
 }
 @Composable
-fun CameraScreen() {
-  val localContext = LocalContext.current
+fun CameraScreen(onQrScanned: (String, String) -> Unit) {
+  val context = LocalContext.current
   val lifecycleOwner = LocalLifecycleOwner.current
-  val cameraProviderFuture = remember {
-    ProcessCameraProvider.getInstance(localContext)
+  val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+  val cameraProvider = cameraProviderFuture.get()
+
+  DisposableEffect(Unit) {
+    onDispose {
+      // Unbind all use cases to avoid attempting to bind too many use cases
+      cameraProvider.unbindAll()
+    }
   }
+
   AndroidView(
     modifier = Modifier.fillMaxSize(),
-    factory = { context ->
-      val previewView = PreviewView(context)
+    factory = { ctx ->
+      val previewView = PreviewView(ctx)
       val preview = Preview.Builder().build()
       val selector = CameraSelector.Builder()
         .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -209,26 +232,27 @@ fun CameraScreen() {
 
       val imageAnalysis = ImageAnalysis.Builder().build()
       imageAnalysis.setAnalyzer(
-        ContextCompat.getMainExecutor(context),
-        BarcodeAnalyzer(context)
-
+        ContextCompat.getMainExecutor(ctx),
+        BarcodeAnalyzer(ctx, onQrScanned)
       )
 
-      runCatching {
-        cameraProviderFuture.get().bindToLifecycle(
+      try {
+        cameraProvider.unbindAll()
+        cameraProvider.bindToLifecycle(
           lifecycleOwner,
           selector,
           preview,
           imageAnalysis
         )
-      }.onFailure {
-        Log.e("CAMERA", "Camera bind error ${it.localizedMessage}", it)
+      } catch (exc: Exception) {
+        Log.e("CAMERA", "Camera bind error ${exc.localizedMessage}", exc)
       }
+
       previewView
     }
   )
 }
-class BarcodeAnalyzer(private val context: Context) : ImageAnalysis.Analyzer {
+class BarcodeAnalyzer(private val context: Context, private val onQrScanned  : (String, String) -> Unit) : ImageAnalysis.Analyzer {
 
   private val options = BarcodeScannerOptions.Builder()
     .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
@@ -247,7 +271,18 @@ class BarcodeAnalyzer(private val context: Context) : ImageAnalysis.Analyzer {
         barcode?.takeIf { it.isNotEmpty() }
           ?.mapNotNull { it.rawValue }
           ?.joinToString(",")
-          ?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+          ?.let {
+            val user = Authentication.getUser()
+            if(user != null) {
+              val uri = Uri.parse(it)
+              val itemId = uri.getQueryParameter("itemId")
+              val text = "Qr code scanned successfully"
+              Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+              if (itemId != null){
+                onQrScanned(itemId, user.uid)
+              }
+            }
+          }
       }.addOnCompleteListener {
         imageProxy.close()
       }
