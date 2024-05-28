@@ -644,7 +644,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
         val path = it.data?.get("image_path") as String
 
         getImageFromFirebaseStorage(
-            "images/$path",
+            path,
             onFailure = {
               Log.w("emptyItemImage", "No image found")
               onSuccessImage(File("noImage"))
