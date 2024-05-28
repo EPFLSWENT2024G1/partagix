@@ -279,9 +279,12 @@ fun ItemUi(
 
         // favorite contacts
         if (u.favorite != listOf(false, false, false)) {
-          val email = if (u.favorite?.get(0) == true) "Email : ${u.email}" else ""
-          val phone = if (u.favorite?.get(1) == true) "Phone : ${u.phoneNumber}" else ""
-          val telegram = if (u.favorite?.get(2) == true) "Telegram : ${u.telegram}" else ""
+          val email = if (u.favorite?.get(0) == true && u.email != "") "Email: ${u.email}" else ""
+          val phone =
+              if (u.favorite?.get(1) == true && u.phoneNumber != "") "Phone: ${u.phoneNumber}"
+              else ""
+          val telegram =
+              if (u.favorite?.get(2) == true && u.telegram != "") "Telegram: ${u.telegram}" else ""
           listOf(email, phone, telegram).filter { it.isNotEmpty() }
           listOf(email, phone, telegram)
               .filter { it.isNotEmpty() }
@@ -289,12 +292,12 @@ fun ItemUi(
         }
         // other contacts
         if (u.favorite != listOf(false, false, false)) {
-          val email = if (u.favorite?.get(0) == false && u.email != "") "Email : ${u.email}" else ""
+          val email = if (u.favorite?.get(0) == false && u.email != "") "Email: ${u.email}" else ""
           val phone =
-              if (u.favorite?.get(1) == false && u.phoneNumber != "") "Phone : ${user.phoneNumber}"
+              if (u.favorite?.get(1) == false && u.phoneNumber != "") "Phone: ${user.phoneNumber}"
               else ""
           val telegram =
-              if (u.favorite?.get(2) == false && u.telegram != "") "Telegram : ${user.telegram}"
+              if (u.favorite?.get(2) == false && u.telegram != "") "Telegram: ${user.telegram}"
               else ""
           listOf(email, phone, telegram).filter { it.isNotEmpty() }
           listOf(email, phone, telegram)
@@ -372,20 +375,16 @@ fun ClickableText(contact: String, favorite: Boolean = false) {
           Modifier.clickable {
             val intent =
                 when {
-                  contact.startsWith("Email :") ->
+                  contact.startsWith("Email:") ->
                       Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:${contact.substringAfter("Email : ")}")
+                        data = Uri.parse("mailto:${contact.substringAfter("Email: ")}")
                       }
-                  contact.startsWith("Phone :") ->
+                  contact.startsWith("Phone:") ->
                       Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
+                        data = Uri.parse("smsto:${contact.substringAfter("Phone: ")}")
                       }
-                  contact.startsWith("Phone :") ->
-                      Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("smsto:${contact.substringAfter("Phone : ")}")
-                      }
-                  contact.startsWith("Telegram :") -> {
-                    var telegramUsername = contact.substringAfter("Telegram : ")
+                  contact.startsWith("Telegram:") -> {
+                    var telegramUsername = contact.substringAfter("Telegram: ")
                     if (telegramUsername.startsWith("@")) {
                       telegramUsername = telegramUsername.removePrefix("@")
                     }

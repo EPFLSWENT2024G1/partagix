@@ -104,9 +104,9 @@ class ItemUiTest {
     composeTestRule.onNodeWithText("Test Item").assertIsDisplayed().performClick()
 
     // Verify preferred contact is displayed
-    composeTestRule.onNodeWithText("Email : test@example.com").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Phone : 1234567890").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Telegram : @testuser").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Email: test@example.com").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Phone: 1234567890").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Telegram: @testuser").assertIsDisplayed()
   }
 
   @Test
@@ -162,10 +162,10 @@ class ItemUiTest {
     val slotIntent = slot<Intent>()
     every { ContextCompat.startActivity(any(), capture(slotIntent), any()) } returns Unit
 
-    composeTestRule.setContent { ClickableText("Email : example@example.com") }
+    composeTestRule.setContent { ClickableText("Email: example@example.com") }
 
     // Verify that clicking on the text launches the correct intent
-    composeTestRule.onNodeWithText("Email : example@example.com").assertExists().performClick()
+    composeTestRule.onNodeWithText("Email: example@example.com").assertExists().performClick()
 
     // Extract the captured intent
     val launchedIntent = slotIntent.captured
@@ -192,10 +192,10 @@ class ItemUiTest {
     every { ContextCompat.startActivity(any(), capture(slotIntent), any()) } returns Unit
 
     // Test for Phone number
-    composeTestRule.setContent { ClickableText("Phone : +1234567890") }
+    composeTestRule.setContent { ClickableText("Phone: +1234567890") }
 
     // Verify that clicking on the text launches the correct intent for phone number
-    composeTestRule.onNodeWithText("Phone : +1234567890").assertExists().performClick()
+    composeTestRule.onNodeWithText("Phone: +1234567890").assertExists().performClick()
 
     // Extract the captured intent
     val launchedIntent = slotIntent.captured
@@ -221,10 +221,10 @@ class ItemUiTest {
     every { ContextCompat.startActivity(any(), capture(slotIntent), any()) } returns Unit
 
     // Test for Telegram
-    composeTestRule.setContent { ClickableText("Telegram : @example") }
+    composeTestRule.setContent { ClickableText("Telegram: @example") }
 
     // Verify that clicking on the text launches the correct intent for Telegram
-    composeTestRule.onNodeWithText("Telegram : @example").assertExists().performClick()
+    composeTestRule.onNodeWithText("Telegram: @example").assertExists().performClick()
 
     // Extract the captured intent
     val launchedIntent = slotIntent.captured

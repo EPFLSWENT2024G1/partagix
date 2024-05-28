@@ -262,7 +262,7 @@ fun EditAccount(
                               Checkbox(
                                   checked = favorite[0],
                                   onCheckedChange = { favorite[0] = !favorite[0] },
-                                  enabled = email.contains("@"),
+                                  enabled = email.contains("@") && email.contains("."),
                                   modifier = Modifier.testTag("emailCheckbox"))
                               Text("Email", fontSize = 11.sp)
                             }
@@ -313,7 +313,7 @@ fun EditAccount(
                           enabled =
                               favorite.contains(true) &&
                                   email != defaultEmail &&
-                                  (email == "" || email.contains("@")),
+                                  (email == "" || (email.contains("@") && email.contains("."))),
                           modifier = Modifier.weight(1f).testTag("saveButton"),
                       ) {
                         Text("Save changes")
