@@ -2,6 +2,8 @@ package com.android.partagix.home
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
@@ -21,6 +23,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -78,6 +81,7 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
     every { mockNavActions.navigateTo(Route.QR_SCAN) } just Runs
     every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.MANAGE_LOAN_REQUEST) } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") } just Runs
 
     composeTestRule.setContent {
       HomeScreen(
@@ -106,7 +110,9 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         assertIsDisplayed()
         performClick()
       }
-      performClick()
+      composeTestRule.onNodeWithText("noname").performClick()
+      // Thread.sleep(20000)
+      coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") }
     }
   }
 }
