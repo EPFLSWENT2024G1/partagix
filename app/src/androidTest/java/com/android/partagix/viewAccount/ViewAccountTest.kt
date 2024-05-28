@@ -134,8 +134,14 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
-      commentsSection { assertIsDisplayed() }
-      commentsTitle { assertIsDisplayed() }
+      commentsSection {
+        performScrollTo()
+        assertIsDisplayed()
+      }
+      commentsTitle {
+        performScrollTo()
+        assertIsDisplayed()
+      }
       commentsTitle { assertTextEquals("Comments") }
     }
 
