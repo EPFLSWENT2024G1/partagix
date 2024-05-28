@@ -73,7 +73,7 @@ fun ManageLoanRequest(
                 modifier =
                     modifier.padding(innerPadding).fillMaxSize().testTag("manageScreenNoItemBox")) {
                   Text(
-                      text = "There is no loan request.",
+                      text = "You have no loan request.",
                       modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
           }
