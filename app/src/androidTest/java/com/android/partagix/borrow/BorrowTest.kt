@@ -1,7 +1,9 @@
 package com.android.partagix.borrow
 
 import android.location.Location
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.core.os.bundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
@@ -95,10 +97,8 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
       itemName { assertIsDisplayed() }
       itemOwner { assertIsDisplayed() }
       description { assertIsDisplayed() }
-      location {
-        assertIsDisplayed()
-        assertTextContains("Location 1")
-      }
+      location { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("Location 1").assertIsDisplayed()
       startDate { assertIsDisplayed() }
       startDateButton {
         assertIsDisplayed()
