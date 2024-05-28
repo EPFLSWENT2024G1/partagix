@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -126,6 +125,7 @@ fun InventoryCreateOrEditItem(
         var uiQuantity by remember { mutableStateOf(i.quantity) }
         var uiLocation by remember { mutableStateOf(Location(i.location)) }
         var uiImage by remember { mutableStateOf(i.imageId) }
+
         Column(
             modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -140,7 +140,7 @@ fun InventoryCreateOrEditItem(
                               .border(
                                   1.dp,
                                   MaterialTheme.colorScheme.outline,
-                                  shape = RoundedCornerShape(4.dp))
+                              )
                               .testTag("image")) {
                         val image =
                             File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
@@ -177,7 +177,7 @@ fun InventoryCreateOrEditItem(
                         },
                         label = { Text("Object name") },
                         modifier = modifier.testTag("name").fillMaxWidth(),
-                        maxLines = 1, // Ensure only one line is displayed
+                        singleLine = true, // Ensure only one line is displayed
                         readOnly = false)
 
                     LabeledText(
@@ -211,10 +211,8 @@ fun InventoryCreateOrEditItem(
                   }
                 }
 
-                //                Spacer(modifier = modifier.height(8.dp))
-
                 OutlinedTextField(
-                    value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
+                    value = if (uiQuantity == 0L) "1" else uiQuantity.toString(),
                     onValueChange = { str ->
                       val longValue: Long? = str.toLongOrNull()
                       uiQuantity = longValue ?: 0L

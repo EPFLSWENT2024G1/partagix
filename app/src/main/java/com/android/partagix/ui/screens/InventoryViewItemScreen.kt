@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -112,10 +111,7 @@ fun InventoryViewItemScreen(
                         contentScale = ContentScale.FillWidth,
                         modifier =
                             Modifier.fillMaxWidth(0.4f)
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outlineVariant,
-                                    shape = RoundedCornerShape(4.dp)),
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         alignment = Alignment.Center)
                   }
                   Spacer(modifier = Modifier.width(4.dp))
