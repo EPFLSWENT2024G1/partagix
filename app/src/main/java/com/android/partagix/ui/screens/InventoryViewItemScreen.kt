@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
@@ -60,6 +62,7 @@ fun InventoryViewItemScreen(
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel,
     borrowViewModel: BorrowViewModel,
+    userViewModel: UserViewModel,
     viewOthersItem: Boolean = false
 ) {
   val uiState = itemViewModel.uiState.collectAsState()
@@ -123,9 +126,16 @@ fun InventoryViewItemScreen(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f))
 
                     LabeledText(
-                        label = "Author",
+                        label = "Owner",
                         text = user.name,
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight())
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .fillMaxHeight()
+                                .testTag("ownerField")
+                                .clickable {
+                                  userViewModel.setUser(user)
+                                  navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                                })
                   }
                 }
               }
@@ -238,6 +248,7 @@ fun InventoryViewItemScreen(
                       modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
                 }
               }
+              Spacer(modifier = Modifier.height(8.dp))
             }
       }
 }

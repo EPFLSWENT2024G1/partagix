@@ -147,13 +147,13 @@ fun LoanScreen(
                               width = 1.dp,
                               color = Color(0xFF464646),
                               shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                          .padding(PaddingValues(top = 10.dp, bottom = 10.dp))) {
+                          .padding(PaddingValues(10.dp))) {
                     if (mapLoaded) {
                       ItemList(
                           itemList = loans.map { it.item },
                           users = loans.map { it.user },
                           loan = emptyList(),
-                          onClick = {
+                          onItemClick = {
                             itemViewModel.updateUiItem(it)
                             navigationActions.navigateTo(Route.VIEW_OTHERS_ITEM)
                           },
@@ -226,11 +226,11 @@ fun LoanScreen(
                                           modifier.fillMaxWidth(.3f).testTag("LoanScreenQtyFilter"))
                                 }
                           },
-                          modifier =
-                              modifier.testTag("LoanScreenItemListView").padding(10.dp, 0.dp),
+                          modifier = Modifier.fillMaxSize().testTag("LoanScreenItemListView"),
                           isExpandable = false,
                           isOutgoing = false,
                           wasExpanded = emptyList(),
+                          onUserClick = { /* todo */},
                       )
                     }
                   }

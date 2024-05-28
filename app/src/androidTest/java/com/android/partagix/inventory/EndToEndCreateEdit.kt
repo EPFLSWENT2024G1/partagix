@@ -26,6 +26,7 @@ import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.StampViewModel
+import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -67,11 +68,13 @@ class EndToEndCreateEdit {
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockHomeViewModel: HomeViewModel
   @RelaxedMockK lateinit var mockInventoryViewModel: InventoryViewModel
-  @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageViewModelIncoming: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockManageViewModelOutgoing: ManageLoanViewModel
   @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
   @RelaxedMockK lateinit var mockStampViewModel: StampViewModel
   @RelaxedMockK lateinit var mockBorrowViewModel: BorrowViewModel
   @RelaxedMockK lateinit var mockLocationViewModel: LocationPickerViewModel
+  @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
 
   private lateinit var mockUiState: MutableStateFlow<InventoryUIState>
   private lateinit var mockUiState2: MutableStateFlow<InventoryUIState>
@@ -121,12 +124,14 @@ class EndToEndCreateEdit {
     mockNavActions = mockk()
     mockHomeViewModel = mockk()
     mockInventoryViewModel = mockk()
-    mockManageViewModel = mockk()
+    mockManageViewModelIncoming = mockk()
+    mockManageViewModelOutgoing = mockk()
 
     mockItemViewModel = mockk()
     mockStampViewModel = mockk()
     mockBorrowViewModel = mockk()
     mockLocationViewModel = mockk()
+    mockUserViewModel = mockk()
 
     every { mockBorrowViewModel.startBorrow(any(), any()) } just Runs
 
@@ -159,22 +164,21 @@ class EndToEndCreateEdit {
     every { mockFirebaseUser.displayName } returns "name"
     every { mockFirebaseUser.email } returns "email"
 
-    // Useful when we will have fix the count
-    /*every { mockManageViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageViewModel.getOutGoingRequestCount(any()) } just Runs*/
+    every { mockManageViewModelIncoming.getCount() } returns 0
+    every { mockManageViewModelOutgoing.getCount() } returns 0
   }
 
   // Navigate from Home screen to Inventory screen
   @Test
   fun testA_goFromHomeToInventory() {
-    every { mockManageViewModel.uiState } returns mockManageUiState
+    every { mockManageViewModelIncoming.uiState } returns mockManageUiState
     every { mockItemViewModel.uiState } returns mockItemUiState
     every { mockHomeViewModel.uiState } returns mockHomeUiState
 
     composeTestRule.setContent {
       HomeScreen(
           homeViewModel = mockHomeViewModel,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModel = mockManageViewModelIncoming,
           navigationActions = mockNavActions)
     }
 
@@ -193,7 +197,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -297,7 +302,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 
@@ -317,7 +323,8 @@ class EndToEndCreateEdit {
       InventoryViewItemScreen(
           navigationActions = mockNavActions,
           itemViewModel = mockItemViewModel,
-          borrowViewModel = mockBorrowViewModel)
+          borrowViewModel = mockBorrowViewModel,
+          userViewModel = mockUserViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
@@ -373,7 +380,8 @@ class EndToEndCreateEdit {
       InventoryViewItemScreen(
           navigationActions = mockNavActions,
           itemViewModel = mockItemViewModel,
-          borrowViewModel = mockBorrowViewModel)
+          borrowViewModel = mockBorrowViewModel,
+          userViewModel = mockUserViewModel)
     }
 
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
@@ -395,7 +403,8 @@ class EndToEndCreateEdit {
       InventoryScreen(
           inventoryViewModel = mockInventoryViewModel,
           navigationActions = mockNavActions,
-          manageLoanViewModel = mockManageViewModel,
+          manageLoanViewModelIncoming = mockManageViewModelIncoming,
+          manageLoanViewModelOutgoing = mockManageViewModelOutgoing,
           itemViewModel = mockItemViewModel)
     }
 

@@ -38,21 +38,8 @@ class StartOrEndLoanViewModel(
         )
     db.setLoan(newLoan)
 
-    val lenderToken = _uiState.value.lender.fcmToken
-    Log.d(TAG, "onStart: $lenderToken")
-
-    if (lenderToken != null) {
-      val notification =
-          Notification(
-              title = "Loan started",
-              message = "Loan started for ${_uiState.value.item.name}",
-              type = Notification.Type.NEW_INCOMING_REQUEST,
-              creationDate = Date(),
-              navigationUrl = "${Route.VIEW_ITEM}/${_uiState.value.item.id}",
-          )
-
-      notificationManager.sendNotification(notification, lenderToken)
-    }
+    sendNotification(
+        "started", "${Route.VIEW_ITEM}/${_uiState.value.item.id}", _uiState.value.lender)
   }
 
   fun onCancel() {
@@ -63,22 +50,8 @@ class StartOrEndLoanViewModel(
             startDate = Date(),
         )
     db.setLoan(newLoan)
+    sendNotification("cancelled", Route.INVENTORY, _uiState.value.lender)
 
-    val lenderToken = _uiState.value.lender.fcmToken
-    Log.d(TAG, "onCancel: $lenderToken")
-
-    if (lenderToken != null) {
-      val notification =
-          Notification(
-              title = "Loan cancelled",
-              message = "Loan cancelled for ${_uiState.value.item.name}",
-              type = Notification.Type.NEW_INCOMING_REQUEST,
-              creationDate = Date(),
-              navigationUrl = "${Route.VIEW_ITEM}/${_uiState.value.item.id}",
-          )
-
-      notificationManager.sendNotification(notification, lenderToken)
-    }
   }
 
   fun onFinish() {
@@ -89,6 +62,26 @@ class StartOrEndLoanViewModel(
             endDate = Date(),
         )
     db.setLoan(newLoan)
+
+    sendNotification("finished", Route.FINISHED_LOANS, _uiState.value.borrower)
+  }
+
+  private fun sendNotification(state: String, route: String, to: User) {
+    val borrowerToken = to.fcmToken
+    Log.d(TAG, "sendNotification: state=$state: $borrowerToken")
+
+    if (borrowerToken != null) {
+      val notification =
+          Notification(
+              title = "Loan $state",
+              message = "Loan $state for ${_uiState.value.item.name}",
+              type = Notification.Type.NEW_INCOMING_REQUEST,
+              creationDate = Date(),
+              navigationUrl = route,
+          )
+
+      notificationManager.sendNotification(notification, borrowerToken)
+    }
   }
 
   companion object {

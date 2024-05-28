@@ -11,8 +11,8 @@ class ManageOutgoingLoanScreen(semanticsProvider: SemanticsNodeInteractionsProvi
 
   val noLoanBox: KNode = onNode { hasTestTag("manageOutgoingScreenNoItemBox") }
   val noItemText: KNode = onNode { hasTestTag("manageScreenNoItemText") }
+  val mainContent: KNode = onNode { hasTestTag("manageScreenMainContent") }
   val itemList: KNode = onNode { hasTestTag("manageLoanScreenItemListColumn") }
-  val itemCard: KNode = itemList.child { hasTestTag("manageLoanScreenItemCard") }
 
   val topBar: KNode = onNode { hasTestTag("manageLoanScreenTopBar") }
   val bottomNavBar: KNode = onNode { hasTestTag("manageScreenBottomNavBar") }

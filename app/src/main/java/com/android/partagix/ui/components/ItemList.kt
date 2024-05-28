@@ -1,8 +1,6 @@
 package com.android.partagix.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -20,12 +18,24 @@ import com.android.partagix.model.user.User
 import java.util.Date
 
 /**
- * ItemList composable to display a scrollable list of items, which can execute the onClick when
- * clicked.
+ * ItemList composable to display a scrollable list of items.
  *
- * @param itemList a list of items to display.
- * @param onClick a lambda to handle item click events.
  * @param modifier Modifier to apply to this layout.
+ * @param itemList a list of items to display.
+ * @param users a list of users linked to an item.
+ * @param loan a list of loans linked to an item.
+ * @param isExpandable a boolean to determine if the item is expandable.
+ * @param isOutgoing a boolean to determine if the item is an outgoing loan and set according
+ *   buttons when expanded.
+ * @param isOwner a boolean to determine if the user is the owner of the item, to hide its name.
+ * @param isLender a boolean to determine if the user is the lender of the item, to hide the
+ *   availability.
+ * @param expandState a boolean to determine if the item is expanded.
+ * @param wasExpanded a list of booleans to determine which item was expanded.
+ * @param onItemClick a lambda to handle item click events.
+ * @param onUserClick a lambda to handle owner's name click events.
+ * @param manageLoanViewModel a ManageLoanViewModel to handle loan management.
+ * @param stickyHeader a lambda to display a sticky header.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -36,11 +46,14 @@ fun ItemList(
     loan: List<Loan>,
     isExpandable: Boolean,
     isOutgoing: Boolean,
+    isOwner: Boolean = false,
+    isLender: Boolean = false,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
-    onClick: (Item) -> Unit,
+    onItemClick: (Item) -> Unit,
+    onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
-    stickyHeader: @Composable() (() -> Unit)? = null,
+    stickyHeader: @Composable (() -> Unit)? = null,
 ) {
   LazyColumn(modifier = modifier.fillMaxSize()) {
     if (stickyHeader != null) {
@@ -48,44 +61,51 @@ fun ItemList(
     }
     items(itemList.size) { index ->
       val item = itemList[index]
-      Box(
-          modifier =
-              Modifier.fillMaxSize()
-                  .clickable {
-                    if (!isExpandable) {
-                      onClick(item)
-                    }
-                  }
-                  .testTag("ItemListItem")) {
-            ItemUi(
-                isExpandable = isExpandable,
-                item = item,
-                user =
-                    if (users.isEmpty()) {
-                      User("", "noname", "", "norank", Inventory("", emptyList()))
-                    } else {
-                      if (users.size <= index) {
-                        User("", "noname", "", "norank", Inventory("", emptyList()))
-                      } else {
-                        users[index]
-                      }
-                    },
-                loan =
-                    if (loan.isEmpty()) {
-                      Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                    } else {
-                      if (loan.size <= index) {
-                        Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
-                      } else {
-                        loan[index]
-                      }
-                    },
-                index = index,
-                isOutgoing = isOutgoing,
-                manageLoanViewModel = manageLoanViewModel,
-                expandState = if (isExpandable) wasExpanded[index] else expandState,
-            )
+      val user =
+          if (users.isEmpty()) {
+            User("", "noname", "", "0", Inventory("", emptyList()))
+          } else {
+            if (users.size <= index) {
+              User("", "noname", "", "0", Inventory("", emptyList()))
+            } else {
+              users[index]
+            }
           }
+
+      /*      val onUserClick = {
+        if (user.id.isNotEmpty()) {
+          userViewModel.setUser(user)
+          navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+        }
+      }*/
+
+      ItemUi(
+          item = item,
+          user = user,
+          loan =
+              if (loan.isEmpty()) {
+                Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+              } else {
+                if (loan.size <= index) {
+                  Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
+                } else {
+                  loan[index]
+                }
+              },
+          isExpandable = isExpandable,
+          index = index,
+          isOutgoing = isOutgoing,
+          isOwner = isOwner,
+          isLender = isLender,
+          onItemClick = onItemClick,
+          onUserClick = {
+            //            userViewModel.setUser(user)
+            //            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+          },
+          manageLoanViewModel = manageLoanViewModel,
+          expandState = if (isExpandable) wasExpanded[index] else expandState,
+          modifier = modifier.testTag("ItemListItem"))
+
       Spacer(modifier = Modifier.height(8.dp))
     }
   }

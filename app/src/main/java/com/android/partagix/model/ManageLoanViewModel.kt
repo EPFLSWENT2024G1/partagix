@@ -76,15 +76,9 @@ class ManageLoanViewModel(
     }
   }
 
-  // TODO: Fix so the count get the right number
-
-  /*  fun getInComingRequestCount(onSuccess: (Int) -> Unit) {
-    getLoanRequests(isOutgoing = false, onSuccess = { onSuccess(uiState.value.loans.size) })
+  fun getCount(): Int {
+    return uiState.value.loans.size
   }
-
-  fun getOutGoingRequestCount(onSuccess: (Int) -> Unit) {
-    getLoanRequests(isOutgoing = true, onSuccess = { onSuccess(uiState.value.loans.size) })
-  }*/
 
   fun update(
       items: List<Item>,
@@ -95,20 +89,6 @@ class ManageLoanViewModel(
     _uiState.value =
         _uiState.value.copy(items = items, users = users, loans = loan, expanded = expanded)
   }
-
-  /*private fun setupExpanded (size : Int) {
-      val list = mutableListOf<Boolean>()
-      for (i in 0 until size) {
-          list.add(false)
-      }
-      _uiState.value = _uiState.value.copy(expanded = list)
-  }*/
-
-  /*fun updateExpanded (index : Int) {
-      val list = _uiState.value.expanded.toMutableList()
-      list[index] = !list[index]
-      _uiState.value = _uiState.value.copy(expanded = list)
-  }*/
 
   fun acceptLoan(loan: Loan, index: Int) {
 
@@ -130,29 +110,23 @@ class ManageLoanViewModel(
 
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
 
-    val requester = uiState.value.users.find { it.id == loan.idBorrower }
-
-    if (requester != null) {
-      sendNotification("accepted", Notification.Type.LOAN_ACCEPTED, requester.id)
-    } else {
-      database.getFCMToken(loan.idBorrower) { token ->
-        sendNotification("accepted", Notification.Type.LOAN_ACCEPTED, token)
-      }
-    }
+    sendNotification(loan, "accepted", Notification.Type.LOAN_ACCEPTED)
   }
 
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
     UiStateWithoutIndex(index)
 
+    sendNotification(loan, "declined", Notification.Type.LOAN_REJECTED)
+  }
+
+  private fun sendNotification(loan: Loan, state: String, type: Notification.Type) {
     val requester = uiState.value.users.find { it.id == loan.idBorrower }
 
     if (requester != null) {
-      sendNotification("declined", Notification.Type.LOAN_ACCEPTED, requester.id)
+      sendNotification(state, type, requester.id)
     } else {
-      database.getFCMToken(loan.idBorrower) { token ->
-        sendNotification("declined", Notification.Type.LOAN_ACCEPTED, token)
-      }
+      database.getFCMToken(loan.idBorrower) { token -> sendNotification(state, type, token) }
     }
   }
 
