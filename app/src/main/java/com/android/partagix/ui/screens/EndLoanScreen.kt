@@ -88,7 +88,7 @@ fun EndLoanScreen(
                                 }
                           }
 
-                      Box(modifier = Modifier.height(62.dp)) {
+                      Box(modifier = Modifier.height(80.dp)) {
                         ItemUi(
                             item = item,
                             user = lender,

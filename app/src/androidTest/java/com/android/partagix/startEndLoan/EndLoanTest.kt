@@ -1,6 +1,8 @@
 package com.android.partagix.startEndLoan
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.StartOrEndLoanUIState
@@ -38,8 +40,9 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
 
   @Before
   fun testSetup() {
+    val user = emptyUser.copy(name = "User 1", rank = "0.0")
     mockStartOrEndLoanUiState =
-        MutableStateFlow(StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
+        MutableStateFlow(StartOrEndLoanUIState(emptyLoan, emptyItem, user, user))
 
     mockStartOrEndLoanViewModel = mockk()
     every { mockStartOrEndLoanViewModel.uiState } returns mockStartOrEndLoanUiState
@@ -52,6 +55,7 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
     every { mockItemViewModel.updateUiItem(emptyItem) } just Runs
     every { mockNavActions.navigateTo(Route.VIEW_ITEM) } just Runs
     every { mockNavActions.navigateTo(Route.INVENTORY) } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") } just Runs
 
     composeTestRule.setContent {
       EndLoanScreen(mockStartOrEndLoanViewModel, mockNavActions, mockItemViewModel)
@@ -65,6 +69,8 @@ class EndLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSup
       endLoanButton { assertIsDisplayed() }
       title { assertIsDisplayed() }
       close { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("User 1").performClick()
+      coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") }
     }
   }
 
