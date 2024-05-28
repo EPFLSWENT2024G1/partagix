@@ -1,5 +1,15 @@
 package com.android.partagix.ui.screens
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,12 +42,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.ManageLoanViewModel
@@ -45,6 +60,10 @@ import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
 
 private const val quickAccessText = "Quick access"
 private const val findItemButtonName = "Find item to borrow"
@@ -89,6 +108,9 @@ fun HomeScreen(
                   modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp),
                   style = MaterialTheme.typography.titleLarge)
               Spacer(modifier = Modifier.height(8.dp))
+
+              CameraScreen()
+
               Row(
                   modifier =
                       Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
@@ -166,4 +188,69 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           Spacer(modifier = Modifier.fillMaxHeight())
         }
       }
+}
+@Composable
+fun CameraScreen() {
+  val localContext = LocalContext.current
+  val lifecycleOwner = LocalLifecycleOwner.current
+  val cameraProviderFuture = remember {
+    ProcessCameraProvider.getInstance(localContext)
+  }
+  AndroidView(
+    modifier = Modifier.fillMaxSize(),
+    factory = { context ->
+      val previewView = PreviewView(context)
+      val preview = Preview.Builder().build()
+      val selector = CameraSelector.Builder()
+        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        .build()
+
+      preview.setSurfaceProvider(previewView.surfaceProvider)
+
+      val imageAnalysis = ImageAnalysis.Builder().build()
+      imageAnalysis.setAnalyzer(
+        ContextCompat.getMainExecutor(context),
+        BarcodeAnalyzer(context)
+
+      )
+
+      runCatching {
+        cameraProviderFuture.get().bindToLifecycle(
+          lifecycleOwner,
+          selector,
+          preview,
+          imageAnalysis
+        )
+      }.onFailure {
+        Log.e("CAMERA", "Camera bind error ${it.localizedMessage}", it)
+      }
+      previewView
+    }
+  )
+}
+class BarcodeAnalyzer(private val context: Context) : ImageAnalysis.Analyzer {
+
+  private val options = BarcodeScannerOptions.Builder()
+    .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+    .build()
+
+  private val scanner = BarcodeScanning.getClient(options)
+
+  @SuppressLint("UnsafeOptInUsageError")
+  override fun analyze(imageProxy: ImageProxy) {
+    imageProxy.image?.let { image ->
+      scanner.process(
+        InputImage.fromMediaImage(
+          image, imageProxy.imageInfo.rotationDegrees
+        )
+      ).addOnSuccessListener { barcode ->
+        barcode?.takeIf { it.isNotEmpty() }
+          ?.mapNotNull { it.rawValue }
+          ?.joinToString(",")
+          ?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+      }.addOnCompleteListener {
+        imageProxy.close()
+      }
+    }
+  }
 }
