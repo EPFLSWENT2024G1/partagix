@@ -144,6 +144,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
               if (cameraOpen) {
+                Spacer(modifier = Modifier.height(50.dp))
                 CameraScreen(onQrScanned)
               }
 
