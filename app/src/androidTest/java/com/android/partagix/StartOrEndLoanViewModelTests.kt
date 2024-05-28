@@ -9,11 +9,14 @@ import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.notification.Notification
+import com.android.partagix.ui.navigation.Route
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -36,19 +39,22 @@ class StartOrEndLoanViewModelTests {
 
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
-    assert(startOrEndLoanViewModel.uiState.value.loan == emptyLoan)
-    assert(startOrEndLoanViewModel.uiState.value.item == emptyItem)
-    assert(startOrEndLoanViewModel.uiState.value.borrower == emptyUser)
-    assert(startOrEndLoanViewModel.uiState.value.lender == emptyUser)
+    assertEquals(
+        emptyLoan,
+        startOrEndLoanViewModel.uiState.value.loan,
+    )
+    assertEquals(emptyItem, startOrEndLoanViewModel.uiState.value.item)
+    assertEquals(emptyUser, startOrEndLoanViewModel.uiState.value.borrower)
+    assertEquals(emptyUser, startOrEndLoanViewModel.uiState.value.lender)
   }
 
   @Test
-  fun testOnStartNullBorrowerToken() {
+  fun testOnStartNullLenderToken() {
 
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.ONGOING)
+          assertEquals(LoanState.ONGOING, loan.state)
         }
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
@@ -57,26 +63,70 @@ class StartOrEndLoanViewModelTests {
   }
 
   @Test
-  fun testOnStartValidBorrowerToken() {
+  fun testOnStartValidLenderToken() {
 
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.ONGOING)
+          assertEquals(LoanState.ONGOING, loan.state)
         }
 
     every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
 
     val token = "token"
-    val borrower = emptyUser.copy(fcmToken = token)
+    val lender = emptyUser.copy(fcmToken = token)
     val item = emptyItem.copy(id = "id")
 
     startOrEndLoanViewModel.update(
-        StartOrEndLoanUIState(emptyLoan, item = item, borrower = borrower, emptyUser))
+        StartOrEndLoanUIState(emptyLoan, item = item, borrower = emptyUser, lender = lender))
 
     startOrEndLoanViewModel.onStart()
 
     coVerify { db.setLoan(any()) }
+  }
+
+  @Test
+  fun testOnCancelNullLenderToken() {
+    every { db.setLoan(any()) } answers
+        {
+          val loan = firstArg<Loan>()
+          assertEquals(LoanState.CANCELLED, loan.state)
+        }
+    startOrEndLoanViewModel.update(
+        StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))
+    startOrEndLoanViewModel.onCancel()
+    coVerify { db.setLoan(any()) }
+  }
+
+  @Test
+  fun testOnCancelValidLenderToken() {
+    every { db.setLoan(any()) } answers
+        {
+          val loan = firstArg<Loan>()
+          assertEquals(LoanState.CANCELLED, loan.state)
+        }
+
+    every { mockFirebaseMessagingService.sendNotification(any(), any()) } just Runs
+
+    val token = "token"
+    val lender = emptyUser.copy(fcmToken = token)
+    val item = emptyItem.copy(id = "id")
+
+    startOrEndLoanViewModel.update(
+        StartOrEndLoanUIState(emptyLoan, item = item, borrower = emptyUser, lender = lender))
+
+    startOrEndLoanViewModel.onCancel()
+
+    coVerify { db.setLoan(any()) }
+    coVerify {
+      mockFirebaseMessagingService.sendNotification(
+          match {
+            it.title == "Loan cancelled" &&
+                it.type == Notification.Type.NEW_INCOMING_REQUEST &&
+                it.navigationUrl == Route.INVENTORY
+          },
+          token)
+    }
   }
 
   @Test
@@ -85,7 +135,7 @@ class StartOrEndLoanViewModelTests {
     every { db.setLoan(any()) } answers
         {
           val loan = firstArg<Loan>()
-          assert(loan.state == LoanState.FINISHED)
+          assertEquals(LoanState.FINISHED, loan.state)
         }
     startOrEndLoanViewModel.update(
         StartOrEndLoanUIState(emptyLoan, emptyItem, emptyUser, emptyUser))

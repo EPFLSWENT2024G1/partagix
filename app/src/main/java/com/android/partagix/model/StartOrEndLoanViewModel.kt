@@ -43,6 +43,14 @@ class StartOrEndLoanViewModel(
   }
 
   fun onCancel() {
+    val loan = _uiState.value.loan
+    val newLoan =
+        loan.copy(
+            state = LoanState.CANCELLED,
+            startDate = Date(),
+        )
+    db.setLoan(newLoan)
+
     sendNotification("cancelled", Route.INVENTORY, _uiState.value.lender)
   }
 
