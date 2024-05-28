@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import BarcodeAnalyzer
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
@@ -237,40 +238,3 @@ fun CameraScreen(onQrScanned: (String, String) -> Unit) {
       })
 }
 
-class BarcodeAnalyzer(
-    private val context: Context,
-    private val onQrScanned: (String, String) -> Unit
-) : ImageAnalysis.Analyzer {
-
-  private val options =
-      BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).build()
-
-  private val scanner = BarcodeScanning.getClient(options)
-
-  @SuppressLint("UnsafeOptInUsageError")
-  override fun analyze(imageProxy: ImageProxy) {
-    imageProxy.image?.let { image ->
-      scanner
-          .process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees))
-          .addOnSuccessListener { barcode ->
-            barcode
-                ?.takeIf { it.isNotEmpty() }
-                ?.mapNotNull { it.rawValue }
-                ?.joinToString(",")
-                ?.let {
-                  val user = Authentication.getUser()
-                  if (user != null) {
-                    val uri = Uri.parse(it)
-                    val itemId = uri.getQueryParameter("itemId")
-                    val text = "Qr code scanned successfully"
-                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                    if (itemId != null) {
-                      onQrScanned(itemId, user.uid)
-                    }
-                  }
-                }
-          }
-          .addOnCompleteListener { imageProxy.close() }
-    }
-  }
-}
