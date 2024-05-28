@@ -102,7 +102,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
       noItemText {
         assertIsDisplayed()
-        assertTextEquals("There is no loan request.")
+        assertTextEquals("You have no loan request.")
       }
     }
   }
