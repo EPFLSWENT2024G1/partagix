@@ -114,23 +114,23 @@ class ManageLoanViewModel(
 
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
 
-    sendNotification(loan, "accepted", Notification.Type.LOAN_ACCEPTED)
+    sendNotification("accepted", Notification.Type.LOAN_ACCEPTED, loan.idBorrower)
   }
 
   fun declineLoan(loan: Loan, index: Int) {
     database.setLoan(loan.copy(state = LoanState.CANCELLED))
     UiStateWithoutIndex(index)
 
-    sendNotification(loan, "declined", Notification.Type.LOAN_REJECTED)
+    sendNotification("declined", Notification.Type.LOAN_REJECTED, loan.idLender)
   }
 
-  private fun sendNotification(loan: Loan, state: String, type: Notification.Type) {
-    val requester = uiState.value.users.find { it.id == loan.idBorrower }
+  private fun sendNotification(state: String, type: Notification.Type, to: String) {
+    val requester = uiState.value.users.find { it.id == to }
 
     if (requester != null) {
-      sendNotification(state, type, requester.id)
+      sendMessage(state, type, requester.id)
     } else {
-      database.getFCMToken(loan.idBorrower) { token -> sendNotification(state, type, token) }
+      database.getFCMToken(to) { token -> sendMessage(state, type, token) }
     }
   }
 
@@ -140,7 +140,7 @@ class ManageLoanViewModel(
     _uiState.value = _uiState.value.copy(expanded = list)
   }
 
-  private fun sendNotification(state: String, type: Notification.Type, to: String?) {
+  private fun sendMessage(state: String, type: Notification.Type, to: String?) {
     if (to != null) {
       val notification =
           Notification(
