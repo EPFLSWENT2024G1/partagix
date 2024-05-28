@@ -93,10 +93,12 @@ class UserViewModel(
 
   /** Get the user's comments from the database and update the UI state when done */
   fun getComments() {
+    _uiState.value = _uiState.value.copy(loadComment = true)
     database.getComments(_uiState.value.user.id) { comments ->
       _uiState.value =
           _uiState.value.copy(
               comments = comments,
+              loadComment = false,
           )
     }
   }
@@ -122,5 +124,6 @@ data class UserUIState(
     val user: User,
     val location: Location? = null,
     val comments: List<Pair<User, String>> = emptyList(),
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val loadComment: Boolean = false
 )

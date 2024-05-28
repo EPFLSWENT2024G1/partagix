@@ -175,10 +175,14 @@ fun ViewOtherAccount(
 
               val commentList = uiState.value.comments
 
-              if (commentList.isEmpty()) {
+              if (commentList.isEmpty() && !uiState.value.loadComment) {
                 Text(
                     "No comments yet",
                     modifier = Modifier.padding(12.dp, 0.dp).testTag("noComments"))
+              } else if (uiState.value.loadComment) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                  CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+                }
               } else {
                 Column(modifier = Modifier.padding(12.dp, 0.dp).testTag("comments")) {
                   Text(
