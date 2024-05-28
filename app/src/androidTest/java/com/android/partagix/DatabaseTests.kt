@@ -1016,7 +1016,6 @@ class DatabaseTests {
     runBlocking {
       database.getAvailableItems(false) { items ->
         for (item in items) {
-          println("name: ${item.id}")
         }
         assertEquals(
             listOf(
