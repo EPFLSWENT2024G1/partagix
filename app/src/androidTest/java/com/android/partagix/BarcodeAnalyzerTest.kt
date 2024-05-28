@@ -48,7 +48,7 @@ class BarcodeAnalyzerTest {
     every { Toast.makeText(context, any<String>(), any()) } returns toast
 
     // Call the onSuccess method
-    barcodeAnalyzer.onSuccess(barcodes)
+    barcodeAnalyzer.onSuccessBarecode(barcodes)
 
     // Verify the onQrScanned is called with the correct parameters
     verify { onQrScanned(itemId, userUid) }

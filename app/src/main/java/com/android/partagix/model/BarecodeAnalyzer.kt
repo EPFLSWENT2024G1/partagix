@@ -28,12 +28,12 @@ class BarcodeAnalyzer(
     imageProxy.image?.let { image ->
       scanner
           .process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees))
-          .addOnSuccessListener { barcode -> onSuccess(barcode) }
+          .addOnSuccessListener { barcode -> onSuccessBarecode(barcode) }
           .addOnCompleteListener { imageProxy.close() }
     }
   }
 
-  fun onSuccess(barcode: List<Barcode>) {
+  fun onSuccessBarecode(barcode: List<Barcode>) {
     barcode
         ?.takeIf { it.isNotEmpty() }
         ?.mapNotNull { it.rawValue }
