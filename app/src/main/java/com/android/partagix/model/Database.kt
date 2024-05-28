@@ -641,7 +641,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           }
         }
 
-        val path = it.data?.get("image_path") as String
+        val path = it.data?.get("image_path").toString()
 
         getImageFromFirebaseStorage(
             path,
