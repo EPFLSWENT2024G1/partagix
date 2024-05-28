@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -58,6 +57,8 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockItemUiState = MutableStateFlow(item)
     mockUserUiState = MutableStateFlow(user)
 
+    mockItemViewModel = mockk()
+
     mockViewModel = mockk()
     every { mockViewModel.loanUiState } returns mockLoanUiState
     every { mockViewModel.itemUiState } returns mockItemUiState
@@ -76,7 +77,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun testIsDisplayed() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
     }
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
@@ -124,7 +128,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun editAndSave() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
     }
 
     mockViewModel.startBorrow(item, user)
@@ -140,15 +147,17 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
 
   @Test
   fun testPopup() {
-    every { mockViewModel.createLoan { any() } } answers {
-      mockViewModel.updateItemAvailability(true)
-    }
+    every { mockViewModel.createLoan { any() } } answers
+        {
+          mockViewModel.updateItemAvailability(true)
+        }
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
     }
 
-    onComposeScreen<BorrowScreen>(composeTestRule) {
-      popup { assertIsDisplayed() }
-    }
+    onComposeScreen<BorrowScreen>(composeTestRule) { popup { assertIsDisplayed() } }
   }
 }

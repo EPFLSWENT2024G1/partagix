@@ -15,12 +15,12 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import java.util.Calendar
+import java.util.Date
 import junit.framework.TestCase.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.util.Calendar
-import java.util.Date
 
 class BorrowViewModelTest {
   private lateinit var borrowViewModel: BorrowViewModel
@@ -98,6 +98,13 @@ class BorrowViewModelTest {
           val callback = firstArg<(User) -> Unit>()
           callback(user)
         }
+    every { mockDatabase.getItemUnavailability(any(), any()) } answers
+        {
+          val callback = secondArg<(List<Date>) -> Unit>()
+          callback(listOf())
+        }
+
+    every { mockDatabase.generateDatesBetween(any(), any()) } answers { listOf(Date(0), Date(0)) }
 
     val item = emptyItem.copy(id = "itemId")
 
@@ -111,39 +118,41 @@ class BorrowViewModelTest {
       mockNotificationManager.sendNotification(any(), any())
     }
   }
-    @Test
-    fun cantCreateLoan() {
-        var calendar = Calendar.getInstance()
-        calendar.set(2021, Calendar.MAY, 1)
-        val date1 = calendar.time
-        calendar.set(2021, Calendar.MAY, 2)
-        val date2 = calendar.time
-        calendar.set(2021, Calendar.MAY, 3)
-        val date3 = calendar.time
 
-        val token = "token"
-        val user = emptyUser.copy(fcmToken = token)
-        val item = emptyItem.copy(id = "itemId")
-        val loan = emptyLoan.copy(startDate = date1, endDate = date3, idItem = item.id)
+  @Test
+  fun cantCreateLoan() {
+    var calendar = Calendar.getInstance()
+    calendar.set(2021, Calendar.MAY, 1)
+    val date1 = calendar.time
+    calendar.set(2021, Calendar.MAY, 2)
+    val date2 = calendar.time
+    calendar.set(2021, Calendar.MAY, 3)
+    val date3 = calendar.time
 
-        every { mockDatabase.getCurrentUser(any()) } answers
-                {
-                    val callback = firstArg<(User) -> Unit>()
-                    callback(user)
-                }
+    val token = "token"
+    val user = emptyUser.copy(fcmToken = token)
+    val item = emptyItem.copy(id = "itemId")
+    val loan = emptyLoan.copy(startDate = date1, endDate = date3, idItem = item.id)
 
-        every { mockDatabase.getItemUnavailability(any (), any()) } answers {
-            val callback = secondArg<(List<Date>) -> Unit>()
-            callback( listOf(date2) )
-            }
-        every { mockDatabase.generateDatesBetween(any(), any()) } answers {
-            listOf(date1,date2, date3)
+    every { mockDatabase.getCurrentUser(any()) } answers
+        {
+          val callback = firstArg<(User) -> Unit>()
+          callback(user)
         }
-        borrowViewModel.startBorrow(item, user)
-        borrowViewModel.updateLoan(loan)
-        borrowViewModel.createLoan({})
 
-        assertEquals(true , borrowViewModel.itemAvailability.value)
+    every { mockDatabase.getItemUnavailability(any(), any()) } answers
+        {
+          val callback = secondArg<(List<Date>) -> Unit>()
+          callback(listOf(date2))
+        }
+    every { mockDatabase.generateDatesBetween(any(), any()) } answers
+        {
+          listOf(date1, date2, date3)
+        }
+    borrowViewModel.startBorrow(item, user)
+    borrowViewModel.updateLoan(loan)
+    borrowViewModel.createLoan({})
 
-    }
+    assertEquals(true, borrowViewModel.itemAvailability.value)
+  }
 }

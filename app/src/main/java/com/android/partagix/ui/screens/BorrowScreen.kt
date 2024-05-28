@@ -2,7 +2,6 @@ package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -72,9 +72,7 @@ fun BorrowScreen(
     navigationActions: NavigationActions
 ) {
   Scaffold(
-      modifier = modifier
-          .testTag("borrowScreen")
-          .fillMaxWidth(),
+      modifier = modifier.testTag("borrowScreen").fillMaxWidth(),
       topBar = {
         TopAppBar(
             modifier = Modifier.testTag("topBar"),
@@ -117,16 +115,16 @@ fun BorrowScreen(
             DatePickerState(
                 locale = Locale.getDefault(),
                 selectableDates =
-                object : SelectableDates {
-                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    object : SelectableDates {
+                      override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                         val currentDate = stripTime(Date(utcTimeMillis))
                         return unavailableDates.none { stripTime(it) == currentDate }
-                    }
+                      }
 
-                    override fun isSelectableYear(year: Int): Boolean {
+                      override fun isSelectableYear(year: Int): Boolean {
                         return true
-                    }
-                })
+                      }
+                    })
         startDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanStartDate by remember(loan, loanUiState) { mutableStateOf(loan.startDate) }
         val loanStartDateString by
@@ -135,20 +133,20 @@ fun BorrowScreen(
             }
 
         var isEndDatePickerVisible by remember { mutableStateOf(false) }
-        val endDatePickerState = 
+        val endDatePickerState =
             DatePickerState(
-          locale = Locale.getDefault(),
-          selectableDates =
-          object : SelectableDates {
-              override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                  val currentDate = stripTime(Date(utcTimeMillis))
-                  return unavailableDates.none { stripTime(it) == currentDate }
-              }
+                locale = Locale.getDefault(),
+                selectableDates =
+                    object : SelectableDates {
+                      override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        val currentDate = stripTime(Date(utcTimeMillis))
+                        return unavailableDates.none { stripTime(it) == currentDate }
+                      }
 
-              override fun isSelectableYear(year: Int): Boolean {
-                  return true
-              }
-          })
+                      override fun isSelectableYear(year: Int): Boolean {
+                        return true
+                      }
+                    })
         endDatePickerState.selectedDateMillis = Calendar.getInstance().timeInMillis
         val loanEndDate by remember(loan, loanUiState) { mutableStateOf(loan.endDate) }
         val loanEndDateString by
@@ -157,59 +155,53 @@ fun BorrowScreen(
             }
 
         Column(
-            modifier
-                .padding(it)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            
               if (notAvailable) {
-                Dialog(onDismissRequest = { viewModel.updateItemAvailability(false) },
-                    properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
-                ) {
-                    Surface (shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()
-                        .fillMaxHeight(0.2f)
-                        .testTag("popup")){
-                        Column (horizontalAlignment = Alignment.CenterHorizontally, modifier =
-                        modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 0.dp, bottom = 16.dp, top = 0.dp)
-                            .background(MaterialTheme.colorScheme.background)){
-                            Text(text = "This item is not available for the selected dates",
-                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                modifier = modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.2f).padding(top = 10.dp)
-                                    )
-                            Button(onClick = {viewModel.updateItemAvailability(false)},
-                                colors = ButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    contentColor = MaterialTheme.colorScheme.onBackground,
-                                    disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                                    disabledContainerColor = Color.Gray),
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                            ){
-                                Text(text = "OK",
-                                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                    color = MaterialTheme.colorScheme.onBackground,)
-                            }
-                        }
+                Dialog(
+                    onDismissRequest = { viewModel.updateItemAvailability(false) },
+                    properties =
+                        DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
+                      Surface(
+                          shape = RoundedCornerShape(16.dp),
+                          modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f).testTag("popup")) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier =
+                                    modifier
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.background)) {
+                                  Text(
+                                      text = "This item is not available for the selected dates",
+                                      fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                      color = MaterialTheme.colorScheme.onBackground,
+                                      textAlign = TextAlign.Center,
+                                      modifier = modifier.fillMaxWidth().padding(15.dp))
+                                  Button(
+                                      onClick = { viewModel.updateItemAvailability(false) },
+                                      colors =
+                                          ButtonColors(
+                                              containerColor = MaterialTheme.colorScheme.onPrimary,
+                                              contentColor = MaterialTheme.colorScheme.onBackground,
+                                              disabledContentColor =
+                                                  MaterialTheme.colorScheme.onBackground,
+                                              disabledContainerColor = Color.Gray),
+                                      modifier = Modifier.fillMaxWidth(0.5f)) {
+                                        Text(
+                                            text = "OK",
+                                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                        )
+                                      }
+                                }
+                          }
                     }
-                }
               }
-              Box(modifier = modifier
-                  .fillMaxWidth()
-                  .height(140.dp)
-                  .padding(8.dp)) {
+              Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
                 Row(modifier = modifier.fillMaxWidth()) {
                   Box(
                       contentAlignment = Alignment.Center,
-                      modifier = modifier
-                          .fillMaxHeight()
-                          .fillMaxWidth(.4f)
-                          .testTag("itemImage")) {
+                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("itemImage")) {
                         Image(
                             painter =
                                 painterResource(
@@ -254,9 +246,7 @@ fun BorrowScreen(
                 Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .testTag("startDate"),
+                    modifier = modifier.fillMaxWidth().testTag("startDate"),
                     value = loanStartDateString,
                     label = { Text("Start date") },
                     onValueChange = {},
@@ -264,10 +254,7 @@ fun BorrowScreen(
                     suffix = {
                       IconButton(
                           modifier =
-                          Modifier
-                              .height(30.dp)
-                              .padding(0.dp)
-                              .testTag("startDateButton"),
+                              Modifier.height(30.dp).padding(0.dp).testTag("startDateButton"),
                           onClick = { isStartDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
@@ -304,19 +291,14 @@ fun BorrowScreen(
                 Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .testTag("endDate"),
+                    modifier = modifier.fillMaxWidth().testTag("endDate"),
                     value = loanEndDateString,
                     label = { Text("End date") },
                     onValueChange = {},
                     readOnly = true,
                     suffix = {
                       IconButton(
-                          modifier = Modifier
-                              .height(30.dp)
-                              .padding(0.dp)
-                              .testTag("endDateButton"),
+                          modifier = Modifier.height(30.dp).padding(0.dp).testTag("endDateButton"),
                           onClick = { isEndDatePickerVisible = true },
                           content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                     })
@@ -359,9 +341,7 @@ fun BorrowScreen(
 
               Button(
                   modifier = modifier.fillMaxWidth().testTag("saveButton").padding(10.dp),
-                  onClick = {
-                    viewModel.createLoan { navigationActions.navigateTo(Route.LOAN) }
-                  },
+                  onClick = { viewModel.createLoan { navigationActions.navigateTo(Route.LOAN) } },
                   content = { Text(text = "Request reservation") })
             }
       }

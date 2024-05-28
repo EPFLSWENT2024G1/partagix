@@ -23,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -187,13 +186,6 @@ fun InventoryViewItemScreen(
                     label = "Location",
                     text = item.location.extras?.getString("display_name", "Unknown") ?: "Unknown")
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                  LabeledText(
-                      modifier = Modifier.fillMaxWidth(0.8f),
-                      label = "Availability",
-                      text =
-                          "Now available") /* todo : branch with the availability like in itemUi */
-
                 Box(modifier = Modifier.padding(8.dp)) {
                   Column {
                     Text(
@@ -269,5 +261,4 @@ fun InventoryViewItemScreen(
               }
         }
       }
-  }
 }
