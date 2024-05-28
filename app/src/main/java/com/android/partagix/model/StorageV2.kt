@@ -106,7 +106,6 @@ class StorageV2(private val storage: FirebaseStorage = Firebase.storage) {
     // Create a reference to the image
     val imageRef = storageRef.child(path)
 
-
     // Download the image to a local file
     val localFile = File.createTempFile(prefix, ".tmp")
     imageRef

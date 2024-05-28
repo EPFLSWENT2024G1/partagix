@@ -13,13 +13,13 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotSame
-import org.junit.After
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotSame
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -35,7 +35,7 @@ class StorageTests {
   private lateinit var mockDownloadTask: FileDownloadTask
 
   private lateinit var builtURI: Uri
-    private lateinit var tempFile: CapturingSlot<File>
+  private lateinit var tempFile: CapturingSlot<File>
 
   @Before
   fun setUp() {
@@ -62,16 +62,15 @@ class StorageTests {
 
     val imageName = UUID.randomUUID().toString()
 
-      tempFile = slot<File>()
+    tempFile = slot<File>()
 
     // Storage references
     every { mockFirebaseStorage.reference } returns mockStorageReference
-      every { mockStorageReference.child(any()) } returns mockStorageReference
+    every { mockStorageReference.child(any()) } returns mockStorageReference
     every { mockStorageReference.child("images/default-image.jpg") } returns
         mockStorageReferenceDefault
     every { mockStorageReference.child("images/default-user-image.png") } returns
         mockStorageReferenceDefault
-
 
     // Download task default
     every { mockStorageReferenceDefault.getFile(any<File>()) } returns mockDownTaskDefault
@@ -97,26 +96,27 @@ class StorageTests {
         }
 
     // Download task
-      every { mockStorageReference.getFile(capture(tempFile)) } returns mockDownloadTask
-        every { mockDownloadTask.addOnSuccessListener(any()) } answers
-            {
-                val onSuccessListener = arg<OnSuccessListener<FileDownloadTask.TaskSnapshot>>(0)
-                val mockSnapshot = mockk<FileDownloadTask.TaskSnapshot>()
-                onSuccessListener.onSuccess(mockSnapshot)
-                mockDownloadTask
-            }
-        every { mockDownloadTask.addOnFailureListener(any()) } answers
-            {
-                val onFailureListener = arg<OnFailureListener>(0)
-                onFailureListener.onFailure(Exception("What a failure"))
-                mockDownloadTask
-            }
+    every { mockStorageReference.getFile(capture(tempFile)) } returns mockDownloadTask
+    every { mockDownloadTask.addOnSuccessListener(any()) } answers
+        {
+          val onSuccessListener = arg<OnSuccessListener<FileDownloadTask.TaskSnapshot>>(0)
+          val mockSnapshot = mockk<FileDownloadTask.TaskSnapshot>()
+          onSuccessListener.onSuccess(mockSnapshot)
+          mockDownloadTask
+        }
+    every { mockDownloadTask.addOnFailureListener(any()) } answers
+        {
+          val onFailureListener = arg<OnFailureListener>(0)
+          onFailureListener.onFailure(Exception("What a failure"))
+          mockDownloadTask
+        }
   }
-    @After
-    fun tearDown() {
-        tempFile.clear()
-        clearAllMocks()
-    }
+
+  @After
+  fun tearDown() {
+    tempFile.clear()
+    clearAllMocks()
+  }
 
   @Test
   fun uploadTest() {
@@ -124,9 +124,7 @@ class StorageTests {
     val storageV2 = StorageV2(mockFirebaseStorage)
     val latch = CountDownLatch(1)
 
-    val onSuccessCallback = {
-      latch.countDown()
-    }
+    val onSuccessCallback = { latch.countDown() }
 
     storageV2.uploadImageToFirebaseStorage(
         imageUri = builtURI,
@@ -148,119 +146,129 @@ class StorageTests {
         latch.countDown()
       }
     }
-      val onFailureCallback = { _: Exception ->
-          latch.countDown()
-      }
+    val onFailureCallback = { _: Exception -> latch.countDown() }
 
     storageV2.getImageFromFirebaseStorage(
-        "downloadTest", mockFirebaseStorage, onFailure = onFailureCallback, onSuccess = onSuccessCallback)
+        "downloadTest",
+        mockFirebaseStorage,
+        onFailure = onFailureCallback,
+        onSuccess = onSuccessCallback)
 
     assert(latch.await(5000, TimeUnit.MILLISECONDS))
   }
 
-    @Test
-    fun downloadTest2Success() {
-        val storageV2 = StorageV2(mockFirebaseStorage)
-        val latch = CountDownLatch(1)
+  @Test
+  fun downloadTest2Success() {
+    val storageV2 = StorageV2(mockFirebaseStorage)
+    val latch = CountDownLatch(1)
 
-        every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
+    every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
 
-
-        val onSuccessCallback = { res: List<File> ->
-            // Assert on the returned file
-            assertEquals(2, res.size)
-            assertNotSame(res[0], res[1])
-            latch.countDown()
-        }
-
-        storageV2.getImagesFromFirebaseStorage(
-            listOf("downloadTest1", "downloadTest2"), mockFirebaseStorage, onSuccess = onSuccessCallback)
-
-        assert(latch.await(5000, TimeUnit.MILLISECONDS))
+    val onSuccessCallback = { res: List<File> ->
+      // Assert on the returned file
+      assertEquals(2, res.size)
+      assertNotSame(res[0], res[1])
+      latch.countDown()
     }
 
-    @Test
-    fun downloadTest2Failure() {
-        val storageV2 = StorageV2(mockFirebaseStorage)
-        val latch = CountDownLatch(3)
+    storageV2.getImagesFromFirebaseStorage(
+        listOf("downloadTest1", "downloadTest2"),
+        mockFirebaseStorage,
+        onSuccess = onSuccessCallback)
 
-        every { mockDownloadTask.addOnSuccessListener(any()) } returns mockDownloadTask
+    assert(latch.await(5000, TimeUnit.MILLISECONDS))
+  }
 
-        val onSuccessCallback = { res : List<File> ->
-            // Assert on the returned file
-            assertEquals(2, res.size)
-            assertEquals(res[0], res[1])
-            latch.countDown()
-        }
+  @Test
+  fun downloadTest2Failure() {
+    val storageV2 = StorageV2(mockFirebaseStorage)
+    val latch = CountDownLatch(3)
 
-        val onFailureCallback = { _: Exception ->
-            latch.countDown()
-        }
-        storageV2.getImagesFromFirebaseStorage(
-            listOf("downloadTest1", "downloadTest2"), mockFirebaseStorage, onFailure = onFailureCallback, onSuccess = onSuccessCallback)
+    every { mockDownloadTask.addOnSuccessListener(any()) } returns mockDownloadTask
 
-        assert(latch.await(5000, TimeUnit.MILLISECONDS))
+    val onSuccessCallback = { res: List<File> ->
+      // Assert on the returned file
+      assertEquals(2, res.size)
+      assertEquals(res[0], res[1])
+      latch.countDown()
     }
 
-    @Test
-    fun downloadTest2EmptyString() {
-        val storageV2 = StorageV2(mockFirebaseStorage)
-        val latch = CountDownLatch(1)
+    val onFailureCallback = { _: Exception -> latch.countDown() }
+    storageV2.getImagesFromFirebaseStorage(
+        listOf("downloadTest1", "downloadTest2"),
+        mockFirebaseStorage,
+        onFailure = onFailureCallback,
+        onSuccess = onSuccessCallback)
 
-        every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
+    assert(latch.await(5000, TimeUnit.MILLISECONDS))
+  }
 
-        val onSuccessCallback = { res : List<File> ->
-            // Assert on the returned file
-            assertEquals(4, res.size)
-            assertEquals(res[0], res[1])
-            assertEquals(res[1], res[2])
-            assertEquals(res[2], res[3])
-            latch.countDown()
-        }
+  @Test
+  fun downloadTest2EmptyString() {
+    val storageV2 = StorageV2(mockFirebaseStorage)
+    val latch = CountDownLatch(1)
 
-        storageV2.getImagesFromFirebaseStorage(
-            listOf("", "users/", "null", "default-image.jpg"), mockFirebaseStorage, onSuccess = onSuccessCallback)
+    every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
 
-        assert(latch.await(5000, TimeUnit.MILLISECONDS))
-    }
-    @Test
-    fun downloadTestCacheHit() {
-        val storageV2 = StorageV2(mockFirebaseStorage)
-        val latch = CountDownLatch(1)
-
-        every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
-
-        var tempFile1 = File("")
-        var tempFile2=  File("")
-
-        val onSuccessCallback3 = { res: File ->
-            // Assert on the returned file
-            assertEquals(tempFile1, res)
-            latch.countDown()
-        }
-
-        val onSuccessCallback2 = { res: List<File> ->
-            // Assert on the returned file
-            assertEquals(2, res.size)
-            assertEquals(tempFile1, res[0])
-            assertEquals(tempFile2, res[1])
-            storageV2.getImageFromFirebaseStorage("downloadTest1", mockFirebaseStorage, onSuccess = onSuccessCallback3)
-        }
-
-        val onSuccessCallback1 = { res: List<File> ->
-            // Assert on the returned file
-            assertEquals(2, res.size)
-            tempFile1 = res[0]
-            tempFile2 = res[1]
-
-            storageV2.getImagesFromFirebaseStorage(
-                listOf("downloadTest1", "downloadTest2"), mockFirebaseStorage, onSuccess = onSuccessCallback2)
-        }
-
-        storageV2.getImagesFromFirebaseStorage(
-            listOf("downloadTest1", "downloadTest2"), mockFirebaseStorage, onSuccess = onSuccessCallback1)
-
-        assert(latch.await(5000, TimeUnit.MILLISECONDS))
+    val onSuccessCallback = { res: List<File> ->
+      // Assert on the returned file
+      assertEquals(4, res.size)
+      assertEquals(res[0], res[1])
+      assertEquals(res[1], res[2])
+      assertEquals(res[2], res[3])
+      latch.countDown()
     }
 
+    storageV2.getImagesFromFirebaseStorage(
+        listOf("", "users/", "null", "default-image.jpg"),
+        mockFirebaseStorage,
+        onSuccess = onSuccessCallback)
+
+    assert(latch.await(5000, TimeUnit.MILLISECONDS))
+  }
+
+  @Test
+  fun downloadTestCacheHit() {
+    val storageV2 = StorageV2(mockFirebaseStorage)
+    val latch = CountDownLatch(1)
+
+    every { mockDownloadTask.addOnFailureListener(any()) } returns mockDownloadTask
+
+    var tempFile1 = File("")
+    var tempFile2 = File("")
+
+    val onSuccessCallback3 = { res: File ->
+      // Assert on the returned file
+      assertEquals(tempFile1, res)
+      latch.countDown()
+    }
+
+    val onSuccessCallback2 = { res: List<File> ->
+      // Assert on the returned file
+      assertEquals(2, res.size)
+      assertEquals(tempFile1, res[0])
+      assertEquals(tempFile2, res[1])
+      storageV2.getImageFromFirebaseStorage(
+          "downloadTest1", mockFirebaseStorage, onSuccess = onSuccessCallback3)
+    }
+
+    val onSuccessCallback1 = { res: List<File> ->
+      // Assert on the returned file
+      assertEquals(2, res.size)
+      tempFile1 = res[0]
+      tempFile2 = res[1]
+
+      storageV2.getImagesFromFirebaseStorage(
+          listOf("downloadTest1", "downloadTest2"),
+          mockFirebaseStorage,
+          onSuccess = onSuccessCallback2)
+    }
+
+    storageV2.getImagesFromFirebaseStorage(
+        listOf("downloadTest1", "downloadTest2"),
+        mockFirebaseStorage,
+        onSuccess = onSuccessCallback1)
+
+    assert(latch.await(5000, TimeUnit.MILLISECONDS))
+  }
 }
