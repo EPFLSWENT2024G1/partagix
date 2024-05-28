@@ -986,10 +986,7 @@ class DatabaseTests {
     runBlocking {
       database.getComments(user1.id) {
         assertEquals(
-            listOf(
-                Pair(user2.name, "sympathetic"),
-                Pair(user2.name, "banger"),
-                Pair(user2.name, "unefficient")),
+            listOf(Pair(user2, "sympathetic"), Pair(user2, "banger"), Pair(user2, "unefficient")),
             it)
       }
     }

@@ -345,7 +345,10 @@ class App(
           Route.ACCOUNT,
       ) {
         userViewModel.setUserToCurrent()
-        ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
+        ViewAccount(
+            navigationActions = navigationActions,
+            userViewModel = userViewModel,
+            otherUserViewModel = otherUserViewModel)
       }
 
       composable(
