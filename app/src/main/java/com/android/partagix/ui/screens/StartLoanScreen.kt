@@ -106,6 +106,8 @@ fun StartLoanScreen(
                               open = false
                             },
                             onUserClick = { navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${lender.id}")})
+                            onUserClick = { /* todo */},
+                            navigationActions = navigationActions)
                       }
 
                       Row(

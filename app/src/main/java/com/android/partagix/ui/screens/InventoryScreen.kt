@@ -35,8 +35,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -194,6 +196,8 @@ fun InventoryScreen(
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Outgoing Requests ($outgoingRequests)",
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -202,11 +206,17 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+              var expendedBor: SnapshotStateList<Boolean> = remember {
+                mutableStateListOf<Boolean>().apply {
+                  for (i in 0 until uiState.borrowedItems.size) {
+                    add(false)
+                  }
+                }
+              }
               ItemListColumn(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
@@ -224,9 +234,15 @@ fun InventoryScreen(
                   },
                   isCornerClickable = false,
                   isClickable = false,
-                  isOutgoing = false,
+                  isOutgoing = true,
                   isLender = true,
-                  isExpandable = false,
+                  isExpandable = true,
+                  expandState = false,
+                  wasExpanded = expendedBor,
+                  updateExpanded = { i, expanded -> expendedBor[i] = expanded },
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
+                  navigationActions = navigationActions,
+                  itemViewModel = itemViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
@@ -253,6 +269,8 @@ fun InventoryScreen(
                   isOutgoing = false,
                   isOwner = true,
                   manageLoanViewModel = manageLoanViewModelOutgoing,
+                  itemViewModel = itemViewModel,
+                  navigationActions = navigationActions,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

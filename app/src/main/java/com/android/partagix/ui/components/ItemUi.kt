@@ -1,5 +1,8 @@
 package com.android.partagix.ui.components
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -20,9 +23,11 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -36,19 +41,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -84,6 +96,11 @@ fun ItemUi(
     onItemClick: (Item) -> Unit = {},
     onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel = ItemViewModel(),
+    updateExpanded: (Int, Boolean) -> Unit = { i, expanded ->
+      manageLoanViewModel.updateExpanded(i, expanded)
+    },
     index: Int = 0,
 ) {
   val date: Date =
@@ -110,6 +127,8 @@ fun ItemUi(
   }
 
   val itemHeight = 62.dp
+  val nameFontSize = 18.sp
+  val smallerFontSize = 13.sp
 
   var mainRowModifier = modifier.fillMaxWidth().height(itemHeight)
   if (!isExpandable && onItemClick != {}) {
@@ -143,7 +162,7 @@ fun ItemUi(
             .clickable(
                 onClick = {
                   expanded = !expanded
-                  manageLoanViewModel.updateExpanded(index, expanded)
+                  updateExpanded(index, expanded)
                 })
   }
 
@@ -153,9 +172,6 @@ fun ItemUi(
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         modifier = mainRowModifier) {
-          val nameFontSize = 18.sp
-          val smallerFontSize = 13.sp
-
           Column(modifier = Modifier.weight(weight = 1f).fillMaxWidth()) {
 
             // Item name
@@ -251,6 +267,46 @@ fun ItemUi(
 
     if (expanded) {
       Spacer(modifier = Modifier.height(8.dp))
+      if (loan.state == LoanState.ACCEPTED || loan.state == LoanState.ONGOING) {
+        var u by remember { mutableStateOf(emptyUser) }
+        if (loan.idLender == user.id)
+            manageLoanViewModel.getUser(
+                loan.idLender,
+            ) {
+              u = it
+            }
+        else manageLoanViewModel.getUser(loan.idBorrower) { u = it }
+
+        // favorite contacts
+        if (u.favorite != listOf(false, false, false)) {
+          val email = if (u.favorite?.get(0) == true && u.email != "") "Email: ${u.email}" else ""
+          val phone =
+              if (u.favorite?.get(1) == true && u.phoneNumber != "") "Phone: ${u.phoneNumber}"
+              else ""
+          val telegram =
+              if (u.favorite?.get(2) == true && u.telegram != "") "Telegram: ${u.telegram}" else ""
+          listOf(email, phone, telegram).filter { it.isNotEmpty() }
+          listOf(email, phone, telegram)
+              .filter { it.isNotEmpty() }
+              .forEach { contact -> ClickableText(contact, true) }
+        }
+        // other contacts
+        if (u.favorite != listOf(false, false, false)) {
+          val email = if (u.favorite?.get(0) == false && u.email != "") "Email: ${u.email}" else ""
+          val phone =
+              if (u.favorite?.get(1) == false && u.phoneNumber != "") "Phone: ${user.phoneNumber}"
+              else ""
+          val telegram =
+              if (u.favorite?.get(2) == false && u.telegram != "") "Telegram: ${user.telegram}"
+              else ""
+          listOf(email, phone, telegram).filter { it.isNotEmpty() }
+          listOf(email, phone, telegram)
+              .filter { it.isNotEmpty() }
+              .forEach { contact -> ClickableText(contact) }
+        }
+      }
+      Spacer(modifier = Modifier.height(8.dp))
+
       Row(
           horizontalArrangement = Arrangement.Absolute.Right,
           modifier = Modifier.fillMaxWidth().testTag("manageLoanScreenItemCardExpanded")) {
@@ -265,27 +321,99 @@ fun ItemUi(
                   modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
+            if (loan.state == LoanState.ONGOING || loan.state == LoanState.ACCEPTED) {
+              Button(
+                  onClick = {
+                    itemViewModel.updateUiItem(item)
+                    navigationActions.navigateTo(Route.VIEW_ITEM)
+                  },
+                  content = {
+                    Icon(Icons.Default.Info, contentDescription = "see item", modifier = Modifier)
+                    Spacer(Modifier.width(3.dp))
+                    Text(text = "Infos")
+                  },
+                  modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                  contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            }
             Spacer(modifier = Modifier.width(6.dp))
-            Button(
-                onClick = { manageLoanViewModel.declineLoan(loan, index) },
-                content = {
-                  Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
-                  Spacer(Modifier.width(2.dp))
-                  if (loan.state == LoanState.PENDING && isLender) {
-                    Text(text = "Cancel")
-                  } else {
-                    Text(text = "Reject")
-                  }
-                },
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        disabledContainerColor = MaterialTheme.colorScheme.error,
-                        disabledContentColor = MaterialTheme.colorScheme.onError),
-                modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
-                contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
+            if (loan.state != LoanState.ONGOING &&
+                !(loan.state == LoanState.ACCEPTED && user.id == loan.idBorrower))
+                Button(
+                    onClick = { manageLoanViewModel.declineLoan(loan, index) },
+                    content = {
+                      Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
+                      Spacer(Modifier.width(2.dp))
+                      if ((loan.state == LoanState.PENDING && isLender) ||
+                          loan.state == LoanState.ACCEPTED) {
+                        Text(text = "Cancel")
+                      } else {
+                        Text(text = "Reject")
+                      }
+                    },
+                    colors =
+                        ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError,
+                            disabledContainerColor = MaterialTheme.colorScheme.error,
+                            disabledContentColor = MaterialTheme.colorScheme.onError),
+                    modifier = Modifier.requiredWidth(100.dp).requiredHeight(32.dp),
+                    contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
           }
     }
+  }
+}
+
+@Composable
+fun ClickableText(contact: String, favorite: Boolean = false) {
+  val context = LocalContext.current
+  Text(
+      text = contact,
+      fontSize = 13.sp,
+      lineHeight = 1.3.em,
+      fontWeight = if (favorite) FontWeight.Bold else FontWeight.Normal,
+      modifier =
+          Modifier.clickable {
+            val intent =
+                when {
+                  contact.startsWith("Email:") ->
+                      Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:${contact.substringAfter("Email: ")}")
+                      }
+                  contact.startsWith("Phone:") ->
+                      Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("smsto:${contact.substringAfter("Phone: ")}")
+                      }
+                  contact.startsWith("Telegram:") -> {
+                    var telegramUsername = contact.substringAfter("Telegram: ")
+                    if (telegramUsername.startsWith("@")) {
+                      telegramUsername = telegramUsername.removePrefix("@")
+                    }
+                    val telegramAppUri = Uri.parse("tg://resolve?domain=$telegramUsername")
+                    val telegramWebUri = Uri.parse("https://t.me/$telegramUsername")
+
+                    // Try to open the Telegram app
+                    val telegramIntent = Intent(Intent.ACTION_VIEW, telegramAppUri)
+                    if (isAppInstalled(context, "org.telegram.messenger")) {
+                      telegramIntent.setPackage("org.telegram.messenger")
+                    } else {
+                      // Fallback to web if Telegram app is not installed
+                      telegramIntent.data = telegramWebUri
+                    }
+                    telegramIntent
+                  }
+                  else -> null
+                }
+            intent?.let { ContextCompat.startActivity(context, it, null) }
+          })
+}
+
+// Utility function to check if an app is installed
+fun isAppInstalled(context: android.content.Context, packageName: String): Boolean {
+  val packageManager: PackageManager = context.packageManager
+  return try {
+    packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+    true
+  } catch (e: PackageManager.NameNotFoundException) {
+    false
   }
 }
