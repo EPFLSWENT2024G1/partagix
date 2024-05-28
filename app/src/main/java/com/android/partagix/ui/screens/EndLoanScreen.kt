@@ -99,7 +99,8 @@ fun EndLoanScreen(
                               itemViewModel.updateUiItem(item)
                               navigationActions.navigateTo(Route.VIEW_ITEM)
                               open = false
-                            })
+                            },
+                            navigationActions = navigationActions)
                       }
 
                       Button(

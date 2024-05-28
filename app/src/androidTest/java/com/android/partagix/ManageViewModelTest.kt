@@ -229,4 +229,22 @@ class ManageViewModelTest {
     manageViewModel.getLoanRequests(isOutgoing = true)
     assertEquals(1, manageViewModel.getCount())
   }
+
+  @Test
+  fun getUser() {
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.getUser("8WuTkKJZLTAr6zs5L7rH") { user -> assertEquals("user1", user.name) }
+  }
+
+  @Test
+  fun testUpdateExpanded() {
+    val manageViewModel = spyk(ManageLoanViewModel(db = db))
+    manageViewModel.update(
+        listOf(item1, item1, item1),
+        listOf(user, user, user),
+        listOf(loan1, loan2, loan3),
+        listOf(false, false, false))
+    manageViewModel.updateExpanded(0, true)
+    assertEquals(listOf(true, false, false), manageViewModel.uiState.value.expanded)
+  }
 }

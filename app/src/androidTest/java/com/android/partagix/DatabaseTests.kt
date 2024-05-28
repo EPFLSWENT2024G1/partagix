@@ -499,6 +499,7 @@ class DatabaseTests {
             "rank",
             Inventory("id", listOf()),
             imageId = File("noImage"),
+            email = "Please enter an email address",
         )
     val user2 =
         User(
@@ -1039,10 +1040,7 @@ class DatabaseTests {
     runBlocking {
       database.getComments(user1.id) {
         assertEquals(
-            listOf(
-                Pair(user2.name, "sympathetic"),
-                Pair(user2.name, "banger"),
-                Pair(user2.name, "unefficient")),
+            listOf(Pair(user2, "sympathetic"), Pair(user2, "banger"), Pair(user2, "unefficient")),
             it)
       }
     }

@@ -21,7 +21,7 @@ class HomeViewModel(
 ) : ViewModel() {
 
   private val _uiState =
-      MutableStateFlow(HomeUIState(User("", "", "", "", Inventory("", emptyList()))))
+      MutableStateFlow(HomeUIState(User("", "", "", "", Inventory("", emptyList()), email = "")))
   val uiState: StateFlow<HomeUIState> = _uiState
 
   init {
