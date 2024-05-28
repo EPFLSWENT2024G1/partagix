@@ -22,13 +22,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import java.io.File
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class AppTest {
@@ -65,12 +65,11 @@ class AppTest {
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
 
-    mockStorageV2 = mockk()
-    println("--- storage : $mockStorageV2")
+    mockStorageV2 = spyk()
     every { mockStorageV2.uploadImageToFirebaseStorage(any(), any(), any(), any()) } answers
         {
           val callback = args[3] as (List<File>) -> Unit
-          callback(listOf(File("localFile")))
+          callback(listOf(File("storageFile")))
         }
     every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } answers
         {
@@ -86,8 +85,7 @@ class AppTest {
     mockDatabase = spyk(Database(imageStorage = mockStorageV2))
     every { mockDatabase.createUser(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
-
-    println("here $mockDatabase")
+    every { mockDatabase.getUserWithImage(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -107,7 +105,6 @@ class AppTest {
 
     mockFusedLocationProviderClient = mockk()
 
-    println("---------- yoo")
     app =
         App(
             mockActivity,
@@ -116,14 +113,12 @@ class AppTest {
             mockDatabase,
             mockNotificationManager,
             mockFusedLocationProviderClient)
-    println("---------- yoo2")
     app.navigationActions = mockNavActions
   }
 
   @After
   fun tearDown() {
     clearAllMocks()
-    Thread.sleep(5000)
   }
 
   @Test

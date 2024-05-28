@@ -51,7 +51,6 @@ class ItemViewModel(
   init {
     if (id != null) {
       database.getItemWithImage(id) { newItem ->
-        println("----- 1")
         database.getUserWithImage(newItem.idUser) {
           Log.d(TAG, "init: $it")
           updateUiUser(it)
@@ -133,7 +132,6 @@ class ItemViewModel(
   }
 
   fun getUser() {
-    println("----- 2")
     database.getUserWithImage(uiState.value.item.idUser) { user -> updateUiUser(user) }
   }
   /** Compare 2 given IDs, here the id of the item's user and the id of the current user */

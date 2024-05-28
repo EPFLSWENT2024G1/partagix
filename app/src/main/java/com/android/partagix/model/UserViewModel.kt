@@ -39,11 +39,9 @@ class UserViewModel(
 
   init {
     if (user.id == "") {
-      println("----- A")
       println(database)
       setUserToCurrent()
     } else {
-      println("----- 3")
       database.getUserWithImage(user.id) { updateUIState(it) }
     }
   }
@@ -51,10 +49,8 @@ class UserViewModel(
   fun setUserToCurrent() {
     val userID = Authentication.getUser()?.uid
     if (userID != null) {
-      println("----- 4")
       database.getUserWithImage(userID) { updateUIState(it) }
     } else {
-      println("----- 5")
       database.getUserWithImage("XogPd4oF1nYc6Rag6zhh") { updateUIState(it) }
     }
   }
