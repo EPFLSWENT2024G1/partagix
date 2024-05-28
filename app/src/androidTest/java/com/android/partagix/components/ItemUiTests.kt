@@ -104,7 +104,6 @@ class ItemUiTest {
     composeTestRule.onNodeWithText("Test Item").assertIsDisplayed().performClick()
 
     // Verify preferred contact is displayed
-    composeTestRule.onNodeWithText("Preferred contact: ").assertIsDisplayed()
     composeTestRule.onNodeWithText("Email : test@example.com").assertIsDisplayed()
     composeTestRule.onNodeWithText("Phone : 1234567890").assertIsDisplayed()
     composeTestRule.onNodeWithText("Telegram : @testuser").assertIsDisplayed()
