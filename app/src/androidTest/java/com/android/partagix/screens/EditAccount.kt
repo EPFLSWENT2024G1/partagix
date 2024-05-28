@@ -18,4 +18,11 @@ class EditAccount(semanticsProvider: SemanticsNodeInteractionsProvider) :
   val addressField: KNode = child { hasTestTag("addressField") }
   val actionButtons: KNode = child { hasTestTag("actionButtons") }
   val saveButton: KNode = child { hasTestTag("saveButton") }
+  val email: KNode = child { hasTestTag("email") }
+  val phoneNumber: KNode = child { hasTestTag("phoneNumber") }
+  val telegram: KNode = child { hasTestTag("telegram") }
+  val contactInfo: KNode = child { hasTestTag("contactInfo") }
+  val emailCheckBox: KNode = child { hasTestTag("emailCheckbox") }
+  val phoneNumberCheckBox: KNode = child { hasTestTag("phoneNumberCheckbox") }
+  val telegramCheckBox: KNode = child { hasTestTag("telegramCheckbox") }
 }

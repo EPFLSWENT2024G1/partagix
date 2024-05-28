@@ -93,6 +93,7 @@ class AppTest {
     mockFirebaseUser = mockk()
     every { mockFirebaseUser.uid } returns "testUid"
     every { mockFirebaseUser.displayName } returns "testUser"
+    every { mockFirebaseUser.email } returns "testEmail"
 
     mockNotificationManager = spyk(FirebaseMessagingService(mockDatabase, mockNavActions))
     every { mockNotificationManager.sendNotification(any(), any()) } just Runs

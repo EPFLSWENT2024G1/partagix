@@ -3,6 +3,7 @@ package com.android.partagix.ui.screens
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -26,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.partagix.R
 import com.android.partagix.model.FilterAction
 import com.android.partagix.model.FilterState
 import com.android.partagix.model.ItemViewModel
@@ -42,6 +45,7 @@ import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -90,6 +94,10 @@ fun LoanScreen(
   val mapPadding = screenHeight * 0.1f
   var mapLoaded by remember { mutableStateOf(!isMapLoadingOptimized) }
 
+  val context = LocalContext.current
+  val isDarkTheme = isSystemInDarkTheme()
+  val style = if (isDarkTheme) R.raw.style_dark else R.raw.style_light
+
   Scaffold(
       modifier = modifier.testTag("makeLoanRequestScreen"),
       topBar = {
@@ -110,7 +118,11 @@ fun LoanScreen(
               GoogleMap(
                   contentPadding = PaddingValues(bottom = mapPadding),
                   cameraPositionState = cameraPositionState,
-                  properties = MapProperties(isMyLocationEnabled = true, isIndoorEnabled = true),
+                  properties =
+                      MapProperties(
+                          isMyLocationEnabled = true,
+                          isIndoorEnabled = true,
+                          mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, style)),
                   modifier = modifier.testTag("LoanScreenMaps"),
                   onMapLoaded = { mapLoaded = true }) {
                     if (mapLoaded) {
@@ -231,7 +243,7 @@ fun LoanScreen(
                           isOutgoing = false,
                           wasExpanded = emptyList(),
                           onUserClick = { /* todo */},
-                      )
+                          navigationActions = navigationActions)
                     }
                   }
             }

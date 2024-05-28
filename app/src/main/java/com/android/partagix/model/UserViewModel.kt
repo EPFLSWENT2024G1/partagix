@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
-    user: User = User("", "", "", "", Inventory("", emptyList())),
+    user: User = User("", "", "", "", Inventory("", emptyList()), email = ""),
     db: Database = Database(),
     private val imageStorage: StorageV2 = StorageV2()
 ) : ViewModel() {
@@ -42,7 +42,6 @@ class UserViewModel(
 
   init {
     if (user.id == "") {
-      println(database)
       setUserToCurrent()
     } else {
       database.getUserWithImage(user.id) { updateUIState(it) }
@@ -63,6 +62,7 @@ class UserViewModel(
         _uiState.value.copy(
             user = new,
         )
+    getComments()
   }
 
   fun setUser(user: User) {
@@ -94,6 +94,16 @@ class UserViewModel(
     return FirebaseAuth.getInstance().currentUser?.uid
   }
 
+  /** Get the user's comments from the database and update the UI state when done */
+  fun getComments() {
+    database.getComments(_uiState.value.user.id) { comments ->
+      _uiState.value =
+          _uiState.value.copy(
+              comments = comments,
+          )
+    }
+  }
+
   fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
     imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
   }
@@ -107,4 +117,15 @@ class UserViewModel(
   }
 }
 
-data class UserUIState(val user: User, val location: Location? = null)
+/**
+ * UI state for the user
+ *
+ * @param user the user
+ * @param location the location of the user
+ * @param comments the comments of the user, in the form: (comment's author, message)
+ */
+data class UserUIState(
+    val user: User,
+    val location: Location? = null,
+    val comments: List<Pair<User, String>> = emptyList()
+)

@@ -204,7 +204,8 @@ class App(
                 "0",
                 Inventory(user.uid, emptyList()),
                 File("res/drawable/default_image.jpg"),
-                newToken)
+                newToken,
+                user.email ?: "")
         db.getUser(
             user.uid,
             onNoUser = {
@@ -349,13 +350,19 @@ class App(
           Route.ACCOUNT,
       ) {
         userViewModel.setUserToCurrent()
-        ViewAccount(navigationActions = navigationActions, userViewModel = userViewModel)
+        ViewAccount(
+            navigationActions = navigationActions,
+            userViewModel = userViewModel,
+            otherUserViewModel = otherUserViewModel)
       }
 
       composable(
           Route.OTHER_ACCOUNT,
       ) {
-        ViewOtherAccount(navigationActions = navigationActions, userViewModel = otherUserViewModel)
+        ViewOtherAccount(
+            navigationActions = navigationActions,
+            userViewModel = userViewModel,
+            otherUserViewModel = otherUserViewModel)
       }
 
       composable(
@@ -410,7 +417,9 @@ class App(
         // Fetch the new loan requests first
         manageViewModelIncoming.getLoanRequests(isOutgoing = false)
         ManageLoanRequest(
-            manageLoanViewModel = manageViewModelIncoming, navigationActions = navigationActions)
+            manageLoanViewModel = manageViewModelIncoming,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
       }
       composable(Route.FINISHED_LOANS) {
         finishedLoansViewModel.getFinishedLoan()
@@ -425,7 +434,7 @@ class App(
         ManageOutgoingLoan(
             manageLoanViewModel = manageViewModelOutgoing,
             navigationActions = navigationActions,
-        )
+            itemViewModel = itemViewModel)
       }
       composable(
           Route.STAMP + "/{itemId}",

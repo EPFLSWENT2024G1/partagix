@@ -55,7 +55,11 @@ class Database(
                       document.data["rank"] as String,
                       Inventory(document.data["id"] as String, listItems),
                       File("noImage"),
-                      document.data["fcmToken"] as String?)
+                      document.data["fcmToken"] as String?,
+                      document.data["email"] as? String ?: "Please enter an email address",
+                      document.data["phoneNumber"] as String?,
+                      document.data["telegram"] as String?,
+                      document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false))
               ret.add(user)
             }
             onSuccess(ret)
@@ -113,7 +117,23 @@ class Database(
           val addr = user["addr"] as String
           val rank = user["rank"] as String
           val fcmToken = user["fcmToken"] as String?
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), fcmToken))
+          val email = user["email"] as? String ?: "Please enter an email address"
+          val phoneNumber = user["phoneNumber"] as? String ?: ""
+          val telegram = user["telegram"] as? String ?: ""
+          val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+          onSuccess(
+              User(
+                  idUser,
+                  name,
+                  addr,
+                  rank,
+                  inventory,
+                  File("noImage"),
+                  fcmToken,
+                  email,
+                  phoneNumber,
+                  telegram,
+                  favorite))
         }
       } else {
         onNoUser()
@@ -133,7 +153,23 @@ class Database(
             val addr = user["addr"] as String
             val rank = user["rank"] as String
             val fcmToken = user["fcmToken"] as String?
-            onSuccess(User(idUser, name, addr, rank, inventory, localFile, fcmToken))
+            val email = user["email"] as? String ?: "Please enter an email address"
+            val phoneNumber = user["phoneNumber"] as? String ?: ""
+            val telegram = user["telegram"] as? String ?: ""
+            val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+            onSuccess(
+                User(
+                    idUser,
+                    name,
+                    addr,
+                    rank,
+                    inventory,
+                    localFile,
+                    fcmToken,
+                    email,
+                    phoneNumber,
+                    telegram,
+                    favorite))
           }
         } else {
           onNoUser()
@@ -690,6 +726,7 @@ class Database(
             "addr" to user.address,
             "rank" to user.rank,
             "fcmToken" to user.fcmToken,
+            "email" to user.email,
         )
     users.document(user.id).set(data)
   }
@@ -708,7 +745,10 @@ class Database(
             "addr" to user.address,
             "rank" to user.rank,
             "fcmToken" to user.fcmToken,
-        )
+            "email" to user.email,
+            "phoneNumber" to user.phoneNumber,
+            "telegram" to user.telegram,
+            "favorite" to user.favorite)
     users.document(user.id).set(data)
     onSuccess(user)
   }
@@ -739,10 +779,10 @@ class Database(
    *
    * @param userId the user's id
    * @param onSuccess the function that will be called with the resulting list containing pairs
-   *   (comment's author name, comment)
+   *   (comment's author, comment)
    */
-  fun getComments(userId: String, onSuccess: (List<Pair<String, String>>) -> Unit) {
-    val ret = mutableListOf<Pair<String, String>>()
+  fun getComments(userId: String, onSuccess: (List<Pair<User, String>>) -> Unit) {
+    val ret = mutableListOf<Pair<User, String>>()
 
     getUsers { users ->
       getLoans { loans ->
@@ -750,7 +790,11 @@ class Database(
             loans.filter { loan ->
               loan.state == LoanState.FINISHED &&
                   loan.idBorrower == userId &&
-                  loan.reviewBorrower.toDouble() != 0.0 &&
+                  try {
+                    loan.reviewLender.toDouble() != 0.0
+                  } catch (e: NumberFormatException) {
+                    false
+                  } &&
                   loan.commentBorrower != ""
             }
 
@@ -758,18 +802,22 @@ class Database(
             loans.filter { loan ->
               loan.state == LoanState.FINISHED &&
                   loan.idLender == userId &&
-                  loan.reviewLender.toDouble() != 0.0 &&
+                  try {
+                    loan.reviewLender.toDouble() != 0.0
+                  } catch (e: NumberFormatException) {
+                    false
+                  } &&
                   loan.commentLender != ""
             }
 
         loanBorrower.forEach { loan ->
           val user = users.first { it.id == loan.idLender }
-          ret.add(Pair(user.name, loan.commentBorrower))
+          ret.add(Pair(user, loan.commentBorrower))
         }
 
         loanLender.forEach { loan ->
           val user = users.first { it.id == loan.idBorrower }
-          ret.add(Pair(user.name, loan.commentLender))
+          ret.add(Pair(user, loan.commentLender))
         }
         onSuccess(ret)
       }

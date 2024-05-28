@@ -96,6 +96,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
     every { mockDatabase.getItems(any()) } just Runs
     every { mockDatabase.getItemsWithImages(any()) } just Runs
+    every { mockDatabase.getComments(any(), any()) } just Runs
 
     every { mockFirebaseUser.uid } returns "abcd"
     every { mockFirebaseUser.displayName } returns "name"
