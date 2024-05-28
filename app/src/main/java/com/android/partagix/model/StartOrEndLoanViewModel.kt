@@ -51,7 +51,6 @@ class StartOrEndLoanViewModel(
         )
     db.setLoan(newLoan)
     sendNotification("cancelled", Route.INVENTORY, _uiState.value.lender)
-
   }
 
   fun onFinish() {
