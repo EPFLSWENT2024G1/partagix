@@ -1,6 +1,8 @@
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -46,7 +48,14 @@ class BarcodeAnalyzer(
           val uri = Uri.parse(it)
           val itemId = uri.getQueryParameter("itemId")
           val text = "Qr code scanned successfully"
-          Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+          val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+          toast.show()
+
+          // Cancel the toast after the specified duration
+          Handler(Looper.getMainLooper()).postDelayed({
+            toast.cancel()
+          }, 1000)
+
           if (itemId != null) {
             onQrScanned(itemId, user.uid)
           }
