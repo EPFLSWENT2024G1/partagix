@@ -121,6 +121,37 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   }
 
   @Test
+  fun commentsWorks() = run {
+    every { mockUserViewModel.uiState } returns nonEmptyMockUiState
+    every { mockOtherUserViewModel.uiState } returns otherUserMockUIState
+    every { mockUserViewModel.getLoggedUserId() } returns "id2"
+    every { mockUserViewModel.setUser(any()) } just Runs
+
+    composeTestRule.setContent {
+      ViewAccount(
+          modifier = Modifier,
+          navigationActions = mockNavActions,
+          userViewModel = mockUserViewModel,
+          otherUserViewModel = mockOtherUserViewModel)
+    }
+
+    onComposeScreen<ViewOtherAccount>(composeTestRule) {
+      commentsSection { assertIsDisplayed() }
+      commentsTitle { assertIsDisplayed() }
+      commentsTitle { assertTextEquals("Comments") }
+    }
+
+    val node = composeTestRule.onNodeWithTag("userComment_id2")
+    node.assertIsDisplayed()
+
+    val author = composeTestRule.onNodeWithTag("userCommentAuthor_id2")
+    author.assertIsDisplayed()
+    author.performClick()
+
+    verify { mockNavActions.navigateTo(Route.ACCOUNT) }
+  }
+
+  @Test
   fun componentsWorks() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
@@ -183,35 +214,5 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       editButton { assertIsDisplayed() }
       editButton { performClick() }
     }
-  }
-
-  @Test
-  fun commentsWorks() = run {
-    every { mockUserViewModel.uiState } returns nonEmptyMockUiState
-    every { mockUserViewModel.getLoggedUserId() } returns "id2"
-    every { mockUserViewModel.setUser(any()) } just Runs
-
-    composeTestRule.setContent {
-      ViewOtherAccount(
-          modifier = Modifier,
-          navigationActions = mockNavActions,
-          userViewModel = mockUserViewModel,
-          otherUserViewModel = mockOtherUserViewModel)
-    }
-
-    onComposeScreen<ViewOtherAccount>(composeTestRule) {
-      commentsSection { assertIsDisplayed() }
-      commentsTitle { assertIsDisplayed() }
-      commentsTitle { assertTextEquals("Comments") }
-    }
-
-    val node = composeTestRule.onNodeWithTag("userComment_id2")
-    node.assertIsDisplayed()
-
-    val author = composeTestRule.onNodeWithTag("userCommentAuthor_id2")
-    author.assertIsDisplayed()
-    author.performClick()
-
-    verify { mockNavActions.navigateTo(Route.ACCOUNT) }
   }
 }
