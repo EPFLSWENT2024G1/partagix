@@ -114,10 +114,8 @@ class ManageLoanViewModel(
       declineLoan(loanToDecline.first, loanToDecline.second)
     }
 
-    UiStateWithoutIndex(index)
-
     database.setLoan(loan.copy(state = LoanState.ACCEPTED))
-
+    UiStateWithoutIndex(index)
     sendNotification(loan, "accepted", Notification.Type.LOAN_ACCEPTED)
   }
 

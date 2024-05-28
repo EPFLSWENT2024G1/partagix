@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
+import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
@@ -25,8 +26,10 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,6 +46,8 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   private lateinit var mockLoanUiState: MutableStateFlow<Loan>
   private lateinit var mockItemUiState: MutableStateFlow<Item>
   private lateinit var mockUserUiState: MutableStateFlow<User>
+  private lateinit var mockItemViewUiState: StateFlow<ItemUIState>
+  private lateinit var mockItemAvailability: StateFlow<Boolean>
 
   val cat1 = Category("1", "Category 1")
   val vis1 = Visibility.PUBLIC
@@ -56,10 +61,14 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockLoanUiState = MutableStateFlow(loan)
     mockItemUiState = MutableStateFlow(item)
     mockUserUiState = MutableStateFlow(user)
+    mockItemViewUiState = MutableStateFlow(ItemUIState(item, user))
+    mockItemAvailability = MutableStateFlow(true)
 
     mockItemViewModel = mockk()
+    every { mockItemViewModel.uiState } returns mockItemViewUiState
 
     mockViewModel = mockk()
+    every { mockViewModel.itemAvailability } returns mockItemAvailability
     every { mockViewModel.loanUiState } returns mockLoanUiState
     every { mockViewModel.itemUiState } returns mockItemUiState
     every { mockViewModel.userUiState } returns mockUserUiState
@@ -147,10 +156,8 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
 
   @Test
   fun testPopup() {
-    every { mockViewModel.createLoan { any() } } answers
-        {
-          mockViewModel.updateItemAvailability(true)
-        }
+    every { mockViewModel.createLoan { any() } } just runs
+    every { mockViewModel.updateItemAvailability(any()) } just runs
     composeTestRule.setContent {
       BorrowScreen(
           viewModel = mockViewModel,
