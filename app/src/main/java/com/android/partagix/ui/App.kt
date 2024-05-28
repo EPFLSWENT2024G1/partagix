@@ -100,11 +100,12 @@ class App(
   private val itemViewModel =
       ItemViewModel(
           db = db,
+          imageStorage = imageStorage,
           onItemSaved = { item -> inventoryViewModel.updateItem(item) },
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
-  private val userViewModel = UserViewModel(db = db)
-  private val otherUserViewModel = UserViewModel(db = db)
+  private val userViewModel = UserViewModel(db = db, imageStorage = imageStorage)
+  private val otherUserViewModel = UserViewModel(db = db, imageStorage = imageStorage)
   private val evaluationViewModel =
       EvaluationViewModel(db = db, notificationManager = notificationManager)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)

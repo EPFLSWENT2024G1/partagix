@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
@@ -27,6 +28,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -37,6 +39,7 @@ class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
     db: Database = Database(),
+    val imageStorage: StorageV2 = StorageV2(),
     private val onItemSaved: (Item) -> Unit = {},
     private val onItemCreated: (Item) -> Unit = {},
     user: User = User("", "", "", "", Inventory("", emptyList()))
@@ -76,6 +79,7 @@ class ItemViewModel(
 
     Log.d(TAG, "updateUiItem: $newUserId with item $new")
 
+    println("--- newImageId: ${new.imageId}")
     val newWithUserId =
         Item(
             new.id,
@@ -125,7 +129,6 @@ class ItemViewModel(
             onItemCreated)
       }
     } else {
-      updateUiItem(new)
       onItemSaved(new)
       database.setItem(new)
     }
@@ -137,6 +140,21 @@ class ItemViewModel(
   /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
   fun compareIDs(id: String, userId: String?): Boolean {
     return id == userId
+  }
+
+  fun uploadImage(uri: Uri, imageName: String, onSuccess: () -> Unit) {
+    imageStorage.uploadImageToFirebaseStorage(uri, imageName = imageName) { onSuccess() }
+  }
+
+  fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
+    imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
+  }
+
+  fun updateUiImage(uiImage: File) {
+    _uiState.value =
+        _uiState.value.copy(
+            user = _uiState.value.user.copy(imageId = uiImage),
+        )
   }
 
   companion object {

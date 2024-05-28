@@ -68,8 +68,8 @@ class AppTest {
     mockStorageV2 = spyk()
     every { mockStorageV2.uploadImageToFirebaseStorage(any(), any(), any(), any()) } answers
         {
-          val callback = args[3] as (List<File>) -> Unit
-          callback(listOf(File("storageFile")))
+          val callback = args[3] as () -> Unit
+          callback()
         }
     every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } answers
         {

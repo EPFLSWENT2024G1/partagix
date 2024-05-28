@@ -1,6 +1,7 @@
 package com.android.partagix.model
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -40,7 +41,7 @@ class StorageV2 {
       imageUri: Uri,
       storage: FirebaseStorage = Firebase.storage,
       imageName: String = UUID.randomUUID().toString(),
-      onSuccess: (List<File>) -> Unit = {},
+      onSuccess: () -> Unit = {},
   ) {
     val storageRef = storage.reference
 
@@ -49,16 +50,11 @@ class StorageV2 {
 
     // Upload the file to Firebase Storage
     val uploadTask = imageRef.putFile(imageUri)
+    cache.remove(imageName)
 
     // Register observers to listen for upload success or failure
     uploadTask
-        .addOnSuccessListener { taskSnapshot ->
-          // Image uploaded successfully
-          val temp = kotlin.io.path.createTempFile("real", ".tmp").toFile()
-          temp.writeBytes(imageUri.path!!.drop(7).toByteArray())
-          cache[imageName] = temp
-          onSuccess(listOf(File(imageUri.path!!.drop(7))))
-        }
+        .addOnSuccessListener { taskSnapshot -> onSuccess() }
         .addOnFailureListener { exception ->
           // Image upload failed
         }
@@ -75,6 +71,7 @@ class StorageV2 {
 
     when (p) {
       "",
+      "null",
       "default-image.jpg" -> {
         onSuccess(cache["default-image"]!!)
         return
@@ -90,6 +87,7 @@ class StorageV2 {
     }
 
     if (cache.containsKey(p)) {
+      println("Cache hit for $p")
       onSuccess(cache[p]!!)
       return
     }
@@ -111,7 +109,9 @@ class StorageV2 {
         }
         .addOnFailureListener {
           // Handle any errors
+          Log.d("StorageV2", "Failed to get image from Firebase Storage : $path")
           onFailure(it)
+          onSuccess(cache["default-image"]!!)
         }
   }
 
@@ -129,6 +129,7 @@ class StorageV2 {
 
       when (paths[i]) {
         "",
+        "null",
         "default-image.jpg" -> {
           res[i] = cache["default-image"]!!
           if (count.incrementAndGet() == paths.size) {
@@ -176,6 +177,7 @@ class StorageV2 {
           }
           .addOnFailureListener {
             res[i] = cache["default-image"]!!
+            Log.d("StorageV2", "Failed to get image(s) from Firebase Storage : $path")
             onFailure(it)
             if (count.incrementAndGet() == paths.size) {
               onSuccess(res.toList())

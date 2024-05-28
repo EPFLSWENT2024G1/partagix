@@ -53,10 +53,8 @@ import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.components.locationPicker.LocationPicker
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
-import getImageFromFirebaseStorage
 import java.io.File
 import java.util.UUID
-import uploadImageToFirebaseStorage
 
 /**
  * Screen to create a new item in user's inventory.
@@ -126,6 +124,7 @@ fun InventoryCreateOrEditItem(
         var uiQuantity by remember { mutableStateOf(i.quantity) }
         var uiLocation by remember { mutableStateOf(Location(i.location)) }
         var uiImage by remember { mutableStateOf(i.imageId) }
+        var isUploadingImage by remember { mutableStateOf(false) }
         Column(
             modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -142,26 +141,21 @@ fun InventoryCreateOrEditItem(
                                   MaterialTheme.colorScheme.outline,
                                   shape = RoundedCornerShape(4.dp))
                               .testTag("image")) {
-                        val image =
-                            File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
+                        val image = uiImage
+
                         MainImagePicker(listOf(image.toUri())) { uri ->
-                          // TODO :  Save the image to a local file to its displayed correctly while
-                          // waiting for the upload
-                          /*
-                          val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
-                          Missing : save the image to the local file (need a ContentResolver ?)
-                          uiImage = localFilePath
-                           */
-                          if (uri == image.toUri()) return@MainImagePicker
-                          // Before this is done, display an empty image while waiting for the
-                          // upload
-                          uiImage = File("res/drawable/default_image.jpg")
-                          // in the meantime do nothing and the image will be loaded from the
-                          // database
-                          // later
-                          dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
-                          uploadImageToFirebaseStorage(uri, imageName = dbImage) {
-                            getImageFromFirebaseStorage(i.id) { file -> uiImage = file }
+                          if (uri.path != null && uri.path!!.isNotEmpty() && uri != image.toUri()) {
+
+                            isUploadingImage = true
+                            dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+                            uiImage = File("null")
+                            itemViewModel.uploadImage(uri, imageName = dbImage) {
+                              itemViewModel.updateImage(dbImage) { file ->
+                                println("--- received -- $file")
+                                uiImage = file
+                                isUploadingImage = false
+                              }
+                            }
                           }
                         }
                       }
@@ -211,8 +205,6 @@ fun InventoryCreateOrEditItem(
                   }
                 }
 
-                //                Spacer(modifier = modifier.height(8.dp))
-
                 OutlinedTextField(
                     value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
                     onValueChange = { str ->
@@ -238,6 +230,18 @@ fun InventoryCreateOrEditItem(
                       if (mode == "edit") {
                         id = i.id
                       }
+                      println("--- saved image: $dbImage -- $uiImage")
+                      itemViewModel.updateUiItem(
+                          Item(
+                              id,
+                              uiCategory,
+                              uiName,
+                              uiDescription,
+                              uiVisibility,
+                              uiQuantity,
+                              locationViewModel.ourLocationToAndroidLocation(loc.value),
+                              i.idUser,
+                              uiImage))
                       itemViewModel.save(
                           Item(
                               id,
@@ -249,9 +253,10 @@ fun InventoryCreateOrEditItem(
                               locationViewModel.ourLocationToAndroidLocation(loc.value),
                               i.idUser,
                               File(dbImage)))
+
                       navigationActions.goBack()
                     },
-                    enabled = uiName.isNotBlank(),
+                    enabled = uiName.isNotBlank() && !isUploadingImage,
                     content = {
                       if (mode == "edit") {
                         Text("Save")
