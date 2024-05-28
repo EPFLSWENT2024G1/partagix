@@ -66,12 +66,9 @@ import com.android.partagix.ui.screens.ViewAccount
 import com.android.partagix.ui.screens.ViewOtherAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.auth.FirebaseUser
 import java.io.File
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
-import java.util.concurrent.CountDownLatch
 
 class App(
     private val activity: MainActivity,
@@ -258,9 +255,7 @@ class App(
     Row(modifier = modifier.fillMaxSize()) {
       Column(
           modifier =
-          Modifier
-              .fillMaxSize()
-              .background(MaterialTheme.colorScheme.inverseOnSurface)) {
+              Modifier.fillMaxSize().background(MaterialTheme.colorScheme.inverseOnSurface)) {
             ComposeNavigationHost(
                 navController = navController,
                 modifier = Modifier.weight(1f),
@@ -358,9 +353,11 @@ class App(
           arguments = listOf(navArgument("userId") { type = NavType.StringType })) {
             val userId = it.arguments?.getString("userId")
             if (userId != null) {
-                db.getUser(userId) { user ->
-                    otherUserViewModel.updateUser(user)
-                }
+              otherUserViewModel.setLoading(true)
+              db.getUser(userId) { user ->
+                otherUserViewModel.setLoading(false)
+                otherUserViewModel.updateUser(user)
+              }
             }
             ViewOtherAccount(
                 navigationActions = navigationActions, userViewModel = otherUserViewModel)

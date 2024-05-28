@@ -38,7 +38,6 @@ class UserViewModel(
   val uiState: StateFlow<UserUIState> = _uiState
 
   init {
-    println("------------------init")
     if (user.id == "") {
       setUserToCurrent()
     } else {
@@ -91,9 +90,17 @@ class UserViewModel(
     return FirebaseAuth.getInstance().currentUser?.uid
   }
 
+  fun setLoading(loading: Boolean) {
+    _uiState.value = _uiState.value.copy(loading = loading)
+  }
+
   companion object {
     private const val TAG = "UserViewModel"
   }
 }
 
-data class UserUIState(val user: User, val location: Location? = null)
+data class UserUIState(
+    val user: User,
+    val location: Location? = null,
+    val loading: Boolean = false
+)

@@ -101,9 +101,7 @@ fun InventoryScreen(
       },
       floatingActionButton = {
         FloatingActionButton(
-            modifier = modifier
-                .size(60.dp)
-                .testTag("inventoryScreenFab"),
+            modifier = modifier.size(60.dp).testTag("inventoryScreenFab"),
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
@@ -123,29 +121,22 @@ fun InventoryScreen(
         if (uiState.items.isEmpty()) {
           Box(
               modifier =
-              modifier
-                  .padding(innerPadding)
-                  .fillMaxSize()
-                  .padding(10.dp)
-                  .testTag("inventoryScreenNoItemBox")) {
+                  modifier
+                      .padding(innerPadding)
+                      .fillMaxSize()
+                      .padding(10.dp)
+                      .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
                         "You have no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
-                    modifier
-                        .align(Alignment.Center)
-                        .testTag("inventoryScreenNoItemText"))
+                        modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
               }
         } else {
-          Column(modifier = modifier
-              .padding(innerPadding)
-              .fillMaxSize()) {
+          Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(10.dp, 0.dp)
-                    .padding(top = 8.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
                       text = "Loan Requests",
@@ -163,16 +154,13 @@ fun InventoryScreen(
                 }
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, top = 5.dp, end = 10.dp)
-                    .fillMaxSize(0.1f),
+                    Modifier.fillMaxWidth()
+                        .padding(start = 10.dp, top = 5.dp, end = 10.dp)
+                        .fillMaxSize(0.1f),
                 horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start),
             ) {
               Button(
-                  modifier = modifier
-                      .fillMaxWidth(0.49f)
-                      .requiredHeight(55.dp),
+                  modifier = modifier.fillMaxWidth(0.49f).requiredHeight(55.dp),
                   colors = buttonColors(MaterialTheme.colorScheme.onPrimary),
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
@@ -194,9 +182,7 @@ fun InventoryScreen(
                         }
                   }
               Button(
-                  modifier = modifier
-                      .fillMaxWidth()
-                      .requiredHeight(55.dp),
+                  modifier = modifier.fillMaxWidth().requiredHeight(55.dp),
                   colors = buttonColors(MaterialTheme.colorScheme.onPrimary),
                   border =
                       BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant),
@@ -226,18 +212,17 @@ fun InventoryScreen(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                var size by remember { mutableStateOf(uiState.borrowedItems.size) }
-                var expendedBor by remember {
-                    mutableStateOf(createExpendedBorList(size))
-                }
+              var size by remember { mutableStateOf(uiState.borrowedItems.size) }
+              var expendedBor by remember { mutableStateOf(createExpendedBorList(size)) }
 
-                // Observe changes to uiState.borrowedItems.size and update the list accordingly
-                LaunchedEffect(uiState.borrowedItems.size) {
-                    if (size != uiState.borrowedItems.size) {
-                        size = uiState.borrowedItems.size
-                        expendedBor = createExpendedBorList(size)
-                    }
+              // Observe changes to uiState.borrowedItems.size and update the list accordingly
+              LaunchedEffect(uiState.borrowedItems.size) {
+                if (size != uiState.borrowedItems.size) {
+                  size = uiState.borrowedItems.size
+                  expendedBor = createExpendedBorList(size)
                 }
+              }
+
               ItemListColumn(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
@@ -249,7 +234,7 @@ fun InventoryScreen(
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
                   onUserClick = {
-                    navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idBorrower}")
+                    navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idLender}")
                   },
                   isCornerClickable = false,
                   isClickable = false,
@@ -263,17 +248,13 @@ fun InventoryScreen(
                   navigationActions = navigationActions,
                   itemViewModel = itemViewModel,
                   modifier =
-                  Modifier
-                      .padding(horizontal = 10.dp)
-                      .fillMaxHeight(0.4f)
-                      .testTag("inventoryScreenBorrowedItemList"))
+                      Modifier.padding(horizontal = 10.dp)
+                          .fillMaxHeight(0.4f)
+                          .testTag("inventoryScreenBorrowedItemList"))
 
               HorizontalDivider(
                   color = MaterialTheme.colorScheme.outlineVariant,
-                  modifier = Modifier
-                      .height(0.5.dp)
-                      .fillMaxWidth()
-                      .padding(horizontal = 10.dp))
+                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
 
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
@@ -295,9 +276,7 @@ fun InventoryScreen(
                   itemViewModel = itemViewModel,
                   navigationActions = navigationActions,
                   modifier =
-                  Modifier
-                      .padding(horizontal = 10.dp)
-                      .testTag("inventoryScreenItemList"))
+                      Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }
           }
         }
@@ -305,9 +284,9 @@ fun InventoryScreen(
 }
 // Function to initialize or update the list based on the size
 fun createExpendedBorList(size: Int): SnapshotStateList<Boolean> {
-    return mutableStateListOf<Boolean>().apply {
-        for (i in 0 until size) {
-            add(false)
-        }
+  return mutableStateListOf<Boolean>().apply {
+    for (i in 0 until size) {
+      add(false)
     }
+  }
 }

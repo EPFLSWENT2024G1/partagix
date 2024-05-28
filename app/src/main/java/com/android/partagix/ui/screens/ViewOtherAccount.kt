@@ -18,9 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -57,11 +59,13 @@ fun ViewOtherAccount(
         TopAppBar(
             modifier = Modifier.fillMaxWidth().testTag("topBar"),
             title = {
-              Text(
-                  user.name + "'s Profile",
-                  modifier = Modifier.fillMaxWidth().testTag("title"),
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis)
+              if (!uiState.value.loading) {
+                Text(
+                    user.name + "'s Profile",
+                    modifier = Modifier.fillMaxWidth().testTag("title"),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis)
+              }
             },
             navigationIcon = {
               IconButton(
@@ -80,6 +84,12 @@ fun ViewOtherAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("accountScreenBottomNavBar"))
       }) {
+        if (uiState.value.loading) {
+          Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+          }
+          return@Scaffold
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier =
