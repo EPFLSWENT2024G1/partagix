@@ -9,12 +9,11 @@ import java.io.File
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-class StorageV2 {
+class StorageV2(private val storage: FirebaseStorage = Firebase.storage) {
   // Cache for the images
   private val cache = mutableMapOf<String, File>()
 
   private fun getDefaultImages() {
-    val storage = Firebase.storage
     val storageRef = storage.reference
 
     // Default item image
@@ -25,6 +24,7 @@ class StorageV2 {
     // Default user image
     val userImageRef = storageRef.child("images/default-user-image.png")
     val userLocalFile = File.createTempFile("default-user", ".png")
+
     userImageRef.getFile(userLocalFile).addOnSuccessListener {
       cache["default-user-image"] = userLocalFile
     }
@@ -33,10 +33,18 @@ class StorageV2 {
   init {
     // Load the default images into the cache
     cache["default-image"] = File("still-loading.tmp")
-    cache["default-user-image"] = File("still-loading2.tmp")
+    cache["default-user-image"] = File("still-loading.tmp")
     getDefaultImages()
   }
 
+  /**
+   * Uploads an image to Firebase Storage.
+   *
+   * @param imageUri the URI of the image to upload.
+   * @param storage the FirebaseStorage instance to use.
+   * @param imageName the name of the image.
+   * @param onSuccess a function to call when the image is uploaded successfully.
+   */
   fun uploadImageToFirebaseStorage(
       imageUri: Uri,
       storage: FirebaseStorage = Firebase.storage,
@@ -54,9 +62,10 @@ class StorageV2 {
 
     // Register observers to listen for upload success or failure
     uploadTask
-        .addOnSuccessListener { taskSnapshot -> onSuccess() }
-        .addOnFailureListener { exception ->
-          // Image upload failed
+        .addOnSuccessListener { onSuccess() }
+        .addOnFailureListener {
+          Log.d("StorageV2", "Failed to upload image to Firebase Storage : $imageName")
+          cache[imageName] = cache["default-image"]!!
         }
   }
 
@@ -87,7 +96,6 @@ class StorageV2 {
     }
 
     if (cache.containsKey(p)) {
-      println("Cache hit for $p")
       onSuccess(cache[p]!!)
       return
     }
@@ -97,6 +105,7 @@ class StorageV2 {
 
     // Create a reference to the image
     val imageRef = storageRef.child(path)
+
 
     // Download the image to a local file
     val localFile = File.createTempFile(prefix, ".tmp")

@@ -79,7 +79,6 @@ class ItemViewModel(
 
     Log.d(TAG, "updateUiItem: $newUserId with item $new")
 
-    println("--- newImageId: ${new.imageId}")
     val newWithUserId =
         Item(
             new.id,

@@ -141,7 +141,6 @@ fun InventoryCreateOrEditItem(
                             uiImage = File("null")
                             itemViewModel.uploadImage(uri, imageName = dbImage) {
                               itemViewModel.updateImage(dbImage) { file ->
-                                println("--- received -- $file")
                                 uiImage = file
                                 isUploadingImage = false
                               }
@@ -220,7 +219,6 @@ fun InventoryCreateOrEditItem(
                       if (mode == "edit") {
                         id = i.id
                       }
-                      println("--- saved image: $dbImage -- $uiImage")
                       itemViewModel.updateUiItem(
                           Item(
                               id,

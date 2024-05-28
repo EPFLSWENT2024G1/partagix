@@ -142,7 +142,6 @@ class Database(
   }
 
   fun getUserWithImage(idUser: String, onNoUser: () -> Unit = {}, onSuccess: (User) -> Unit) {
-    println("---- id user: $idUser ->")
     users.document(idUser).get().addOnSuccessListener {
       val onSuccessImage = { localFile: File ->
         val user = it.data
