@@ -50,6 +50,7 @@ class StartOrEndLoanViewModel(
             startDate = Date(),
         )
     db.setLoan(newLoan)
+
     sendNotification("cancelled", Route.INVENTORY, _uiState.value.lender)
   }
 

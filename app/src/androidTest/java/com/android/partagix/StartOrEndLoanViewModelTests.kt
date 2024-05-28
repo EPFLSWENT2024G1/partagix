@@ -9,6 +9,8 @@ import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.notification.FirebaseMessagingService
+import com.android.partagix.model.notification.Notification
+import com.android.partagix.ui.navigation.Route
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
@@ -121,7 +123,7 @@ class StartOrEndLoanViewModelTests {
           match {
             it.title == "Loan cancelled" &&
                 it.type == Notification.Type.NEW_INCOMING_REQUEST &&
-                it.navigationUrl == "${Route.VIEW_ITEM}/${item.id}"
+                it.navigationUrl == Route.INVENTORY
           },
           token)
     }
