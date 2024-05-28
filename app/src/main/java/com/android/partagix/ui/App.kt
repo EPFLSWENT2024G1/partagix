@@ -363,7 +363,9 @@ class App(
               }
             }
             ViewOtherAccount(
-                navigationActions = navigationActions, userViewModel = otherUserViewModel)
+                navigationActions = navigationActions,
+                userViewModel = userViewModel,
+                otherUserViewModel = otherUserViewModel)
           }
 
       composable(

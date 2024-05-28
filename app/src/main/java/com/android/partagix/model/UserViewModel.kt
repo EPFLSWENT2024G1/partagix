@@ -110,20 +110,17 @@ class UserViewModel(
   }
 }
 
-data class UserUIState(
-    val user: User,
-    val location: Location? = null,
-    val loading: Boolean = false
-)
 /**
  * UI state for the user
  *
  * @param user the user
  * @param location the location of the user
  * @param comments the comments of the user, in the form: (comment's author, message)
+ * @param loading whether the user is being loaded
  */
 data class UserUIState(
     val user: User,
     val location: Location? = null,
-    val comments: List<Pair<User, String>> = emptyList()
+    val comments: List<Pair<User, String>> = emptyList(),
+    val loading: Boolean = false
 )
