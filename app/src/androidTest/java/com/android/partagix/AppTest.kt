@@ -28,6 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class AppTest {
@@ -65,12 +66,28 @@ class AppTest {
     mockAuth = spyk(Authentication(mockActivity, mockk()))
 
     mockStorageV2 = mockk()
-    every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } just Runs
-    every { mockStorageV2.getImagesFromFirebaseStorage(any(), any(), any(), any()) } just Runs
+    println("--- storage : $mockStorageV2")
+    every { mockStorageV2.uploadImageToFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (List<File>) -> Unit
+          callback(listOf(File("localFile")))
+        }
+    every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (File) -> Unit
+          callback(File("localFile"))
+        }
+    every { mockStorageV2.getImagesFromFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (List<File>) -> Unit
+          callback(listOf(File("localFile")))
+        }
 
     mockDatabase = spyk(Database(imageStorage = mockStorageV2))
     every { mockDatabase.createUser(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
+
+    println("here $mockDatabase")
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs

@@ -40,6 +40,7 @@ class UserViewModel(
   init {
     if (user.id == "") {
       println("----- A")
+      println(database)
       setUserToCurrent()
     } else {
       println("----- 3")

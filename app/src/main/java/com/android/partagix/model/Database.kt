@@ -34,6 +34,10 @@ class Database(
   private val loan = db.collection("loan")
   private val categories = db.collection("categories")
 
+    init {
+        println("--- storage in db : $imageStorage")
+    }
+
   /**
    * Get all users from the database
    *
@@ -138,6 +142,7 @@ class Database(
           onNoUser()
         }
       }
+        println("--- storage before crash : $imageStorage, $this")
       imageStorage.getImageFromFirebaseStorage(
           "users/$idUser",
           onFailure = {
