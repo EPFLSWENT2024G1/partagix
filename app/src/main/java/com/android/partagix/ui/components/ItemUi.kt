@@ -137,8 +137,7 @@ fun ItemUi(
 
   var ownerModifier = Modifier.padding(end = 1.dp)
   if (onUserClick != {}) {
-    ownerModifier =
-        ownerModifier.clickable { onUserClick(loan) } 
+    ownerModifier = ownerModifier.clickable { onUserClick(loan) }
   }
 
   var mainColumnModifier =
