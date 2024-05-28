@@ -5,7 +5,7 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.inventory.Inventory
+import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
@@ -45,7 +45,6 @@ class ItemViewModelTests {
           Location(""),
           "",
           File("tempFile.tmp"))
-  val emptyUser = User("", "", "", "", Inventory("", emptyList()), File("tempFile.tmp"))
   val itemWithID =
       Item(
           "8WuTkKJZLTAr6zs5L7rH",

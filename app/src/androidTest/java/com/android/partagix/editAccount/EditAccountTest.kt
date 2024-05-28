@@ -50,7 +50,9 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           "name1",
           "address1",
           "rank1",
-          Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
+          email = "email@test.com",
+          inventory =
+              Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
 
   @Before
   fun testSetup() {
@@ -86,6 +88,22 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       addressField { assertIsDisplayed() }
       actionButtons { assertIsDisplayed() }
       saveButton { assertIsDisplayed() }
+      email { assertIsDisplayed() }
+      phoneNumber { assertIsDisplayed() }
+      telegram { assertIsDisplayed() }
+      contactInfo { assertIsDisplayed() }
+      emailCheckBox {
+        assertIsDisplayed()
+        assertHasClickAction()
+      }
+      phoneNumberCheckBox {
+        assertIsDisplayed()
+        assertHasClickAction()
+      }
+      telegramCheckBox {
+        assertIsDisplayed()
+        assertHasClickAction()
+      }
     }
   }
 
@@ -141,7 +159,12 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           locationViewModel = mockk())
     }
 
-    ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) { saveButton { performClick() } }
+    ComposeScreen.onComposeScreen<EditAccount>(composeTestRule) {
+      saveButton {
+        performScrollTo()
+        performClick()
+      }
+    }
 
     verify(exactly = 1) { mockUserViewModel.updateUser(any()) }
     verify(exactly = 1) { mockNavActions.goBack() }

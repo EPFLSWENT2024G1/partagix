@@ -2,6 +2,7 @@ package com.android.partagix.loan
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.ManagerUIState
 import com.android.partagix.model.category.Category
@@ -32,6 +33,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockManageViewModel: ManageLoanViewModel
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   private lateinit var emptyMockUiState: MutableStateFlow<ManagerUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<ManagerUIState>
@@ -70,6 +72,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     nonEmptyMockUiState = MutableStateFlow(ManagerUIState(items, users, loan, boolean))
 
     mockManageViewModel = mockk()
+    mockItemViewModel = mockk()
 
     every { mockManageViewModel.getLoanRequests() } just Runs
   }
@@ -78,10 +81,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun noItemBoxIsDisplayed() = run {
     every { mockManageViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      ManageLoanRequest(
-          mockManageViewModel,
-          mockNavActions,
-      )
+      ManageLoanRequest(mockManageViewModel, mockNavActions, mockItemViewModel)
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
@@ -93,10 +93,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun noItemTextIsDisplayed() = run {
     every { mockManageViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      ManageLoanRequest(
-          mockManageViewModel,
-          mockNavActions,
-      )
+      ManageLoanRequest(mockManageViewModel, mockNavActions, mockItemViewModel)
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
@@ -111,10 +108,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun bottomNavBarIsDisplayed() = run {
     every { mockManageViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      ManageLoanRequest(
-          mockManageViewModel,
-          mockNavActions,
-      )
+      ManageLoanRequest(mockManageViewModel, mockNavActions, mockItemViewModel)
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
@@ -126,10 +120,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
   fun bottomNavBarItemInventoryIsDisplayed() = run {
     every { mockManageViewModel.uiState } returns emptyMockUiState
     composeTestRule.setContent {
-      ManageLoanRequest(
-          mockManageViewModel,
-          mockNavActions,
-      )
+      ManageLoanRequest(mockManageViewModel, mockNavActions, mockItemViewModel)
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {
@@ -142,10 +133,7 @@ class ManageLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompose
     every { mockManageViewModel.uiState } returns nonEmptyMockUiState
     composeTestRule.setContent {
       ManageLoanRequest(
-          mockManageViewModel,
-          mockNavActions,
-          expandable = true,
-      )
+          mockManageViewModel, mockNavActions, expandable = true, itemViewModel = mockItemViewModel)
     }
 
     ComposeScreen.onComposeScreen<ManageLoanScreen>(composeTestRule) {

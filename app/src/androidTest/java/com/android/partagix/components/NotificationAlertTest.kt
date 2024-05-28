@@ -1,7 +1,11 @@
 package com.android.partagix.components
 
+import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -13,8 +17,7 @@ import com.android.partagix.ui.components.notificationAlert
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import io.mockk.mockk
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,15 +39,25 @@ class NotificationAlertTest {
 
     val navigationActions = mockk<NavigationActions>()
 
-    val latch = CountDownLatch(1)
+    onView(ViewMatchers.isRoot())
+        .perform(
+            object : ViewAction {
+              override fun getConstraints(): Matcher<View>? {
+                return ViewMatchers.isRoot()
+              }
 
-    activityRule.scenario.onActivity { activity ->
-      activity.myInitializationFunction(Route.ACCOUNT)
-      notificationAlert(activity, notification, navigationActions)
-      activity.runOnUiThread { latch.countDown() }
-    }
+              override fun getDescription(): String {
+                return "Wait for dialog to be displayed"
+              }
 
-    latch.await(5, TimeUnit.SECONDS)
+              override fun perform(uiController: UiController?, view: View?) {
+                activityRule.scenario.onActivity { activity ->
+                  activity.myInitializationFunction(Route.ACCOUNT)
+                  notificationAlert(activity, notification, navigationActions)
+                }
+              }
+            })
+
     onView(withText("Test Title")).check(matches(isDisplayed()))
     onView(withText("Test Message")).check(matches(isDisplayed()))
   }
