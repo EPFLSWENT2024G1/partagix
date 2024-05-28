@@ -86,7 +86,7 @@ class LoanViewModelTests {
           Category("4", "Category 4"),
           "test4",
           "test4",
-          Visibility.FRIENDS,
+          Visibility.PUBLIC,
           1,
           Location(""),
           "user4",

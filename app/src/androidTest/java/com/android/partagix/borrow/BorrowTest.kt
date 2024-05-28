@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
+import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
@@ -67,6 +68,7 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
+    every { mockNavActions.navigateTo(Route.LOAN) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
     every { mockNavActions.goBack() } just Runs
   }
@@ -128,12 +130,25 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockViewModel.startBorrow(item, user)
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
-      description { performTextInput("test description") }
       startDateButton { performClick() }
       startDateOk { performClick() }
       endDateButton { performClick() }
       endDateOk { performClick() }
       saveButton { performClick() }
+    }
+  }
+
+  @Test
+  fun testPopup() {
+    every { mockViewModel.createLoan { any() } } answers {
+      mockViewModel.updateItemAvailability(true)
+    }
+    composeTestRule.setContent {
+      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions, itemViewModel = mockItemViewModel)
+    }
+
+    onComposeScreen<BorrowScreen>(composeTestRule) {
+      popup { assertIsDisplayed() }
     }
   }
 }

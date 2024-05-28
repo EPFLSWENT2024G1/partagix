@@ -2,8 +2,8 @@ package com.android.partagix.model.visibility
 
 enum class Visibility(val visibilityLabel: String) {
   PUBLIC("Everyone"), // ordinal = 0
-  FRIENDS("Friends only"), // ordinal = 1
-  PRIVATE("No one") // ordinal = 2
+  PRIVATE("No one") // ordinal = 1
+  //  FRIENDS("Friends only"), // ordinal = 2
 }
 
 /**

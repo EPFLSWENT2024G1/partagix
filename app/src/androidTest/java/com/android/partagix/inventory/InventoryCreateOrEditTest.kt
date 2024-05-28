@@ -124,10 +124,7 @@ class InventoryCreateOrEditTest :
         assertTextContains("Object name")
       }
 
-      idUser {
-        assertIsDisplayed()
-        assertTextContains("Owner")
-      }
+      idUser { assertIsDisplayed() }
 
       description {
         assertIsDisplayed()

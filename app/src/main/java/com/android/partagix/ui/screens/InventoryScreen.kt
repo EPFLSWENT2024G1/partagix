@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -60,7 +61,8 @@ import com.android.partagix.ui.navigation.Route
  *
  * @param inventoryViewModel a view model to get the inventory.
  * @param navigationActions a class to navigate to different screens.
- * @param manageLoanViewModel a view model to manage the loan requests.
+ * @param manageLoanViewModelIncoming a view model to manage the incoming loan requests.
+ * @param manageLoanViewModelOutgoing a view model to manage the outgoing loan requests.
  * @param itemViewModel a view model to manage the items.
  * @param modifier a Modifier to apply to this layout.
  */
@@ -75,7 +77,7 @@ fun InventoryScreen(
 ) {
   val uiState by inventoryViewModel.uiState.collectAsStateWithLifecycle()
 
-  // Useful when we will have fix the count
+  // These variables should stay var otherwise the counts are outdated in some cases
   var incomingRequests by remember { mutableIntStateOf(manageLoanViewModelIncoming.getCount()) }
   var outgoingRequests by remember { mutableIntStateOf(manageLoanViewModelOutgoing.getCount()) }
 
@@ -122,7 +124,7 @@ fun InventoryScreen(
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
-                        "There is no items in your inventory, click on the + button to add your first item",
+                        "You have no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
@@ -130,10 +132,10 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Loan requests",
+                      text = "Loan Requests",
                       style =
                           TextStyle(
                               fontSize = 18.sp,
@@ -170,8 +172,6 @@ fun InventoryScreen(
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Incoming Requests ($incomingRequests)",
-                              // when we fix the
-                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -194,8 +194,6 @@ fun InventoryScreen(
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Outgoing Requests ($outgoingRequests)",
-                              // when we fix the
-                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -213,38 +211,47 @@ fun InventoryScreen(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
-                  title = "Borrowed items",
+                  title = "Borrowed",
                   corner = uiState.borrowedItems.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
+                  onUserClick = {
+                    //                    userViewModel.setUser(user)
+                    navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                  },
                   isCornerClickable = false,
                   isClickable = false,
                   isOutgoing = false,
+                  isLender = true,
                   isExpandable = false,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
                           .testTag("inventoryScreenBorrowedItemList"))
 
+              HorizontalDivider(
+                  color = MaterialTheme.colorScheme.outlineVariant,
+                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
                   list = uiState.items,
                   users = uiState.users,
                   loan = uiState.loan,
-                  title = "Inventory item",
+                  title = "My Inventory",
                   corner = uiState.items.size.toString(),
-                  onClick = {
+                  onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
-                  onClickCorner = {},
                   isCornerClickable = false,
                   isClickable = true,
                   isExpandable = false,
                   isOutgoing = false,
+                  isOwner = true,
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

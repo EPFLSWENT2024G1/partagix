@@ -32,7 +32,7 @@ import com.android.partagix.model.user.User
  * @param title a string that represents the title of the column.
  * @param corner a string that represents the corner of the column.
  * @param isCornerClickable is a boolean that makes the corner text clickable or not
- * @param onClick a function that takes an item and returns a Unit.
+ * @param onItemClick a function that takes an item and returns a Unit.
  * @param onClickCorner a function that returns a Unit.
  * @param modifier a Modifier.
  */
@@ -44,13 +44,16 @@ fun ItemListColumn(
     loan: List<Loan>,
     title: String,
     corner: String,
-    isCornerClickable: Boolean,
-    onClick: (Item) -> Unit,
+    isCornerClickable: Boolean = false,
+    onItemClick: (Item) -> Unit = {},
     isClickable: Boolean,
-    onClickCorner: () -> Unit,
+    onClickCorner: () -> Unit = {},
     wasExpanded: List<Boolean> = emptyList(),
     expandState: Boolean = false,
     isOutgoing: Boolean,
+    isOwner: Boolean = false,
+    isLender: Boolean = false,
+    onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     isExpandable: Boolean,
 ) {
@@ -98,15 +101,18 @@ fun ItemListColumn(
           itemList = list,
           users = users,
           loan = loan,
-          onClick =
+          onItemClick =
               if (isClickable) {
-                onClick
+                onItemClick
               } else {
                 {}
               },
           isExpandable = isExpandable,
           wasExpanded = wasExpanded,
           isOutgoing = isOutgoing,
+          isOwner = isOwner,
+          isLender = isLender,
+          onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           modifier = Modifier.fillMaxSize(),
           expandState = expandState,

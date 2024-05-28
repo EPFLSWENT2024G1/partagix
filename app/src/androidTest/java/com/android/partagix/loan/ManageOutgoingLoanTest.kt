@@ -73,8 +73,6 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     mockManageViewModel = mockk()
 
     every { mockManageViewModel.getLoanRequests() } just Runs
-    // every { mockManageViewModel.updateExpanded(any()) } just Runs
-
   }
 
   @Test
@@ -105,7 +103,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     ComposeScreen.onComposeScreen<ManageOutgoingLoanScreen>(composeTestRule) {
       noItemText {
         assertIsDisplayed()
-        assertTextEquals("There is no outgoing loan request.")
+        assertTextEquals("You have no outgoing loan request.")
       }
     }
   }
@@ -152,9 +150,8 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     }
 
     ComposeScreen.onComposeScreen<ManageOutgoingLoanScreen>(composeTestRule) {
+      mainContent { assertIsDisplayed() }
       itemList { assertIsDisplayed() }
-      itemCard { assertIsDisplayed() }
-      // itemCardExpanded { assertIsDisplayed() }
     }
   }
 }

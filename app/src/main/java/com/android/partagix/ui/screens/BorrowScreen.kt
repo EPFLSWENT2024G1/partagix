@@ -54,6 +54,7 @@ import com.android.partagix.R
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.utils.stripTime
@@ -105,9 +106,7 @@ fun BorrowScreen(
         var notAvailable = viewModel.itemAvailability.collectAsState().value
         val loanItemName by remember { mutableStateOf(item.name) }
         val loanItemOwnerName by remember { mutableStateOf(user.name) }
-        var loanDescription by remember {
-          mutableStateOf("")
-        } // TODO: edit Loan type to include description
+        val loanDescription by remember { mutableStateOf(item.description) }
         val loanLocation by remember { mutableStateOf(item.location) }
         val loanQuantity by remember { mutableStateOf(item.quantity) }
 
@@ -225,50 +224,32 @@ fun BorrowScreen(
                   Spacer(modifier = modifier.width(8.dp))
 
                   Column {
-                    OutlinedTextField(
-                        value = loanItemName,
-                        onValueChange = {},
-                        label = { Text("Item name") },
-                        modifier = modifier
-                            .testTag("itemName")
-                            .fillMaxWidth(),
-                        maxLines = 1, // Ensure only one line is displayed
-                        readOnly = true)
-                    OutlinedTextField(
-                        value = loanItemOwnerName,
-                        onValueChange = {},
-                        label = { Text("Owner") },
-                        modifier = modifier
-                            .testTag("itemOwner")
-                            .fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText(
+                        label = "Object Name",
+                        text = loanItemName,
+                        modifier = modifier.fillMaxWidth().fillMaxHeight(0.5f).testTag("itemName"))
+
+                    LabeledText(
+                        label = "Owner",
+                        text = loanItemOwnerName,
+                        modifier = modifier.fillMaxWidth().testTag("itemOwner")
+                        //                        .clickable { /* todo */ }
+                        )
                   }
                 }
               }
-              Column(
-                  modifier
-                      .fillMaxWidth()
-                      .padding(horizontal = 8.dp)) {
-                OutlinedTextField(
-                    value = loanDescription,
-                    onValueChange = { loanDescription = it },
-                    label = { Text("Description") },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .testTag("description"),
-                    minLines = 5,
-                    readOnly = true)
+              Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                LabeledText(
+                    modifier = modifier.fillMaxWidth().testTag("description"),
+                    label = "Description",
+                    text = loanDescription)
 
                 Spacer(modifier = modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = loanLocation.toString(),
-                    onValueChange = {},
-                    label = { Text("Location") },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .testTag("location"),
-                    readOnly = true)
+                LabeledText(
+                    modifier = modifier.fillMaxWidth().testTag("location"),
+                    label = "Location",
+                    text = loanLocation.toString())
 
                 Spacer(modifier = modifier.height(8.dp))
 
@@ -370,29 +351,18 @@ fun BorrowScreen(
                 }
                 Spacer(modifier = modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = loanQuantity.toString(),
-                    onValueChange = {},
-                    label = { Text("Quantity") },
+                LabeledText(
                     modifier = modifier.fillMaxWidth(),
-                    readOnly = false)
+                    label = "Quantity",
+                    text = loanQuantity.toString())
               }
 
               Button(
-                  modifier = modifier
-                      .fillMaxWidth()
-                      .testTag("saveButton")
-                      .padding(10.dp),
-                  colors =
-                      ButtonColors(
-                          containerColor = MaterialTheme.colorScheme.onPrimary,
-                          contentColor = MaterialTheme.colorScheme.onBackground,
-                          disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                          disabledContainerColor = Color.Gray),
+                  modifier = modifier.fillMaxWidth().testTag("saveButton").padding(10.dp),
                   onClick = {
                     viewModel.createLoan { navigationActions.navigateTo(Route.LOAN) }
                   },
-                  content = { Text(text = "Make request reservation") })
+                  content = { Text(text = "Request reservation") })
             }
       }
 }
