@@ -1,7 +1,6 @@
 package com.android.partagix.ui.screens
 
 import android.location.Location
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -132,15 +130,7 @@ fun InventoryCreateOrEditItem(
                 Row(modifier = modifier.fillMaxWidth()) {
                   Box(
                       contentAlignment = Alignment.Center,
-                      modifier =
-                          modifier
-                              .fillMaxHeight()
-                              .fillMaxWidth(.4f)
-                              .border(
-                                  1.dp,
-                                  MaterialTheme.colorScheme.outline,
-                              )
-                              .testTag("image")) {
+                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("image")) {
                         val image = uiImage
 
                         MainImagePicker(listOf(image.toUri())) { uri ->

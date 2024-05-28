@@ -188,13 +188,9 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveAnItem() {
-    val _uiState = MutableStateFlow(ItemUIState(itemWithID, emptyUser))
-    val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
-
     val mockCollection = mockk<CollectionReference>()
-
     val mockDocument = mockk<DocumentReference>()
 
     every { mockCollection.document(any()) } returns mockDocument
@@ -224,24 +220,13 @@ class ItemViewModelTests {
 
     val itemViewModel = spyk(ItemViewModel(itemWithID, db = db))
 
-    every { itemViewModel.uiState } returns mockUiState
-
-    every { itemViewModel.updateUiItem(itemWithID) } answers
-        {
-          _uiState.value = ItemUIState(itemWithID, emptyUser)
-        }
-
-    every { itemViewModel.updateUiItem(itemWithIDmodified) } answers
-        {
-          _uiState.value = ItemUIState(itemWithIDmodified, emptyUser)
-        }
-
     runBlocking {
-      assert(mockUiState.value.item == itemWithID)
+      assertEquals(itemWithID, itemViewModel.uiState.value.item)
       itemViewModel.save(itemWithIDmodified)
+      itemViewModel.updateUiItem(itemWithIDmodified)
 
       coVerify(exactly = 1) { itemViewModel.save(itemWithIDmodified) }
-      assert(mockUiState.value.item == itemWithIDmodified)
+      assertEquals(itemWithIDmodified, itemViewModel.uiState.value.item)
     }
   }
 
