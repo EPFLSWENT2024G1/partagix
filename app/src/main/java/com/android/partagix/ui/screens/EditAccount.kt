@@ -219,7 +219,8 @@ fun EditAccount(
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                       singleLine = true,
-                      label = { Text("Email") })
+                      label = { Text("Email") },
+                      colors = OutlinedTextFieldDefaults.colors())
 
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
@@ -232,7 +233,8 @@ fun EditAccount(
                       },
                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                       singleLine = true,
-                      label = { Text("Phone Number") })
+                      label = { Text("Phone Number") },
+                      colors = OutlinedTextFieldDefaults.colors())
                   Spacer(modifier = Modifier.height(10.dp))
                   TextField(
                       modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("telegram"),
@@ -242,14 +244,14 @@ fun EditAccount(
                         if (telegram == "") favorite[2] = false
                       },
                       singleLine = true,
-                      label = { Text("Telegram") })
+                      label = { Text("Telegram") },
+                      colors = OutlinedTextFieldDefaults.colors())
 
                   Spacer(modifier = Modifier.height(16.dp))
                   Text(
                       text = " Favorite contact methods",
                       fontSize = 15.sp,
                       modifier = Modifier.padding(16.dp, 0.dp))
-                  Spacer(modifier = Modifier.height(4.dp))
                   Row(
                       modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
                       horizontalArrangement = Arrangement.Absolute.SpaceEvenly,
@@ -290,7 +292,7 @@ fun EditAccount(
                       }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     modifier =
@@ -308,12 +310,16 @@ fun EditAccount(
                                     favorite = favorite))
                             navigationActions.goBack()
                           },
-                          enabled = favorite.contains(true) && email != defaultEmail,
+                          enabled =
+                              favorite.contains(true) &&
+                                  email != defaultEmail &&
+                                  (email == "" || email.contains("@")),
                           modifier = Modifier.weight(1f).testTag("saveButton"),
                       ) {
                         Text("Save changes")
                       }
                     }
+                Spacer(modifier = Modifier.height(6.dp))
               }
         }
       }

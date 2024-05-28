@@ -238,7 +238,7 @@ fun InventoryScreen(
                   isExpandable = true,
                   expandState = false,
                   wasExpanded = expendedBor,
-                  updateExpanded = { i, e -> expendedBor[i] = e },
+                  updateExpanded = { i, expanded -> expendedBor[i] = expanded },
                   manageLoanViewModel = manageLoanViewModelOutgoing,
                   navigationActions = navigationActions,
                   itemViewModel = itemViewModel,

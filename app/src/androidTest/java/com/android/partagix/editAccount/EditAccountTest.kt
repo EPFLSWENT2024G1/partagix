@@ -50,7 +50,9 @@ class EditAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           "name1",
           "address1",
           "rank1",
-          Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
+          email = "email@test.com",
+          inventory =
+              Inventory("id1", listOf(Item("1", cat1, "Name 1", "Description 1", vis1, 1, loc1))))
 
   @Before
   fun testSetup() {

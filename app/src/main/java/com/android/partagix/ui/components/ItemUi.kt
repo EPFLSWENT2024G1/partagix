@@ -276,24 +276,18 @@ fun ItemUi(
               u = it
             }
         else manageLoanViewModel.getUser(loan.idBorrower) { u = it }
-        Text("Preferred contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
+
+        // favorite contacts
         if (u.favorite != listOf(false, false, false)) {
           val email = if (u.favorite?.get(0) == true) "Email : ${u.email}" else ""
           val phone = if (u.favorite?.get(1) == true) "Phone : ${u.phoneNumber}" else ""
           val telegram = if (u.favorite?.get(2) == true) "Telegram : ${u.telegram}" else ""
-          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty())
-              Text("No preferred contact", fontSize = smallerFontSize, lineHeight = 1.3.em)
-          else {
-            listOf(email, phone, telegram).filter { it.isNotEmpty() }
-            listOf(email, phone, telegram)
-                .filter { it.isNotEmpty() }
-                .forEach { contact -> ClickableText(contact) }
-          }
-        } else {
-          Text("No preferred contact", fontSize = 11.sp, lineHeight = 1.3.em)
+          listOf(email, phone, telegram).filter { it.isNotEmpty() }
+          listOf(email, phone, telegram)
+              .filter { it.isNotEmpty() }
+              .forEach { contact -> ClickableText(contact, true) }
         }
-        Spacer(modifier = Modifier.height(2.dp))
-        Text("Other contact: ", fontSize = smallerFontSize, lineHeight = 1.3.em)
+        // other contacts
         if (u.favorite != listOf(false, false, false)) {
           val email = if (u.favorite?.get(0) == false && u.email != "") "Email : ${u.email}" else ""
           val phone =
@@ -302,16 +296,10 @@ fun ItemUi(
           val telegram =
               if (u.favorite?.get(2) == false && u.telegram != "") "Telegram : ${user.telegram}"
               else ""
-          if (email.isEmpty() && phone.isEmpty() && telegram.isEmpty()) {
-            Text("No other contact", fontSize = 11.sp, lineHeight = 1.3.em)
-          } else {
-            listOf(email, phone, telegram).filter { it.isNotEmpty() }
-            listOf(email, phone, telegram)
-                .filter { it.isNotEmpty() }
-                .forEach { contact -> ClickableText(contact) }
-          }
-        } else {
-          Text("No other contact", fontSize = smallerFontSize)
+          listOf(email, phone, telegram).filter { it.isNotEmpty() }
+          listOf(email, phone, telegram)
+              .filter { it.isNotEmpty() }
+              .forEach { contact -> ClickableText(contact) }
         }
       }
       Spacer(modifier = Modifier.height(8.dp))
@@ -345,8 +333,6 @@ fun ItemUi(
                   contentPadding = PaddingValues(3.dp, 0.dp, 7.dp, 0.dp))
             }
             Spacer(modifier = Modifier.width(6.dp))
-            print(
-                "----------------userid : ${user.id}, borrowerid : ${loan.idBorrower}, lenderid : ${loan.idLender}")
             if (loan.state != LoanState.ONGOING &&
                 !(loan.state == LoanState.ACCEPTED && user.id == loan.idBorrower))
                 Button(
@@ -375,13 +361,13 @@ fun ItemUi(
 }
 
 @Composable
-fun ClickableText(contact: String) {
+fun ClickableText(contact: String, favorite: Boolean = false) {
   val context = LocalContext.current
   Text(
       text = contact,
-      fontSize = 11.sp,
+      fontSize = 13.sp,
       lineHeight = 1.3.em,
-      fontWeight = FontWeight.Bold,
+      fontWeight = if (favorite) FontWeight.Bold else FontWeight.Normal,
       modifier =
           Modifier.clickable {
             val intent =
