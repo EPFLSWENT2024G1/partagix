@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,8 +35,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -123,7 +126,7 @@ fun InventoryScreen(
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
-                        "There is no items in your inventory, click on the + button to add your first item",
+                        "You have no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
@@ -131,10 +134,10 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Loan requests",
+                      text = "Loan Requests",
                       style =
                           TextStyle(
                               fontSize = 18.sp,
@@ -193,6 +196,8 @@ fun InventoryScreen(
                               modifier = Modifier.align(Alignment.CenterHorizontally))
                           Text(
                               text = "Outgoing Requests ($outgoingRequests)",
+                              // when we fix the
+                              // count
                               color = MaterialTheme.colorScheme.onSecondaryContainer,
                               style = TextStyle(fontSize = 10.sp),
                               modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -201,41 +206,56 @@ fun InventoryScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+              var expendedBor: SnapshotStateList<Boolean> = remember {
+                mutableStateListOf<Boolean>().apply {
+                  for (i in 0 until uiState.borrowedItems.size) {
+                    add(false)
+                  }
+                }
+              }
               ItemListColumn(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
-                  title = "Borrowed items",
+                  title = "Borrowed",
                   corner = uiState.borrowedItems.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)
                     navigationActions.navigateTo(Route.VIEW_ITEM)
                   },
                   onUserClick = {
-                    //                    userViewModel.setUser(user)
-                    navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                    // navigationActions.navigateTo(Route.OTHER_ACCOUNT) todo
                   },
                   isCornerClickable = false,
                   isClickable = false,
-                  isOutgoing = false,
+                  isOutgoing = true,
                   isLender = true,
-                  isExpandable = false,
+                  isExpandable = true,
+                  expandState = false,
+                  wasExpanded = expendedBor,
+                  updateExpanded = { i, expanded -> expendedBor[i] = expanded },
+                  manageLoanViewModel = manageLoanViewModelOutgoing,
+                  navigationActions = navigationActions,
+                  itemViewModel = itemViewModel,
                   modifier =
                       Modifier.padding(horizontal = 10.dp)
                           .fillMaxHeight(0.4f)
                           .testTag("inventoryScreenBorrowedItemList"))
+
+              HorizontalDivider(
+                  color = MaterialTheme.colorScheme.outlineVariant,
+                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
 
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
                   list = uiState.items,
                   users = uiState.users,
                   loan = uiState.loan,
-                  title = "Inventory item",
+                  title = "My Inventory",
                   corner = uiState.items.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)
@@ -247,6 +267,8 @@ fun InventoryScreen(
                   isOutgoing = false,
                   isOwner = true,
                   manageLoanViewModel = manageLoanViewModelOutgoing,
+                  itemViewModel = itemViewModel,
+                  navigationActions = navigationActions,
                   modifier =
                       Modifier.padding(horizontal = 10.dp).testTag("inventoryScreenItemList"))
             }

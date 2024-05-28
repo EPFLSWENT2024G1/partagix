@@ -52,7 +52,11 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
                       document.data["rank"] as String,
                       Inventory(document.data["id"] as String, listItems),
                       File("noImage"),
-                      document.data["fcmToken"] as String?)
+                      document.data["fcmToken"] as String?,
+                      document.data["email"] as? String ?: "Please enter an email address",
+                      document.data["phoneNumber"] as String?,
+                      document.data["telegram"] as String?,
+                      document.data["favorite"] as? List<Boolean> ?: listOf(true, false, false))
               ret.add(user)
             }
             onSuccess(ret)
@@ -78,7 +82,23 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
           val addr = user["addr"] as String
           val rank = user["rank"] as String
           val fcmToken = user["fcmToken"] as String?
-          onSuccess(User(idUser, name, addr, rank, inventory, File("noImage"), fcmToken))
+          val email = user["email"] as? String ?: "Please enter an email address"
+          val phoneNumber = user["phoneNumber"] as? String ?: ""
+          val telegram = user["telegram"] as? String ?: ""
+          val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+          onSuccess(
+              User(
+                  idUser,
+                  name,
+                  addr,
+                  rank,
+                  inventory,
+                  File("noImage"),
+                  fcmToken,
+                  email,
+                  phoneNumber,
+                  telegram,
+                  favorite))
         }
       } else {
         onNoUser()
@@ -97,7 +117,23 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             val addr = user["addr"] as String
             val rank = user["rank"] as String
             val fcmToken = user["fcmToken"] as String?
-            onSuccess(User(idUser, name, addr, rank, inventory, localFile, fcmToken))
+            val email = user["email"] as? String ?: "Please enter an email address"
+            val phoneNumber = user["phoneNumber"] as? String ?: ""
+            val telegram = user["telegram"] as? String ?: ""
+            val favorite = user["favorite"] as? List<Boolean> ?: listOf(true, false, false)
+            onSuccess(
+                User(
+                    idUser,
+                    name,
+                    addr,
+                    rank,
+                    inventory,
+                    localFile,
+                    fcmToken,
+                    email,
+                    phoneNumber,
+                    telegram,
+                    favorite))
           }
         } else {
           onNoUser()
@@ -654,6 +690,7 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "addr" to user.address,
             "rank" to user.rank,
             "fcmToken" to user.fcmToken,
+            "email" to user.email,
         )
     users.document(user.id).set(data)
   }
@@ -672,7 +709,10 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
             "addr" to user.address,
             "rank" to user.rank,
             "fcmToken" to user.fcmToken,
-        )
+            "email" to user.email,
+            "phoneNumber" to user.phoneNumber,
+            "telegram" to user.telegram,
+            "favorite" to user.favorite)
     users.document(user.id).set(data)
     onSuccess(user)
   }

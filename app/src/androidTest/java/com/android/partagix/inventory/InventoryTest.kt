@@ -1,6 +1,7 @@
 package com.android.partagix.inventory
 
 import android.location.Location
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
@@ -101,7 +102,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       noItemText {
         assertIsDisplayed()
         assertTextEquals(
-            "There is no items in your inventory, click on the + button to add your first item")
+            "You have no items in your inventory, click on the + button to add your first item")
       }
       bottomNavBar { assertIsDisplayed() }
       bottomNavBarItemInventory { assertIsDisplayed() }
@@ -119,7 +120,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
           mockManageLoanViewModelIncoming,
           mockItemViewModel)
     }
-
+    every { mockManageLoanViewModelOutgoing.getCount() } returns 3
     onComposeScreen<InventoryScreen>(composeTestRule) {
       itemList { assertIsDisplayed() }
       borrowedItemList { assertIsDisplayed() }

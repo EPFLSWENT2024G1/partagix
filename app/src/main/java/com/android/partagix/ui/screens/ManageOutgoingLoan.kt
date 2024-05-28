@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
@@ -37,6 +38,7 @@ import com.android.partagix.ui.navigation.Route
 fun ManageOutgoingLoan(
     manageLoanViewModel: ManageLoanViewModel,
     navigationActions: NavigationActions,
+    itemViewModel: ItemViewModel,
     modifier: Modifier = Modifier,
     expandable: Boolean = false,
 ) {
@@ -77,7 +79,7 @@ fun ManageOutgoingLoan(
                         .fillMaxSize()
                         .testTag("manageOutgoingScreenNoItemBox")) {
                   Text(
-                      text = "There is no outgoing loan request.",
+                      text = "You have no outgoing loan request.",
                       modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
           }
@@ -107,6 +109,8 @@ fun ManageOutgoingLoan(
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     onUserClick = { /* todo */},
                     manageLoanViewModel = manageLoanViewModel,
+                    navigationActions = navigationActions,
+                    itemViewModel = itemViewModel,
                     modifier =
                         Modifier.padding(horizontal = 10.dp)
                             .testTag("manageLoanScreenItemListColumn"))
