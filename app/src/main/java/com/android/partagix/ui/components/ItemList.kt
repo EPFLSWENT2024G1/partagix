@@ -105,10 +105,7 @@ fun ItemList(
           isOwner = isOwner,
           isLender = isLender,
           onItemClick = onItemClick,
-          onUserClick = {
-            //            userViewModel.setUser(user)
-            //            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
-          },
+          onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           itemViewModel = itemViewModel,
           navigationActions = navigationActions,
