@@ -116,7 +116,6 @@ fun HomeScreen(
                   style = MaterialTheme.typography.titleLarge)
               Spacer(modifier = Modifier.height(8.dp))
 
-
               Row(
                   modifier =
                       Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
@@ -133,9 +132,9 @@ fun HomeScreen(
                         onClick = {
                           cameraOpen = !cameraOpen
                           val user = Authentication.getUser()
-                          if(user != null) {
-                            //onQrScanned("MHlgRWlehFcHRweZaeGZ", user.uid)
-                            //homeViewModel.openQrScanner()
+                          if (user != null) {
+                            // onQrScanned("MHlgRWlehFcHRweZaeGZ", user.uid)
+                            // homeViewModel.openQrScanner()
                           }
                         },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
@@ -146,9 +145,9 @@ fun HomeScreen(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
                         modifier = Modifier.weight(1f).testTag("homeScreenThirdBigButton"))
                   }
-            if(cameraOpen){
-              CameraScreen(onQrScanned)
-            }
+              if (cameraOpen) {
+                CameraScreen(onQrScanned)
+              }
 
               Box(modifier = modifier.padding(top = 8.dp)) {
                 Text(
@@ -205,6 +204,7 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
         }
       }
 }
+
 @Composable
 fun CameraScreen(onQrScanned: (String, String) -> Unit) {
   val context = LocalContext.current
@@ -220,72 +220,64 @@ fun CameraScreen(onQrScanned: (String, String) -> Unit) {
   }
 
   AndroidView(
-    modifier = Modifier.fillMaxSize(),
-    factory = { ctx ->
-      val previewView = PreviewView(ctx)
-      val preview = Preview.Builder().build()
-      val selector = CameraSelector.Builder()
-        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-        .build()
+      modifier = Modifier.fillMaxSize(),
+      factory = { ctx ->
+        val previewView = PreviewView(ctx)
+        val preview = Preview.Builder().build()
+        val selector =
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
-      preview.setSurfaceProvider(previewView.surfaceProvider)
+        preview.setSurfaceProvider(previewView.surfaceProvider)
 
-      val imageAnalysis = ImageAnalysis.Builder().build()
-      imageAnalysis.setAnalyzer(
-        ContextCompat.getMainExecutor(ctx),
-        BarcodeAnalyzer(ctx, onQrScanned)
-      )
+        val imageAnalysis = ImageAnalysis.Builder().build()
+        imageAnalysis.setAnalyzer(
+            ContextCompat.getMainExecutor(ctx), BarcodeAnalyzer(ctx, onQrScanned))
 
-      try {
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-          lifecycleOwner,
-          selector,
-          preview,
-          imageAnalysis
-        )
-      } catch (exc: Exception) {
-        Log.e("CAMERA", "Camera bind error ${exc.localizedMessage}", exc)
-      }
+        try {
+          cameraProvider.unbindAll()
+          cameraProvider.bindToLifecycle(lifecycleOwner, selector, preview, imageAnalysis)
+        } catch (exc: Exception) {
+          Log.e("CAMERA", "Camera bind error ${exc.localizedMessage}", exc)
+        }
 
-      previewView
-    }
-  )
+        previewView
+      })
 }
-class BarcodeAnalyzer(private val context: Context, private val onQrScanned  : (String, String) -> Unit) : ImageAnalysis.Analyzer {
 
-  private val options = BarcodeScannerOptions.Builder()
-    .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-    .build()
+class BarcodeAnalyzer(
+    private val context: Context,
+    private val onQrScanned: (String, String) -> Unit
+) : ImageAnalysis.Analyzer {
+
+  private val options =
+      BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).build()
 
   private val scanner = BarcodeScanning.getClient(options)
 
   @SuppressLint("UnsafeOptInUsageError")
   override fun analyze(imageProxy: ImageProxy) {
     imageProxy.image?.let { image ->
-      scanner.process(
-        InputImage.fromMediaImage(
-          image, imageProxy.imageInfo.rotationDegrees
-        )
-      ).addOnSuccessListener { barcode ->
-        barcode?.takeIf { it.isNotEmpty() }
-          ?.mapNotNull { it.rawValue }
-          ?.joinToString(",")
-          ?.let {
-            val user = Authentication.getUser()
-            if(user != null) {
-              val uri = Uri.parse(it)
-              val itemId = uri.getQueryParameter("itemId")
-              val text = "Qr code scanned successfully"
-              Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-              if (itemId != null){
-                onQrScanned(itemId, user.uid)
-              }
-            }
+      scanner
+          .process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees))
+          .addOnSuccessListener { barcode ->
+            barcode
+                ?.takeIf { it.isNotEmpty() }
+                ?.mapNotNull { it.rawValue }
+                ?.joinToString(",")
+                ?.let {
+                  val user = Authentication.getUser()
+                  if (user != null) {
+                    val uri = Uri.parse(it)
+                    val itemId = uri.getQueryParameter("itemId")
+                    val text = "Qr code scanned successfully"
+                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                    if (itemId != null) {
+                      onQrScanned(itemId, user.uid)
+                    }
+                  }
+                }
           }
-      }.addOnCompleteListener {
-        imageProxy.close()
-      }
+          .addOnCompleteListener { imageProxy.close() }
     }
   }
 }
