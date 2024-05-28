@@ -348,10 +348,17 @@ class App(
       }
 
       composable(
-          Route.OTHER_ACCOUNT,
-      ) {
-        ViewOtherAccount(navigationActions = navigationActions, userViewModel = otherUserViewModel)
+          Route.OTHER_ACCOUNT + "/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })) {
+          val userId = it.arguments?.getString("userId")
+          if (userId != null) {
+              db.getUser(userId) { user ->
+                  otherUserViewModel.updateUser(user)
+              }
+          }
+          ViewOtherAccount(navigationActions = navigationActions, userViewModel = otherUserViewModel)
       }
+
 
       composable(
           Route.EDIT_ACCOUNT,

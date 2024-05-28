@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -134,8 +135,7 @@ fun InventoryViewItemScreen(
                                 .fillMaxHeight()
                                 .testTag("ownerField")
                                 .clickable {
-                                  userViewModel.setUser(user)
-                                  navigationActions.navigateTo(Route.OTHER_ACCOUNT)
+                                    navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${user.id}")
                                 })
                   }
                 }

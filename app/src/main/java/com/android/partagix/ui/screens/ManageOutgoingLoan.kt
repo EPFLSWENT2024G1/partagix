@@ -105,7 +105,7 @@ fun ManageOutgoingLoan(
                     isLender = true,
                     isClickable = false,
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
-                    onUserClick = { /* todo */},
+                    onUserClick = { navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idUser}")},
                     manageLoanViewModel = manageLoanViewModel,
                     modifier =
                         Modifier.padding(horizontal = 10.dp)

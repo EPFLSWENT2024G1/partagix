@@ -230,7 +230,7 @@ fun LoanScreen(
                           isExpandable = false,
                           isOutgoing = false,
                           wasExpanded = emptyList(),
-                          onUserClick = { /* todo */},
+                          onUserClick = { navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idUser}")},
                       )
                     }
                   }

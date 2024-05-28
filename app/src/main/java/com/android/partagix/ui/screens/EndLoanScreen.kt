@@ -94,7 +94,7 @@ fun EndLoanScreen(
                             user = lender,
                             loan = loan,
                             modifier = Modifier.fillMaxWidth().testTag("item"),
-                            onUserClick = { /* todo */},
+                            onUserClick = {navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${lender.id}")},
                             onItemClick = {
                               itemViewModel.updateUiItem(item)
                               navigationActions.navigateTo(Route.VIEW_ITEM)
