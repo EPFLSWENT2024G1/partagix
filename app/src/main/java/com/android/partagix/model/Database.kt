@@ -337,7 +337,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   */
 
   fun getAvailableItems(isItemWithImage: Boolean = false, onSuccess: (List<Item>) -> Unit) {
-
     val itemSuccess: (List<Item>) -> Unit = { items ->
       getLoans { loans ->
         val availableItems1 =
