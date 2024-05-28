@@ -31,21 +31,15 @@ class BarcodeAnalyzerTest {
 
     // Mock the Authentication.getUser() to return a test user with a specific UID
     mockkObject(Authentication)
-    every { Authentication.getUser() } returns mockk {
-      every { uid } returns userUid
-    }
+    every { Authentication.getUser() } returns mockk { every { uid } returns userUid }
 
     // Mock the barcode to return the rawValue
-    val barcode = mockk<Barcode> {
-      every { rawValue } returns raw
-    }
+    val barcode = mockk<Barcode> { every { rawValue } returns raw }
     val barcodes = listOf(barcode)
 
     // Mock the Uri parsing
     mockkStatic(Uri::class)
-    every { Uri.parse(raw) } returns mockk {
-      every { getQueryParameter("itemId") } returns itemId
-    }
+    every { Uri.parse(raw) } returns mockk { every { getQueryParameter("itemId") } returns itemId }
 
     val toast = mockk<Toast>()
     every { toast.show() } just Runs

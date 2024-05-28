@@ -2,18 +2,14 @@ package com.android.partagix.ui.screens
 
 import BarcodeAnalyzer
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -66,15 +62,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.ManageLoanViewModel
-import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.ItemListColumn
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
 
 private const val quickAccessText = "Quick access"
 private const val findItemButtonName = "Find item to borrow"
@@ -206,9 +197,9 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
 
 @Composable
 fun CameraToggleButton(
-  cameraOpen: Boolean,
-  onCameraToggle: (Boolean) -> Unit,
-  modifier: Modifier = Modifier
+    cameraOpen: Boolean,
+    onCameraToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
   val context = LocalContext.current
   val activity = context as? Activity
@@ -217,32 +208,32 @@ fun CameraToggleButton(
   var hasCameraPermission by remember { mutableStateOf(false) }
 
   // Create a permission launcher
-  val permissionLauncher = rememberLauncherForActivityResult(
-    ActivityResultContracts.RequestPermission()
-  ) { isGranted ->
-    hasCameraPermission = isGranted
-    if (isGranted) {
-      onCameraToggle(!cameraOpen)
-    } else {
-      Toast.makeText(context, "Camera permission is required to use the camera.", Toast.LENGTH_SHORT).show()
-    }
-  }
-
-  BigButton(
-    logo = Icons.Default.QrCodeScanner,
-    text = quickScanButtonName,
-    onClick = {
-      if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-        hasCameraPermission = true
-        onCameraToggle(!cameraOpen)
-      } else {
-        // Request the permission
-        permissionLauncher.launch(Manifest.permission.CAMERA)
+  val permissionLauncher =
+      rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        hasCameraPermission = isGranted
+        if (isGranted) {
+          onCameraToggle(!cameraOpen)
+        } else {
+          Toast.makeText(
+                  context, "Camera permission is required to use the camera.", Toast.LENGTH_SHORT)
+              .show()
+        }
       }
 
-    },
-    modifier = modifier)
-
+  BigButton(
+      logo = Icons.Default.QrCodeScanner,
+      text = quickScanButtonName,
+      onClick = {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED) {
+          hasCameraPermission = true
+          onCameraToggle(!cameraOpen)
+        } else {
+          // Request the permission
+          permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+      },
+      modifier = modifier)
 }
 
 @Composable
@@ -283,4 +274,3 @@ fun CameraScreen(onQrScanned: (String, String) -> Unit) {
         previewView
       })
 }
-
