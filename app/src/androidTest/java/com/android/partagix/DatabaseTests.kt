@@ -1015,8 +1015,6 @@ class DatabaseTests {
 
     runBlocking {
       database.getAvailableItems(false) { items ->
-        for (item in items) {
-        }
         assertEquals(
             listOf(
                 availableItemBasic,
