@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -48,6 +47,7 @@ import com.android.partagix.model.visibility.getVisibility
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.CategoryItems
 import com.android.partagix.ui.components.DropDown
+import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.components.MainImagePicker
 import com.android.partagix.ui.components.VisibilityItems
 import com.android.partagix.ui.components.locationPicker.LocationPicker
@@ -137,7 +137,10 @@ fun InventoryCreateOrEditItem(
                           modifier
                               .fillMaxHeight()
                               .fillMaxWidth(.4f)
-                              .border(1.dp, MaterialTheme.colorScheme.onBackground)
+                              .border(
+                                  1.dp,
+                                  MaterialTheme.colorScheme.outline,
+                                  shape = RoundedCornerShape(4.dp))
                               .testTag("image")) {
                         val image =
                             File(uiImage.toString().ifEmpty { "res/drawable/default_image.jpg" })
@@ -178,12 +181,8 @@ fun InventoryCreateOrEditItem(
                         maxLines = 1, // Ensure only one line is displayed
                         readOnly = false)
 
-                    OutlinedTextField(
-                        value = uiState.user.name,
-                        onValueChange = {},
-                        label = { Text("Owner") },
-                        modifier = modifier.testTag("idUser").fillMaxWidth(),
-                        readOnly = true)
+                    LabeledText(
+                        modifier.testTag("idUser").fillMaxWidth(), "Owner", uiState.user.name)
                   }
                 }
               }
@@ -213,7 +212,7 @@ fun InventoryCreateOrEditItem(
                   }
                 }
 
-                Spacer(modifier = modifier.height(8.dp))
+                //                Spacer(modifier = modifier.height(8.dp))
 
                 OutlinedTextField(
                     value = if (uiQuantity == 0L) "" else uiQuantity.toString(),
@@ -254,12 +253,6 @@ fun InventoryCreateOrEditItem(
                       navigationActions.goBack()
                     },
                     enabled = uiName.isNotBlank(),
-                    colors =
-                        ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.onBackground,
-                            disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                            disabledContainerColor = Color.Gray),
                     content = {
                       if (mode == "edit") {
                         Text("Save")

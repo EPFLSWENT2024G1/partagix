@@ -77,7 +77,7 @@ fun ManageOutgoingLoan(
                         .fillMaxSize()
                         .testTag("manageOutgoingScreenNoItemBox")) {
                   Text(
-                      text = "There is no outgoing loan request.",
+                      text = "You have no outgoing loan request.",
                       modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
           }
@@ -102,9 +102,10 @@ fun ManageOutgoingLoan(
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
                     isOutgoing = true,
+                    isLender = true,
                     isClickable = false,
-                    onClick = {},
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
+                    onUserClick = { /* todo */},
                     manageLoanViewModel = manageLoanViewModel,
                     modifier =
                         Modifier.padding(horizontal = 10.dp)

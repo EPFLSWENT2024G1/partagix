@@ -73,7 +73,7 @@ fun ManageLoanRequest(
                 modifier =
                     modifier.padding(innerPadding).fillMaxSize().testTag("manageScreenNoItemBox")) {
                   Text(
-                      text = "There is no loan request.",
+                      text = "You have no loan request.",
                       modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
           }
@@ -97,8 +97,8 @@ fun ManageLoanRequest(
                     isExpandable = true,
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
-                    onClick = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
+                    onUserClick = { /* todo */},
                     manageLoanViewModel = manageLoanViewModel,
                     isClickable = false,
                     isOutgoing = false,

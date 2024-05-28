@@ -63,7 +63,7 @@ class ItemViewModelTests {
           Category("0", "Category 1"),
           "modify",
           "modified",
-          Visibility.FRIENDS,
+          Visibility.PUBLIC,
           3,
           Location(""),
           imageId = File("noImage"))
