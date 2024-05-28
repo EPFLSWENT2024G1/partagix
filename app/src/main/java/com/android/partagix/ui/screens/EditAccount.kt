@@ -176,7 +176,7 @@ fun EditAccount(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                   LocationPicker(
                       location = tempAddress,
                       loc = loc.value,

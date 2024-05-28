@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -54,7 +55,8 @@ fun LocationPicker(
       },
       leadingIcon = {
         Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier)
-      })
+      },
+      colors = OutlinedTextFieldDefaults.colors())
 
   LaunchedEffect(
       key1 = location,
