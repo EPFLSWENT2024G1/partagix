@@ -57,7 +57,7 @@ fun TopSearchBar(filter: (String) -> Unit, modifier: Modifier = Modifier, query:
       },
       active = false,
       onActiveChange = { active = it },
-      modifier = modifier.fillMaxWidth().padding(20.dp),
+      modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp),
       placeholder = { Text("Search an Item") },
       leadingIcon = {
         if (!active) {

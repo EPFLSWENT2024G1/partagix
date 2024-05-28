@@ -86,7 +86,7 @@ class EndToEndCreateEdit {
   private lateinit var mockHomeUiState: MutableStateFlow<HomeUIState>
 
   val cat1 = Category("1", CategoryItems[1])
-  val vis1 = Visibility.FRIENDS
+  val vis1 = Visibility.PUBLIC
   val loc1 = Location("")
   val loc2 = com.android.partagix.model.location.Location(12.0, 12.0, "Lausanne")
   val loc3 = com.android.partagix.model.location.Location(13.0, 13.0, "Paris")
@@ -204,7 +204,7 @@ class EndToEndCreateEdit {
 
     composeTestRule
         .onNodeWithText(
-            "There is no items in your inventory, click on the + button to add your first item")
+            "You have no items in your inventory, click on the + button to add your first item")
         .assertIsDisplayed()
     composeTestRule.onNodeWithTag("inventoryScreenFab").performClick()
 
@@ -237,7 +237,7 @@ class EndToEndCreateEdit {
             Category("", CategoryItems[1]),
             "Object 1",
             "Description 1",
-            Visibility.FRIENDS,
+            Visibility.PUBLIC,
             2,
             androidLocation3,
             imageId = File("default-image.jpg"))
@@ -270,7 +270,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithTag("description").performTextInput("Description 1")
     composeTestRule.onNodeWithTag("quantity").performTextReplacement("2")
     composeTestRule.onNodeWithTag("visibility").performClick()
-    composeTestRule.onNodeWithText("Friends only").performClick()
+    composeTestRule.onNodeWithText("Everyone").performClick()
 
     composeTestRule.onNodeWithTag("addressField").performScrollTo()
     composeTestRule.onNodeWithTag("addressField").performClick()
@@ -330,7 +330,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Object 1").assertIsDisplayed()
     composeTestRule.onNodeWithText("Description 1").assertIsDisplayed()
     composeTestRule.onNodeWithText("2").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Everyone").assertIsDisplayed()
     composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithText("Edit").performScrollTo()
     composeTestRule.onNodeWithText("Edit").performClick()
@@ -387,7 +387,7 @@ class EndToEndCreateEdit {
     composeTestRule.onNodeWithText("Object 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("Description 1 edited").assertIsDisplayed()
     composeTestRule.onNodeWithText("3").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Friends only").assertIsDisplayed()
+    composeTestRule.onNodeWithText("Everyone").assertIsDisplayed()
     composeTestRule.onNodeWithText(CategoryItems[1]).assertIsDisplayed()
     composeTestRule.onNodeWithTag("navigationIcon").performClick()
 

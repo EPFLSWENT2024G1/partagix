@@ -79,7 +79,7 @@ fun ManageOutgoingLoan(
                         .fillMaxSize()
                         .testTag("manageOutgoingScreenNoItemBox")) {
                   Text(
-                      text = "There is no outgoing loan request.",
+                      text = "You have no outgoing loan request.",
                       modifier = modifier.align(Alignment.Center).testTag("manageScreenNoItemText"))
                 }
           }

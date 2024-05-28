@@ -24,6 +24,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -170,15 +171,18 @@ fun EditAccount(
                         Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("usernameField"),
                     value = tempUsername,
                     onValueChange = { tempUsername = it },
-                    label = { Text("username") })
+                    label = { Text("username") },
+                    colors = OutlinedTextFieldDefaults.colors())
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LocationPicker(
-                    location = tempAddress,
-                    loc = loc.value,
-                    onTextChanged = { tempAddress = it },
-                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                  LocationPicker(
+                      location = tempAddress,
+                      loc = loc.value,
+                      onTextChanged = { tempAddress = it },
+                      onLocationLookup = { locationViewModel.getLocation(it, loc) })
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -292,7 +296,6 @@ fun EditAccount(
                     modifier =
                         Modifier.fillMaxWidth().padding(16.dp, 0.dp).testTag("actionButtons"),
                     horizontalArrangement = Arrangement.Absolute.Center) {
-                      Spacer(modifier = Modifier.width(8.dp))
                       Button(
                           onClick = {
                             userViewModel.updateUser(

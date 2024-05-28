@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -125,7 +126,7 @@ fun InventoryScreen(
                       .testTag("inventoryScreenNoItemBox")) {
                 Text(
                     text =
-                        "There is no items in your inventory, click on the + button to add your first item",
+                        "You have no items in your inventory, click on the + button to add your first item",
                     textAlign = TextAlign.Center,
                     modifier =
                         modifier.align(Alignment.Center).testTag("inventoryScreenNoItemText"))
@@ -133,10 +134,10 @@ fun InventoryScreen(
         } else {
           Column(modifier = modifier.padding(innerPadding).fillMaxSize()) {
             Row(
-                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp),
+                modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Loan requests",
+                      text = "Loan Requests",
                       style =
                           TextStyle(
                               fontSize = 18.sp,
@@ -220,7 +221,7 @@ fun InventoryScreen(
                   list = uiState.borrowedItems,
                   users = uiState.usersBor,
                   loan = uiState.loanBor,
-                  title = "Borrowed items",
+                  title = "Borrowed",
                   corner = uiState.borrowedItems.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)
@@ -246,12 +247,16 @@ fun InventoryScreen(
                           .fillMaxHeight(0.4f)
                           .testTag("inventoryScreenBorrowedItemList"))
 
+              HorizontalDivider(
+                  color = MaterialTheme.colorScheme.outlineVariant,
+                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
                   list = uiState.items,
                   users = uiState.users,
                   loan = uiState.loan,
-                  title = "Inventory item",
+                  title = "My Inventory",
                   corner = uiState.items.size.toString(),
                   onItemClick = {
                     itemViewModel.updateUiItem(it)

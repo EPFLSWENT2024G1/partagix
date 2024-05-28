@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,12 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +34,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -113,11 +111,14 @@ fun InventoryViewItemScreen(
                         contentDescription = "fds",
                         contentScale = ContentScale.FillWidth,
                         modifier =
-                            Modifier.fillMaxWidth(0.3f)
-                                .border(1.dp, MaterialTheme.colorScheme.onBackground),
+                            Modifier.fillMaxWidth(0.4f)
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outlineVariant,
+                                    shape = RoundedCornerShape(4.dp)),
                         alignment = Alignment.Center)
                   }
-                  Spacer(modifier = Modifier.width(8.dp))
+                  Spacer(modifier = Modifier.width(4.dp))
 
                   Column {
                     LabeledText(
@@ -142,112 +143,58 @@ fun InventoryViewItemScreen(
               Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 LabeledText(label = "Description", text = item.description)
 
-                Spacer(modifier = Modifier.height(8.dp))
                 if (!viewOthersItem) {
                   LabeledText(label = "Category", text = item.category.name)
 
-                  Spacer(modifier = Modifier.height(8.dp))
-
                   LabeledText(label = "Visibility", text = item.visibility.visibilityLabel)
-
-                  Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 LabeledText(label = "Quantity", text = item.quantity.toString())
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 LabeledText(
-                    label = "Where",
+                    label = "Location",
                     text = item.location.extras?.getString("display_name", "Unknown") ?: "Unknown")
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                  LabeledText(
+                      modifier = Modifier.fillMaxWidth(0.8f),
+                      label = "Availability",
+                      text =
+                          "Now available") /* todo : branch with the availability like in itemUi */
 
-                Box(modifier = Modifier.padding(8.dp)) {
-                  Column {
-                    Text(
-                        text = "Availability",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween) {
-                          Text(
-                              text = "available", /*TODO: get item disponibility*/
-                              style = MaterialTheme.typography.bodyMedium,
-                              color = MaterialTheme.colorScheme.onBackground,
-                              modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
-                          )
-
-                          IconButton(
-                              onClick = { /*TODO: see calendar with disponibilities*/},
-                              content = {
-                                Icon(Icons.Default.DateRange, contentDescription = null)
-                              })
-                        }
-                  }
+                  IconButton(
+                      onClick = { /*TODO: see calendar with disponibilities*/},
+                      content = { Icon(Icons.Default.DateRange, contentDescription = null) })
                 }
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                   Button(
                       onClick = { navigationActions.navigateTo("${Route.STAMP}/${item.id}") },
-                      colors =
-                          ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onPrimary,
-                              contentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContainerColor = Color.Gray),
-                      content = {
-                        Text(
-                            "Download QR code",
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                      },
+                      content = { Text("Download QR code") },
                       modifier = Modifier.fillMaxWidth(0.5f))
 
                   Spacer(modifier = Modifier.width(8.dp))
-                  Button(
-                      enabled = actualUser != user.id && actualUser != "" && user.id != "",
-                      onClick = {
-                        borrowViewModel.startBorrow(item, user)
-                        navigationActions.navigateTo(Route.BORROW)
-                      },
-                      colors =
-                          ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onPrimary,
-                              contentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContainerColor = Color.Gray),
-                      content = {
-                        Text(
-                            "Borrow item",
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                      },
-                      modifier = Modifier.fillMaxWidth())
-                }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                  // Displays the Edit button to the owner, and Borrow to someone else
+                  if (itemViewModel.compareIDs(
+                      item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
 
-                // This should be displayed only if the user is the owner of the item
-                if (itemViewModel.compareIDs(
-                    item.idUser, FirebaseAuth.getInstance().currentUser?.uid)) {
-                  Button(
-                      onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
-                      content = { Text("Edit") },
-                      colors =
-                          ButtonColors(
-                              containerColor = MaterialTheme.colorScheme.onPrimary,
-                              contentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContentColor = MaterialTheme.colorScheme.onBackground,
-                              disabledContainerColor = Color.Gray),
-                      modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                    Button(
+                        onClick = { navigationActions.navigateTo(Route.EDIT_ITEM) },
+                        content = { Text("Edit") },
+                        modifier = Modifier.fillMaxWidth().testTag("editItemButton"))
+                  } else {
+                    Button(
+                        onClick = {
+                          borrowViewModel.startBorrow(item, user)
+                          navigationActions.navigateTo(Route.BORROW)
+                        },
+                        content = { Text("Borrow item") },
+                        modifier = Modifier.fillMaxWidth())
+                  }
                 }
               }
+              Spacer(modifier = Modifier.height(8.dp))
             }
       }
 }
