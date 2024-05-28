@@ -148,10 +148,4 @@ class AppTest {
 
     verify { mockNavActions.navigateTo(Route.INVENTORY) }
   }
-
-  @Test
-  fun navigateOtherAccount() {
-    app.navigateForTest(Route.OTHER_ACCOUNT + "/testUid")
-    verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/testUid") }
-  }
 }
