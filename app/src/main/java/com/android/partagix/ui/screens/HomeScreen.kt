@@ -1,11 +1,16 @@
 package com.android.partagix.ui.screens
 
 import BarcodeAnalyzer
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -127,10 +132,9 @@ fun HomeScreen(
                         onClick = { navigationActions.navigateTo(Route.LOAN) },
                         modifier = Modifier.weight(1f).testTag("homeScreenFirstBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
-                    BigButton(
-                        logo = Icons.Default.QrCodeScanner,
-                        text = quickScanButtonName,
-                        onClick = { cameraOpen = !cameraOpen },
+                    CameraToggleButton(
+                        cameraOpen = cameraOpen,
+                        onCameraToggle = { cameraOpen = it },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
@@ -197,6 +201,47 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           Spacer(modifier = Modifier.fillMaxHeight())
         }
       }
+}
+
+@Composable
+fun CameraToggleButton(
+  cameraOpen: Boolean,
+  onCameraToggle: (Boolean) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val context = LocalContext.current
+  val activity = context as? Activity
+
+  // State to remember if the permission has been granted
+  var hasCameraPermission by remember { mutableStateOf(false) }
+
+  // Create a permission launcher
+  val permissionLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.RequestPermission()
+  ) { isGranted ->
+    hasCameraPermission = isGranted
+    if (isGranted) {
+      onCameraToggle(!cameraOpen)
+    } else {
+      Toast.makeText(context, "Camera permission is required to use the camera.", Toast.LENGTH_SHORT).show()
+    }
+  }
+
+  BigButton(
+    logo = Icons.Default.QrCodeScanner,
+    text = quickScanButtonName,
+    onClick = {
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        hasCameraPermission = true
+        onCameraToggle(!cameraOpen)
+      } else {
+        // Request the permission
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+      }
+
+    },
+    modifier = modifier)
+
 }
 
 @Composable
