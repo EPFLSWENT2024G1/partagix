@@ -14,11 +14,9 @@ import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
 import com.android.partagix.screens.ViewAccount
-import com.android.partagix.screens.ViewOtherAccount
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.ViewAccount
-import com.android.partagix.ui.screens.ViewOtherAccount
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -135,7 +133,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           otherUserViewModel = mockOtherUserViewModel)
     }
 
-    onComposeScreen<ViewOtherAccount>(composeTestRule) {
+    onComposeScreen<ViewAccount>(composeTestRule) {
       commentsSection { assertIsDisplayed() }
       commentsTitle { assertIsDisplayed() }
       commentsTitle { assertTextEquals("Comments") }
