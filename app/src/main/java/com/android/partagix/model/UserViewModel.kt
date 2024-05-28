@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
-    user: User = User("", "", "", "", Inventory("", emptyList())),
+    user: User = User("", "", "", "", Inventory("", emptyList()), email = ""),
     db: Database = Database()
 ) : ViewModel() {
 

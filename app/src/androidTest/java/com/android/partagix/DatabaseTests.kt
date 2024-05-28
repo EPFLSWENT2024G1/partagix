@@ -496,6 +496,7 @@ class DatabaseTests {
             "rank",
             Inventory("id", listOf()),
             imageId = File("noImage"),
+            email = "Please enter an email address",
         )
     val user2 =
         User(

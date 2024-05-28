@@ -105,7 +105,8 @@ fun StartLoanScreen(
                               navigationActions.navigateTo(Route.VIEW_ITEM)
                               open = false
                             },
-                            onUserClick = { /* todo */})
+                            onUserClick = { /* todo */},
+                            navigationActions = navigationActions)
                       }
 
                       Row(

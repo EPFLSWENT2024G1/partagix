@@ -237,7 +237,7 @@ class InventoryViewModel(
    */
   fun getUsers(list: List<Item>, update: (User) -> Unit) {
     if (list.isEmpty()) {
-      update(User("", "", "", "", Inventory("", emptyList()), File(""), ""))
+      update(User("", "", "", "", Inventory("", emptyList()), File(""), "", ""))
       return
     }
 

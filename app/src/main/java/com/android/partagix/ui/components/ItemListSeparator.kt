@@ -17,10 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.user.User
+import com.android.partagix.ui.navigation.NavigationActions
 
 /**
  * ItemListColumn is a composable function that displays a list of items in a column. which is the
@@ -55,6 +57,11 @@ fun ItemListColumn(
     isLender: Boolean = false,
     onUserClick: (Item) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
+    itemViewModel: ItemViewModel = ItemViewModel(),
+    navigationActions: NavigationActions,
+    updateExpanded: (Int, Boolean) -> Unit = { i, expanded ->
+      manageLoanViewModel.updateExpanded(i, expanded)
+    },
     isExpandable: Boolean,
 ) {
   Column(modifier = modifier) {
@@ -116,7 +123,9 @@ fun ItemListColumn(
           manageLoanViewModel = manageLoanViewModel,
           modifier = Modifier.fillMaxSize(),
           expandState = expandState,
-      )
+          navigationActions = navigationActions,
+          updateExpanded = updateExpanded,
+          itemViewModel = itemViewModel)
     }
   }
 }
