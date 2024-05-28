@@ -129,14 +129,7 @@ fun HomeScreen(
                     BigButton(
                         logo = Icons.Default.QrCodeScanner,
                         text = quickScanButtonName,
-                        onClick = {
-                          cameraOpen = !cameraOpen
-                          val user = Authentication.getUser()
-                          if (user != null) {
-                            // onQrScanned("MHlgRWlehFcHRweZaeGZ", user.uid)
-                            // homeViewModel.openQrScanner()
-                          }
-                        },
+                        onClick = { cameraOpen = !cameraOpen },
                         modifier = Modifier.weight(1f).testTag("homeScreenSecondBigButton"))
                     Spacer(modifier = Modifier.width(8.dp))
                     BigButton(
