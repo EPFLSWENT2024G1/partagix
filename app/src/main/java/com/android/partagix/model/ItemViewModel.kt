@@ -29,6 +29,7 @@ import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import java.io.File
+import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -141,6 +142,12 @@ class ItemViewModel(
     return id == userId
   }
 
+  fun getAvailabilityDates() {
+    database.getItemUnavailability(uiState.value.item.id) { dates ->
+      _uiState.value = _uiState.value.copy(unavailableDates = dates)
+    }
+  }
+
   fun uploadImage(uri: Uri, imageName: String, onSuccess: () -> Unit) {
     imageStorage.uploadImageToFirebaseStorage(uri, imageName = imageName) { onSuccess() }
   }
@@ -161,4 +168,8 @@ class ItemViewModel(
   }
 }
 
-data class ItemUIState(val item: Item, val user: User)
+data class ItemUIState(
+    val item: Item,
+    val user: User,
+    val unavailableDates: List<Date> = emptyList()
+)

@@ -134,8 +134,8 @@ fun InventoryCreateOrEditItem(
                         val image = uiImage
 
                         MainImagePicker(listOf(image.toUri())) { uri ->
-                          if (uri.path != null && uri.path!!.isNotEmpty() && uri != image.toUri()) {
-
+                            if (uri.toString().isEmpty() || uri == image.toUri())
+                                return@MainImagePicker
                             isUploadingImage = true
                             dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
                             uiImage = File("null")
@@ -144,7 +144,6 @@ fun InventoryCreateOrEditItem(
                                 uiImage = file
                                 isUploadingImage = false
                               }
-                            }
                           }
                         }
                       }

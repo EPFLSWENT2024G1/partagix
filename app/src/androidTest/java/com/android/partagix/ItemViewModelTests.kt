@@ -25,6 +25,8 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.spyk
 import java.io.File
+import java.util.Calendar
+import java.util.Date
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -53,7 +55,8 @@ class ItemViewModelTests {
           "test",
           Visibility.PUBLIC,
           1,
-          Location(""))
+          Location(""),
+          imageId = File("noImage"))
 
   val itemWithIDmodified =
       Item(
@@ -63,7 +66,8 @@ class ItemViewModelTests {
           "modified",
           Visibility.PUBLIC,
           3,
-          Location(""))
+          Location(""),
+          imageId = File("noImage"))
   val itemNoID =
       Item("", Category("0", "Category 1"), "test", "test", Visibility.PUBLIC, 1, Location(""))
 
@@ -242,5 +246,22 @@ class ItemViewModelTests {
 
     assertTrue(result)
     assertFalse(result2)
+  }
+
+  @Test
+  fun testGetAvailabilityDates() {
+    val db = mockk<Database>()
+    val itemViewModel = ItemViewModel(db = db)
+
+    var calendar = Calendar.getInstance()
+    calendar.set(2021, Calendar.MAY, 1, 0, 0, 0)
+
+    every { db.getItemUnavailability(any(), any()) } answers
+        {
+          val callback = args[1] as (List<Date>) -> Unit
+          callback(listOf(calendar.time))
+        }
+    itemViewModel.getAvailabilityDates()
+    assertEquals(listOf(calendar.time), itemViewModel.uiState.value.unavailableDates)
   }
 }
