@@ -1,7 +1,6 @@
 package com.android.partagix.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,15 +30,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
+import com.android.partagix.ui.components.RankingStars
 import com.android.partagix.ui.components.UserComment
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
@@ -47,7 +47,6 @@ import kotlin.math.round
 
 private const val TAG = "ViewAccount"
 
-// @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewAccount(
@@ -105,23 +104,21 @@ fun ViewAccount(
                         model = user.imageId.absolutePath,
                         contentDescription = "image",
                         contentScale = ContentScale.Inside,
-                        modifier =
-                            Modifier.border(1.dp, Color.Black).fillMaxHeight().testTag("userImage"),
+                        modifier = Modifier.fillMaxHeight().testTag("userImage"),
                         alignment = Alignment.Center,
                     )
                   }
               Row(
-                  modifier = Modifier.fillMaxWidth().testTag("username"),
+                  modifier = Modifier.fillMaxWidth().padding(top = 4.dp).testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = user.name
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
-              Spacer(modifier = Modifier.height(16.dp))
               Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
                 Icon(
                     Icons.Default.LocationOn,
                     contentDescription = null,
-                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("address"))
+                    modifier = modifier.padding(start = 12.dp, top = 16.dp).testTag("address"))
                 LabeledText(
                     modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
               }
@@ -129,42 +126,64 @@ fun ViewAccount(
               val rank = user.rank
               val stars: String
               if (rank == "") {
-                stars = "No trust yet"
+                stars = ""
               } else {
                 val rating = round(rank.toFloat() * 100) / 100
                 val roundedRating = round(rating).toInt()
                 stars =
                     when (roundedRating) {
                       0 -> {
-                        "☆☆☆☆☆ ($rating/5)"
+                        "($rating/5)"
                       }
                       1 -> {
-                        "★☆☆☆☆ ($rating/5)"
+                        "($rating/5)"
                       }
                       2 -> {
-                        "★★☆☆☆ ($rating/5)"
+                        "($rating/5)"
                       }
                       3 -> {
-                        "★★★☆☆ ($rating/5)"
+                        "($rating/5)"
                       }
                       4 -> {
-                        "★★★★☆ ($rating/5)"
+                        "($rating/5)"
                       }
                       5 -> {
-                        "★★★★★ ($rating/5)"
+                        "($rating/5)"
                       }
                       else -> {
-                        "..."
+                        ""
                       }
                     }
               }
-              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+              Row(modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 Icon(
                     Icons.Default.CheckCircle,
                     contentDescription = null,
-                    modifier = modifier.padding(start = 12.dp, top = 15.dp).testTag("rating"))
-                LabeledText(modifier = modifier.fillMaxWidth(), label = "Trust", text = stars)
+                    modifier = modifier.padding(start = 12.dp, top = 12.dp).testTag("rating"))
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                  Text(
+                      modifier = Modifier.testTag("label"),
+                      text = "Trust",
+                      style = MaterialTheme.typography.labelSmall,
+                      color = MaterialTheme.colorScheme.onBackground,
+                  )
+                  Spacer(modifier = Modifier.height(3.dp))
+                  Row(modifier = Modifier.height(20.dp)) {
+                    RankingStars(rank = rank, modifier = Modifier.padding(start = 6.dp, top = 3.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stars,
+                        modifier = Modifier.padding(0.dp).testTag("text"),
+                        fontSize = 15.sp,
+                    )
+                  }
+                }
               }
+              Spacer(modifier = Modifier.height(20.dp))
+
               Row(
                   modifier = Modifier.fillMaxWidth().padding(12.dp, 0.dp).testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {

@@ -68,7 +68,10 @@ fun Filter(
 
   OutlinedButton(
       modifier =
-          modifier.fillMaxSize().height(50.dp).background(MaterialTheme.colorScheme.onPrimary),
+          modifier
+              .fillMaxSize()
+              .height(50.dp)
+              .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(16.dp)),
       onClick = { showDialog = true },
       shape = RoundedCornerShape(12.dp),
       contentPadding =
