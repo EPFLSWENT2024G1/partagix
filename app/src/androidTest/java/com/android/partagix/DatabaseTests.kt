@@ -12,6 +12,7 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.utils.stripTime
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -46,8 +47,10 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import java.io.File
 import java.sql.Date
+import java.util.Calendar
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -861,27 +864,6 @@ class DatabaseTests {
             Location("location"),
             "myUserId")
 
-    val unAvailableItemInsideAcceptedLoan =
-        Item(
-            "unAvailableItemInsideAcceptedLoan",
-            Category("id", "name"),
-            "owner",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            Location("location"),
-            "")
-
-    val unAvailableItemInsideOnGoingLoan =
-        Item(
-            "unAvailableItemInsideOnGoingLoan",
-            Category("id", "name"),
-            "owner",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            Location("location"))
-
     val unAvailableItemInsidePendingLoan =
         Item(
             "unAvailableItemInsidePendingLoan",
@@ -901,8 +883,6 @@ class DatabaseTests {
             availableItemInsidePendingLoan,
             unAvailableItemPrivate,
             unAvailableItemBelongToCurrentUser,
-            unAvailableItemInsideAcceptedLoan,
-            unAvailableItemInsideOnGoingLoan,
             unAvailableItemInsidePendingLoan)
 
     every { database.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
@@ -958,34 +938,6 @@ class DatabaseTests {
         Loan(
             "loan4",
             "id_owner",
-            "id_loaner",
-            "unAvailableItemInsideAcceptedLoan",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.ACCEPTED)
-
-    val loan5 =
-        Loan(
-            "loan5",
-            "id_owner",
-            "id_loaner",
-            "unAvailableItemInsideOnGoingLoan",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.ONGOING)
-
-    val loan6 =
-        Loan(
-            "loan6",
-            "id_owner",
             "myUserId",
             "unAvailableItemInsidePendingLoan",
             Date(0),
@@ -996,21 +948,7 @@ class DatabaseTests {
             "c",
             LoanState.PENDING)
 
-    val loan7 =
-        Loan(
-            "loan7",
-            "myUserId",
-            "id_loaner",
-            "unAvailableItemBelongToCurrentUser",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.CANCELLED)
-
-    val loans = listOf(loan1, loan2, loan3, loan4, loan5, loan6, loan7)
+    val loans = listOf(loan1, loan2, loan3, loan4)
     every { database.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(loans) }
 
     runBlocking {
@@ -1023,6 +961,122 @@ class DatabaseTests {
                 availableItemInsidePendingLoan),
             items)
       }
+    }
+  }
+
+  @Test
+  fun testGetItemUnavailability() {
+
+    mockkObject(Authentication)
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val mockuser = mockk<FirebaseUser>()
+
+    every { mockuser.uid } returns "myUserId"
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    every { Authentication.getUser() } returns mockuser
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    var calendar = Calendar.getInstance()
+    val dates = mutableListOf<java.util.Date>()
+    calendar.set(2021, Calendar.MAY, 1, 0, 0, 0)
+    val date1 = calendar.time
+    dates.add(stripTime(calendar.time))
+    calendar.set(2021, Calendar.MAY, 2)
+    dates.add(stripTime(calendar.time))
+    val date2 = calendar.time
+    calendar.set(2021, Calendar.MAY, 3)
+    dates.add(stripTime(calendar.time))
+    val date3 = calendar.time
+    calendar.set(2021, Calendar.MAY, 4)
+    dates.add(stripTime(calendar.time))
+    val date4 = calendar.time
+    calendar.set(2021, Calendar.MAY, 5)
+    dates.add(stripTime(calendar.time))
+    val date5 = calendar.time
+    calendar.set(2021, Calendar.MAY, 6)
+    dates.add(stripTime(calendar.time))
+    val date6 = calendar.time
+
+    val loan1 =
+        Loan(
+            "loan1",
+            "id_owner",
+            "myUserId",
+            "id_item",
+            date1,
+            date3,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.PENDING)
+
+    val loan2 =
+        Loan(
+            "loan2",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date4,
+            date4,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ACCEPTED)
+
+    val loan3 =
+        Loan(
+            "loan3",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date6,
+            date6,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.FINISHED)
+
+    val loan4 =
+        Loan(
+            "loan4",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date5,
+            date5,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ONGOING)
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3, loan4))
+        }
+
+    database.getItemUnavailability("id_item") { list ->
+      assertTrue(list.contains(dates[0]))
+      assertTrue(list.contains(dates[1]))
+      assertTrue(list.contains(dates[2]))
+      assertTrue(list.contains(dates[3]))
+      assertTrue(list.contains(dates[4]))
     }
   }
 

@@ -327,7 +327,10 @@ class App(
         }
       }
       composable(Route.BORROW) {
-        BorrowScreen(viewModel = borrowViewModel, navigationActions = navigationActions)
+        BorrowScreen(
+            viewModel = borrowViewModel,
+            navigationActions = navigationActions,
+            itemViewModel = itemViewModel)
       }
       composable(Route.INVENTORY) {
         inventoryViewModel.getInventory()
@@ -373,11 +376,13 @@ class App(
 
       composable(Route.VIEW_ITEM) {
         itemViewModel.getUser()
+        itemViewModel.getAvailabilityDates()
         InventoryViewItemScreen(
             navigationActions, itemViewModel, borrowViewModel, otherUserViewModel)
       }
       composable(Route.VIEW_OTHERS_ITEM) {
         itemViewModel.getUser()
+        itemViewModel.getAvailabilityDates()
         InventoryViewItemScreen(
             navigationActions, itemViewModel, borrowViewModel, otherUserViewModel, true)
       }
@@ -392,7 +397,7 @@ class App(
                 itemViewModel.updateUiItem(item)
                 itemViewModel.getUser()
               }
-
+              itemViewModel.getAvailabilityDates()
               InventoryViewItemScreen(
                   navigationActions, itemViewModel, borrowViewModel, otherUserViewModel)
             } else {

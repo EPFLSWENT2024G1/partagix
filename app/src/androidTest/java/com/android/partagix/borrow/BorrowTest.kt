@@ -7,6 +7,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.core.os.bundleOf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.BorrowViewModel
+import com.android.partagix.model.ItemUIState
+import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -27,8 +29,10 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,10 +44,13 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @get:Rule val composeTestRule = createComposeRule()
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockViewModel: BorrowViewModel
+  @RelaxedMockK lateinit var mockItemViewModel: ItemViewModel
 
   private lateinit var mockLoanUiState: MutableStateFlow<Loan>
   private lateinit var mockItemUiState: MutableStateFlow<Item>
   private lateinit var mockUserUiState: MutableStateFlow<User>
+  private lateinit var mockItemViewUiState: StateFlow<ItemUIState>
+  private lateinit var mockItemAvailability: StateFlow<Boolean>
 
   val cat1 = Category("1", "Category 1")
   val vis1 = Visibility.PUBLIC
@@ -57,18 +64,24 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
     mockLoanUiState = MutableStateFlow(loan)
     mockItemUiState = MutableStateFlow(item)
     mockUserUiState = MutableStateFlow(user)
+    mockItemViewUiState = MutableStateFlow(ItemUIState(item, user))
+    mockItemAvailability = MutableStateFlow(true)
+
+    mockItemViewModel = mockk()
+    every { mockItemViewModel.uiState } returns mockItemViewUiState
 
     every { loc1.latitude } returns 1.0
     every { loc1.longitude } returns 1.0
     every { loc1.extras } returns bundleOf("display_name" to "Location 1")
 
     mockViewModel = mockk()
+    every { mockViewModel.itemAvailability } returns mockItemAvailability
     every { mockViewModel.loanUiState } returns mockLoanUiState
     every { mockViewModel.itemUiState } returns mockItemUiState
     every { mockViewModel.userUiState } returns mockUserUiState
     every { mockViewModel.startBorrow(any(), any()) } just Runs
     every { mockViewModel.updateLoan(any()) } just Runs
-    every { mockViewModel.createLoan() } just Runs
+    every { mockViewModel.createLoan(any()) } just Runs
 
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
@@ -82,7 +95,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun testIsDisplayed() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
     }
 
     onComposeScreen<BorrowScreen>(composeTestRule) {
@@ -131,7 +147,10 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
   @Test
   fun editAndSave() {
     composeTestRule.setContent {
-      BorrowScreen(viewModel = mockViewModel, navigationActions = mockNavActions)
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
     }
 
     mockViewModel.startBorrow(item, user)
@@ -143,5 +162,19 @@ class BorrowTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupp
       endDateOk { performClick() }
       saveButton { performClick() }
     }
+  }
+
+  @Test
+  fun testPopup() {
+    every { mockViewModel.createLoan { any() } } just runs
+    every { mockViewModel.updateItemAvailability(any()) } just runs
+    composeTestRule.setContent {
+      BorrowScreen(
+          viewModel = mockViewModel,
+          navigationActions = mockNavActions,
+          itemViewModel = mockItemViewModel)
+    }
+
+    onComposeScreen<BorrowScreen>(composeTestRule) { popup { assertIsDisplayed() } }
   }
 }
