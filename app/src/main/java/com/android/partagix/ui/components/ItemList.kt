@@ -53,7 +53,7 @@ fun ItemList(
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onItemClick: (Item) -> Unit,
-    onUserClick: (Loan) -> Unit = {},
+    onUserClick: ((Loan) -> Unit)? = null,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     itemViewModel: ItemViewModel = ItemViewModel(),
     navigationActions: NavigationActions,
