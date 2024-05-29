@@ -67,10 +67,10 @@ class StartOrEndLoanViewModel(
   }
 
   private fun sendNotification(state: String, route: String, to: User) {
-    val borrowerToken = to.fcmToken
-    Log.d(TAG, "sendNotification: state=$state: $borrowerToken")
+    val token = to.fcmToken
+    Log.d(TAG, "sendNotification: state=$state: $token")
 
-    if (borrowerToken != null) {
+    if (token != null) {
       val notification =
           Notification(
               title = "Loan $state",
@@ -80,7 +80,7 @@ class StartOrEndLoanViewModel(
               navigationUrl = route,
           )
 
-      notificationManager.sendNotification(notification, borrowerToken)
+      notificationManager.sendNotification(notification, token)
     }
   }
 
