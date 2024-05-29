@@ -136,7 +136,7 @@ fun ItemUi(
   }
 
   var ownerModifier = Modifier.padding(end = 1.dp)
-  if (onUserClick != {}) {
+  if (!onUserClick(loan).equals(Unit)) {
     ownerModifier = ownerModifier.clickable { onUserClick(loan) }
   }
 
