@@ -130,7 +130,12 @@ fun InventoryViewItemScreen(
                                 .fillMaxHeight()
                                 .testTag("ownerField")
                                 .clickable {
-                                  navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${user.id}")
+                                  if (actualUser != user.id) {
+                                    navigationActions.navigateTo(
+                                        "${Route.OTHER_ACCOUNT}/${user.id}")
+                                  } else {
+                                    navigationActions.navigateTo(Route.ACCOUNT)
+                                  }
                                 })
                   }
                 }
