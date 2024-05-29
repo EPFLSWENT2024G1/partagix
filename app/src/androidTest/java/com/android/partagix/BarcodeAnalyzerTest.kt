@@ -54,6 +54,6 @@ class BarcodeAnalyzerTest {
     verify { onQrScanned(itemId, userUid) }
 
     // Unmock all
-    //unmockkAll()
+    // unmockkAll()
   }
 }
