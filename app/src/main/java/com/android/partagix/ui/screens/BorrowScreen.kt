@@ -2,6 +2,7 @@ package com.android.partagix.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,11 +47,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.android.partagix.R
+import coil.compose.AsyncImage
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.ui.components.BottomNavigationBar
@@ -201,16 +204,15 @@ fun BorrowScreen(
                 Row(modifier = modifier.fillMaxWidth()) {
                   Box(
                       contentAlignment = Alignment.Center,
-                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f).testTag("itemImage")) {
-                        Image(
-                            painter =
-                                painterResource(
-                                    id =
-                                        R.drawable
-                                            .ic_launcher_background), // TODO replace with actual
-                            // image
-                            contentDescription = "Item image",
-                            modifier = modifier.fillMaxSize())
+                      modifier = modifier.fillMaxHeight().fillMaxWidth(.4f)) {
+                        AsyncImage(
+                            model = item.imageId.absolutePath,
+                            contentDescription = "fds",
+                            contentScale = ContentScale.FillWidth,
+                            modifier =
+                                Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground)
+                                    .testTag("itemImage"),
+                            alignment = Alignment.Center)
                       }
 
                   Spacer(modifier = modifier.width(8.dp))
@@ -241,7 +243,7 @@ fun BorrowScreen(
                 LabeledText(
                     modifier = modifier.fillMaxWidth().testTag("location"),
                     label = "Location",
-                    text = loanLocation.toString())
+                    text = loanLocation.extras?.getString("display_name") ?: "Unknown Location")
 
                 Spacer(modifier = modifier.height(8.dp))
 
