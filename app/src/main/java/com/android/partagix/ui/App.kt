@@ -288,6 +288,7 @@ class App(
       navController: NavHostController,
       modifier: Modifier = Modifier
   ) {
+    val onQrScan = this::onQrScanned
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -302,7 +303,8 @@ class App(
         HomeScreen(
             homeViewModel = homeViewModel,
             manageLoanViewModel = manageViewModelIncoming,
-            navigationActions = navigationActions)
+            navigationActions = navigationActions,
+            onQrScanned = onQrScan)
       }
       composable(Route.LOAN) {
         if (checkLocationPermissions()) {
