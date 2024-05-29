@@ -94,7 +94,7 @@ fun ItemUi(
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     onItemClick: (Item) -> Unit = {},
-    onUserClick: (Loan) -> Unit = {},
+    onUserClick: ((Loan) -> Unit)? = null,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel = ItemViewModel(),
@@ -136,7 +136,7 @@ fun ItemUi(
   }
 
   var ownerModifier = Modifier.padding(end = 1.dp)
-  if (!onUserClick(loan).equals(Unit)) {
+  if (onUserClick != null) {
     ownerModifier = ownerModifier.clickable { onUserClick(loan) }
   }
 
