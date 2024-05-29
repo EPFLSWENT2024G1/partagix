@@ -36,6 +36,7 @@ import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.StampViewModel
 import com.android.partagix.model.StartOrEndLoanUIState
 import com.android.partagix.model.StartOrEndLoanViewModel
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.UserViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.auth.SignInResultListener
@@ -66,14 +67,17 @@ import com.android.partagix.ui.screens.ViewAccount
 import com.android.partagix.ui.screens.ViewOtherAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.firestore
 import java.io.File
 import kotlinx.coroutines.launch
 
 class App(
     private val activity: MainActivity,
     private val auth: Authentication? = null,
-    private val db: Database = Database(),
+    private val imageStorage: StorageV2 = StorageV2(),
+    private val db: Database = Database(Firebase.firestore, imageStorage),
     private val notificationManager: FirebaseMessagingService = FirebaseMessagingService(db = db),
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(activity)
@@ -96,11 +100,12 @@ class App(
   private val itemViewModel =
       ItemViewModel(
           db = db,
+          imageStorage = imageStorage,
           onItemSaved = { item -> inventoryViewModel.updateItem(item) },
           onItemCreated = { item -> inventoryViewModel.createItem(item) },
       )
-  private val userViewModel = UserViewModel(db = db)
-  private val otherUserViewModel = UserViewModel(db = db)
+  private val userViewModel = UserViewModel(db = db, imageStorage = imageStorage)
+  private val otherUserViewModel = UserViewModel(db = db, imageStorage = imageStorage)
   private val evaluationViewModel =
       EvaluationViewModel(db = db, notificationManager = notificationManager)
   private val finishedLoansViewModel = FinishedLoansViewModel(db = db)

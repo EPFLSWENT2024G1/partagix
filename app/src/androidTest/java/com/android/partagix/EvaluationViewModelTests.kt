@@ -16,6 +16,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
 import java.util.Date
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -85,9 +86,9 @@ class EvaluationViewModelTests {
 
   @Test
   fun updateAndReviewLoanTests() {
-    assert(evaluationViewModel.uiState.value.loan == loan1)
+    assertEquals(loan1, evaluationViewModel.uiState.value.loan)
     evaluationViewModel.updateUIState(loan2)
-    assert(evaluationViewModel.uiState.value.loan == loan2)
+    assertEquals(loan2, evaluationViewModel.uiState.value.loan)
     evaluationViewModel.reviewLoan(loan1, 5.0, "commented", "idOwner1")
     coVerify { db.setReview(loan1.id, "idOwner1", 5.0, "commented") }
   }

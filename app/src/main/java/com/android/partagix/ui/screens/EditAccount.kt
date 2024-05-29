@@ -56,9 +56,7 @@ import com.android.partagix.ui.components.locationPicker.LocationPicker
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import getImageFromFirebaseStorage
 import java.io.File
-import uploadImageToFirebaseStorage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,20 +148,13 @@ fun EditAccount(
                             .border(1.dp, MaterialTheme.colorScheme.outline)
                             .testTag("image")) {
                       MainImagePicker(listOf(user.imageId.toUri())) { uri ->
-                        // TODO :  Save the image to a local file to its displayed correctly while
-                        // waiting for the upload
-                        /*
-                        val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
-                        Missing : save the image to the local file (need a ContentResolver ?)
-                        uiImage = localFilePath
-                         */
-                        // Before this is done, display an empty image while waiting for the upload
-                        uiImage = File.createTempFile("default_image", null)
-
-                        // in the meantime do nothing and the image will be loaded from the database
-                        // later
-                        uploadImageToFirebaseStorage(uri, imageName = "users/${user.id}") {
-                          getImageFromFirebaseStorage("users/${user.id}") { file -> uiImage = file }
+                        if (uri.path != null &&
+                            uri.path!!.isNotEmpty() &&
+                            uri.path!! != user.imageId.path) {
+                          uiImage = null
+                          userViewModel.uploadImage(uri, imageName = "users/${user.id}") {
+                            userViewModel.updateImage("users/${user.id}") { file -> uiImage = file }
+                          }
                         }
                       }
                     }
