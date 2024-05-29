@@ -18,18 +18,6 @@ import org.junit.Test
 
 class FirebaseStorageTest {
 
-  @Before
-  fun setup() {
-    val toast: Toast = mockk(relaxed = true)
-
-    // Mock the static makeText method
-    mockkStatic(Toast::class)
-    every { Toast.makeText(any(), any<String>(), any()) } returns toast
-
-    // Ensure both show and cancel methods are mocked
-    every { toast.show() } returns Unit
-    every { toast.cancel() } returns Unit
-  }
 
   @Test
   fun testUploadImageToFirebaseStorage() {

@@ -28,12 +28,12 @@ class BarcodeAnalyzer(
     imageProxy.image?.let { image ->
       scanner
           .process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees))
-          .addOnSuccessListener { barcode -> onSuccessBarecode(barcode) }
+          .addOnSuccessListener { barcode -> onSuccessBarcode(barcode) }
           .addOnCompleteListener { imageProxy.close() }
     }
   }
 
-  fun onSuccessBarecode(barcode: List<Barcode>) {
+  fun onSuccessBarcode(barcode: List<Barcode>) {
     barcode
         ?.takeIf { it.isNotEmpty() }
         ?.mapNotNull { it.rawValue }
@@ -43,12 +43,6 @@ class BarcodeAnalyzer(
           if (user != null) {
             val uri = Uri.parse(it)
             val itemId = uri.getQueryParameter("itemId")
-            val text = "Qr code scanned successfully"
-            val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-            toast.show()
-
-            // Cancel the toast after the specified duration
-            Handler(Looper.getMainLooper()).postDelayed({ toast.cancel() }, 1000)
 
             if (itemId != null) {
               onQrScanned(itemId, user.uid)
