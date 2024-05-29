@@ -134,16 +134,16 @@ fun InventoryCreateOrEditItem(
                         val image = uiImage
 
                         MainImagePicker(listOf(image.toUri())) { uri ->
-                            if (uri.toString().isEmpty() || uri == image.toUri())
-                                return@MainImagePicker
-                            isUploadingImage = true
-                            dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
-                            uiImage = File("null")
-                            itemViewModel.uploadImage(uri, imageName = dbImage) {
-                              itemViewModel.updateImage(dbImage) { file ->
-                                uiImage = file
-                                isUploadingImage = false
-                              }
+                          if (uri.toString().isEmpty() || uri == image.toUri())
+                              return@MainImagePicker
+                          isUploadingImage = true
+                          dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+                          uiImage = File("null")
+                          itemViewModel.uploadImage(uri, imageName = dbImage) {
+                            itemViewModel.updateImage(dbImage) { file ->
+                              uiImage = file
+                              isUploadingImage = false
+                            }
                           }
                         }
                       }

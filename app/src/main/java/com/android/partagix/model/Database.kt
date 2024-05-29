@@ -737,7 +737,7 @@ class Database(
 
         val path = it.data?.get("image_path").toString()
 
-          imageStorage.getImageFromFirebaseStorage(
+        imageStorage.getImageFromFirebaseStorage(
             path,
             onFailure = {
               Log.w("emptyItemImage", "No image found")
