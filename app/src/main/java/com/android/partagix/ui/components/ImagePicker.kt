@@ -6,10 +6,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 // Functions commented as "imported" are from this webpage :
@@ -126,30 +128,39 @@ fun MainImagePicker(defaultImages: List<Uri?> = emptyList(), onSelected: (Uri) -
           contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 2),
           onResult = { uris -> selectedImages = uris })
 
-  Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-    Box(
-        modifier =
-            Modifier.fillMaxSize()
-                .clickable {
-                  launchPhotoPicker(
-                      if (selectedImages.size == 1) singlePhotoPickerLauncher
-                      else multiplePhotoPickerLauncher)
-                }
-                .testTag("MainImagePickerClickable")) {
-          Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            LazyColumn(
-                modifier =
-                    Modifier.fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.background)) {
-                  items(selectedImages) { uri ->
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxHeight().testTag("ImagePicked"),
-                        contentScale = ContentScale.Inside)
+  Column(
+      modifier = Modifier.fillMaxSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier =
+                Modifier.fillMaxSize()
+                    .clickable {
+                      launchPhotoPicker(
+                          if (selectedImages.size == 1) singlePhotoPickerLauncher
+                          else multiplePhotoPickerLauncher)
+                    }
+                    .testTag("MainImagePickerClickable")) {
+              Surface(
+                  modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.Center,
+                        modifier =
+                            Modifier.fillMaxSize()
+                                .background(color = MaterialTheme.colorScheme.background)) {
+                          items(selectedImages) { uri ->
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = null,
+                                alignment = Alignment.Center,
+                                modifier =
+                                    Modifier.border(1.dp, MaterialTheme.colorScheme.outline)
+                                        .testTag("ImagePicked"),
+                                contentScale = ContentScale.FillWidth)
+                          }
+                        }
                   }
-                }
-          }
-        }
-  }
+            }
+      }
 }

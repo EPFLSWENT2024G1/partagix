@@ -2,6 +2,7 @@ package com.android.partagix
 
 import com.android.partagix.model.BorrowViewModel
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.emptyConst.emptyLoan
 import com.android.partagix.model.emptyConst.emptyUser
@@ -14,6 +15,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import java.util.Calendar
 import java.util.Date
@@ -25,7 +27,8 @@ import org.junit.Test
 class BorrowViewModelTest {
   private lateinit var borrowViewModel: BorrowViewModel
 
-  private val mockDatabase = mockk<Database>()
+  private val mockImageStorage = mockk<StorageV2>()
+  private val mockDatabase = spyk(Database(imageStorage = mockImageStorage))
   private val mockNotificationManager = mockk<FirebaseMessagingService>()
 
   @Before
@@ -63,6 +66,8 @@ class BorrowViewModelTest {
     assertEquals(newLoan, borrowViewModel.loanUiState.value)
     assertEquals(emptyItem, borrowViewModel.itemUiState.value)
     assertEquals(emptyUser, borrowViewModel.userUiState.value)
+
+    Thread.sleep(5000)
   }
 
   @Test
@@ -86,6 +91,7 @@ class BorrowViewModelTest {
     assertEquals(newLoan.idItem, borrowViewModel.loanUiState.value.idItem)
     assertEquals(newLoan.idLender, borrowViewModel.loanUiState.value.idLender)
     assertEquals(newLoan.idBorrower, borrowViewModel.loanUiState.value.idBorrower)
+    Thread.sleep(5000)
   }
 
   @Test
@@ -117,6 +123,7 @@ class BorrowViewModelTest {
       mockDatabase.createLoan(any(), any())
       mockNotificationManager.sendNotification(any(), any())
     }
+    Thread.sleep(5000)
   }
 
   @Test

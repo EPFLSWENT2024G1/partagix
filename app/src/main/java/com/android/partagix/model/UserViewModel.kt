@@ -17,17 +17,20 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
     user: User = User("", "", "", "", Inventory("", emptyList()), email = ""),
-    db: Database = Database()
+    db: Database = Database(),
+    private val imageStorage: StorageV2 = StorageV2()
 ) : ViewModel() {
 
   // private val user = user
@@ -99,6 +102,14 @@ class UserViewModel(
               comments = comments,
           )
     }
+  }
+
+  fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
+    imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
+  }
+
+  fun uploadImage(imageUri: Uri, imageName: String, onSuccess: () -> Unit) {
+    imageStorage.uploadImageToFirebaseStorage(imageUri, imageName = imageName) { onSuccess() }
   }
 
   companion object {
