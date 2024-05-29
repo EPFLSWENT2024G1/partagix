@@ -128,11 +128,11 @@ class App(
 
     if (user != null) {
       notificationManager.checkToken(user.uid) {
-        if (idItem != null) {
-          onQrScanned(idItem, user.uid)
-        } else {
-          navigationActions.navigateTo(Route.BOOT)
-        }
+      }
+      if (idItem != null) {
+        onQrScanned(idItem, user.uid)
+      } else {
+        navigationActions.navigateTo(Route.BOOT)
       }
     } else {
       navigationActions.navigateTo(Route.BOOT)
