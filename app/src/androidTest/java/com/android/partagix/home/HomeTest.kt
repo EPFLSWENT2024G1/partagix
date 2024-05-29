@@ -3,6 +3,7 @@ package com.android.partagix.home
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.android.partagix.model.HomeUIState
 import com.android.partagix.model.HomeViewModel
 import com.android.partagix.model.InventoryViewModel
@@ -42,6 +43,10 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
   private lateinit var mockUiState: MutableStateFlow<ManagerUIState>
   private lateinit var mockUiHomeState: MutableStateFlow<HomeUIState>
+
+  @get:Rule
+  val grantCameraPermissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(android.Manifest.permission.CAMERA)
 
   @Before
   fun testSetup() {
