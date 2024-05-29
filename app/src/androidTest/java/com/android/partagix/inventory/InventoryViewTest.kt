@@ -83,7 +83,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
     mockNavActions = mockk<NavigationActions>()
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
-    every { mockNavActions.navigateTo("${Route.OTHER_ACCOUNT}/") } just Runs
+    every { mockNavActions.navigateTo(Route.ACCOUNT) } just Runs
 
     composeTestRule.setContent {
       InventoryViewItemScreen(
@@ -121,7 +121,7 @@ class InventoryViewTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComp
         performClick()
       }
 
-      coVerify { mockNavActions.navigateTo("${Route.OTHER_ACCOUNT}/") }
+      coVerify { mockNavActions.navigateTo(Route.ACCOUNT) }
     }
   }
 }
