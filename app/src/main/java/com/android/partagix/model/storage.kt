@@ -1,4 +1,5 @@
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -51,7 +52,7 @@ fun getImageFromFirebaseStorage(
 ) {
   val prefix: String
   val path: String
-  if (p == "users/" || p == "" || p == "default-image.jpg") {
+  if (p == "users/" || p == "" || p == "default-image.jpg" || p == "null") {
     onSuccess(File("res/drawable/default_image.jpg")) // TODO : make this work
     return
   } else {
@@ -75,6 +76,8 @@ fun getImageFromFirebaseStorage(
       }
       .addOnFailureListener {
         // Handle any errors
+        Log.d("getImageFromFirebaseStorage", "Failed to get image from Firebase Storage : $path")
+
         onFailure(it)
       }
 }
@@ -118,6 +121,7 @@ fun getImagesFromFirebaseStorage(
         }
         .addOnFailureListener {
           res[p] = File("noImage")
+          Log.d("getImagesFromFirebaseStorage", "Failed to get image from Firebase Storage : $path")
           onFailure(it)
           if (count.incrementAndGet() == paths.size) {
             onSuccess(res.toList())

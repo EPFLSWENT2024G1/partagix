@@ -268,6 +268,10 @@ dependencies {
     implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("com.google.code.gson:gson:2.8.6")
+    implementation("androidx.camera:camera-camera2:1.2.2")
+    implementation("androidx.camera:camera-lifecycle:1.2.2")
+    implementation("androidx.camera:camera-view:1.2.2")
+    implementation("com.google.mlkit:barcode-scanning:17.1.0")
 }
 
 secrets {

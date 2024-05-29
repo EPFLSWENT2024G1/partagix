@@ -50,7 +50,7 @@ class FinishedLoansViewModel(db: Database = Database()) : ViewModel() {
                   (loan.idLender == user.uid || loan.idBorrower == user.uid)
             }
             .forEach { loan ->
-              database.getItem(loan.idItem) { item ->
+              database.getItemWithImage(loan.idItem) { item ->
                 list.add(Pair(loan, item))
                 updateLoans(list)
               }

@@ -245,7 +245,6 @@ class EndToEndCreateEdit {
     every { mockLocationViewModel.getLocation(any(), any()) } answers
         {
           val loc = secondArg<MutableState<com.android.partagix.model.location.Location>>()
-          println("--- queried Paris")
           loc.value = loc3
         }
 

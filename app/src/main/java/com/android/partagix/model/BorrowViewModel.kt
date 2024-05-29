@@ -12,6 +12,7 @@ import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.Route
+import com.android.partagix.utils.dateFormat
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +33,8 @@ class BorrowViewModel(
   private var _userUiState = MutableStateFlow(emptyUser)
   val userUiState: StateFlow<User> = _userUiState
 
+  private var _itemAvailability = MutableStateFlow(false)
+  val itemAvailability: StateFlow<Boolean> = _itemAvailability
   /**
    * Set the item to borrow and start a new borrow request
    *
@@ -64,6 +67,8 @@ class BorrowViewModel(
 
     // Set the owner User to have the username
     _userUiState.value = owner
+
+    _itemAvailability.value = false
   }
 
   /**
@@ -87,31 +92,46 @@ class BorrowViewModel(
             state = new.state)
   }
 
+  fun updateItemAvailability(availability: Boolean) {
+    _itemAvailability.value = availability
+  }
+
   /** Save the loan in the database aka 'create the loan' */
-  fun createLoan() {
+  fun createLoan(onSuccess: () -> Unit) {
     Log.d(TAG, "createLoan: ")
-
+    var available = true
     val loan = _loanUiState.value
+    database.getItemUnavailability(_itemUiState.value.id) {
+      database.generateDatesBetween(loan.startDate, loan.endDate).forEach { date ->
+        if (it.contains(date)) {
+          Log.d(TAG, "createLoan: Date $date is unavailable")
+          available = false
+          updateItemAvailability(true)
+        }
+      }
+      if (available) {
+        database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
 
-    database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
+        // Send notification if the user has enabled notifications
+        val ownerToken = _userUiState.value.fcmToken
+        Log.d(TAG, "onStart: $ownerToken")
 
-    // Send notification if the user has enabled notifications
-    val ownerToken = _userUiState.value.fcmToken
-    Log.d(TAG, "onStart: $ownerToken")
+        if (ownerToken != null) {
+          val item = _itemUiState.value
+          val notification =
+              Notification(
+                  title = "New incoming request",
+                  message =
+                      "You have a new incoming request for your item: ${item.name}, from ${dateFormat( loan.startDate)} to ${dateFormat( loan.endDate)}",
+                  type = Notification.Type.NEW_INCOMING_REQUEST,
+                  creationDate = Date(System.currentTimeMillis()),
+                  navigationUrl = Route.MANAGE_LOAN_REQUEST,
+              )
 
-    if (ownerToken != null) {
-      val item = _itemUiState.value
-      val notification =
-          Notification(
-              title = "New incoming request",
-              message =
-                  "You have a new incoming request for your item: ${item.name}, from ${loan.startDate} to ${loan.endDate}",
-              type = Notification.Type.NEW_INCOMING_REQUEST,
-              creationDate = Date(System.currentTimeMillis()),
-              navigationUrl = Route.MANAGE_LOAN_REQUEST,
-          )
-
-      notificationManager.sendNotification(notification, ownerToken)
+          notificationManager.sendNotification(notification, ownerToken)
+        }
+        onSuccess()
+      }
     }
   }
 

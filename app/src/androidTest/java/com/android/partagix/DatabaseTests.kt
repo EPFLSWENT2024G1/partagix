@@ -1,6 +1,7 @@
 package com.android.partagix
 
 import android.location.Location
+import androidx.core.os.bundleOf
 import com.android.partagix.model.Database
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
@@ -11,6 +12,7 @@ import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
+import com.android.partagix.utils.stripTime
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -45,8 +47,10 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import java.io.File
 import java.sql.Date
+import java.util.Calendar
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -279,6 +283,10 @@ class DatabaseTests {
     val categoryName = "catName"
 
     val userId = "userId"
+    val location = Location("")
+    location.latitude = 0.0
+    location.longitude = 0.0
+    location.extras = bundleOf("display_name" to "itemLocation")
 
     val item =
         Item(
@@ -288,7 +296,7 @@ class DatabaseTests {
             "itemDescription",
             Visibility.PUBLIC,
             1234,
-            Location(""),
+            location,
         )
 
     every { mockDb.collection(any()) } returns mockItemsCollection
@@ -312,7 +320,7 @@ class DatabaseTests {
                   "visibility" to item.visibility.ordinal.toLong(),
                   "location" to Database(mockDb).locationToMap(item.location),
                   "id_user" to userId,
-                  "id_image" to "imageId")
+                  "image_path" to "imageId")
           every { mockSnapshot.iterator().next() } returns mockQueryDocument
 
           every { mockSnapshot.iterator().next() } returns mockQueryDocument
@@ -370,7 +378,6 @@ class DatabaseTests {
     val firebaseStorage = mockk<FirebaseStorage>()
     val storageReference = mockk<StorageReference>()
     val uploadTask = mockk<UploadTask>()
-    val downloadTask = mockk<FileDownloadTask>()
 
     every { firebaseStorage.reference } returns storageReference
     every { storageReference.child("imageId") } returns storageReference
@@ -387,14 +394,154 @@ class DatabaseTests {
       assertEquals(1, items.size)
       // Add your assertions here based on the expected behavior
     }
-    database.getItems(onSuccessCallback)
 
-    database.getItemsWithImages(onSuccessCallback)
+    runBlocking {
+      database.getItems(onSuccessCallback)
+
+      database.getItemsWithImages(onSuccessCallback)
+    }
 
     // Verify that the Firestore collections were accessed correctly
     verify(exactly = 2) { mockItemsCollection.get() }
 
     verify(exactly = 2) { mockCategoriesCollection.get() }
+    // Unmock static function
+    unmockkStatic(::now)
+  }
+
+  @Test
+  fun testGetUniqueItem() {
+    // Mock current timestamp
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    mockkStatic(::getImagesFromFirebaseStorage)
+    every { getImagesFromFirebaseStorage(any(), any()) } answers
+        {
+          val onSuccess = arg<(List<File>) -> Unit>(4)
+          onSuccess(listOf(File("imageId")))
+        }
+
+    // Mock Firestore objects
+    val mockDb: FirebaseFirestore = mockk()
+    val mockItemsCollection = mockk<CollectionReference>()
+    val mockDocumentReference = mockk<DocumentReference>()
+    val mockCategoriesCollection = mockk<CollectionReference>()
+    val mockUsersCollection = mockk<CollectionReference>()
+    val mockLoanCollection = mockk<CollectionReference>()
+    val mockItemLoanCollection = mockk<CollectionReference>()
+    val mockItemTask = mockk<Task<DocumentSnapshot>>()
+    val mockCategoriesTask = mockk<Task<QuerySnapshot>>()
+
+    val categoryId = "catId"
+    val categoryName = "catName"
+
+    val userId = "userId"
+
+    val location = Location("")
+    location.latitude = 0.0
+    location.longitude = 0.0
+    location.extras = bundleOf("display_name" to "itemLocation")
+    val item =
+        Item(
+            "itemId",
+            Category(categoryId, categoryName),
+            "itemName",
+            "itemDescription",
+            Visibility.PUBLIC,
+            1234,
+            location,
+            "userId",
+            File("noImage"))
+
+    every { mockDb.collection(any()) } returns mockItemsCollection
+
+    // Define behavior for Firestore mocks
+    every { mockDb.collection("items") } returns mockItemsCollection
+    every { mockItemsCollection.document("itemId") } returns mockDocumentReference
+    every { mockDocumentReference.get() } returns mockItemTask
+    every { mockItemTask.addOnSuccessListener(any<OnSuccessListener<DocumentSnapshot>>()) } answers
+        {
+          val listener = arg<OnSuccessListener<DocumentSnapshot>>(0)
+          val mockDocument = mockk<DocumentSnapshot>()
+          every { mockDocument.data } returns
+              mapOf(
+                  "id" to item.id,
+                  "id_category" to categoryId,
+                  "name" to item.name,
+                  "description" to item.description,
+                  "quantity" to item.quantity,
+                  "visibility" to item.visibility.ordinal.toLong(),
+                  "location" to Database(mockDb).locationToMap(item.location),
+                  "id_user" to userId,
+                  "image_path" to "imageId")
+
+          listener.onSuccess(mockDocument)
+          mockItemTask
+        }
+    every { mockItemTask.addOnFailureListener(any()) } returns mockItemTask
+
+    every { mockDb.collection("categories") } returns mockCategoriesCollection
+    every { mockCategoriesCollection.get() } returns mockCategoriesTask
+    every {
+      mockCategoriesTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>())
+    } answers
+        {
+          val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
+          val mockSnapshot = mockk<QuerySnapshot>()
+          val mockDocument = mockk<DocumentSnapshot>()
+          val mockQueryDocument = mockk<QueryDocumentSnapshot>()
+
+          every { mockQueryDocument.data } returns mapOf("id" to categoryId, "name" to categoryName)
+          every { mockSnapshot.documents } returns listOf(mockDocument)
+
+          every { mockSnapshot.iterator().next() } returns mockQueryDocument
+          every { mockSnapshot.iterator() } returns mockk()
+          every { mockSnapshot.iterator().hasNext() } returns true andThen false
+          every { mockSnapshot.documents.iterator().hasNext() } returns true andThen false
+          every {
+            mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext()
+          } returns true andThen false
+
+          listener.onSuccess(mockSnapshot)
+          mockCategoriesTask
+        }
+    every { mockCategoriesTask.addOnFailureListener(any()) } returns mockCategoriesTask
+
+    every { mockDb.collection("users") } returns mockUsersCollection
+    every { mockDb.collection("loan") } returns mockLoanCollection
+    every { mockDb.collection("item_loan") } returns mockItemLoanCollection
+
+    val firebaseStorage = mockk<FirebaseStorage>()
+    val storageReference = mockk<StorageReference>()
+    val uploadTask = mockk<UploadTask>()
+
+    every { firebaseStorage.reference } returns storageReference
+    every { storageReference.child("imageId") } returns storageReference
+    every { uploadTask.addOnSuccessListener(any()) } returns uploadTask
+    every { uploadTask.addOnFailureListener(any()) } returns uploadTask
+
+    // Create Database instance
+    val database = spyk(Database(mockDb))
+
+    // Perform the function call
+    val onSuccessCallback: (Item) -> Unit = { res ->
+      // Assert on the returned list of items
+      assertEquals(item, res)
+      // Add your assertions here based on the expected behavior
+    }
+
+    every { database.getItems(any()) } answers
+        {
+          val onSuccess = arg<(List<Item>) -> Unit>(0)
+          onSuccess(listOf(item))
+        }
+
+    runBlocking {
+      database.getItem("itemId", onSuccessCallback)
+      database.getItemWithImage("itemId", onSuccessCallback)
+    }
+
     // Unmock static function
     unmockkStatic(::now)
   }
@@ -717,27 +864,6 @@ class DatabaseTests {
             Location("location"),
             "myUserId")
 
-    val unAvailableItemInsideAcceptedLoan =
-        Item(
-            "unAvailableItemInsideAcceptedLoan",
-            Category("id", "name"),
-            "owner",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            Location("location"),
-            "")
-
-    val unAvailableItemInsideOnGoingLoan =
-        Item(
-            "unAvailableItemInsideOnGoingLoan",
-            Category("id", "name"),
-            "owner",
-            "description",
-            Visibility.PUBLIC,
-            1,
-            Location("location"))
-
     val unAvailableItemInsidePendingLoan =
         Item(
             "unAvailableItemInsidePendingLoan",
@@ -757,8 +883,6 @@ class DatabaseTests {
             availableItemInsidePendingLoan,
             unAvailableItemPrivate,
             unAvailableItemBelongToCurrentUser,
-            unAvailableItemInsideAcceptedLoan,
-            unAvailableItemInsideOnGoingLoan,
             unAvailableItemInsidePendingLoan)
 
     every { database.getItems(any()) } answers { firstArg<(List<Item>) -> Unit>().invoke(items) }
@@ -814,34 +938,6 @@ class DatabaseTests {
         Loan(
             "loan4",
             "id_owner",
-            "id_loaner",
-            "unAvailableItemInsideAcceptedLoan",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.ACCEPTED)
-
-    val loan5 =
-        Loan(
-            "loan5",
-            "id_owner",
-            "id_loaner",
-            "unAvailableItemInsideOnGoingLoan",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.ONGOING)
-
-    val loan6 =
-        Loan(
-            "loan6",
-            "id_owner",
             "myUserId",
             "unAvailableItemInsidePendingLoan",
             Date(0),
@@ -852,28 +948,11 @@ class DatabaseTests {
             "c",
             LoanState.PENDING)
 
-    val loan7 =
-        Loan(
-            "loan7",
-            "myUserId",
-            "id_loaner",
-            "unAvailableItemBelongToCurrentUser",
-            Date(0),
-            Date(0),
-            "0.0",
-            "0.0",
-            "c",
-            "c",
-            LoanState.CANCELLED)
-
-    val loans = listOf(loan1, loan2, loan3, loan4, loan5, loan6, loan7)
+    val loans = listOf(loan1, loan2, loan3, loan4)
     every { database.getLoans(any()) } answers { firstArg<(List<Loan>) -> Unit>().invoke(loans) }
 
     runBlocking {
       database.getAvailableItems(false) { items ->
-        for (item in items) {
-          println("name: ${item.id}")
-        }
         assertEquals(
             listOf(
                 availableItemBasic,
@@ -882,6 +961,122 @@ class DatabaseTests {
                 availableItemInsidePendingLoan),
             items)
       }
+    }
+  }
+
+  @Test
+  fun testGetItemUnavailability() {
+
+    mockkObject(Authentication)
+
+    val mockCollection = mockk<CollectionReference>()
+
+    val mockDocument = mockk<DocumentReference>()
+
+    every { mockCollection.document(any()) } returns mockDocument
+
+    every { mockCollection.document() } returns mockDocument
+
+    val mockDb: FirebaseFirestore = mockk {}
+
+    val mockuser = mockk<FirebaseUser>()
+
+    every { mockuser.uid } returns "myUserId"
+
+    every { mockDb.collection(any()) } returns mockCollection
+
+    every { Authentication.getUser() } returns mockuser
+
+    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+
+    var calendar = Calendar.getInstance()
+    val dates = mutableListOf<java.util.Date>()
+    calendar.set(2021, Calendar.MAY, 1, 0, 0, 0)
+    val date1 = calendar.time
+    dates.add(stripTime(calendar.time))
+    calendar.set(2021, Calendar.MAY, 2)
+    dates.add(stripTime(calendar.time))
+    val date2 = calendar.time
+    calendar.set(2021, Calendar.MAY, 3)
+    dates.add(stripTime(calendar.time))
+    val date3 = calendar.time
+    calendar.set(2021, Calendar.MAY, 4)
+    dates.add(stripTime(calendar.time))
+    val date4 = calendar.time
+    calendar.set(2021, Calendar.MAY, 5)
+    dates.add(stripTime(calendar.time))
+    val date5 = calendar.time
+    calendar.set(2021, Calendar.MAY, 6)
+    dates.add(stripTime(calendar.time))
+    val date6 = calendar.time
+
+    val loan1 =
+        Loan(
+            "loan1",
+            "id_owner",
+            "myUserId",
+            "id_item",
+            date1,
+            date3,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.PENDING)
+
+    val loan2 =
+        Loan(
+            "loan2",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date4,
+            date4,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ACCEPTED)
+
+    val loan3 =
+        Loan(
+            "loan3",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date6,
+            date6,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.FINISHED)
+
+    val loan4 =
+        Loan(
+            "loan4",
+            "id_owner",
+            "id_loaner",
+            "id_item",
+            date5,
+            date5,
+            "0.0",
+            "0.0",
+            "c",
+            "c",
+            LoanState.ONGOING)
+
+    every { database.getLoans(any()) } answers
+        {
+          firstArg<(List<Loan>) -> Unit>().invoke(listOf(loan1, loan2, loan3, loan4))
+        }
+
+    database.getItemUnavailability("id_item") { list ->
+      assertTrue(list.contains(dates[0]))
+      assertTrue(list.contains(dates[1]))
+      assertTrue(list.contains(dates[2]))
+      assertTrue(list.contains(dates[3]))
+      assertTrue(list.contains(dates[4]))
     }
   }
 
