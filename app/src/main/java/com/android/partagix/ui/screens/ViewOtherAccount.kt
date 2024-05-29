@@ -1,7 +1,6 @@
 package com.android.partagix.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
@@ -103,8 +101,7 @@ fun ViewOtherAccount(
                         model = user.imageId.absolutePath,
                         contentDescription = "image",
                         contentScale = ContentScale.Inside,
-                        modifier =
-                            Modifier.fillMaxHeight().testTag("userImage"),
+                        modifier = Modifier.fillMaxHeight().testTag("userImage"),
                         alignment = Alignment.Center,
                     )
                   }
@@ -164,19 +161,19 @@ fun ViewOtherAccount(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                   Text(
-                    modifier = Modifier.testTag("label"),
-                    text = "Trust",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onBackground,
+                      modifier = Modifier.testTag("label"),
+                      text = "Trust",
+                      style = MaterialTheme.typography.labelSmall,
+                      color = MaterialTheme.colorScheme.onBackground,
                   )
                   Spacer(modifier = Modifier.height(3.dp))
                   Row(modifier = Modifier.height(20.dp)) {
                     RankingStars(rank = rank, modifier = Modifier.padding(start = 6.dp, top = 3.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                      text = stars,
-                      modifier = Modifier.padding(0.dp).testTag("text"),
-                      fontSize = 15.sp,
+                        text = stars,
+                        modifier = Modifier.padding(0.dp).testTag("text"),
+                        fontSize = 15.sp,
                     )
                   }
                 }
