@@ -195,7 +195,7 @@ fun InventoryViewItemScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween) {
                           Text(
-                              text = "available", /*TODO: get item disponibility*/
+                              text = "available",
                               style = MaterialTheme.typography.bodyMedium,
                               color = MaterialTheme.colorScheme.onBackground,
                               modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),

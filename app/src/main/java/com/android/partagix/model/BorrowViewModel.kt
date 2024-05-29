@@ -109,6 +109,11 @@ class BorrowViewModel(
           updateItemAvailability(true)
         }
       }
+      if (loan.startDate.after(loan.endDate)) {
+        Log.d(TAG, "createLoan: Start date is after end date")
+        available = false
+        updateItemAvailability(true)
+      }
       if (available) {
         database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
 

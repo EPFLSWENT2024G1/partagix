@@ -84,6 +84,10 @@ class ManageLoanViewModel(
     database.getUser(id, {}, onSuccess)
   }
 
+  fun isItemUnavailable(itemId: String) {
+    database.getItemUnavailability(itemId) { unavailableDates -> }
+  }
+
   fun update(
       items: List<Item>,
       users: List<User>,

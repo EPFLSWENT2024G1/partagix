@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
@@ -61,7 +62,7 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import java.time.format.DateTimeFormatter
+import com.android.partagix.utils.dateFormat
 import java.util.Date
 
 /**
@@ -103,27 +104,23 @@ fun ItemUi(
     },
     index: Int = 0,
 ) {
-  val date: Date =
-      if (loan.startDate.before(Date())) {
-        loan.endDate
-      } else {
-        loan.startDate
-      }
+  val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
   var expanded by remember { mutableStateOf(expandState) }
-  val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-  val available = true // TODO
+  val available = uiState.unavailableDates.contains(Date())
   var availability = "Now available"
 
   if (!available) {
-    availability = "Unavailable"
+    availability =
+        "Unavailable until " +
+            dateFormat(uiState.unavailableDates.sorted()[uiState.unavailableDates.size])
   }
 
   if (isLender) {
     availability = "Accepted but not started"
   }
   if (isLender && (loan.state == LoanState.ONGOING)) { // normal case of borrowed item
-    availability = ""
+    availability = "Available on " + dateFormat(loan.endDate)
   }
 
   val itemHeight = 62.dp
