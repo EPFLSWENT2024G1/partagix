@@ -149,18 +149,11 @@ class ItemViewModel(
   }
 
   fun uploadImage(uri: Uri, imageName: String, onSuccess: () -> Unit) {
-    imageStorage.uploadImageToFirebaseStorage(uri, imageName = imageName) { onSuccess() }
+    imageStorage.uploadImageToFirebaseStorage(uri, imageName = imageName, onSuccess = onSuccess)
   }
 
   fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
     imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
-  }
-
-  fun updateUiImage(uiImage: File) {
-    _uiState.value =
-        _uiState.value.copy(
-            user = _uiState.value.user.copy(imageId = uiImage),
-        )
   }
 
   companion object {
