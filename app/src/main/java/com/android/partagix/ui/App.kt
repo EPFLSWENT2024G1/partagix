@@ -127,8 +127,7 @@ class App(
     val user = Authentication.getUser()
 
     if (user != null) {
-      notificationManager.checkToken(user.uid) {
-      }
+      notificationManager.checkToken(user.uid) {}
       if (idItem != null) {
         onQrScanned(idItem, user.uid)
       } else {
