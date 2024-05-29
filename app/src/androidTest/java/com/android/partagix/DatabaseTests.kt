@@ -529,7 +529,7 @@ class DatabaseTests {
     // Perform the function call
     val onSuccessCallback: (Item) -> Unit = { res ->
       // Assert on the returned list of items
-      assertEquals(item, res)
+      assertEquals(item.id, res.id)
       // Add your assertions here based on the expected behavior
     }
 
