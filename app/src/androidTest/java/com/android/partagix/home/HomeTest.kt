@@ -111,7 +111,6 @@ class HomeTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
         performClick()
       }
       composeTestRule.onNodeWithText("noname").performClick()
-      // Thread.sleep(20000)
       coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") }
     }
   }

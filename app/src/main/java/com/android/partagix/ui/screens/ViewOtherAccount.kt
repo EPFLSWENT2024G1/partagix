@@ -91,9 +91,11 @@ fun ViewOtherAccount(
             modifier = modifier.testTag("accountScreenBottomNavBar"))
       }) {
         if (uiState.value.loading) {
-          Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
-          }
+          Box(
+              modifier = Modifier.fillMaxSize().testTag("Loading"),
+              contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+              }
           return@Scaffold
         }
         Column(
