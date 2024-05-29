@@ -1,6 +1,5 @@
 package com.android.partagix.model
 
-import android.content.ContentValues.TAG
 import android.location.Location
 import android.util.Log
 import androidx.core.os.bundleOf
@@ -374,7 +373,6 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
   */
 
   fun getAvailableItems(isItemWithImage: Boolean = false, onSuccess: (List<Item>) -> Unit) {
-
     val itemSuccess: (List<Item>) -> Unit = { items ->
       getLoans { loans ->
         val availableItems1 =
@@ -646,13 +644,50 @@ class Database(database: FirebaseFirestore = Firebase.firestore) {
    * @param onSuccess the function to call with the item
    */
   fun getItemWithImage(id: String, onSuccess: (Item) -> Unit) {
-    getItems { items ->
-      val item = items.firstOrNull { it.id == id }
-      item?.let {
-        getImageFromFirebaseStorage("images/${it.imageId.absolutePath}") { localFile ->
-          onSuccess(it.copy(imageId = localFile))
+    items.document(id).get().addOnSuccessListener {
+      categories.get().addOnSuccessListener { result2 ->
+        val categories =
+            result2
+                .map { document ->
+                  document.data["id"] as String to
+                      Category(document.data["id"] as String, document.data["name"] as String)
+                }
+                .toMap()
+        val onSuccessImage = { localFile: File ->
+          val item = it.data
+          if (item != null) {
+            val locationMap = item["location"] as HashMap<*, *>
+            val location = toLocation(locationMap)
+
+            val visibility = (item["visibility"] as Long).toInt()
+
+            val newItem =
+                Item(
+                    item["id"] as String,
+                    categories[item["id_category"] as String]!!,
+                    item["name"] as String,
+                    item["description"] as String,
+                    Visibility.values()[visibility],
+                    item["quantity"] as Long,
+                    location,
+                    item["id_user"] as String,
+                    localFile)
+            onSuccess(newItem)
+          }
         }
-        onSuccess(it)
+
+        val path = it.data?.get("image_path").toString()
+
+        getImageFromFirebaseStorage(
+            path,
+            onFailure = {
+              Log.w("emptyItemImage", "No image found")
+              onSuccessImage(File("noImage"))
+            }) { localFile ->
+              onSuccessImage(localFile)
+            }
+        // onSuccess(item_)
+
       }
     }
   }

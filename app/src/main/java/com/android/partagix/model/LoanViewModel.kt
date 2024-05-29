@@ -44,16 +44,17 @@ class LoanViewModel(
     } else {
       viewModelScope.launch {
         db.getAvailableItems(true) { newItems: List<Item> ->
-          availableLoans = emptyList()
-
-          for (item in newItems) {
-            db.getUser(item.idUser) { user: User ->
-              availableLoans += LoanDetails(item, user)
-              applyFilters(uiState.value.filterState)
-            }
+          db.getUsers { users: List<User> ->
+            val usersMap = users.associateBy { it.id }
+            availableLoans =
+                newItems.map { item ->
+                  val u = usersMap[item.idUser]!!
+                  LoanDetails(item, u)
+                }
+            applyFilters(uiState.value.filterState)
+            update(availableLoans, filterState)
+            latch.countDown()
           }
-
-          latch.countDown()
         }
       }
     }

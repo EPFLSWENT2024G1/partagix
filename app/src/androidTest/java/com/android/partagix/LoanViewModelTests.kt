@@ -114,6 +114,8 @@ class LoanViewModelTests {
 
   val user5 = User("user5", "U5", "addr5", "0", mockk())
 
+  val users_list = listOf(user1, user2, user3, user4, user5)
+
   // Single loan, item 2 is loaned to user 3
   private val mockLoans =
       listOf(
@@ -199,6 +201,7 @@ class LoanViewModelTests {
         {
           secondArg<(List<Item>) -> Unit>().invoke(availableItems)
         }
+    every { db.getUsers(any()) } answers { firstArg<(List<User>) -> Unit>().invoke(users_list) }
 
     val latch = CountDownLatch(1)
     loanViewModel.getAvailableLoans(latch = latch)
@@ -219,6 +222,7 @@ class LoanViewModelTests {
         {
           secondArg<(List<Item>) -> Unit>().invoke(availableItems)
         }
+    every { db.getUsers(any()) } answers { firstArg<(List<User>) -> Unit>().invoke(users_list) }
 
     val mockUser = mockk<FirebaseUser>()
 
