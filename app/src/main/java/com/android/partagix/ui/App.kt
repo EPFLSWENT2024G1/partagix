@@ -127,12 +127,11 @@ class App(
     val user = Authentication.getUser()
 
     if (user != null) {
-      notificationManager.checkToken(user.uid) {
-        if (idItem != null) {
-          onQrScanned(idItem, user.uid)
-        } else {
-          navigationActions.navigateTo(Route.BOOT)
-        }
+      notificationManager.checkToken(user.uid) {}
+      if (idItem != null) {
+        onQrScanned(idItem, user.uid)
+      } else {
+        navigationActions.navigateTo(Route.BOOT)
       }
     } else {
       navigationActions.navigateTo(Route.BOOT)
