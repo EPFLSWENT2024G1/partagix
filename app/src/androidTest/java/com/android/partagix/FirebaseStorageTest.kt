@@ -1,5 +1,4 @@
 import android.net.Uri
-import android.widget.Toast
 import com.google.common.base.Verify.verify
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
@@ -7,17 +6,14 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import java.io.File
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import junit.framework.TestCase
-import org.junit.Before
 import org.junit.Test
 
 class FirebaseStorageTest {
-
 
   @Test
   fun testUploadImageToFirebaseStorage() {
