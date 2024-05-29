@@ -82,8 +82,6 @@ class Database(
                   var count = 0
                   for (document in result) {
                     val listItems = items.filter { it.idUser == document.data["id"] }
-                    println("---- heloo ")
-
                     val user =
                         User(
                             document.data["id"] as String,
@@ -93,7 +91,6 @@ class Database(
                             Inventory(document.data["id"] as String, listItems),
                             localFiles[count++],
                             document.data["fcmToken"] as String?)
-                    println("---- user $user")
                     ret.add(user)
                   }
                   onSuccess(ret)
