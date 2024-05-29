@@ -210,12 +210,11 @@ fun InventoryScreen(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-              var expendedBor: SnapshotStateList<Boolean> = remember {
-                mutableStateListOf<Boolean>().apply {
+              var expendedBor  = mutableListOf<Boolean>().apply {
                   for (i in 0 until uiState.borrowedItems.size) {
                     add(false)
                   }
-                }
+
               }
               ItemListColumn(
                   list = uiState.borrowedItems,
