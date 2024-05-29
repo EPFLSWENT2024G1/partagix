@@ -1,5 +1,6 @@
 package com.android.partagix.utils
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -11,4 +12,10 @@ fun stripTime(date: Date): Date {
   calendar.set(Calendar.SECOND, 0)
   calendar.set(Calendar.MILLISECOND, 0)
   return calendar.time
+}
+
+fun dateFormat(date: Date): String {
+  var pattern = "yyyy-MM-dd"
+  var formatter = SimpleDateFormat(pattern)
+  return formatter.format(date)
 }
