@@ -1,7 +1,6 @@
 package com.android.partagix.ui.screens
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,11 +40,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.android.partagix.R
+import coil.compose.AsyncImage
 import com.android.partagix.model.EvaluationViewModel
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.ItemViewModel
@@ -194,15 +192,18 @@ fun ExpandableCard(
                             text = "End Date : ${dateFormatter.format(loan.endDate)}",
                             fontSize = 15.sp)
                       }
-                      Box(modifier = modifier.fillMaxWidth().aspectRatio(1f)) {
-                        Image(
-                            painter = painterResource(id = R.drawable.default_image),
-                            contentDescription = "fds",
-                            contentScale = ContentScale.FillBounds,
-                            modifier =
-                                Modifier.border(1.dp, MaterialTheme.colorScheme.scrim)
-                                    .testTag("image"))
-                      }
+                      Box(
+                          contentAlignment = Alignment.Center,
+                          modifier = modifier.fillMaxWidth().aspectRatio(1f)) {
+                            AsyncImage(
+                                model = item.imageId.absolutePath,
+                                contentDescription = "fds",
+                                contentScale = ContentScale.FillWidth,
+                                modifier =
+                                    Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground)
+                                        .testTag("image"),
+                                alignment = Alignment.Center)
+                          }
                     }
               }
               Spacer(modifier.height(3.dp))

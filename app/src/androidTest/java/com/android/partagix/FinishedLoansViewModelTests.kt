@@ -7,7 +7,6 @@ import com.android.partagix.model.Database
 import com.android.partagix.model.FinishedLoansViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
-import com.android.partagix.model.emptyConst.emptyItem
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
@@ -16,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import java.io.File
 import java.util.Date
 import org.junit.Before
 import org.junit.Rule
@@ -96,7 +96,7 @@ class FinishedLoansViewModelTests {
           "commented",
           "commented",
           LoanState.ACCEPTED)
-  val item =
+  val item1 =
       Item(
           "item1",
           Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
@@ -104,7 +104,32 @@ class FinishedLoansViewModelTests {
           "",
           Visibility.PRIVATE,
           0,
-          Location(""))
+          Location(""),
+          imageId = File("image_item_1.jpg"))
+
+  val item2 =
+      Item(
+          "item2",
+          Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+          "",
+          "",
+          Visibility.PRIVATE,
+          0,
+          Location(""),
+          imageId = File("image_item_2.jpg"))
+
+  val item3 =
+      Item(
+          "item3",
+          Category("GpWpDVqb1ep8gm2rb1WL", "Others"),
+          "",
+          "",
+          Visibility.PRIVATE,
+          0,
+          Location(""),
+          imageId = File("image_item_3.jpg"))
+
+  val items = listOf(item1, item2, item3)
 
   var onSuccessLoan: (List<Loan>) -> Unit = {}
 
@@ -117,11 +142,17 @@ class FinishedLoansViewModelTests {
           onSuccessLoan(listOf(loan1, loan2, loan3, loan4, loan5))
         }
 
-    every { db.getItem(any(), any()) } answers
+    every { db.getItemWithImage(any(), any()) } answers
         { invocation ->
           val id = invocation.invocation.args[0] as String
           val onSuccess = invocation.invocation.args[1] as (Item) -> Unit
-          onSuccess(emptyItem)
+          onSuccess(items.first { it.id == id })
+        }
+
+    every { db.getItemsWithImages(any()) } answers
+        {
+          val onSuccess: (List<Item>) -> Unit = invocation.args[0] as (List<Item>) -> Unit
+          onSuccess(items)
         }
 
     finishedLoansViewModel = FinishedLoansViewModel(db)
@@ -141,7 +172,7 @@ class FinishedLoansViewModelTests {
     assert(finishedLoansViewModel.uiState.value.loans.size == 2)
     assert(
         finishedLoansViewModel.uiState.value.loans.containsAll(
-            listOf(Pair(loan1, emptyItem), Pair(loan2, emptyItem))))
+            listOf(Pair(loan1, item1), Pair(loan2, item2))))
   }
 
   @Test
@@ -159,6 +190,6 @@ class FinishedLoansViewModelTests {
     val loan1modified = loan1.copy(commentBorrower = "new comment")
     finishedLoansViewModel.getFinishedLoan()
     finishedLoansViewModel.updateLoan(loan1modified)
-    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, emptyItem)))
+    assert(finishedLoansViewModel.uiState.value.loans.contains(Pair(loan1modified, item1)))
   }
 }

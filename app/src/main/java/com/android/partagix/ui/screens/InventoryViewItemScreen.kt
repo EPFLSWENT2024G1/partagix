@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,16 +22,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -44,7 +54,10 @@ import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
+import com.android.partagix.utils.stripTime
 import com.google.firebase.auth.FirebaseAuth
+import java.util.Date
+import java.util.Locale
 
 /**
  * Screen to view an item.
@@ -62,7 +75,25 @@ fun InventoryViewItemScreen(
     userViewModel: UserViewModel,
     viewOthersItem: Boolean = false
 ) {
+
   val uiState = itemViewModel.uiState.collectAsState()
+  var isCalendarVisible by remember { mutableStateOf(false) }
+  val unavailableDates = uiState.value.unavailableDates
+  val datePickerState =
+      DatePickerState(
+          locale = Locale.getDefault(),
+          selectableDates =
+              object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                  val currentDate = stripTime(Date(utcTimeMillis))
+                  return unavailableDates.none { stripTime(it) == currentDate }
+                }
+
+                override fun isSelectableYear(year: Int): Boolean {
+                  return true
+                }
+              })
+
   var actualUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
   var item = uiState.value.item
   val user = uiState.value.user
@@ -155,16 +186,32 @@ fun InventoryViewItemScreen(
                     label = "Location",
                     text = item.location.extras?.getString("display_name", "Unknown") ?: "Unknown")
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                  LabeledText(
-                      modifier = Modifier.fillMaxWidth(0.8f),
-                      label = "Availability",
-                      text =
-                          "Now available") /* todo : branch with the availability like in itemUi */
+                Box(modifier = Modifier.padding(8.dp)) {
+                  Column {
+                    Text(
+                        text = "Availability",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                          Text(
+                              text = "available", /*TODO: get item disponibility*/
+                              style = MaterialTheme.typography.bodyMedium,
+                              color = MaterialTheme.colorScheme.onBackground,
+                              modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp),
+                          )
 
-                  IconButton(
-                      onClick = { /*TODO: see calendar with disponibilities*/},
-                      content = { Icon(Icons.Default.DateRange, contentDescription = null) })
+                          IconButton(
+                              onClick = { isCalendarVisible = true },
+                              content = {
+                                Icon(Icons.Default.DateRange, contentDescription = null)
+                              })
+                        }
+                  }
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -196,5 +243,22 @@ fun InventoryViewItemScreen(
               }
               Spacer(modifier = Modifier.height(8.dp))
             }
+        if (isCalendarVisible) {
+          DatePickerDialog(
+              modifier = Modifier.testTag("endDatePicker"),
+              onDismissRequest = { isCalendarVisible = false },
+              confirmButton = {
+                TextButton(modifier = Modifier.testTag("endDateOk"), onClick = {}) { Text("OK") }
+              },
+              dismissButton = {
+                TextButton(
+                    modifier = Modifier.testTag("endDateCancel"),
+                    onClick = { isCalendarVisible = false }) {
+                      Text("Cancel")
+                    }
+              }) {
+                DatePicker(datePickerState)
+              }
+        }
       }
 }
