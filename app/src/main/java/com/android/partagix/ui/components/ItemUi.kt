@@ -107,7 +107,7 @@ fun ItemUi(
   val uiState by itemViewModel.uiState.collectAsStateWithLifecycle()
   var expanded by remember { mutableStateOf(expandState) }
 
-  val available = uiState.unavailableDates.contains(Date())
+  val available = !uiState.unavailableDates.contains(Date())
   var availability = "Now available"
 
   if (!available) {
