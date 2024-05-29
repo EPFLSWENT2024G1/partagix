@@ -292,7 +292,7 @@ class App(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Route.INVENTORY,
+        startDestination = Route.HOME,
     ) {
       composable(Route.BOOT) { BootScreen(authentication, navigationActions, modifier) }
       composable(Route.LOGIN) { LoginScreen(authentication, modifier) }
