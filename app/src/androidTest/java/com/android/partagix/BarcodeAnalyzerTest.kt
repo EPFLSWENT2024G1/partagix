@@ -43,6 +43,8 @@ class BarcodeAnalyzerTest {
 
     val toast = mockk<Toast>()
     every { toast.show() } just Runs
+    every { toast.cancel() } just Runs
+
     // Mock Toast
     mockkStatic(Toast::class)
     every { Toast.makeText(context, any<String>(), any()) } returns toast
