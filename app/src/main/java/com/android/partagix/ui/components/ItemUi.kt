@@ -132,7 +132,7 @@ fun ItemUi(
           .animateContentSize(
               animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
           .background(
-              color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 8.dp))
+              color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(size = 4.dp))
           .padding(PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp))
           .testTag("manageLoanScreenItemCard")
 
