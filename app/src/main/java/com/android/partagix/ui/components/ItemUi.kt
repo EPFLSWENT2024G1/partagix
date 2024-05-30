@@ -94,7 +94,7 @@ fun ItemUi(
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     onItemClick: (Item) -> Unit = {},
-    onUserClick: (Item) -> Unit = {},
+    onUserClick: ((Loan) -> Unit)? = null,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     navigationActions: NavigationActions,
     itemViewModel: ItemViewModel = ItemViewModel(),
@@ -136,9 +136,8 @@ fun ItemUi(
   }
 
   var ownerModifier = Modifier.padding(end = 1.dp)
-  if (onUserClick != {}) {
-    ownerModifier =
-        ownerModifier.clickable { onUserClick(item) } // todo make sure of the type of onUserClick
+  if (onUserClick != null) {
+    ownerModifier = ownerModifier.clickable { onUserClick(loan) }
   }
 
   var mainColumnModifier =

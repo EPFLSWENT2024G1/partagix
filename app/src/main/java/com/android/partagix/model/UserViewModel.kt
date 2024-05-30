@@ -96,12 +96,18 @@ class UserViewModel(
 
   /** Get the user's comments from the database and update the UI state when done */
   fun getComments() {
+    _uiState.value = _uiState.value.copy(loadComment = true)
     database.getComments(_uiState.value.user.id) { comments ->
       _uiState.value =
           _uiState.value.copy(
               comments = comments,
+              loadComment = false,
           )
     }
+  }
+
+  fun setLoading(loading: Boolean) {
+    _uiState.value = _uiState.value.copy(loading = loading)
   }
 
   fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
@@ -123,9 +129,12 @@ class UserViewModel(
  * @param user the user
  * @param location the location of the user
  * @param comments the comments of the user, in the form: (comment's author, message)
+ * @param loading whether the user is being loaded
  */
 data class UserUIState(
     val user: User,
     val location: Location? = null,
-    val comments: List<Pair<User, String>> = emptyList()
+    val comments: List<Pair<User, String>> = emptyList(),
+    val loading: Boolean = false,
+    val loadComment: Boolean = false
 )

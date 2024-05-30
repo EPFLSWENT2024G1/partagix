@@ -88,13 +88,15 @@ fun EndLoanScreen(
                                 }
                           }
 
-                      Box(modifier = Modifier.height(62.dp)) {
+                      Box(modifier = Modifier.height(80.dp)) {
                         ItemUi(
                             item = item,
                             user = lender,
                             loan = loan,
                             modifier = Modifier.fillMaxWidth().testTag("item"),
-                            onUserClick = { /* todo */},
+                            onUserClick = {
+                              navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${lender.id}")
+                            },
                             onItemClick = {
                               itemViewModel.updateUiItem(item)
                               navigationActions.navigateTo(Route.VIEW_ITEM)

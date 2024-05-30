@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,11 +64,13 @@ fun ViewOtherAccount(
         TopAppBar(
             modifier = Modifier.fillMaxWidth().testTag("topBar"),
             title = {
-              Text(
-                  user.name + "'s Profile",
-                  modifier = Modifier.fillMaxWidth().testTag("title"),
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis)
+              if (!uiState.value.loading) {
+                Text(
+                    user.name + "'s Profile",
+                    modifier = Modifier.fillMaxWidth().testTag("title"),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis)
+              }
             },
             navigationIcon = {
               IconButton(
@@ -86,6 +89,14 @@ fun ViewOtherAccount(
             navigateToTopLevelDestination = navigationActions::navigateTo,
             modifier = modifier.testTag("accountScreenBottomNavBar"))
       }) {
+        if (uiState.value.loading) {
+          Box(
+              modifier = Modifier.fillMaxSize().testTag("Loading"),
+              contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+              }
+          return@Scaffold
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier =
@@ -182,10 +193,14 @@ fun ViewOtherAccount(
 
               val commentList = uiState.value.comments
 
-              if (commentList.isEmpty()) {
+              if (commentList.isEmpty() && !uiState.value.loadComment) {
                 Text(
                     "No comments yet",
                     modifier = Modifier.padding(12.dp, 0.dp).testTag("noComments"))
+              } else if (uiState.value.loadComment) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                  CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+                }
               } else {
                 Column(modifier = Modifier.padding(12.dp, 0.dp).testTag("comments")) {
                   Text(

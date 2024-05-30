@@ -361,13 +361,21 @@ class App(
       }
 
       composable(
-          Route.OTHER_ACCOUNT,
-      ) {
-        ViewOtherAccount(
-            navigationActions = navigationActions,
-            userViewModel = userViewModel,
-            otherUserViewModel = otherUserViewModel)
-      }
+          Route.OTHER_ACCOUNT + "/{userId}",
+          arguments = listOf(navArgument("userId") { type = NavType.StringType })) {
+            val userId = it.arguments?.getString("userId")
+            if (userId != null) {
+              otherUserViewModel.setLoading(true)
+              db.getUser(userId) { user ->
+                otherUserViewModel.setLoading(false)
+                otherUserViewModel.updateUser(user)
+              }
+            }
+            ViewOtherAccount(
+                navigationActions = navigationActions,
+                userViewModel = userViewModel,
+                otherUserViewModel = otherUserViewModel)
+          }
 
       composable(
           Route.EDIT_ACCOUNT,

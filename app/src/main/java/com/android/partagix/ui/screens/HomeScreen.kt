@@ -152,7 +152,9 @@ fun HomeScreen(
                     corner = "See All",
                     isCornerClickable = true,
                     onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
-                    onUserClick = { /* todo */},
+                    onUserClick = {
+                      navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idBorrower}")
+                    },
                     isExpandable = true,
                     isOutgoing = false,
                     wasExpanded = uiState.expanded,

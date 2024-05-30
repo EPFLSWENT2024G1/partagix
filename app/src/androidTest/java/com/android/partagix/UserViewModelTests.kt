@@ -16,6 +16,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import java.io.File
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -75,6 +76,12 @@ class UserViewModelTests {
     val comments = userViewModel.uiState.value.comments
     assert(comments.first().first == otherUser)
     assert(comments.first().second == comment)
+  }
+
+  @Test
+  fun setLoadingWorks() {
+    userViewModel.setLoading(true)
+    assertTrue(userViewModel.uiState.value.loading)
   }
 
   @Test

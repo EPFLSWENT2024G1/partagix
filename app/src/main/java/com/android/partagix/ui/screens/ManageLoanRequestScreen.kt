@@ -100,7 +100,9 @@ fun ManageLoanRequest(
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
-                    onUserClick = { /* todo */},
+                    onUserClick = {
+                      navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idBorrower}")
+                    },
                     manageLoanViewModel = manageLoanViewModel,
                     isClickable = false,
                     isOutgoing = false,
