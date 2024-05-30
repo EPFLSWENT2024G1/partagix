@@ -222,39 +222,40 @@ fun InventoryScreen(
                   expendedBor = createExpendedBorList(size)
                 }
               }
+              if (uiState.borrowedItems.isNotEmpty()) {
+                ItemListColumn(
+                    list = uiState.borrowedItems,
+                    users = uiState.usersBor,
+                    loan = uiState.loanBor,
+                    title = "Borrowed",
+                    corner = uiState.borrowedItems.size.toString(),
+                    onItemClick = {
+                      itemViewModel.updateUiItem(it)
+                      navigationActions.navigateTo(Route.VIEW_ITEM)
+                    },
+                    onUserClick = {
+                      navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idLender}")
+                    },
+                    isCornerClickable = false,
+                    isClickable = false,
+                    isOutgoing = true,
+                    isLender = true,
+                    isExpandable = true,
+                    expandState = false,
+                    wasExpanded = expendedBor,
+                    updateExpanded = { i, expanded -> expendedBor[i] = expanded },
+                    manageLoanViewModel = manageLoanViewModelOutgoing,
+                    navigationActions = navigationActions,
+                    itemViewModel = itemViewModel,
+                    modifier =
+                        Modifier.padding(horizontal = 10.dp)
+                            .fillMaxHeight(0.4f)
+                            .testTag("inventoryScreenBorrowedItemList"))
 
-              ItemListColumn(
-                  list = uiState.borrowedItems,
-                  users = uiState.usersBor,
-                  loan = uiState.loanBor,
-                  title = "Borrowed",
-                  corner = uiState.borrowedItems.size.toString(),
-                  onItemClick = {
-                    itemViewModel.updateUiItem(it)
-                    navigationActions.navigateTo(Route.VIEW_ITEM)
-                  },
-                  onUserClick = {
-                    navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idLender}")
-                  },
-                  isCornerClickable = false,
-                  isClickable = false,
-                  isOutgoing = true,
-                  isLender = true,
-                  isExpandable = true,
-                  expandState = false,
-                  wasExpanded = expendedBor,
-                  updateExpanded = { i, expanded -> expendedBor[i] = expanded },
-                  manageLoanViewModel = manageLoanViewModelOutgoing,
-                  navigationActions = navigationActions,
-                  itemViewModel = itemViewModel,
-                  modifier =
-                      Modifier.padding(horizontal = 10.dp)
-                          .fillMaxHeight(0.4f)
-                          .testTag("inventoryScreenBorrowedItemList"))
-
-              HorizontalDivider(
-                  color = MaterialTheme.colorScheme.outlineVariant,
-                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+              }
 
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
