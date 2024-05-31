@@ -194,7 +194,7 @@ fun InventoryCreateOrEditItem(
                 }
 
                 OutlinedTextField(
-                    value = if (uiQuantity == 0L) "1" else uiQuantity.toString(),
+                    value = uiQuantity.toString(),
                     onValueChange = { str ->
                       val longValue: Long? = str.toLongOrNull()
                       uiQuantity = longValue ?: 0L
@@ -218,6 +218,10 @@ fun InventoryCreateOrEditItem(
                       if (mode == "edit") {
                         id = i.id
                       }
+                      if (uiQuantity <= 0L) {
+                        uiQuantity = 1L
+                      }
+
                       itemViewModel.updateUiItem(
                           Item(
                               id,
