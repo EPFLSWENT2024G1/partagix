@@ -66,11 +66,11 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryCreateOrEditItem(
-  itemViewModel: ItemViewModel,
-  navigationActions: NavigationActions,
-  locationViewModel: LocationPickerViewModel,
-  modifier: Modifier = Modifier,
-  mode: String
+    itemViewModel: ItemViewModel,
+    navigationActions: NavigationActions,
+    locationViewModel: LocationPickerViewModel,
+    modifier: Modifier = Modifier,
+    mode: String
 ) {
 
   var dbImage = "default-image.jpg"
@@ -84,182 +84,182 @@ fun InventoryCreateOrEditItem(
   val loc = remember { mutableStateOf<com.android.partagix.model.location.Location?>(null) }
 
   Scaffold(
-    modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
-    topBar = {
-      TopAppBar(
-        title = {
-          Text(
-            modifier = modifier.testTag("title"),
-            text =
-            if (mode == "edit") {
-              "Edit item"
-            } else {
-              "Create a new item"
+      modifier = modifier.testTag("inventoryCreateItem").fillMaxWidth(),
+      topBar = {
+        TopAppBar(
+            title = {
+              Text(
+                  modifier = modifier.testTag("title"),
+                  text =
+                      if (mode == "edit") {
+                        "Edit item"
+                      } else {
+                        "Create a new item"
+                      })
+            },
+            modifier = modifier.testTag("topBar").fillMaxWidth(),
+            navigationIcon = {
+              IconButton(
+                  modifier = modifier.testTag("navigationIcon"),
+                  onClick = { navigationActions.goBack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null)
+                  }
             })
-        },
-        modifier = modifier.testTag("topBar").fillMaxWidth(),
-        navigationIcon = {
-          IconButton(
-            modifier = modifier.testTag("navigationIcon"),
-            onClick = { navigationActions.goBack() }) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Default.ArrowBack,
-              contentDescription = null)
-          }
-        })
-    },
-    bottomBar = {
-      BottomNavigationBar(
-        modifier = Modifier.testTag("inventoryViewItemBottomBar"),
-        selectedDestination = "Inventory",
-        navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
-    }) {
-    val uis = itemViewModel.uiState.collectAsState()
-    val i = uis.value.item
-    var uiCategory by remember { mutableStateOf(i.category) }
-    var uiName by remember { mutableStateOf(i.name) }
-    var uiDescription by remember { mutableStateOf(i.description) }
-    var uiVisibility by remember { mutableStateOf(i.visibility) }
-    var uiQuantity by remember { mutableStateOf(i.quantity) }
-    var uiLocation by remember { mutableStateOf(Location(i.location)) }
-    var uiImage by remember { mutableStateOf(i.imageId) }
-    var isUploadingImage by remember { mutableStateOf(false) }
+      },
+      bottomBar = {
+        BottomNavigationBar(
+            modifier = Modifier.testTag("inventoryViewItemBottomBar"),
+            selectedDestination = "Inventory",
+            navigateToTopLevelDestination = { dest -> navigationActions.navigateTo(dest) })
+      }) {
+        val uis = itemViewModel.uiState.collectAsState()
+        val i = uis.value.item
+        var uiCategory by remember { mutableStateOf(i.category) }
+        var uiName by remember { mutableStateOf(i.name) }
+        var uiDescription by remember { mutableStateOf(i.description) }
+        var uiVisibility by remember { mutableStateOf(i.visibility) }
+        var uiQuantity by remember { mutableStateOf(i.quantity) }
+        var uiLocation by remember { mutableStateOf(Location(i.location)) }
+        var uiImage by remember { mutableStateOf(i.imageId) }
+        var isUploadingImage by remember { mutableStateOf(false) }
 
-    Column(
-      modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
-      horizontalAlignment = Alignment.CenterHorizontally) {
-      Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
-        Row(modifier = modifier.fillMaxWidth()) {
-          Box(
-            contentAlignment = Alignment.Center,
-            modifier =
-            modifier
-              .fillMaxHeight()
-              .border(1.dp, MaterialTheme.colorScheme.outline)
-              .fillMaxWidth(.4f)
-              .testTag("image")) {
-            val image = uiImage
+        Column(
+            modifier = modifier.padding(it).fillMaxSize().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              Box(modifier = modifier.fillMaxWidth().height(140.dp).padding(8.dp)) {
+                Row(modifier = modifier.fillMaxWidth()) {
+                  Box(
+                      contentAlignment = Alignment.Center,
+                      modifier =
+                          modifier
+                              .fillMaxHeight()
+                              .border(1.dp, MaterialTheme.colorScheme.outline)
+                              .fillMaxWidth(.4f)
+                              .testTag("image")) {
+                        val image = uiImage
 
-            MainImagePicker(listOf(image.toUri())) { uri ->
-              if (uri.toString().isEmpty() || uri == image.toUri())
-                return@MainImagePicker
-              isUploadingImage = true
-              dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
-              uiImage = File("null")
-              itemViewModel.uploadImage(uri, imageName = dbImage) {
-                itemViewModel.updateImage(dbImage) { file ->
-                  uiImage = file
-                  isUploadingImage = false
+                        MainImagePicker(listOf(image.toUri())) { uri ->
+                          if (uri.toString().isEmpty() || uri == image.toUri())
+                              return@MainImagePicker
+                          isUploadingImage = true
+                          dbImage = if (mode == "edit") i.id else UUID.randomUUID().toString()
+                          uiImage = File("null")
+                          itemViewModel.uploadImage(uri, imageName = dbImage) {
+                            itemViewModel.updateImage(dbImage) { file ->
+                              uiImage = file
+                              isUploadingImage = false
+                            }
+                          }
+                        }
+                      }
+                  Spacer(modifier = modifier.width(8.dp))
+
+                  Column {
+                    OutlinedTextField(
+                        value = uiName,
+                        onValueChange = { input ->
+                          // Filter out newline characters from the input string
+                          val filteredInput = input.replace("\n", "")
+                          uiName = filteredInput
+                        },
+                        label = { Text("Object name") },
+                        modifier = modifier.testTag("name").fillMaxWidth(),
+                        singleLine = true, // Ensure only one line is displayed
+                        readOnly = false)
+
+                    LabeledText(
+                        modifier.testTag("idUser").fillMaxWidth(), "Owner", uiState.user.name)
+                  }
                 }
               }
+              Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                OutlinedTextField(
+                    value = uiDescription,
+                    onValueChange = { it -> uiDescription = it },
+                    label = { Text("Description") },
+                    modifier = modifier.testTag("description").fillMaxWidth(),
+                    minLines = 5,
+                    readOnly = false)
+
+                Spacer(modifier = modifier.height(8.dp))
+
+                Row(modifier = modifier.fillMaxWidth()) {
+                  Box(
+                      modifier =
+                          modifier.testTag("category").fillMaxWidth(.5f).padding(end = 8.dp)) {
+                        val displayedCategory =
+                            if (uiCategory.name == "") "Category" else uiCategory.name
+                        val c = DropDown(displayedCategory, CategoryItems)
+
+                        uiCategory = Category(uiCategory.id, c)
+                      }
+                  Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
+                    uiVisibility = getVisibility(DropDown("Visibility", VisibilityItems))
+                  }
+                }
+
+                OutlinedTextField(
+                    value = if (uiQuantity == 0L) "1" else uiQuantity.toString(),
+                    onValueChange = { str ->
+                      val longValue: Long? = str.toLongOrNull()
+                      uiQuantity = longValue ?: 0L
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = { Text("Quantity") },
+                    modifier = modifier.testTag("quantity").fillMaxWidth(),
+                    readOnly = false)
+
+                Spacer(modifier = modifier.height(8.dp))
+
+                LocationPicker(
+                    location = tempAddress,
+                    loc = loc.value,
+                    onTextChanged = { tempAddress = it },
+                    onLocationLookup = { locationViewModel.getLocation(it, loc) })
+
+                Button(
+                    onClick = {
+                      var id = ""
+                      if (mode == "edit") {
+                        id = i.id
+                      }
+                      itemViewModel.updateUiItem(
+                          Item(
+                              id,
+                              uiCategory,
+                              uiName,
+                              uiDescription,
+                              uiVisibility,
+                              uiQuantity,
+                              locationViewModel.ourLocationToAndroidLocation(loc.value),
+                              i.idUser,
+                              uiImage))
+                      itemViewModel.save(
+                          Item(
+                              id,
+                              uiCategory,
+                              uiName,
+                              uiDescription,
+                              uiVisibility,
+                              uiQuantity,
+                              locationViewModel.ourLocationToAndroidLocation(loc.value),
+                              i.idUser,
+                              File(dbImage)))
+
+                      navigationActions.goBack()
+                    },
+                    enabled = uiName.isNotBlank() && !isUploadingImage,
+                    content = {
+                      if (mode == "edit") {
+                        Text("Save")
+                      } else {
+                        Text("Create")
+                      }
+                    },
+                    modifier = modifier.fillMaxWidth().testTag("button").padding(top = 8.dp))
+              }
             }
-          }
-          Spacer(modifier = modifier.width(8.dp))
-
-          Column {
-            OutlinedTextField(
-              value = uiName,
-              onValueChange = { input ->
-                // Filter out newline characters from the input string
-                val filteredInput = input.replace("\n", "")
-                uiName = filteredInput
-              },
-              label = { Text("Object name") },
-              modifier = modifier.testTag("name").fillMaxWidth(),
-              singleLine = true, // Ensure only one line is displayed
-              readOnly = false)
-
-            LabeledText(
-              modifier.testTag("idUser").fillMaxWidth(), "Owner", uiState.user.name)
-          }
-        }
       }
-      Column(modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-        OutlinedTextField(
-          value = uiDescription,
-          onValueChange = { it -> uiDescription = it },
-          label = { Text("Description") },
-          modifier = modifier.testTag("description").fillMaxWidth(),
-          minLines = 5,
-          readOnly = false)
-
-        Spacer(modifier = modifier.height(8.dp))
-
-        Row(modifier = modifier.fillMaxWidth()) {
-          Box(
-            modifier =
-            modifier.testTag("category").fillMaxWidth(.5f).padding(end = 8.dp)) {
-            val displayedCategory =
-              if (uiCategory.name == "") "Category" else uiCategory.name
-            val c = DropDown(displayedCategory, CategoryItems)
-
-            uiCategory = Category(uiCategory.id, c)
-          }
-          Box(modifier = modifier.testTag("visibility").fillMaxWidth()) {
-            uiVisibility = getVisibility(DropDown("Visibility", VisibilityItems))
-          }
-        }
-
-        OutlinedTextField(
-          value = if (uiQuantity == 0L) "1" else uiQuantity.toString(),
-          onValueChange = { str ->
-            val longValue: Long? = str.toLongOrNull()
-            uiQuantity = longValue ?: 0L
-          },
-          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-          label = { Text("Quantity") },
-          modifier = modifier.testTag("quantity").fillMaxWidth(),
-          readOnly = false)
-
-        Spacer(modifier = modifier.height(8.dp))
-
-        LocationPicker(
-          location = tempAddress,
-          loc = loc.value,
-          onTextChanged = { tempAddress = it },
-          onLocationLookup = { locationViewModel.getLocation(it, loc) })
-
-        Button(
-          onClick = {
-            var id = ""
-            if (mode == "edit") {
-              id = i.id
-            }
-            itemViewModel.updateUiItem(
-              Item(
-                id,
-                uiCategory,
-                uiName,
-                uiDescription,
-                uiVisibility,
-                uiQuantity,
-                locationViewModel.ourLocationToAndroidLocation(loc.value),
-                i.idUser,
-                uiImage))
-            itemViewModel.save(
-              Item(
-                id,
-                uiCategory,
-                uiName,
-                uiDescription,
-                uiVisibility,
-                uiQuantity,
-                locationViewModel.ourLocationToAndroidLocation(loc.value),
-                i.idUser,
-                File(dbImage)))
-
-            navigationActions.goBack()
-          },
-          enabled = uiName.isNotBlank() && !isUploadingImage,
-          content = {
-            if (mode == "edit") {
-              Text("Save")
-            } else {
-              Text("Create")
-            }
-          },
-          modifier = modifier.fillMaxWidth().testTag("button").padding(top = 8.dp))
-      }
-    }
-  }
 }
