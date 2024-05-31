@@ -1,9 +1,11 @@
 package com.android.partagix
 
 import android.location.Location
+import android.net.Uri
 import com.android.partagix.model.Database
 import com.android.partagix.model.ItemUIState
 import com.android.partagix.model.ItemViewModel
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyUser
 import com.android.partagix.model.item.Item
@@ -11,12 +13,14 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.util.Executors
 import com.google.firebase.firestore.util.Util
+import com.google.firebase.storage.storage
 import io.mockk.Runs
 import io.mockk.coVerify
 import io.mockk.every
@@ -192,13 +196,9 @@ class ItemViewModelTests {
    */
   @Test
   fun testSaveAnItem() {
-    val _uiState = MutableStateFlow(ItemUIState(itemWithID, emptyUser))
-    val mockUiState: StateFlow<ItemUIState> = _uiState
 
     val taskCompletionSource = TaskCompletionSource<Void>()
-
     val mockCollection = mockk<CollectionReference>()
-
     val mockDocument = mockk<DocumentReference>()
 
     every { mockCollection.document(any()) } returns mockDocument
@@ -228,24 +228,13 @@ class ItemViewModelTests {
 
     val itemViewModel = spyk(ItemViewModel(itemWithID, db = db))
 
-    every { itemViewModel.uiState } returns mockUiState
-
-    every { itemViewModel.updateUiItem(itemWithID) } answers
-        {
-          _uiState.value = ItemUIState(itemWithID, emptyUser)
-        }
-
-    every { itemViewModel.updateUiItem(itemWithIDmodified) } answers
-        {
-          _uiState.value = ItemUIState(itemWithIDmodified, emptyUser)
-        }
-
     runBlocking {
-      assert(mockUiState.value.item == itemWithID)
+      assertEquals(itemWithID, itemViewModel.uiState.value.item)
       itemViewModel.save(itemWithIDmodified)
+      itemViewModel.updateUiItem(itemWithIDmodified)
 
       coVerify(exactly = 1) { itemViewModel.save(itemWithIDmodified) }
-      assert(mockUiState.value.item == itemWithIDmodified)
+      assertEquals(itemWithIDmodified, itemViewModel.uiState.value.item)
     }
   }
 
@@ -278,5 +267,36 @@ class ItemViewModelTests {
         }
     itemViewModel.getAvailabilityDates()
     assertEquals(listOf(calendar.time), itemViewModel.uiState.value.unavailableDates)
+  }
+
+  @Test
+  fun testImageHelpers() {
+    val db = mockk<Database>()
+    val storage = mockk<StorageV2>()
+    val itemViewModel = ItemViewModel(db = db, imageStorage = storage)
+
+    val uri = Uri.parse("content://media/external/images/media/1")
+    val imageName = "test"
+    val tempFile = File("tempFile.tmp")
+
+    every { storage.uploadImageToFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as () -> Unit
+          callback()
+        }
+    every { storage.getImageFromFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (File) -> Unit
+          callback(tempFile)
+        }
+    itemViewModel.uploadImage(uri, imageName) {}
+    itemViewModel.updateImage(imageName) {}
+
+    coVerify(exactly = 1) {
+      storage.uploadImageToFirebaseStorage(uri, Firebase.storage, imageName, any())
+    }
+    coVerify(exactly = 1) {
+      storage.getImageFromFirebaseStorage(imageName, Firebase.storage, any(), any())
+    }
   }
 }

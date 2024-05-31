@@ -2,6 +2,8 @@ package com.android.partagix.loan
 
 import android.location.Location
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.android.partagix.model.ItemViewModel
 import com.android.partagix.model.ManageLoanViewModel
 import com.android.partagix.model.ManagerUIState
@@ -13,12 +15,14 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.screens.ManageOutgoingLoanScreen
 import com.android.partagix.ui.navigation.NavigationActions
+import com.android.partagix.ui.navigation.Route
 import com.android.partagix.ui.screens.ManageOutgoingLoan
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -76,6 +80,7 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     mockManageViewModel = mockk()
 
     every { mockManageViewModel.getLoanRequests() } just Runs
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/2") } just Runs
   }
 
   @Test
@@ -160,6 +165,8 @@ class ManageOutgoingLoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.wit
     ComposeScreen.onComposeScreen<ManageOutgoingLoanScreen>(composeTestRule) {
       mainContent { assertIsDisplayed() }
       itemList { assertIsDisplayed() }
+      composeTestRule.onNodeWithText("User 1").performClick()
+      coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/2") }
     }
   }
 }

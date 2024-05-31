@@ -53,7 +53,7 @@ fun ItemList(
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onItemClick: (Item) -> Unit,
-    onUserClick: (Item) -> Unit = {},
+    onUserClick: ((Loan) -> Unit)? = null,
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     itemViewModel: ItemViewModel = ItemViewModel(),
     navigationActions: NavigationActions,
@@ -105,10 +105,7 @@ fun ItemList(
           isOwner = isOwner,
           isLender = isLender,
           onItemClick = onItemClick,
-          onUserClick = {
-            //            userViewModel.setUser(user)
-            //            navigationActions.navigateTo(Route.OTHER_ACCOUNT)
-          },
+          onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           itemViewModel = itemViewModel,
           navigationActions = navigationActions,

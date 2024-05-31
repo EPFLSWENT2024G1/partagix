@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.screens.LoginScreen
 import com.android.partagix.ui.App
@@ -100,6 +101,7 @@ class LoginTest {
     val mockPackageManager = mockk<PackageManager>()
     val mockAuthentication = mockk<Authentication>()
     val mockDatabase = mockk<Database>()
+    val mockImageStorage = mockk<StorageV2>()
     val mockActivityResultLauncher = mockk<ActivityResultLauncher<Intent>>()
     val mockFirebaseUser = mockk<FirebaseUser>()
 
@@ -129,7 +131,7 @@ class LoginTest {
     mockkStatic(FirebaseAuth::class)
     every { Authentication.getUser() } returns mockFirebaseUser
 
-    val app = App(mockMainActivity, mockAuthentication, mockDatabase)
+    val app = App(mockMainActivity, mockAuthentication, mockImageStorage, mockDatabase)
 
     app.onSignInSuccess(mockFirebaseUser)
 

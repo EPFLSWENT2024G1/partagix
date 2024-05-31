@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.MainActivity
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyInventory
@@ -50,6 +51,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
   @RelaxedMockK lateinit var mockNavActions: NavigationActions
   @RelaxedMockK lateinit var mockAuthentication: Authentication
   @RelaxedMockK lateinit var mockDatabase: Database
+  @RelaxedMockK lateinit var mockImageStorage: StorageV2
   @RelaxedMockK lateinit var mockMainActivity: MainActivity
   @RelaxedMockK lateinit var mockPackageManager: PackageManager
   @RelaxedMockK lateinit var mockNotificationManager: FirebaseMessagingService
@@ -65,6 +67,7 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     mockMainActivity = mockk<MainActivity>()
     mockPackageManager = mockk<PackageManager>()
     mockDatabase = mockk<Database>()
+    mockImageStorage = mockk<StorageV2>()
     mockNavActions = mockk<NavigationActions>()
     mockAuthentication = mockk<Authentication>()
     mockNotificationManager = mockk<FirebaseMessagingService>()
@@ -165,7 +168,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           val callback = it.invocation.args[2] as (User) -> Unit
           callback(lender)
         }
-    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
+    app =
+        App(
+            mockMainActivity,
+            mockAuthentication,
+            mockImageStorage,
+            mockDatabase,
+            mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.STARTLOAN) }
@@ -233,7 +242,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           callback(borrower)
         }
 
-    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
+    app =
+        App(
+            mockMainActivity,
+            mockAuthentication,
+            mockImageStorage,
+            mockDatabase,
+            mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.ENDLOAN) }
@@ -291,7 +306,13 @@ class onQrScannedTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
     every { mockDatabase.getUser("1234", any(), any()) } just Runs
     every { mockDatabase.getUserWithImage("1234", any(), any()) } just Runs
-    app = App(mockMainActivity, mockAuthentication, mockDatabase, mockNotificationManager)
+    app =
+        App(
+            mockMainActivity,
+            mockAuthentication,
+            mockImageStorage,
+            mockDatabase,
+            mockNotificationManager)
     composeTestRule.setContent { app.Create("efgh", true, mockNavActions) }
 
     verify { mockNavActions.navigateTo(Route.VIEW_ITEM) }

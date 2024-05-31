@@ -17,6 +17,7 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
@@ -27,6 +28,7 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import java.io.File
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +40,7 @@ class ItemViewModel(
     item: Item = Item("", Category("", ""), "", "", Visibility.PUBLIC, 1, Location("")),
     id: String? = null,
     db: Database = Database(),
+    val imageStorage: StorageV2 = StorageV2(),
     private val onItemSaved: (Item) -> Unit = {},
     private val onItemCreated: (Item) -> Unit = {},
     user: User = emptyUser
@@ -126,14 +129,13 @@ class ItemViewModel(
             onItemCreated)
       }
     } else {
-      updateUiItem(new)
       onItemSaved(new)
       database.setItem(new)
     }
   }
 
   fun getUser() {
-    database.getUser(uiState.value.item.idUser) { user -> updateUiUser(user) }
+    database.getUserWithImage(uiState.value.item.idUser) { user -> updateUiUser(user) }
   }
   /** Compare 2 given IDs, here the id of the item's user and the id of the current user */
   fun compareIDs(id: String, userId: String?): Boolean {
@@ -144,6 +146,14 @@ class ItemViewModel(
     database.getItemUnavailability(uiState.value.item.id) { dates ->
       _uiState.value = _uiState.value.copy(unavailableDates = dates)
     }
+  }
+
+  fun uploadImage(uri: Uri, imageName: String, onSuccess: () -> Unit) {
+    imageStorage.uploadImageToFirebaseStorage(uri, imageName = imageName, onSuccess = onSuccess)
+  }
+
+  fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
+    imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
   }
 
   companion object {

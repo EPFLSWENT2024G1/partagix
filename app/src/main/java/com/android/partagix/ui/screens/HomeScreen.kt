@@ -152,7 +152,9 @@ fun HomeScreen(
                     corner = "See All",
                     isCornerClickable = true,
                     onClickCorner = { navigationActions.navigateTo(Route.MANAGE_LOAN_REQUEST) },
-                    onUserClick = { /* todo */},
+                    onUserClick = {
+                      navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idBorrower}")
+                    },
                     isExpandable = true,
                     isOutgoing = false,
                     wasExpanded = uiState.expanded,
@@ -174,11 +176,11 @@ fun BigButton(logo: ImageVector, text: String, onClick: () -> Unit, modifier: Mo
           modifier
               .aspectRatio(1f)
               .size(70.dp)
-              .background(MaterialTheme.colorScheme.onPrimary)
               .border(
                   width = 1.dp,
                   color = MaterialTheme.colorScheme.outlineVariant,
                   shape = RoundedCornerShape(8.dp)) // Add a rounded border to the button
+              .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(8.dp))
               .clickable(onClick = onClick),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

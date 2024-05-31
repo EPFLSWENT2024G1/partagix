@@ -92,7 +92,7 @@ fun StartLoanScreen(
                                 }
                           }
 
-                      Box(modifier = Modifier.height(62.dp)) {
+                      Box(modifier = Modifier.height(80.dp)) {
                         ItemUi(
                             item = item,
                             user = lender,
@@ -105,7 +105,9 @@ fun StartLoanScreen(
                               navigationActions.navigateTo(Route.VIEW_ITEM)
                               open = false
                             },
-                            onUserClick = { /* todo */},
+                            onUserClick = {
+                              navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${lender.id}")
+                            },
                             navigationActions = navigationActions)
                       }
 

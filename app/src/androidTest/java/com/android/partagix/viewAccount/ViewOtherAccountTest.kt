@@ -172,4 +172,20 @@ class ViewOtherAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withC
 
     verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT) }
   }
+
+  @Test
+  fun loadingWork() {
+    // Create a mock UserViewModel with loading state
+    val otherUserViewModel = UserViewModel()
+    otherUserViewModel.setLoading(true)
+
+    composeTestRule.setContent {
+      ViewOtherAccount(
+          navigationActions = mockNavActions,
+          userViewModel = UserViewModel(),
+          otherUserViewModel = otherUserViewModel)
+    }
+    // Check that the CircularProgressIndicator is displayed
+    composeTestRule.onNodeWithTag("Loading").assertIsDisplayed()
+  }
 }

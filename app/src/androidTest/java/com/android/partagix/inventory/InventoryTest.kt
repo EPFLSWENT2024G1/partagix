@@ -3,6 +3,8 @@ package com.android.partagix.inventory
 import android.location.Location
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.InventoryUIState
 import com.android.partagix.model.InventoryViewModel
@@ -20,6 +22,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
@@ -79,9 +82,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     every { mockNavActions.navigateTo(Route.HOME) } just Runs
     every { mockNavActions.navigateTo(Route.LOGIN) } just Runs
 
-    // Useful when we will have fix the count for incoming/outgoing request
-    /* every { mockManageLoanViewModel.getInComingRequestCount(any()) } just Runs
-    every { mockManageLoanViewModel.getOutGoingRequestCount(any()) } just Runs*/
+    every { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") } just Runs
   }
 
   @Test
@@ -125,5 +126,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
       itemList { assertIsDisplayed() }
       borrowedItemList { assertIsDisplayed() }
     }
+    composeTestRule.onNodeWithText("noname").performClick()
+    coVerify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/") }
   }
 }

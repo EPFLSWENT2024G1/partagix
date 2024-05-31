@@ -45,7 +45,7 @@ class EvaluationViewModel(
     val notification =
         Notification(
             title = "New User Review",
-            message = "You have received a new user review.",
+            message = "You have just been reviewed. Check it out!",
             type = Notification.Type.USER_REVIEW,
             navigationUrl = Route.ACCOUNT)
 

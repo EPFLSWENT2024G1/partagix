@@ -1,5 +1,6 @@
 package com.android.partagix.ui.screens
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -54,9 +56,7 @@ import com.android.partagix.ui.components.locationPicker.LocationPicker
 import com.android.partagix.ui.components.locationPicker.LocationPickerViewModel
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import getImageFromFirebaseStorage
 import java.io.File
-import uploadImageToFirebaseStorage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +129,7 @@ fun EditAccount(
       }) {
         if (user.id !=
             userViewModel.getLoggedUserId()) { // Check if user is editing their own account
-          Text(text = "Loading...", modifier = Modifier.padding(it).testTag("notYourAccount"))
+          Text(text = "     Loading...", modifier = Modifier.padding(it).testTag("notYourAccount"))
         } else {
           Column(
               modifier =
@@ -145,22 +145,16 @@ fun EditAccount(
                             .height(150.dp)
                             .padding(8.dp)
                             .align(Alignment.CenterHorizontally)
+                            .border(1.dp, MaterialTheme.colorScheme.outline)
                             .testTag("image")) {
                       MainImagePicker(listOf(user.imageId.toUri())) { uri ->
-                        // TODO :  Save the image to a local file to its displayed correctly while
-                        // waiting for the upload
-                        /*
-                        val localFilePath = kotlin.io.path.createTempFile("temp-${i.id}", ".tmp").toFile()
-                        Missing : save the image to the local file (need a ContentResolver ?)
-                        uiImage = localFilePath
-                         */
-                        // Before this is done, display an empty image while waiting for the upload
-                        uiImage = File.createTempFile("default_image", null)
-
-                        // in the meantime do nothing and the image will be loaded from the database
-                        // later
-                        uploadImageToFirebaseStorage(uri, imageName = "users/${user.id}") {
-                          getImageFromFirebaseStorage("users/${user.id}") { file -> uiImage = file }
+                        if (uri.path != null &&
+                            uri.path!!.isNotEmpty() &&
+                            uri.path!! != user.imageId.path) {
+                          uiImage = null
+                          userViewModel.uploadImage(uri, imageName = "users/${user.id}") {
+                            userViewModel.updateImage("users/${user.id}") { file -> uiImage = file }
+                          }
                         }
                       }
                     }

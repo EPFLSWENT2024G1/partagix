@@ -17,17 +17,20 @@
 package com.android.partagix.model
 
 import android.location.Location
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.user.User
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(
     user: User = User("", "", "", "", Inventory("", emptyList()), email = ""),
-    db: Database = Database()
+    db: Database = Database(),
+    private val imageStorage: StorageV2 = StorageV2()
 ) : ViewModel() {
 
   // private val user = user
@@ -93,12 +96,26 @@ class UserViewModel(
 
   /** Get the user's comments from the database and update the UI state when done */
   fun getComments() {
+    _uiState.value = _uiState.value.copy(loadComment = true)
     database.getComments(_uiState.value.user.id) { comments ->
       _uiState.value =
           _uiState.value.copy(
               comments = comments,
+              loadComment = false,
           )
     }
+  }
+
+  fun setLoading(loading: Boolean) {
+    _uiState.value = _uiState.value.copy(loading = loading)
+  }
+
+  fun updateImage(imageName: String, onSuccess: (localFile: File) -> Unit) {
+    imageStorage.getImageFromFirebaseStorage(imageName) { onSuccess(it) }
+  }
+
+  fun uploadImage(imageUri: Uri, imageName: String, onSuccess: () -> Unit) {
+    imageStorage.uploadImageToFirebaseStorage(imageUri, imageName = imageName) { onSuccess() }
   }
 
   companion object {
@@ -112,9 +129,12 @@ class UserViewModel(
  * @param user the user
  * @param location the location of the user
  * @param comments the comments of the user, in the form: (comment's author, message)
+ * @param loading whether the user is being loaded
  */
 data class UserUIState(
     val user: User,
     val location: Location? = null,
-    val comments: List<Pair<User, String>> = emptyList()
+    val comments: List<Pair<User, String>> = emptyList(),
+    val loading: Boolean = false,
+    val loadComment: Boolean = false
 )

@@ -33,10 +33,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -208,44 +212,50 @@ fun InventoryScreen(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-              var expendedBor =
-                  mutableListOf<Boolean>().apply {
-                    for (i in 0 until uiState.borrowedItems.size) {
-                      add(false)
-                    }
-                  }
-              ItemListColumn(
-                  list = uiState.borrowedItems,
-                  users = uiState.usersBor,
-                  loan = uiState.loanBor,
-                  title = "Borrowed",
-                  corner = uiState.borrowedItems.size.toString(),
-                  onItemClick = {
-                    itemViewModel.updateUiItem(it)
-                    navigationActions.navigateTo(Route.VIEW_ITEM)
-                  },
-                  onUserClick = {
-                    // navigationActions.navigateTo(Route.OTHER_ACCOUNT) todo
-                  },
-                  isCornerClickable = false,
-                  isClickable = false,
-                  isOutgoing = true,
-                  isLender = true,
-                  isExpandable = true,
-                  expandState = false,
-                  wasExpanded = expendedBor,
-                  updateExpanded = { i, expanded -> expendedBor[i] = expanded },
-                  manageLoanViewModel = manageLoanViewModelOutgoing,
-                  navigationActions = navigationActions,
-                  itemViewModel = itemViewModel,
-                  modifier =
-                      Modifier.padding(horizontal = 10.dp)
-                          .fillMaxHeight(0.4f)
-                          .testTag("inventoryScreenBorrowedItemList"))
+              var size by remember { mutableStateOf(uiState.borrowedItems.size) }
+              var expendedBor by remember { mutableStateOf(createExpendedBorList(size)) }
 
-              HorizontalDivider(
-                  color = MaterialTheme.colorScheme.outlineVariant,
-                  modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+              // Observe changes to uiState.borrowedItems.size and update the list accordingly
+              LaunchedEffect(uiState.borrowedItems.size) {
+                if (size != uiState.borrowedItems.size) {
+                  size = uiState.borrowedItems.size
+                  expendedBor = createExpendedBorList(size)
+                }
+              }
+              if (uiState.borrowedItems.isNotEmpty()) {
+                ItemListColumn(
+                    list = uiState.borrowedItems,
+                    users = uiState.usersBor,
+                    loan = uiState.loanBor,
+                    title = "Borrowed",
+                    corner = uiState.borrowedItems.size.toString(),
+                    onItemClick = {
+                      itemViewModel.updateUiItem(it)
+                      navigationActions.navigateTo(Route.VIEW_ITEM)
+                    },
+                    onUserClick = {
+                      navigationActions.navigateTo("${Route.OTHER_ACCOUNT}/${it.idLender}")
+                    },
+                    isCornerClickable = false,
+                    isClickable = false,
+                    isOutgoing = true,
+                    isLender = true,
+                    isExpandable = true,
+                    expandState = false,
+                    wasExpanded = expendedBor,
+                    updateExpanded = { i, expanded -> expendedBor[i] = expanded },
+                    manageLoanViewModel = manageLoanViewModelOutgoing,
+                    navigationActions = navigationActions,
+                    itemViewModel = itemViewModel,
+                    modifier =
+                        Modifier.padding(horizontal = 10.dp)
+                            .fillMaxHeight(0.4f)
+                            .testTag("inventoryScreenBorrowedItemList"))
+
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.height(0.5.dp).fillMaxWidth().padding(horizontal = 10.dp))
+              }
 
               Spacer(modifier = Modifier.height(8.dp))
               ItemListColumn(
@@ -272,4 +282,12 @@ fun InventoryScreen(
           }
         }
       }
+}
+// Function to initialize or update the list based on the size
+fun createExpendedBorList(size: Int): SnapshotStateList<Boolean> {
+  return mutableStateListOf<Boolean>().apply {
+    for (i in 0 until size) {
+      add(false)
+    }
+  }
 }

@@ -13,6 +13,7 @@ import com.android.partagix.BuildConfig
 import com.android.partagix.MainActivity
 import com.android.partagix.R
 import com.android.partagix.model.Database
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.ui.App
 import com.android.partagix.ui.components.notificationAlert
 import com.android.partagix.ui.navigation.NavigationActions
@@ -51,6 +52,8 @@ class FirebaseMessagingService(
    * `createChannels()`.
    */
   fun initPermissions() {
+    Log.d(TAG, "Initializing permissions")
+
     if (context == null) {
       Log.e(TAG, "Context is not set, cannot initialize permissions")
       return
@@ -68,6 +71,7 @@ class FirebaseMessagingService(
           }
         }
 
+    Authentication.getUser()?.uid?.let { checkToken(it) }
     askNotificationPermission()
     createChannels()
   }
@@ -133,9 +137,7 @@ class FirebaseMessagingService(
   override fun onNewToken(token: String) {
     Log.d(TAG, "Refreshed token: $token")
 
-    db.getCurrentUser { user ->
-      checkToken(user.id) { newToken -> db.updateFCMToken(user.id, newToken) }
-    }
+    db.getCurrentUser { user -> checkToken(user.id) }
   }
 
   /**
@@ -175,7 +177,9 @@ class FirebaseMessagingService(
   fun checkToken(userId: String, onSuccess: (String) -> Unit = {}) {
     getToken { newToken ->
       db.getFCMToken(userId) { oldToken ->
-        if (oldToken != null && oldToken != newToken) {
+        Log.d(TAG, "Old token: $oldToken, new token: $newToken")
+
+        if (oldToken != newToken) {
           db.updateFCMToken(userId, newToken)
         }
 

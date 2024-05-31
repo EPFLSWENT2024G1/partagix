@@ -4,6 +4,7 @@ import androidx.activity.result.registerForActivityResult
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.notification.FirebaseMessagingService
@@ -21,6 +22,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import java.io.File
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +39,8 @@ class AppTest {
   @Mock private lateinit var mockAuth: Authentication
 
   @Mock private lateinit var mockDatabase: Database
+
+  @Mock private lateinit var mockStorageV2: StorageV2
 
   @Mock private lateinit var mockNavActions: NavigationActions
 
@@ -61,9 +65,27 @@ class AppTest {
 
     mockAuth = spyk(Authentication(mockActivity, mockk()))
 
-    mockDatabase = spyk(Database())
+    mockStorageV2 = spyk()
+    every { mockStorageV2.uploadImageToFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as () -> Unit
+          callback()
+        }
+    every { mockStorageV2.getImageFromFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (File) -> Unit
+          callback(File("localFile"))
+        }
+    every { mockStorageV2.getImagesFromFirebaseStorage(any(), any(), any(), any()) } answers
+        {
+          val callback = args[3] as (List<File>) -> Unit
+          callback(listOf(File("localFile")))
+        }
+
+    mockDatabase = spyk(Database(imageStorage = mockStorageV2))
     every { mockDatabase.createUser(any()) } just Runs
     every { mockDatabase.getUser(any(), any(), any()) } just Runs
+    every { mockDatabase.getUserWithImage(any(), any(), any()) } just Runs
 
     mockNavActions = spyk(NavigationActions(mockk()))
     every { mockNavActions.navigateTo(any<String>()) } just Runs
@@ -73,7 +95,7 @@ class AppTest {
     every { mockFirebaseUser.displayName } returns "testUser"
     every { mockFirebaseUser.email } returns "testEmail"
 
-    mockNotificationManager = mockk()
+    mockNotificationManager = spyk(FirebaseMessagingService(mockDatabase, mockNavActions))
     every { mockNotificationManager.sendNotification(any(), any()) } just Runs
     every { mockNotificationManager.initPermissions() } just Runs
     every { mockNotificationManager.checkToken(any(), any()) } answers
@@ -88,6 +110,7 @@ class AppTest {
         App(
             mockActivity,
             mockAuth,
+            mockStorageV2,
             mockDatabase,
             mockNotificationManager,
             mockFusedLocationProviderClient)
@@ -147,5 +170,11 @@ class AppTest {
     app.navigateForTest(Route.INVENTORY)
 
     verify { mockNavActions.navigateTo(Route.INVENTORY) }
+  }
+
+  @Test
+  fun navigateOtherAccount() {
+    app.navigateForTest(Route.OTHER_ACCOUNT + "/testUid")
+    verify { mockNavActions.navigateTo(Route.OTHER_ACCOUNT + "/testUid") }
   }
 }

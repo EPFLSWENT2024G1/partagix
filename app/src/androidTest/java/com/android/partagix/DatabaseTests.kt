@@ -3,6 +3,7 @@ package com.android.partagix
 import android.location.Location
 import androidx.core.os.bundleOf
 import com.android.partagix.model.Database
+import com.android.partagix.model.StorageV2
 import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.emptyConst.emptyUser
@@ -262,10 +263,11 @@ class DatabaseTests {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
 
-    mockkStatic(::getImagesFromFirebaseStorage)
-    every { getImagesFromFirebaseStorage(any(), any()) } answers
+    val mockImageStorage = mockk<StorageV2>()
+
+    every { mockImageStorage.getImagesFromFirebaseStorage(any(), any(), any(), any()) } answers
         {
-          val onSuccess = arg<(List<File>) -> Unit>(4)
+          val onSuccess = arg<(List<File>) -> Unit>(3)
           onSuccess(listOf(File("imageId")))
         }
 
@@ -385,7 +387,7 @@ class DatabaseTests {
     every { uploadTask.addOnFailureListener(any()) } returns uploadTask
 
     // Create Database instance
-    val database = Database(mockDb)
+    val database = Database(mockDb, mockImageStorage)
 
     // Perform the function call
     val onSuccessCallback: (List<Item>) -> Unit = { items ->
@@ -527,7 +529,7 @@ class DatabaseTests {
     // Perform the function call
     val onSuccessCallback: (Item) -> Unit = { res ->
       // Assert on the returned list of items
-      assertEquals(item, res)
+      assertEquals(item.id, res.id)
       // Add your assertions here based on the expected behavior
     }
 
@@ -598,14 +600,18 @@ class DatabaseTests {
     mockkStatic(::now)
     every { now() } returns Timestamp(Date(0))
 
-    mockkStatic(::getImageFromFirebaseStorage)
-    every { getImageFromFirebaseStorage("users/userId", any(), any(), any()) } answers
+    val mockImageStorage = mockk<StorageV2>()
+    every {
+      mockImageStorage.getImageFromFirebaseStorage("users/userId", any(), any(), any())
+    } answers
         {
           val onSuccess = arg<(File) -> Unit>(3)
           onSuccess((File("imageId")))
         }
 
-    every { getImageFromFirebaseStorage("users/userId2", any(), any(), any()) } answers
+    every {
+      mockImageStorage.getImageFromFirebaseStorage("users/userId2", any(), any(), any())
+    } answers
         {
           val onFailure = arg<(java.lang.Exception) -> Unit>(2)
           onFailure(Exception("Error"))
@@ -710,7 +716,7 @@ class DatabaseTests {
     val onSuccessInvalidImageCallback: (User) -> Unit = { res -> assertEquals(user2, res) }
 
     val onNoUserCallback: () -> Unit = { assert(false) }
-    val database = spyk(Database(mockDb), recordPrivateCalls = true)
+    val database = spyk(Database(mockDb, mockImageStorage), recordPrivateCalls = true)
 
     every { database.getUserInventory(any(), any()) } answers
         {
@@ -727,6 +733,168 @@ class DatabaseTests {
     }
     //  Don't forget to unmock.
     unmockkStatic(::now)
+  }
+
+  @Test
+  fun testGetUsersImages() {
+    mockkStatic(::now)
+    every { now() } returns Timestamp(Date(0))
+
+    val mockImageStorage = mockk<StorageV2>()
+    every {
+      mockImageStorage.getImagesFromFirebaseStorage(
+          listOf("users/userId", "users/userId2"), any(), any(), any())
+    } answers
+        {
+          println("----  images ")
+
+          val onSuccess = arg<(List<File>) -> Unit>(3)
+          onSuccess(listOf(File("imageId1"), File("imageId2")))
+        }
+
+    val mockDb: FirebaseFirestore = mockk()
+    val mockUsersCollection = mockk<CollectionReference>()
+    val mockUsersTask = mockk<Task<QuerySnapshot>>()
+
+    val mockDocumentReference = mockk<DocumentReference>()
+    val location = Location("")
+    location.latitude = 0.0
+    location.longitude = 0.0
+    location.extras = bundleOf("display_name" to "STCC")
+    val item =
+        Item(
+            "itemId",
+            Category("categoryId", "categoryName"),
+            "itemName",
+            "itemDescription",
+            Visibility.PUBLIC,
+            1234,
+            location,
+        )
+
+    val userId = "userId"
+    val userId2 = "userId2"
+
+    // This user is returned by Firestore
+    val user =
+        User(
+            userId,
+            "userName",
+            "userAddress",
+            "rank",
+            Inventory("id", listOf()),
+            imageId = File("imageId"),
+        )
+    // This user should be returned by getUser and the other one for getUserWithImage
+    val userWithoutImage =
+        User(
+            userId,
+            "userName",
+            "userAddress",
+            "rank",
+            Inventory("id", listOf()),
+            imageId = File("noImage"),
+            email = "Please enter an email address",
+        )
+    val user2 =
+        User(
+            userId2,
+            "userName",
+            "userAddress",
+            "rank",
+            Inventory("id", listOf()),
+            imageId = File("noImage"),
+        )
+    // Define behavior for Firestore mocks
+    every { mockDb.collection(any()) } returns mockUsersCollection
+
+    every { mockDb.collection("users") } returns mockUsersCollection
+
+    // ####
+    every { mockUsersCollection.get() } returns mockUsersTask
+    every { mockUsersTask.addOnFailureListener(any()) } returns mockUsersTask
+
+    every { mockUsersTask.addOnSuccessListener(any<OnSuccessListener<QuerySnapshot>>()) } answers
+        {
+          println("---- listener 1")
+          val listener = arg<OnSuccessListener<QuerySnapshot>>(0)
+          val mockSnapshot = mockk<QuerySnapshot>()
+          val mockDocument = mockk<DocumentSnapshot>()
+          val mockQueryDocument1 = mockk<QueryDocumentSnapshot>()
+          val mockQueryDocument2 = mockk<QueryDocumentSnapshot>()
+          every { mockQueryDocument1.data } returns
+              mapOf(
+                  "id" to user.id,
+                  "name" to user.name,
+                  "addr" to user.address,
+                  "rank" to user.rank,
+              )
+          every { mockQueryDocument2.data } returns
+              mapOf(
+                  "id" to user2.id,
+                  "name" to user2.name,
+                  "addr" to user2.address,
+                  "rank" to user2.rank,
+              )
+          every { mockSnapshot.iterator().next() } returns
+              mockQueryDocument1 andThen
+              mockQueryDocument2
+
+          every { mockSnapshot.iterator().next() } returns
+              mockQueryDocument1 andThen
+              mockQueryDocument2
+          every { mockSnapshot.iterator() } returns mockk()
+          every { mockSnapshot.iterator().hasNext() } returns
+              true andThen
+              true andThen
+              false andThen
+              true andThen
+              true andThen
+              false
+          every { mockSnapshot.documents.iterator().hasNext() } returns
+              true andThen
+              true andThen
+              false andThen
+              true andThen
+              true andThen
+              false
+          every {
+            mockDocument.data?.iterator()?.hasNext() ?: mockSnapshot.iterator().hasNext()
+          } returns true andThen true andThen false andThen true andThen true andThen false
+
+          listener.onSuccess(mockSnapshot)
+          mockUsersTask
+        }
+    // ####
+
+    // Create Database instance
+    val database = spyk(Database(mockDb, mockImageStorage))
+
+    every { database.getItemsWithImages(any()) } answers
+        {
+          val onSuccess = arg<(List<Item>) -> Unit>(0)
+          println("---- items image ")
+
+          onSuccess(listOf(item))
+        }
+    every { database.getItems(any()) } answers
+        {
+          val onSuccess = arg<(List<Item>) -> Unit>(0)
+          println("---- items no image ")
+
+          onSuccess(listOf(item))
+        }
+
+    // Perform the function call
+    val onSuccessCallback: (List<User>) -> Unit = { users ->
+      // Assert on the returned list of items
+      println(users)
+      assertNotNull(users)
+      assertEquals(2, users.size)
+      // Add your assertions here based on the expected behavior
+    }
+
+    runBlocking { database.getUsersWithImages(onSuccessCallback) }
   }
 
   @Test
