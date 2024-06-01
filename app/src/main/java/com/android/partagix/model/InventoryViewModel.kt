@@ -269,14 +269,20 @@ class InventoryViewModel(
     items.forEach { item ->
       val list =
           loansList
-              .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
+              .filter {
+                it.idItem == item.id &&
+                    (it.state == LoanState.ACCEPTED || it.state == LoanState.ONGOING)
+              }
               .sortedBy { it.startDate }
       update(
           if (list.isEmpty()) {
             Loan("", "", "", "", Date(), Date(), "", "", "", "", LoanState.CANCELLED)
           } else {
             loansList
-                .filter { it.idItem == item.id && it.state == LoanState.ACCEPTED }
+                .filter {
+                  it.idItem == item.id &&
+                      (it.state == LoanState.ACCEPTED || it.state == LoanState.ONGOING)
+                }
                 .sortedBy { it.startDate }
                 .first()
           })
