@@ -147,7 +147,7 @@ class LoanTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSuppor
 
     val listLoanDetails = listOf(LoanDetails(item1, user1), LoanDetails(item2, user2))
 
-    loanUIState = MutableStateFlow(LoanUIState(listLoanDetails, availability =  emptyList()))
+    loanUIState = MutableStateFlow(LoanUIState(listLoanDetails, availability = emptyList()))
     userUIStateWithLocation = MutableStateFlow(UserUIState(user, location))
     userUIStateWithoutLocation = MutableStateFlow(UserUIState(user))
 
