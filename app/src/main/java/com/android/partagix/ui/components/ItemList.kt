@@ -46,10 +46,11 @@ fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
+    availability: List<Boolean>,
     isExpandable: Boolean,
     isOutgoing: Boolean,
     isOwner: Boolean = false,
-    isLender: Boolean = false,
+    isBorrower: Boolean = false,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onItemClick: (Item) -> Unit,
@@ -99,11 +100,21 @@ fun ItemList(
                   loan[index]
                 }
               },
+          available =
+              if (availability.isEmpty()) {
+                true
+              } else {
+                if (availability.size <= index) {
+                  true
+                } else {
+                  availability[index]
+                }
+              },
           isExpandable = isExpandable,
           index = index,
           isOutgoing = isOutgoing,
           isOwner = isOwner,
-          isLender = isLender,
+          isBorrower = isBorrower,
           onItemClick = onItemClick,
           onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,

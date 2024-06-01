@@ -24,6 +24,7 @@ import com.android.partagix.model.item.Item
 import com.android.partagix.model.loan.Loan
 import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
+import com.android.partagix.utils.stripTime
 import com.google.firebase.auth.FirebaseAuth
 import java.io.File
 import java.util.Date
@@ -64,6 +65,8 @@ class InventoryViewModel(
               emptyList(),
               emptyList(),
               emptyList(),
+              emptyList(),
+              emptyList(),
           ))
   val uiState: StateFlow<InventoryUIState> = _uiState
 
@@ -95,10 +98,17 @@ class InventoryViewModel(
             }
             val lenderUsersIds = mutableListOf<String>()
             val itemsBor = mutableListOf<Item>()
+            val availabilityBor = mutableListOf<Boolean>()
             loansList
                 .filter { it.idBorrower.equals(currentUser.uid) }
                 .filter { it.state == LoanState.ACCEPTED || it.state == LoanState.ONGOING }
                 .forEach { loan ->
+                  availabilityBor.add(
+                      if (loan.startDate.before(Date()) && loan.endDate.after(Date())) {
+                        true
+                      } else {
+                        false
+                      })
                   lenderUsersIds.add(loan.idLender)
                   val itemsBorHere = items.filter { item -> item.id == loan.idItem }
                   itemsBor.add(itemsBorHere[0])
@@ -119,6 +129,21 @@ class InventoryViewModel(
               newLoanList.forEach { loan -> updateLoan(loan) }
               updateInv(items.filter { it.idUser.equals(currentUser.uid) })
             }
+            val availability = mutableListOf<Boolean>()
+            items
+                .filter { it.idUser.equals(currentUser.uid) }
+                .forEach { item ->
+                  println(item)
+                  database.getItemUnavailability(item.id) { date ->
+                    availability.add(
+                        if (date.none { stripTime(it) == stripTime(Date()) }) {
+                          true
+                        } else {
+                          false
+                        })
+                    updateAvailabilityList(availability, availabilityBor)
+                  }
+                }
           }
         }
       } else {
@@ -153,6 +178,11 @@ class InventoryViewModel(
   fun updateInv(new: List<Item>) {
     _uiState.value = _uiState.value.copy(items = new)
     fetchedList = new
+  }
+
+  fun updateAvailabilityList(availability: List<Boolean>, availabilityBor: List<Boolean>) {
+    _uiState.value =
+        _uiState.value.copy(availability = availability, availabilityBor = availabilityBor)
   }
 
   /**
@@ -336,5 +366,7 @@ data class InventoryUIState(
     val users: List<User>,
     val usersBor: List<User>,
     val loanBor: List<Loan>,
-    val loan: List<Loan>
+    val loan: List<Loan>,
+    val availability: List<Boolean>,
+    val availabilityBor: List<Boolean>,
 )

@@ -44,6 +44,7 @@ fun ItemListColumn(
     list: List<Item>,
     users: List<User>,
     loan: List<Loan>,
+    availability: List<Boolean> = emptyList(),
     title: String,
     corner: String,
     isCornerClickable: Boolean = false,
@@ -54,7 +55,7 @@ fun ItemListColumn(
     expandState: Boolean = false,
     isOutgoing: Boolean,
     isOwner: Boolean = false,
-    isLender: Boolean = false,
+    isBorrower: Boolean = false,
     onUserClick: (Loan) -> Unit = {},
     manageLoanViewModel: ManageLoanViewModel = ManageLoanViewModel(),
     itemViewModel: ItemViewModel = ItemViewModel(),
@@ -108,6 +109,7 @@ fun ItemListColumn(
           itemList = list,
           users = users,
           loan = loan,
+          availability = availability,
           onItemClick =
               if (isClickable) {
                 onItemClick
@@ -118,7 +120,7 @@ fun ItemListColumn(
           wasExpanded = wasExpanded,
           isOutgoing = isOutgoing,
           isOwner = isOwner,
-          isLender = isLender,
+          isBorrower = isBorrower,
           onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,
           modifier = Modifier.fillMaxSize(),

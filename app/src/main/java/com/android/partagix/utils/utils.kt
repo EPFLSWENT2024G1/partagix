@@ -14,8 +14,15 @@ fun stripTime(date: Date): Date {
   return calendar.time
 }
 
-fun dateFormat(date: Date): String {
+fun displayedDateFormat(date: Date): String {
   var pattern = "yyyy-MM-dd"
   var formatter = SimpleDateFormat(pattern)
   return formatter.format(date)
+}
+
+fun formattedDate(date: Date): Date {
+  date.hours = 0
+  date.minutes = 0
+  date.seconds = 0
+  return date
 }
