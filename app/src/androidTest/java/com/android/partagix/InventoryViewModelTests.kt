@@ -13,9 +13,11 @@ import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -165,6 +167,7 @@ class InventoryViewModelTests {
         }
     every { this@InventoryViewModelTests.fire.currentUser } returns
         mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+    every { db.getItemUnavailability(any(), any()) } just Runs
   }
 
   @After

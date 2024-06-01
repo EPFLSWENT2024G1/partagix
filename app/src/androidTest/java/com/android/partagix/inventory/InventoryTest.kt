@@ -51,7 +51,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
     emptyMockUiState =
         MutableStateFlow(
             InventoryUIState(
-                emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
+                emptyList(), "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList(),  emptyList(), emptyList()))
     val cat1 = Category("1", "Category 1")
     val vis1 = Visibility.PUBLIC
     val loc1 = Location("1")
@@ -59,7 +59,7 @@ class InventoryTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeS
 
     nonEmptyMockUiState =
         MutableStateFlow(
-            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList(),  emptyList(), emptyList()))
 
     mockItemViewModel = mockk()
     mockManageLoanViewModelIncoming = mockk()

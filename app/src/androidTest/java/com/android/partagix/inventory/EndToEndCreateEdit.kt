@@ -101,15 +101,15 @@ class EndToEndCreateEdit {
   fun setup() {
     mockUiState =
         MutableStateFlow(
-            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+            InventoryUIState(items, "", items, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
     mockUiState2 =
         MutableStateFlow(
             InventoryUIState(
-                listOf(item2), "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+                listOf(item2), "", items, emptyList(), emptyList(), emptyList(), emptyList() ,emptyList(), emptyList()))
     mockUiState3 =
         MutableStateFlow(
             InventoryUIState(
-                listOf(item3), "", items, emptyList(), emptyList(), emptyList(), emptyList()))
+                listOf(item3), "", items, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList()))
 
     mockManageUiState =
         MutableStateFlow(ManagerUIState(items, emptyList(), emptyList(), emptyList()))
