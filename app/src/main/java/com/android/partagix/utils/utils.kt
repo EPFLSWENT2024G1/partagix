@@ -19,10 +19,3 @@ fun displayedDateFormat(date: Date): String {
   var formatter = SimpleDateFormat(pattern)
   return formatter.format(date)
 }
-
-fun formattedDate(date: Date): Date {
-  date.hours = 0
-  date.minutes = 0
-  date.seconds = 0
-  return date
-}

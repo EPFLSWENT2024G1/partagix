@@ -14,8 +14,10 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
+import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -152,6 +154,7 @@ class LoanViewModelTests {
           val userId = firstArg<String>()
           thirdArg<(User) -> Unit>().invoke(users.first { it.id == userId })
         }
+    every { db.getItemUnavailability(any(), any()) } just Runs
   }
 
   @After

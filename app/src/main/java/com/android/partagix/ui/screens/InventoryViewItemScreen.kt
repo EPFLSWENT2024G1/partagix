@@ -53,7 +53,6 @@ import com.android.partagix.ui.components.LabeledText
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import com.android.partagix.utils.displayedDateFormat
-import com.android.partagix.utils.formattedDate
 import com.android.partagix.utils.stripTime
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Date
@@ -193,7 +192,7 @@ fun InventoryViewItemScreen(
                           Text(
                               text =
                                   if (uiState.value.unavailableDates.none {
-                                    stripTime(it) == formattedDate(Date())
+                                    stripTime(it) == stripTime(Date())
                                   } && uiState.value.unavailableDates.isNotEmpty()) {
                                     "unavailable until " +
                                         displayedDateFormat(
