@@ -14,16 +14,15 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.model.visibility.Visibility
 import com.google.firebase.auth.FirebaseUser
-import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
 import io.mockk.verify
 import java.util.Date
 import java.util.concurrent.CountDownLatch
+import junit.framework.TestCase.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -154,7 +153,6 @@ class LoanViewModelTests {
           val userId = firstArg<String>()
           thirdArg<(User) -> Unit>().invoke(users.first { it.id == userId })
         }
-    every { db.getItemUnavailability(any(), any()) } just Runs
   }
 
   @After
@@ -280,6 +278,40 @@ class LoanViewModelTests {
     loanViewModel.applyFilters(FilterState(location = currentPosition, radius = radius))
 
     verify { spyFiltering.filterItems(any(), currentPosition, radius) }
+  }
+
+  @Test
+  fun testAvailability() {
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication.Companion)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "user5"
+
+    val availableItems = listOf(item5)
+
+    every { db.getItemUnavailability(any(), any()) } answers
+        {
+          println("yoo")
+          secondArg<(List<Date>) -> Unit>()
+              .invoke(
+                  listOf(
+                      Date(2000, 1, 1),
+                      Date(2001, 1, 1),
+                      Date(2002, 1, 1),
+                      Date(2003, 1, 1),
+                      Date()))
+        }
+    every { db.getAvailableItems(any(), any()) } answers
+        {
+          secondArg<(List<Item>) -> Unit>().invoke(availableItems)
+        }
+    every { db.getUsers(any()) } answers { firstArg<(List<User>) -> Unit>().invoke(users_list) }
+
+    val latch = CountDownLatch(1)
+    loanViewModel.getAvailableLoans(latch)
+    latch.await()
+    assertEquals(loanViewModel.uiState.value.availability.size, 1)
+    assertEquals(loanViewModel.uiState.value.availability, listOf(false))
   }
 
   companion object {

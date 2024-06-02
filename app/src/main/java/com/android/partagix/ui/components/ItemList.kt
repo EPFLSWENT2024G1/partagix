@@ -79,14 +79,6 @@ fun ItemList(
               users[index]
             }
           }
-
-      /*      val onUserClick = {
-        if (user.id.isNotEmpty()) {
-          userViewModel.setUser(user)
-          navigationActions.navigateTo(Route.OTHER_ACCOUNT)
-        }
-      }*/
-
       ItemUi(
           item = item,
           user = user,
@@ -100,16 +92,7 @@ fun ItemList(
                   loan[index]
                 }
               },
-          available =
-              if (availability.isEmpty()) {
-                true
-              } else {
-                if (availability.size <= index) {
-                  true
-                } else {
-                  availability[index]
-                }
-              },
+          available = availability.getOrElse(index) { true },
           isExpandable = isExpandable,
           index = index,
           isOutgoing = isOutgoing,

@@ -56,13 +56,10 @@ class LoanViewModel(
                 }
             applyFilters(uiState.value.filterState)
             newItems.map { item ->
+              println("item: $item")
               db.getItemUnavailability(item.id) { date ->
-                newAvailabilityList.add(
-                    if (date.none { stripTime(it) == stripTime(Date()) }) {
-                      true
-                    } else {
-                      false
-                    })
+                println("--------------------------------------------------------yo")
+                newAvailabilityList.add(date.none { stripTime(it) == stripTime(Date()) })
                 updateAvailability(newAvailabilityList)
               }
             }

@@ -103,12 +103,7 @@ class InventoryViewModel(
                 .filter { it.idBorrower.equals(currentUser.uid) }
                 .filter { it.state == LoanState.ACCEPTED || it.state == LoanState.ONGOING }
                 .forEach { loan ->
-                  availabilityBor.add(
-                      if (loan.startDate.before(Date()) && loan.endDate.after(Date())) {
-                        true
-                      } else {
-                        false
-                      })
+                  availabilityBor.add(loan.startDate.before(Date()) && loan.endDate.after(Date()))
                   lenderUsersIds.add(loan.idLender)
                   val itemsBorHere = items.filter { item -> item.id == loan.idItem }
                   itemsBor.add(itemsBorHere[0])
@@ -133,14 +128,8 @@ class InventoryViewModel(
             items
                 .filter { it.idUser.equals(currentUser.uid) }
                 .forEach { item ->
-                  println(item)
                   database.getItemUnavailability(item.id) { date ->
-                    availability.add(
-                        if (date.none { stripTime(it) == stripTime(Date()) }) {
-                          true
-                        } else {
-                          false
-                        })
+                    availability.add(date.none { stripTime(it) == stripTime(Date()) })
                     updateAvailabilityList(availability, availabilityBor)
                   }
                 }

@@ -194,12 +194,12 @@ fun InventoryViewItemScreen(
                                   if (uiState.value.unavailableDates.none {
                                     stripTime(it) == stripTime(Date())
                                   } && uiState.value.unavailableDates.isNotEmpty()) {
-                                    "unavailable until " +
+                                    "Unavailable until " +
                                         displayedDateFormat(
                                             uiState.value.unavailableDates
                                                 .sorted()[uiState.value.unavailableDates.size - 1])
                                   } else {
-                                    "available"
+                                    "Available"
                                   },
                               style = MaterialTheme.typography.bodyMedium,
                               color = MaterialTheme.colorScheme.onBackground,

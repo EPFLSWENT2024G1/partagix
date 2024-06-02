@@ -106,7 +106,7 @@ fun ItemUi(
   var expanded by remember { mutableStateOf(expandState) }
   var availability = "Now available"
   if (!available) {
-    availability = "unavailable now"
+    availability = "Unavailable now"
   }
   if (isBorrower && loan.state == LoanState.ACCEPTED) {
     availability = "Accepted but not started"
@@ -115,7 +115,7 @@ fun ItemUi(
     availability = "Available"
   }
   if (isOwner && !available) { // normal case of borrowed item
-    availability = "borrowed"
+    availability = "Borrowed"
   }
 
   val itemHeight = 62.dp
