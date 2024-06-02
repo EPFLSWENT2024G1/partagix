@@ -12,7 +12,7 @@ import com.android.partagix.model.notification.FirebaseMessagingService
 import com.android.partagix.model.notification.Notification
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.Route
-import com.android.partagix.utils.dateFormat
+import com.android.partagix.utils.displayedDateFormat
 import java.sql.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -109,6 +109,11 @@ class BorrowViewModel(
           updateItemAvailability(true)
         }
       }
+      if (loan.startDate.after(loan.endDate)) {
+        Log.d(TAG, "createLoan: Start date is after end date")
+        available = false
+        updateItemAvailability(true)
+      }
       if (available) {
         database.createLoan(loan) { newLoan -> updateLoan(newLoan) }
 
@@ -122,7 +127,9 @@ class BorrowViewModel(
               Notification(
                   title = "New incoming request",
                   message =
-                      "You have a new incoming request for your item: ${item.name}, from ${dateFormat( loan.startDate)} to ${dateFormat( loan.endDate)}",
+                      "You have a new incoming request for your item: ${item.name}," +
+                          " from ${displayedDateFormat( loan.startDate)}" +
+                          " to ${displayedDateFormat( loan.endDate)}",
                   type = Notification.Type.NEW_INCOMING_REQUEST,
                   creationDate = Date(System.currentTimeMillis()),
                   navigationUrl = Route.MANAGE_LOAN_REQUEST,

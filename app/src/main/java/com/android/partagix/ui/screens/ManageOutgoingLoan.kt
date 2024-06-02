@@ -104,7 +104,7 @@ fun ManageOutgoingLoan(
                     expandState = expandable,
                     wasExpanded = uiState.expanded,
                     isOutgoing = true,
-                    isLender = true,
+                    isBorrower = true,
                     isClickable = false,
                     onClickCorner = { navigationActions.navigateTo(Route.FINISHED_LOANS) },
                     onUserClick = {

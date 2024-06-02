@@ -165,6 +165,7 @@ fun LoanScreen(
                           itemList = loans.map { it.item },
                           users = loans.map { it.user },
                           loan = emptyList(),
+                          availability = loansUIState.value.availability,
                           onItemClick = {
                             itemViewModel.updateUiItem(it)
                             navigationActions.navigateTo(Route.VIEW_OTHERS_ITEM)

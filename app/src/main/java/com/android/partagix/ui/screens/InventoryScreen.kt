@@ -227,6 +227,7 @@ fun InventoryScreen(
                     list = uiState.borrowedItems,
                     users = uiState.usersBor,
                     loan = uiState.loanBor,
+                    availability = uiState.availabilityBor,
                     title = "Borrowed",
                     corner = uiState.borrowedItems.size.toString(),
                     onItemClick = {
@@ -239,7 +240,7 @@ fun InventoryScreen(
                     isCornerClickable = false,
                     isClickable = false,
                     isOutgoing = true,
-                    isLender = true,
+                    isBorrower = true,
                     isExpandable = true,
                     expandState = false,
                     wasExpanded = expendedBor,
@@ -262,6 +263,7 @@ fun InventoryScreen(
                   list = uiState.items,
                   users = uiState.users,
                   loan = uiState.loan,
+                  availability = uiState.availability,
                   title = "My Inventory",
                   corner = uiState.items.size.toString(),
                   onItemClick = {

@@ -98,7 +98,7 @@ fun StartLoanScreen(
                             user = lender,
                             loan = loan,
                             manageLoanViewModel = manageLoanViewModel,
-                            isLender = true,
+                            isBorrower = true,
                             modifier = Modifier.fillMaxWidth().testTag("item"),
                             onItemClick = {
                               itemViewModel.updateUiItem(item)

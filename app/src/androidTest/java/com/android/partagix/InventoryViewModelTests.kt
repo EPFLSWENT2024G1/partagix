@@ -165,6 +165,17 @@ class InventoryViewModelTests {
         }
     every { this@InventoryViewModelTests.fire.currentUser } returns
         mockk { every { uid } returns "8WuTkKJZLTAr6zs5L7rH" }
+    every { db.getItemUnavailability(any(), any()) } answers
+        {
+          secondArg<(List<Date>) -> Unit>()
+              .invoke(
+                  listOf(
+                      Date(2000, 1, 1),
+                      Date(2001, 1, 1),
+                      Date(2002, 1, 1),
+                      Date(2003, 1, 1),
+                      Date()))
+        }
   }
 
   @After
@@ -295,5 +306,19 @@ class InventoryViewModelTests {
 
     inventoryViewModel.getUsers(list, onSuccessCallback)
     assertEquals(listOf(user), updatedList)
+  }
+
+  @Test
+  fun testAvailability() {
+    val mockUser = mockk<FirebaseUser>()
+    mockkObject(Authentication)
+    every { Authentication.getUser() } returns mockUser
+    every { mockUser.uid } returns "8WuTkKJZLTAr6zs5L7rH"
+    val latch = CountDownLatch(1)
+    val inventoryViewModel = spyk(InventoryViewModel(db = db, latch = latch))
+    inventoryViewModel.getInventory(latch, fire)
+    latch.await()
+    assertEquals(inventoryViewModel.uiState.value.availability, listOf(false, false, false))
+    assertEquals(inventoryViewModel.uiState.value.availabilityBor, listOf(false, false, false))
   }
 }

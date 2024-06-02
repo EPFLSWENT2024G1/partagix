@@ -14,7 +14,7 @@ fun stripTime(date: Date): Date {
   return calendar.time
 }
 
-fun dateFormat(date: Date): String {
+fun displayedDateFormat(date: Date): String {
   var pattern = "yyyy-MM-dd"
   var formatter = SimpleDateFormat(pattern)
   return formatter.format(date)

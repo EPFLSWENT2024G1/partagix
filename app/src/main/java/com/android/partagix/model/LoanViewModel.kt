@@ -7,6 +7,8 @@ import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.filtering.Filtering
 import com.android.partagix.model.item.Item
 import com.android.partagix.model.user.User
+import com.android.partagix.utils.stripTime
+import java.util.Date
 import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,7 @@ class LoanViewModel(
     private val db: Database = Database(),
     private val filtering: Filtering = Filtering(),
 ) : ViewModel() {
-  private val _uiState = MutableStateFlow(LoanUIState(availableLoans))
+  private val _uiState = MutableStateFlow(LoanUIState(availableLoans, availability = emptyList()))
   val uiState: StateFlow<LoanUIState> = _uiState
 
   private var filterState = FilterState()
@@ -45,6 +47,7 @@ class LoanViewModel(
       viewModelScope.launch {
         db.getAvailableItems(true) { newItems: List<Item> ->
           db.getUsers { users: List<User> ->
+            val newAvailabilityList = mutableListOf<Boolean>()
             val usersMap = users.associateBy { it.id }
             availableLoans =
                 newItems.map { item ->
@@ -52,7 +55,16 @@ class LoanViewModel(
                   LoanDetails(item, u)
                 }
             applyFilters(uiState.value.filterState)
+            newItems.map { item ->
+              println("item: $item")
+              db.getItemUnavailability(item.id) { date ->
+                println("--------------------------------------------------------yo")
+                newAvailabilityList.add(date.none { stripTime(it) == stripTime(Date()) })
+                updateAvailability(newAvailabilityList)
+              }
+            }
             update(availableLoans, filterState)
+
             latch.countDown()
           }
         }
@@ -67,6 +79,10 @@ class LoanViewModel(
     } else {
       _uiState.value = _uiState.value.copy(availableLoans = loans, filterState = filterState)
     }
+  }
+
+  private fun updateAvailability(bool: List<Boolean>) {
+    _uiState.value = _uiState.value.copy(availability = bool)
   }
 
   /**
@@ -123,7 +139,8 @@ data class LoanDetails(
 
 data class LoanUIState(
     val availableLoans: List<LoanDetails>,
-    val filterState: FilterState = FilterState()
+    val filterState: FilterState = FilterState(),
+    val availability: List<Boolean>
 )
 
 sealed class FilterAction {

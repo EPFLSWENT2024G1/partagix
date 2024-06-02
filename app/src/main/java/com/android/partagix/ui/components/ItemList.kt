@@ -46,10 +46,11 @@ fun ItemList(
     itemList: List<Item>,
     users: List<User>,
     loan: List<Loan>,
+    availability: List<Boolean>,
     isExpandable: Boolean,
     isOutgoing: Boolean,
     isOwner: Boolean = false,
-    isLender: Boolean = false,
+    isBorrower: Boolean = false,
     expandState: Boolean = false,
     wasExpanded: List<Boolean>,
     onItemClick: (Item) -> Unit,
@@ -78,14 +79,6 @@ fun ItemList(
               users[index]
             }
           }
-
-      /*      val onUserClick = {
-        if (user.id.isNotEmpty()) {
-          userViewModel.setUser(user)
-          navigationActions.navigateTo(Route.OTHER_ACCOUNT)
-        }
-      }*/
-
       ItemUi(
           item = item,
           user = user,
@@ -99,11 +92,12 @@ fun ItemList(
                   loan[index]
                 }
               },
+          available = availability.getOrElse(index) { true },
           isExpandable = isExpandable,
           index = index,
           isOutgoing = isOutgoing,
           isOwner = isOwner,
-          isLender = isLender,
+          isBorrower = isBorrower,
           onItemClick = onItemClick,
           onUserClick = onUserClick,
           manageLoanViewModel = manageLoanViewModel,

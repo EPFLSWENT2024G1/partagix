@@ -431,7 +431,7 @@ class Database(
   fun getItemUnavailability(itemId: String, onSuccess: (List<Date>) -> Unit) {
     val myId = Authentication.getUser()?.uid
     getLoans { loans ->
-      val itemLoans = loans.filter { it.idItem == itemId && it.idLender != myId }
+      val itemLoans = loans.filter { it.idItem == itemId }
       val onGoingOrAcceptedLoans =
           itemLoans.filter { it.state == LoanState.ONGOING || it.state == LoanState.ACCEPTED }
       val pendingAndMineLoan =

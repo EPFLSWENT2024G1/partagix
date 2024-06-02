@@ -61,8 +61,6 @@ import com.android.partagix.model.loan.LoanState
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
-import java.time.format.DateTimeFormatter
-import java.util.Date
 
 /**
  * Composable function to display an item, as a row.
@@ -74,7 +72,8 @@ import java.util.Date
  * @param isOutgoing Boolean to know if the loan is outgoing, and set according buttons when
  *   expanded
  * @param isOwner Boolean to know if the user is the owner of the item, and hide its name if so
- * @param isLender Boolean to know if the user is the lender of the item, and hide the availability
+ * @param isBorrower Boolean to know if the user is the lender of the item, and hide the
+ *   availability
  * @param isExpandable Boolean to know if the item can be expanded
  * @param expandState Boolean to know if the item is expanded
  * @param onItemClick Function to be called when the item is clicked
@@ -87,10 +86,11 @@ fun ItemUi(
     item: Item,
     user: User,
     loan: Loan,
+    available: Boolean = true,
     modifier: Modifier = Modifier, // useful when calling the composable
     isOutgoing: Boolean = false,
     isOwner: Boolean = false,
-    isLender: Boolean = false,
+    isBorrower: Boolean = false,
     isExpandable: Boolean = false,
     expandState: Boolean = false,
     onItemClick: (Item) -> Unit = {},
@@ -103,27 +103,19 @@ fun ItemUi(
     },
     index: Int = 0,
 ) {
-  val date: Date =
-      if (loan.startDate.before(Date())) {
-        loan.endDate
-      } else {
-        loan.startDate
-      }
   var expanded by remember { mutableStateOf(expandState) }
-  val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-  val available = true // TODO
   var availability = "Now available"
-
   if (!available) {
-    availability = "Unavailable"
+    availability = "Unavailable now"
   }
-
-  if (isLender) {
+  if (isBorrower && loan.state == LoanState.ACCEPTED) {
     availability = "Accepted but not started"
   }
-  if (isLender && (loan.state == LoanState.ONGOING)) { // normal case of borrowed item
-    availability = ""
+  if (isBorrower && loan.state == LoanState.ONGOING) { // normal case of borrowed item
+    availability = "Available"
+  }
+  if (isOwner && !available) { // normal case of borrowed item
+    availability = "Borrowed"
   }
 
   val itemHeight = 62.dp
@@ -342,7 +334,7 @@ fun ItemUi(
                     content = {
                       Icon(Icons.Default.Close, contentDescription = "cancel", modifier = Modifier)
                       Spacer(Modifier.width(2.dp))
-                      if ((loan.state == LoanState.PENDING && isLender) ||
+                      if ((loan.state == LoanState.PENDING && isBorrower) ||
                           loan.state == LoanState.ACCEPTED) {
                         Text(text = "Cancel")
                       } else {
