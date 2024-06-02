@@ -153,17 +153,17 @@ class LoanViewModelTests {
           val userId = firstArg<String>()
           thirdArg<(User) -> Unit>().invoke(users.first { it.id == userId })
         }
-      every { db.getItemUnavailability(any(), any()) } answers
-              {
-                  secondArg<(List<Date>) -> Unit>()
-                      .invoke(
-                          listOf(
-                              Date(2000, 1, 1),
-                              Date(2001, 1, 1),
-                              Date(2002, 1, 1),
-                              Date(2003, 1, 1),
-                              Date()))
-              }
+    every { db.getItemUnavailability(any(), any()) } answers
+        {
+          secondArg<(List<Date>) -> Unit>()
+              .invoke(
+                  listOf(
+                      Date(2000, 1, 1),
+                      Date(2001, 1, 1),
+                      Date(2002, 1, 1),
+                      Date(2003, 1, 1),
+                      Date()))
+        }
   }
 
   @After
