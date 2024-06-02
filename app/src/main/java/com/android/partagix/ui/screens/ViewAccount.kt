@@ -1,6 +1,10 @@
 package com.android.partagix.ui.screens
 
+import android.R
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,11 +35,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.user.User
 import com.android.partagix.ui.components.BottomNavigationBar
 import com.android.partagix.ui.components.LabeledText
@@ -44,6 +50,7 @@ import com.android.partagix.ui.components.UserComment
 import com.android.partagix.ui.navigation.NavigationActions
 import com.android.partagix.ui.navigation.Route
 import kotlin.math.round
+
 
 private const val TAG = "ViewAccount"
 
@@ -54,15 +61,22 @@ fun ViewAccount(
     navigationActions: NavigationActions,
     userViewModel: UserViewModel,
     otherUserViewModel: UserViewModel,
+    authentification: Authentication
 ) {
   val uiState = userViewModel.uiState.collectAsState()
   val user = uiState.value.user
   Scaffold(
-      modifier = Modifier.fillMaxSize().testTag("viewAccount"),
+      modifier = Modifier
+          .fillMaxSize()
+          .testTag("viewAccount"),
       topBar = {
         TopAppBar(
-            modifier = Modifier.fillMaxWidth().testTag("topBar"),
-            title = { Text("My Account", modifier = Modifier.fillMaxWidth().testTag("title")) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("topBar"),
+            title = { Text("My Account", modifier = Modifier
+                .fillMaxWidth()
+                .testTag("title")) },
             navigationIcon = {
               IconButton(
                   modifier = Modifier.testTag("backButton"),
@@ -83,42 +97,82 @@ fun ViewAccount(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier =
-                Modifier.fillMaxHeight()
-                    .padding(it)
-                    .verticalScroll(rememberScrollState())
-                    .testTag("mainContent")) {
+            Modifier
+                .fillMaxHeight()
+                .padding(it)
+                .verticalScroll(rememberScrollState())
+                .testTag("mainContent")) {
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("editButton"),
-                  horizontalArrangement = Arrangement.Absolute.Right) {
-                    Button(
-                        onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
-                        modifier = Modifier.testTag("editProfileButton")) {
-                          Text("Edit Profile")
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(8.dp)
+                      .testTag("editButton"),
+                  horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
+                  val context = LocalContext.current
+                  Button(
+                        onClick = {
+                            AlertDialog.Builder(context)
+                                .setTitle("Confirm Log Out")
+                                .setMessage("You will have to log in again to access your account. Are you sure you want to log out?")
+                                .setNegativeButton(R.string.no, null)
+                                .setPositiveButton(
+                                    R.string.yes
+                                ) { _, _ ->
+                                    Toast.makeText(
+                                        context,
+                                        "Logged Out",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    authentification.signOut()
+                                    navigationActions.navigateTo(Route.LOGIN)
+
+                                }
+                                .show()
+                        },
+                        modifier = Modifier.testTag("logOutButton")) {
+                          Text("Log Out")
                         }
+                  Button(
+                      onClick = { navigationActions.navigateTo(Route.EDIT_ACCOUNT) },
+                      modifier = Modifier.testTag("editProfileButton")) {
+                      Text("Edit Profile")
+                  }
                   }
               Spacer(modifier = Modifier.height(8.dp))
               Box(
-                  modifier = Modifier.height(150.dp).width(150.dp).testTag("userImageBox"),
+                  modifier = Modifier
+                      .height(150.dp)
+                      .width(150.dp)
+                      .testTag("userImageBox"),
                   contentAlignment = Alignment.Center) {
                     AsyncImage(
                         model = user.imageId.absolutePath,
                         contentDescription = "image",
                         contentScale = ContentScale.Inside,
-                        modifier = Modifier.fillMaxHeight().testTag("userImage"),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .testTag("userImage"),
                         alignment = Alignment.Center,
                     )
                   }
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(top = 4.dp).testTag("username"),
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(top = 4.dp)
+                      .testTag("username"),
                   horizontalArrangement = Arrangement.Absolute.SpaceAround) {
                     val username = user.name
                     Text("$username's profile", modifier = Modifier.testTag("usernameText"))
                   }
-              Row(modifier = modifier.fillMaxWidth().padding(8.dp)) {
+              Row(modifier = modifier
+                  .fillMaxWidth()
+                  .padding(8.dp)) {
                 Icon(
                     Icons.Default.LocationOn,
                     contentDescription = null,
-                    modifier = modifier.padding(start = 12.dp, top = 16.dp).testTag("address"))
+                    modifier = modifier
+                        .padding(start = 12.dp, top = 16.dp)
+                        .testTag("address"))
                 LabeledText(
                     modifier = modifier.fillMaxWidth(), label = "Location", text = user.address)
               }
@@ -155,11 +209,15 @@ fun ViewAccount(
                       }
                     }
               }
-              Row(modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+              Row(modifier = modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 8.dp)) {
                 Icon(
                     Icons.Default.CheckCircle,
                     contentDescription = null,
-                    modifier = modifier.padding(start = 12.dp, top = 12.dp).testTag("rating"))
+                    modifier = modifier
+                        .padding(start = 12.dp, top = 12.dp)
+                        .testTag("rating"))
 
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -176,7 +234,9 @@ fun ViewAccount(
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = stars,
-                        modifier = Modifier.padding(0.dp).testTag("text"),
+                        modifier = Modifier
+                            .padding(0.dp)
+                            .testTag("text"),
                         fontSize = 15.sp,
                     )
                   }
@@ -185,11 +245,16 @@ fun ViewAccount(
               Spacer(modifier = Modifier.height(20.dp))
 
               Row(
-                  modifier = Modifier.fillMaxWidth().padding(12.dp, 0.dp).testTag("actionButtons"),
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(12.dp, 0.dp)
+                      .testTag("actionButtons"),
                   horizontalArrangement = Arrangement.Absolute.Center) {
                     Button(
                         onClick = { navigationActions.navigateTo(Route.INVENTORY) },
-                        modifier = Modifier.weight(1f).testTag("inventoryButton")) {
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("inventoryButton")) {
                           Text("See inventory")
                         }
                   }
@@ -200,9 +265,13 @@ fun ViewAccount(
               if (commentList.isEmpty()) {
                 Text(
                     "No comments yet",
-                    modifier = Modifier.padding(12.dp, 0.dp).testTag("noComments"))
+                    modifier = Modifier
+                        .padding(12.dp, 0.dp)
+                        .testTag("noComments"))
               } else {
-                Column(modifier = Modifier.padding(12.dp, 0.dp).testTag("comments")) {
+                Column(modifier = Modifier
+                    .padding(12.dp, 0.dp)
+                    .testTag("comments")) {
                   Text(
                       text = "Comments",
                       style = MaterialTheme.typography.titleMedium,

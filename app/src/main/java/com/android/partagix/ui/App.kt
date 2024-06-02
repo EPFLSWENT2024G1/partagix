@@ -357,7 +357,9 @@ class App(
         ViewAccount(
             navigationActions = navigationActions,
             userViewModel = userViewModel,
-            otherUserViewModel = otherUserViewModel)
+            otherUserViewModel = otherUserViewModel,
+            authentification = authentication,
+            )
       }
 
       composable(

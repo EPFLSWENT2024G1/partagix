@@ -1,6 +1,10 @@
 package com.android.partagix.viewAccount
 
+import android.R
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.location.Location
+import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -9,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.partagix.model.UserUIState
 import com.android.partagix.model.UserViewModel
+import com.android.partagix.model.auth.Authentication
 import com.android.partagix.model.category.Category
 import com.android.partagix.model.inventory.Inventory
 import com.android.partagix.model.item.Item
@@ -26,6 +31,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -42,8 +48,10 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
   @RelaxedMockK lateinit var mockUserViewModel: UserViewModel
   @RelaxedMockK lateinit var mockOtherUserViewModel: UserViewModel
+  @RelaxedMockK lateinit var mockAuth: Authentication
 
-  private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
+
+    private lateinit var emptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var nonEmptyMockUiState: MutableStateFlow<UserUIState>
   private lateinit var otherUserMockUIState: MutableStateFlow<UserUIState>
 
@@ -78,6 +86,8 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
 
     mockUserViewModel = mockk()
     mockOtherUserViewModel = mockk()
+    mockAuth = mockk()
+      every { mockAuth.signOut() } returns Unit
 
     every { mockOtherUserViewModel.uiState } returns otherUserMockUIState
 
@@ -101,6 +111,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
           otherUserViewModel = mockOtherUserViewModel,
+          authentification = mockAuth,
       )
     }
 
@@ -115,6 +126,8 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       actionButtons { assertIsDisplayed() }
       inventoryButton { assertIsDisplayed() }
       noCommentsText { assertIsDisplayed() }
+        logOutButton { assertIsDisplayed() }
+        editButton { assertIsDisplayed() }
     }
   }
 
@@ -130,7 +143,9 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           modifier = Modifier,
           navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
-          otherUserViewModel = mockOtherUserViewModel)
+          otherUserViewModel = mockOtherUserViewModel,
+          authentification = mockAuth
+      )
     }
 
     onComposeScreen<ViewAccount>(composeTestRule) {
@@ -164,6 +179,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
           otherUserViewModel = mockOtherUserViewModel,
+          authentification = mockAuth,
       )
     }
 
@@ -186,22 +202,6 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
     }
   }
 
-  //    editButton
-  @Test
-  fun editAndFriendButtonIsDisplayed() = run {
-    every { mockUserViewModel.uiState } returns emptyMockUiState
-    composeTestRule.setContent {
-      ViewAccount(
-          modifier = Modifier,
-          navigationActions = mockNavActions,
-          userViewModel = mockUserViewModel,
-          otherUserViewModel = mockOtherUserViewModel,
-      )
-    }
-
-    onComposeScreen<ViewAccount>(composeTestRule) { editButton { assertIsDisplayed() } }
-  }
-
   @Test
   fun editAndFriendButtonWorks() = run {
     every { mockUserViewModel.uiState } returns emptyMockUiState
@@ -211,6 +211,7 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
           navigationActions = mockNavActions,
           userViewModel = mockUserViewModel,
           otherUserViewModel = mockOtherUserViewModel,
+          authentification = mockAuth,
       )
     }
 
@@ -219,4 +220,36 @@ class ViewAccountTest : TestCase(kaspressoBuilder = Kaspresso.Builder.withCompos
       editButton { performClick() }
     }
   }
+
+    @Test
+    fun logOutButtonWorks() = run {
+        every { mockUserViewModel.uiState } returns emptyMockUiState
+        composeTestRule.setContent {
+            ViewAccount(
+                modifier = Modifier,
+                navigationActions = mockNavActions,
+                userViewModel = mockUserViewModel,
+                otherUserViewModel = mockOtherUserViewModel,
+                authentification = mockAuth,
+            )
+        }
+        val dialog = mockk<AlertDialog>()
+        val builder = mockk<AlertDialog.Builder>()
+        mockkStatic(AlertDialog::class)
+        every { AlertDialog.Builder(any()) } returns builder
+        every { builder.setMessage("You will have to log in again to access your account. Are you sure you want to log out?") } returns builder
+        every { builder.setTitle("Confirm Log Out") } returns builder
+        every { builder.setNegativeButton(R.string.no, null) } returns builder
+        every { builder.setPositiveButton(R.string.yes, any()) } answers {
+            val listener = secondArg() as DialogInterface.OnClickListener
+            listener.onClick(dialog, DialogInterface.BUTTON_POSITIVE)
+            builder
+        }
+        every { builder.show() } returns dialog
+
+        onComposeScreen<ViewAccount>(composeTestRule) {
+            logOutButton { assertIsDisplayed() }
+            logOutButton { performClick() }
+        }
+    }
 }

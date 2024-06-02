@@ -16,7 +16,12 @@ interface SignInResultListener {
 
   fun onSignInFailure(errorCode: Int)
 }
-
+/**
+ * Class to handle authentication with Firebase.
+ *
+ * @param activity the activity to use for the sign-in flow.
+ * @param signInResultListener the listener to handle the sign-in result.
+ */
 class Authentication(
     private val activity: ComponentActivity,
     private val signInResultListener: SignInResultListener
@@ -32,10 +37,18 @@ class Authentication(
         }
   }
 
+    /**
+     * Checks if the user is already signed in.
+     *
+     * @return true if the user is already signed in, false otherwise.
+     */
   fun isAlreadySignedIn(): Boolean {
     return getUser() != null
   }
 
+    /**
+     * Signs the user in using Google authentication.
+     */
   fun signIn() {
     Log.w(TAG, "signIn: called")
     // Choose authentication providers
@@ -49,6 +62,13 @@ class Authentication(
         AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build()
     signInLauncher.launch(signInIntent)
   }
+
+    /**
+     * Signs the user out.
+     */
+    fun signOut() {
+        AuthUI.getInstance().signOut(activity)
+    }
 
   private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
     val response = result.idpResponse
